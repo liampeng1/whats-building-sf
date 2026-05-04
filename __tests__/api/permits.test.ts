@@ -1,8 +1,18 @@
 import { GET as listPermits } from '@/app/api/permits/route'
 import { GET as getPermit } from '@/app/api/permits/[id]/route'
 import * as datasf from '@/lib/datasf'
+import { NotFoundError } from '@/lib/datasf'
 
-jest.mock('@/lib/datasf')
+jest.mock('@/lib/datasf', () => {
+  const actual = jest.requireActual('@/lib/datasf')
+  return {
+    ...actual,
+    fetchBuildingPermits: jest.fn(),
+    fetchBuildingPermit: jest.fn(),
+    fetchPlanningCases: jest.fn(),
+    fetchPlanningCase: jest.fn(),
+  }
+})
 
 const mockPermit = {
   permit_number: '202301010001',
@@ -18,8 +28,13 @@ const mockPermit = {
 }
 
 describe('GET /api/permits', () => {
+  let consoleErrorSpy: jest.SpyInstance
   beforeEach(() => {
     jest.clearAllMocks()
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+  afterEach(() => {
+    consoleErrorSpy.mockRestore()
   })
 
   test('returns 200 with permit array', async () => {
@@ -60,6 +75,17 @@ describe('GET /api/permits', () => {
     expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith()
   })
 
+  test('returns 400 when all bounds are present but unparseable', async () => {
+    const req = new Request(
+      'http://localhost/api/permits?north=abc&south=def&east=ghi&west=jkl'
+    )
+    const res = await listPermits(req)
+    expect(res.status).toBe(400)
+    const data = await res.json()
+    expect(data).toEqual({ error: 'Invalid bounds' })
+    expect(datasf.fetchBuildingPermits).not.toHaveBeenCalled()
+  })
+
   test('returns 500 on DataSF error', async () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockRejectedValueOnce(
       new Error('DataSF error: 503')
@@ -73,8 +99,13 @@ describe('GET /api/permits', () => {
 })
 
 describe('GET /api/permits/[id]', () => {
+  let consoleErrorSpy: jest.SpyInstance
   beforeEach(() => {
     jest.clearAllMocks()
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+  afterEach(() => {
+    consoleErrorSpy.mockRestore()
   })
 
   test('returns 200 with single permit', async () => {
@@ -88,7 +119,7 @@ describe('GET /api/permits/[id]', () => {
 
   test('returns 404 when permit not found', async () => {
     ;(datasf.fetchBuildingPermit as jest.Mock).mockRejectedValueOnce(
-      new Error('Permit not found')
+      new NotFoundError('Permit not found')
     )
     const req = new Request('http://localhost/api/permits/nonexistent')
     const res = await getPermit(req, { params: Promise.resolve({ id: 'nonexistent' }) })

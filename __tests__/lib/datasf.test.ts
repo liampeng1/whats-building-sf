@@ -3,6 +3,7 @@ import {
   fetchBuildingPermit,
   fetchPlanningCases,
   fetchPlanningCase,
+  NotFoundError,
 } from '@/lib/datasf'
 
 const mockPermitApi = {
@@ -91,7 +92,9 @@ describe('fetchBuildingPermit', () => {
     expect(url).toContain('permit_number=202301010001')
   })
 
-  test('throws when permit not found', async () => {
+  test('throws NotFoundError when permit not found', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] })
+    await expect(fetchBuildingPermit('nonexistent')).rejects.toBeInstanceOf(NotFoundError)
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] })
     await expect(fetchBuildingPermit('nonexistent')).rejects.toThrow('Permit not found')
   })
@@ -149,7 +152,9 @@ describe('fetchPlanningCase', () => {
     expect(url).toContain('record_id=2025-012220PRJ')
   })
 
-  test('throws when case not found', async () => {
+  test('throws NotFoundError when case not found', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] })
+    await expect(fetchPlanningCase('nonexistent')).rejects.toBeInstanceOf(NotFoundError)
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] })
     await expect(fetchPlanningCase('nonexistent')).rejects.toThrow('Planning case not found')
   })

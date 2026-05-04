@@ -4,6 +4,8 @@ const BASE_URL = 'https://data.sfgov.org/resource'
 const PERMITS_DATASET = 'i98e-djp9'
 const PLANNING_DATASET = 'qvu5-m3a2'
 
+export class NotFoundError extends Error {}
+
 interface PermitApiRow {
   permit_number: string
   permit_type: string
@@ -82,7 +84,7 @@ export async function fetchBuildingPermit(id: string): Promise<Permit> {
   const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
   const rows: PermitApiRow[] = await res.json()
-  if (rows.length === 0) throw new Error('Permit not found')
+  if (rows.length === 0) throw new NotFoundError('Permit not found')
   return permitFromApi(rows[0])
 }
 
@@ -99,6 +101,6 @@ export async function fetchPlanningCase(id: string): Promise<PlanningCase> {
   const res = await fetch(`${BASE_URL}/${PLANNING_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
   const rows: PlanningCaseApiRow[] = await res.json()
-  if (rows.length === 0) throw new Error('Planning case not found')
+  if (rows.length === 0) throw new NotFoundError('Planning case not found')
   return caseFromApi(rows[0])
 }
