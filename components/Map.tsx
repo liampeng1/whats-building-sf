@@ -7,6 +7,7 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
 import { PermitPanel } from './PermitPanel'
+import { CoffeeButton } from './CoffeeButton'
 import {
   permitStage,
   netDelta,
@@ -180,6 +181,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />
+      <CoffeeButton />
       <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
     </div>
   )
