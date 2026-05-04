@@ -45,3 +45,6 @@ next-env.d.ts
 
 # superpowers
 .superpowers/
+
+# debug screenshots from playwright runs
+scripts/_*.png
