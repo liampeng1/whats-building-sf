@@ -45,6 +45,34 @@ test('PlanningCase type accepts a valid planning case', () => {
   expect(c.record_id).toBe('2025-012220PRJ')
 })
 
+test('Permit type allows null filed_date', () => {
+  const permit: Permit = {
+    permit_number: '202301010003',
+    permit_type: '8',
+    permit_type_definition: null,
+    status: 'filed',
+    description: null,
+    address: '789 PINE ST',
+    filed_date: null,
+    issued_date: null,
+    completed_date: null,
+    location: null,
+  }
+  expect(permit.filed_date).toBeNull()
+})
+
+test('PlanningCase type allows null open_date', () => {
+  const c: PlanningCase = {
+    record_id: '2025-000001PRJ',
+    record_type: 'Conditional Use',
+    description: null,
+    project_address: '1 MARKET ST',
+    record_status: 'Filed',
+    open_date: null,
+  }
+  expect(c.open_date).toBeNull()
+})
+
 test('MapBounds type accepts valid bounds', () => {
   const bounds: MapBounds = { north: 37.8, south: 37.7, east: -122.4, west: -122.5 }
   expect(bounds.north).toBeGreaterThan(bounds.south)

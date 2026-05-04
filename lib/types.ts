@@ -1,3 +1,5 @@
+// Field names match DataSF Socrata wire format so the API client returns JSON as-is.
+
 export interface MapBounds {
   north: number
   south: number
@@ -17,7 +19,7 @@ export interface Permit {
   status: string
   description: string | null
   address: string
-  filed_date: string
+  filed_date: string | null
   issued_date: string | null
   completed_date: string | null
   location: GeoPoint | null
@@ -29,5 +31,5 @@ export interface PlanningCase {
   description: string | null
   project_address: string
   record_status: string
-  open_date: string
+  open_date: string | null
 }
