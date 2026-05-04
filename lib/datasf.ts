@@ -105,10 +105,10 @@ interface DemolitionApiRow {
  * Fetch demolition permits (type 6) for a given parcel. Used on the detail
  * page to show demolition history before a new-construction permit.
  *
- * Filters to demos within 5 years before the construction's filed_date — a
- * decades-old demo from a previous building cycle isn't relevant to the
- * current project (e.g. 198 Valencia St had a 1989 demo + a 2014 demo;
- * only the 2014 one belongs in the 2014-construction's timeline).
+ * Filters to demos filed within 10 years before the construction's
+ * filed_date — a decades-old demo from a previous building cycle isn't
+ * relevant to the current project (e.g. 198 Valencia St had a 1989 demo +
+ * a 2014 demo; only the 2014 one belongs in the 2014-construction's timeline).
  */
 async function fetchDemolitionsForParcel(
   block: string,
@@ -121,7 +121,7 @@ async function fetchDemolitionsForParcel(
     const filed = new Date(constructionFiledDate)
     if (!isNaN(filed.getTime())) {
       const cutoff = new Date(filed)
-      cutoff.setFullYear(cutoff.getFullYear() - 5)
+      cutoff.setFullYear(cutoff.getFullYear() - 10)
       dateClause = `filed_date >= '${cutoff.toISOString().slice(0, 10)}'`
     }
   }
