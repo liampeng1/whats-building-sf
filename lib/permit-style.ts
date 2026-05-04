@@ -1,6 +1,6 @@
 import type { Permit } from './types'
 
-export type PermitCategory = 'new' | 'alteration' | 'demolition' | 'sign' | 'other'
+export type PermitTypeId = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 export type PermitStage = 'filed' | 'active' | 'complete' | 'inactive'
 
 export interface PermitStyle {
@@ -11,20 +11,30 @@ export interface PermitStyle {
   radius: number
 }
 
-export const CATEGORY_LABELS: Record<PermitCategory, string> = {
-  new: 'New construction',
-  alteration: 'Alterations / repairs',
-  demolition: 'Demolition',
-  sign: 'Signs',
-  other: 'Other',
+export const PERMIT_TYPE_IDS: PermitTypeId[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+export const PERMIT_TYPE_LABELS: Record<PermitTypeId, string> = {
+  '1': 'New construction',
+  '2': 'New construction (wood frame)',
+  '3': 'Additions / alterations / repairs',
+  '4': 'Sign — erect',
+  '5': 'Grade / quarry / fill / excavate',
+  '6': 'Demolition',
+  '7': 'Wall or painted sign',
+  '8': 'OTC alterations',
+  '9': 'Other',
 }
 
-export const CATEGORY_COLORS: Record<PermitCategory, { fill: string; stroke: string }> = {
-  new: { fill: '#16a34a', stroke: '#14532d' },
-  alteration: { fill: '#2563eb', stroke: '#1e3a8a' },
-  demolition: { fill: '#dc2626', stroke: '#7f1d1d' },
-  sign: { fill: '#d97706', stroke: '#78350f' },
-  other: { fill: '#64748b', stroke: '#1e293b' },
+export const PERMIT_TYPE_COLORS: Record<PermitTypeId, { fill: string; stroke: string }> = {
+  '1': { fill: '#10b981', stroke: '#064e3b' },
+  '2': { fill: '#65a30d', stroke: '#365314' },
+  '3': { fill: '#2563eb', stroke: '#1e3a8a' },
+  '4': { fill: '#d97706', stroke: '#78350f' },
+  '5': { fill: '#78716c', stroke: '#292524' },
+  '6': { fill: '#dc2626', stroke: '#7f1d1d' },
+  '7': { fill: '#ea580c', stroke: '#7c2d12' },
+  '8': { fill: '#0ea5e9', stroke: '#0c4a6e' },
+  '9': { fill: '#64748b', stroke: '#1e293b' },
 }
 
 export const STAGE_LABELS: Record<PermitStage, string> = {
@@ -34,22 +44,8 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   inactive: 'Inactive',
 }
 
-export function permitCategory(permitType: string): PermitCategory {
-  switch (permitType) {
-    case '1':
-    case '2':
-      return 'new'
-    case '3':
-    case '8':
-      return 'alteration'
-    case '6':
-      return 'demolition'
-    case '4':
-    case '7':
-      return 'sign'
-    default:
-      return 'other'
-  }
+export function permitTypeId(permitType: string): PermitTypeId {
+  return (PERMIT_TYPE_IDS as string[]).includes(permitType) ? (permitType as PermitTypeId) : '9'
 }
 
 export function permitStage(status: string): PermitStage {
@@ -83,9 +79,9 @@ export function permitStage(status: string): PermitStage {
 }
 
 export function permitStyle(permit: Permit): PermitStyle {
-  const category = permitCategory(permit.permit_type)
+  const id = permitTypeId(permit.permit_type)
   const stage = permitStage(permit.status)
-  const colors = CATEGORY_COLORS[category]
+  const colors = PERMIT_TYPE_COLORS[id]
 
   switch (stage) {
     case 'filed':
