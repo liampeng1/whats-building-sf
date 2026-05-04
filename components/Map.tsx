@@ -1,17 +1,13 @@
 'use client'
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 import 'leaflet/dist/leaflet.css'
+import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
-import {
-  TRACKED_PERMIT_TYPE_IDS,
-  permitTypeId,
-  permitStage,
-  type PermitTypeId,
-  type PermitStage,
-} from '@/lib/permit-style'
+import { permitStage, type PermitStage } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = ['filed', 'active', 'complete', 'inactive']
@@ -24,22 +20,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [permits, setPermits] = useState<Permit[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedTypes, setSelectedTypes] = useState<Set<PermitTypeId>>(
-    () => new Set(TRACKED_PERMIT_TYPE_IDS),
-  )
   const [selectedStages, setSelectedStages] = useState<Set<PermitStage>>(
     () => new Set(ALL_STAGES),
   )
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const toggleType = useCallback((id: PermitTypeId) => {
-    setSelectedTypes((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }, [])
 
   const toggleStage = useCallback((stage: PermitStage) => {
     setSelectedStages((prev) => {
@@ -51,11 +35,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   }, [])
 
   const visiblePermits = useMemo(
-    () =>
-      permits.filter(
-        (p) => selectedTypes.has(permitTypeId(p.permit_type)) && selectedStages.has(permitStage(p.status)),
-      ),
-    [permits, selectedTypes, selectedStages],
+    () => permits.filter((p) => selectedStages.has(permitStage(p.status))),
+    [permits, selectedStages],
   )
 
   const fetchData = useCallback(async (bounds: MapBounds | undefined, signal?: AbortSignal) => {
@@ -108,18 +89,25 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       )}
       <MapContainer center={initialCenter} zoom={13} className="w-full h-full">
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          subdomains="abcd"
+          maxZoom={19}
         />
         <MapEventHandler onBoundsChange={handleBoundsChange} />
-        {visiblePermits.map((p, i) => <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />)}
+        <MarkerClusterGroup
+          chunkedLoading
+          showCoverageOnHover={false}
+          spiderfyOnMaxZoom
+          disableClusteringAtZoom={16}
+          maxClusterRadius={50}
+        >
+          {visiblePermits.map((p, i) => (
+            <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
-      <FilterPanel
-        selectedTypes={selectedTypes}
-        selectedStages={selectedStages}
-        onToggleType={toggleType}
-        onToggleStage={toggleStage}
-      />
+      <FilterPanel selectedStages={selectedStages} onToggleStage={toggleStage} />
     </div>
   )
 }

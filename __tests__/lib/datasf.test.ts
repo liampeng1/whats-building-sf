@@ -46,12 +46,12 @@ describe('fetchBuildingPermits', () => {
     expect(url).toContain('filed_date')
   })
 
-  test('always restricts to tracked permit types (new construction + additions)', async () => {
+  test('always restricts to tracked permit types (new construction only)', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
     await fetchBuildingPermits()
     const url = (global.fetch as jest.Mock).mock.calls[0][0] as string
     const decoded = decodeURIComponent(url).replace(/\+/g, ' ')
-    expect(decoded).toContain("permit_type IN ('1','2','3')")
+    expect(decoded).toContain("permit_type IN ('1','2')")
   })
 
   test('always applies a 2-year recency filter on completed_date / status_date', async () => {
@@ -66,7 +66,7 @@ describe('fetchBuildingPermits', () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
     await fetchBuildingPermits(mockBounds)
     const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
-    expect(url).toContain("permit_type IN ('1','2','3')")
+    expect(url).toContain("permit_type IN ('1','2')")
     expect(url).toContain('within_box')
     expect(url).toContain(' AND ')
   })

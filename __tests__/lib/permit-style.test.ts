@@ -2,9 +2,8 @@ import {
   permitTypeId,
   permitStage,
   permitStyle,
+  ACCENT,
   PERMIT_TYPE_IDS,
-  PERMIT_TYPE_COLORS,
-  PERMIT_TYPE_LABELS,
 } from '@/lib/permit-style'
 import type { Permit } from '@/lib/types'
 
@@ -19,21 +18,6 @@ describe('permitTypeId', () => {
     expect(permitTypeId('99')).toBe('9')
     expect(permitTypeId('')).toBe('9')
     expect(permitTypeId('unexpected')).toBe('9')
-  })
-})
-
-describe('PERMIT_TYPE_COLORS / LABELS coverage', () => {
-  test('every type id has a label and a color pair', () => {
-    for (const id of PERMIT_TYPE_IDS) {
-      expect(PERMIT_TYPE_LABELS[id]).toBeTruthy()
-      expect(PERMIT_TYPE_COLORS[id].fill).toMatch(/^#[0-9a-f]{6}$/i)
-      expect(PERMIT_TYPE_COLORS[id].stroke).toMatch(/^#[0-9a-f]{6}$/i)
-    }
-  })
-
-  test('all 9 fill colors are distinct', () => {
-    const fills = PERMIT_TYPE_IDS.map((id) => PERMIT_TYPE_COLORS[id].fill)
-    expect(new Set(fills).size).toBe(fills.length)
   })
 })
 
@@ -82,21 +66,24 @@ const basePermit: Permit = {
 }
 
 describe('permitStyle', () => {
-  test('uses the type-specific color (active type 1)', () => {
-    const s = permitStyle({ ...basePermit, permit_type: '1', status: 'issued' })
-    expect(s.fillColor).toBe(PERMIT_TYPE_COLORS['1'].fill)
-    expect(s.fillOpacity).toBe(0.8)
+  test('active permit is largest with white halo and accent fill', () => {
+    const s = permitStyle({ ...basePermit, status: 'issued' })
+    expect(s.fillColor).toBe(ACCENT.fill)
+    expect(s.color).toBe('#ffffff')
+    expect(s.radius).toBe(9)
   })
 
-  test('filed permit is hollow ring (fillOpacity 0, weight > 1)', () => {
-    const s = permitStyle({ ...basePermit, permit_type: '8', status: 'filing' })
-    expect(s.fillOpacity).toBe(0)
-    expect(s.weight).toBeGreaterThan(1)
+  test('filed permit reads as a ring (white fill, thick accent stroke)', () => {
+    const s = permitStyle({ ...basePermit, status: 'filing' })
+    expect(s.fillColor).toBe('#ffffff')
+    expect(s.color).toBe(ACCENT.stroke)
+    expect(s.weight).toBeGreaterThanOrEqual(2)
   })
 
   test('complete permit is small dark dot', () => {
     const s = permitStyle({ ...basePermit, status: 'complete' })
-    expect(s.radius).toBeLessThan(6)
+    expect(s.fillColor).toBe(ACCENT.stroke)
+    expect(s.radius).toBe(4)
     expect(s.fillOpacity).toBe(1)
   })
 
@@ -105,8 +92,10 @@ describe('permitStyle', () => {
     expect(s.fillOpacity).toBeLessThan(0.3)
   })
 
-  test('unknown permit type falls back to type 9 color', () => {
-    const s = permitStyle({ ...basePermit, permit_type: '999', status: 'issued' })
-    expect(s.fillColor).toBe(PERMIT_TYPE_COLORS['9'].fill)
+  test('all stages use the same accent fill family (single category)', () => {
+    const active = permitStyle({ ...basePermit, status: 'issued' })
+    const inactive = permitStyle({ ...basePermit, status: 'cancelled' })
+    expect(active.fillColor).toBe(ACCENT.fill)
+    expect(inactive.fillColor).toBe(ACCENT.fill)
   })
 })

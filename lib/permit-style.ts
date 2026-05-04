@@ -3,6 +3,10 @@ import type { Permit } from './types'
 export type PermitTypeId = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 export type PermitStage = 'filed' | 'active' | 'complete' | 'inactive'
 
+// Single accent color (emerald) for all tracked permits — they're all major
+// new construction now. Stage hierarchy is conveyed by size + style instead.
+export const ACCENT = { fill: '#10b981', stroke: '#064e3b' } as const
+
 export interface PermitStyle {
   fillColor: string
   color: string
@@ -111,18 +115,20 @@ export function timeAgo(dateStr: string | null, now: Date = new Date()): string 
 }
 
 export function permitStyle(permit: Permit): PermitStyle {
-  const id = permitTypeId(permit.permit_type)
   const stage = permitStage(permit.status)
-  const colors = PERMIT_TYPE_COLORS[id]
 
   switch (stage) {
-    case 'filed':
-      return { fillColor: colors.fill, color: colors.stroke, weight: 2, fillOpacity: 0, radius: 6 }
     case 'active':
-      return { fillColor: colors.fill, color: colors.stroke, weight: 1, fillOpacity: 0.8, radius: 6 }
+      // Largest, most prominent: filled circle with white halo so it pops on any base.
+      return { fillColor: ACCENT.fill, color: '#ffffff', weight: 2, fillOpacity: 0.95, radius: 9 }
+    case 'filed':
+      // White-filled with thick colored stroke — reads as a "ring".
+      return { fillColor: '#ffffff', color: ACCENT.stroke, weight: 2.5, fillOpacity: 0.9, radius: 6 }
     case 'complete':
-      return { fillColor: colors.stroke, color: colors.stroke, weight: 1, fillOpacity: 1, radius: 4 }
+      // Smallest, dark dot — recedes visually but stays scannable.
+      return { fillColor: ACCENT.stroke, color: '#ffffff', weight: 1.5, fillOpacity: 1, radius: 4 }
     case 'inactive':
-      return { fillColor: colors.fill, color: colors.stroke, weight: 1, fillOpacity: 0.15, radius: 5 }
+      // Faded, low-attention.
+      return { fillColor: ACCENT.fill, color: ACCENT.stroke, weight: 1, fillOpacity: 0.2, radius: 5 }
   }
 }

@@ -19,6 +19,12 @@ jest.mock('next/navigation', () => ({
 }))
 
 jest.mock('leaflet/dist/leaflet.css', () => ({}))
+jest.mock('@/components/marker-cluster.css', () => ({}))
+
+jest.mock('react-leaflet-cluster', () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <div data-testid="cluster">{children}</div>,
+}))
 
 beforeEach(() => {
   global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => [] })

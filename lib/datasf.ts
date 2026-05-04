@@ -74,11 +74,11 @@ function permitFromApi(row: PermitApiRow): Permit {
   }
 }
 
-// Permit type codes that represent new construction or major additions/alterations.
-// 1 = new construction, 2 = new construction (wood frame), 3 = additions/alterations/repairs.
-// Excludes 8 (OTC alterations — small over-the-counter work), 4/7 (signs), 6 (demolitions),
-// 5 (grading), 9 (other).
-const TRACKED_PERMIT_TYPES = ['1', '2', '3']
+// Permit type codes that represent major new construction.
+// 1 = new construction, 2 = new construction (wood frame).
+// Type 3 (additions/alterations/repairs) is excluded — too dominated by minor remodels.
+// All other types (signs, demolitions, OTC alterations, grading, etc.) also excluded.
+const TRACKED_PERMIT_TYPES = ['1', '2']
 const TRACKED_TYPES_FILTER = `permit_type IN (${TRACKED_PERMIT_TYPES.map((t) => `'${t}'`).join(',')})`
 
 const RECENCY_YEARS = 2
