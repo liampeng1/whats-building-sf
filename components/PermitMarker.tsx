@@ -1,8 +1,17 @@
 'use client'
-import { CircleMarker, Popup } from 'react-leaflet'
+import { Marker, Popup } from 'react-leaflet'
+import { divIcon } from 'leaflet'
 import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 import type { Permit } from '@/lib/types'
-import { permitStyle, permitStage, timeAgo, STAGE_COLORS, STAGE_LABELS, STAGE_SYMBOLS } from '@/lib/permit-style'
+import {
+  permitStage,
+  timeAgo,
+  STAGE_COLORS,
+  STAGE_LABELS,
+  STAGE_SYMBOLS,
+  type PermitStage,
+} from '@/lib/permit-style'
 
 function shortDate(s: string | null): string | null {
   if (!s) return null
@@ -11,29 +20,45 @@ function shortDate(s: string | null): string | null {
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
+const SYMBOL_PIXEL_SIZE: Record<PermitStage, number> = {
+  construction: 28,
+  approved: 22,
+  filed: 22,
+  complete: 20,
+  inactive: 18,
+}
+
+function buildSymbolIcon(stage: PermitStage) {
+  const size = SYMBOL_PIXEL_SIZE[stage]
+  const color = STAGE_COLORS[stage].fill
+  const symbol = STAGE_SYMBOLS[stage]
+  return divIcon({
+    className: '',
+    html: `<div class="permit-symbol permit-symbol-${stage}" style="color:${color}">${symbol}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+  })
+}
+
 export function PermitMarker({ permit }: { permit: Permit }) {
   const router = useRouter()
+  const stage = permitStage(permit.status)
+  const icon = useMemo(() => buildSymbolIcon(stage), [stage])
+
   if (!permit.location) return null
   const [lng, lat] = permit.location.coordinates
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
 
-  const style = permitStyle(permit)
-  const stage = permitStage(permit.status)
   const stageColor = STAGE_COLORS[stage].fill
   const issuedShort = shortDate(permit.issued_date)
   const issuedAgo = timeAgo(permit.issued_date)
   const completedShort = shortDate(permit.completed_date)
 
   return (
-    <CircleMarker
-      center={[lat, lng]}
-      radius={style.radius}
-      pathOptions={{
-        fillColor: style.fillColor,
-        color: style.color,
-        weight: style.weight,
-        fillOpacity: style.fillOpacity,
-      }}
+    <Marker
+      position={[lat, lng]}
+      icon={icon}
       eventHandlers={{ click: () => router.push(`/permits/${permit.permit_number}`) }}
     >
       <Popup>
@@ -60,6 +85,6 @@ export function PermitMarker({ permit }: { permit: Permit }) {
           </>
         )}
       </Popup>
-    </CircleMarker>
+    </Marker>
   )
 }

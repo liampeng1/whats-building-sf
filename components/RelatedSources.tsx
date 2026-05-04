@@ -30,10 +30,10 @@ export function RelatedSources({ address, lat, lng }: Props) {
       : `https://www.google.com/maps/place/${q}`
 
   return (
-    <section className="mt-10">
-      <h2 className="text-sm font-semibold text-gray-700 mb-3">Photos &amp; outside coverage</h2>
+    <div>
+      <div className="civic-eyebrow mb-4">Photos &amp; outside coverage</div>
 
-      <div className="rounded overflow-hidden border border-gray-200 mb-4">
+      <div className="rounded overflow-hidden border border-paper-edge mb-4">
         <iframe
           title={`Map of ${address}`}
           src={mapsEmbed}
@@ -45,18 +45,18 @@ export function RelatedSources({ address, lat, lng }: Props) {
         />
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-5">
         <a
           href={streetView}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-50"
+          className="text-xs px-3 py-1.5 rounded border border-paper-edge bg-paper hover:bg-paper-deep text-ink"
         >
-          📷 Street View ↗
+          ◉ Street View ↗
         </a>
       </div>
 
-      <div className="text-xs font-semibold text-gray-600 mb-2">Search news for this address</div>
+      <div className="civic-eyebrow mb-2">Search news for this address</div>
       <ul className="flex flex-wrap gap-2">
         {NEWS_SOURCES.map((s) => (
           <li key={s.label}>
@@ -64,7 +64,7 @@ export function RelatedSources({ address, lat, lng }: Props) {
               href={s.url(q)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block text-xs px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-50"
+              className="inline-block text-xs px-3 py-1.5 rounded border border-paper-edge bg-paper hover:bg-paper-deep text-ink"
               title={s.note}
             >
               {s.label} ↗
@@ -73,11 +73,10 @@ export function RelatedSources({ address, lat, lng }: Props) {
         ))}
       </ul>
 
-      <p className="mt-3 text-xs text-gray-400">
-        Links open a fresh search in each outlet. SF-specific blogs (SocketSite, Mission Local) tend
-        to have the most signal for major construction; mainstream papers cover only the largest
-        projects.
+      <p className="mt-3 text-xs text-ink-faint italic">
+        SF-specific blogs (SocketSite, SF YIMBY, Mission Local) carry the most signal for major
+        construction; mainstream papers cover only the largest projects.
       </p>
-    </section>
+    </div>
   )
 }
