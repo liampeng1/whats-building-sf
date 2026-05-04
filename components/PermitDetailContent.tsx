@@ -113,6 +113,7 @@ interface TimelineStep {
   label: string
   date: string | null
   active: boolean
+  detail?: string
 }
 
 function Timeline({ steps }: { steps: TimelineStep[] }) {
@@ -136,6 +137,9 @@ function Timeline({ steps }: { steps: TimelineStep[] }) {
             {step.date ? formatDate(step.date) : 'Not yet'}
             {step.date && <span className="text-ink-faint font-normal"> · {timeAgo(step.date)}</span>}
           </div>
+          {step.detail && (
+            <div className="text-xs text-ink-soft mt-0.5">{step.detail}</div>
+          )}
         </li>
       ))}
     </ol>
@@ -167,12 +171,38 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
     sameDay(permit.status_date, permit.issued_date) ||
     sameDay(permit.status_date, permit.filed_date)
 
+  // What happened at "last activity" = the current status. Phrase it as
+  // a human-readable detail so the date isn't context-free.
+  const statusVerb = permit.status === 'complete' ? null : `Status set to "${permit.status}"`
+
+  const pipelineStep: TimelineStep | null =
+    permit.pipeline_status &&
+    permit.pipeline_status_date &&
+    !sameDay(permit.pipeline_status_date, permit.status_date)
+      ? {
+          label: 'SF Planning update',
+          date: permit.pipeline_status_date,
+          active: true,
+          detail: `Pipeline classification: "${permit.pipeline_status}"`,
+        }
+      : null
+
+  // Lifecycle order: Filed → Issued → Last activity → SF Planning update → Completed.
+  // Each step represents a phase; "Not yet" placeholders are kept so users see
+  // the full pipeline even when a permit hasn't reached every stage.
   const allSteps: TimelineStep[] = [
     { label: 'Filed', date: permit.filed_date, active: !!permit.filed_date },
     { label: 'Issued', date: permit.issued_date, active: !!permit.issued_date },
-    { label: 'Last activity', date: permit.status_date, active: !!permit.status_date && stage !== 'complete' },
+    {
+      label: 'Last activity',
+      date: permit.status_date,
+      active: !!permit.status_date && stage !== 'complete',
+      detail: statusVerb ?? undefined,
+    },
+    ...(pipelineStep ? [pipelineStep] : []),
     { label: 'Completed', date: permit.completed_date, active: !!permit.completed_date },
   ]
+
   const steps = allSteps.filter(
     (s) => !(s.label === 'Last activity' && lastActivityRedundant),
   )
