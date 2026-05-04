@@ -220,6 +220,16 @@ export function FilterPanel({
           </p>
         </div>
       </div>
+
+      <a
+        href="https://buymeacoffee.com/liampeng"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="shrink-0 border-t border-paper-edge bg-paper-deep px-4 py-2.5 text-xs text-ink-soft hover:text-ink hover:bg-amber-50 transition-colors flex items-center justify-center gap-1.5"
+      >
+        <span aria-hidden>☕</span>
+        <span>Buy me a coffee</span>
+      </a>
     </div>
   )
 }
