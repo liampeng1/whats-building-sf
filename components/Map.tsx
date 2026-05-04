@@ -7,10 +7,10 @@ import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
-import { permitStage, type PermitStage } from '@/lib/permit-style'
+import { permitStage, STAGE_ORDER, type PermitStage } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 
-const ALL_STAGES: PermitStage[] = ['filed', 'active', 'complete', 'inactive']
+const ALL_STAGES: PermitStage[] = STAGE_ORDER
 
 interface Props {
   initialCenter?: [number, number]

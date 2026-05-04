@@ -1,7 +1,11 @@
 import type { Permit } from './types'
 
 export type PermitTypeId = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-export type PermitStage = 'filed' | 'active' | 'complete' | 'inactive'
+// Lifecycle stages in order. 'inactive' is off-track (cancelled/expired/denied).
+export type PermitStage = 'filed' | 'approved' | 'construction' | 'complete' | 'inactive'
+
+// Order they appear in the timeline / legend.
+export const STAGE_ORDER: PermitStage[] = ['filed', 'approved', 'construction', 'complete', 'inactive']
 
 // Single accent color (emerald) for all tracked permits — they're all major
 // new construction now. Stage hierarchy is conveyed by size + style instead.
@@ -44,9 +48,10 @@ export const PERMIT_TYPE_COLORS: Record<PermitTypeId, { fill: string; stroke: st
 
 export const STAGE_LABELS: Record<PermitStage, string> = {
   filed: 'Filed / under review',
-  active: 'Approved / issued',
+  approved: 'Approved / issued',
+  construction: 'Under construction',
   complete: 'Complete',
-  inactive: 'Inactive',
+  inactive: 'Inactive / cancelled',
 }
 
 export function permitTypeId(permitType: string | null | undefined): PermitTypeId {
@@ -71,25 +76,23 @@ export function permitStage(status: string | null | undefined): PermitStage {
   ) {
     return 'inactive'
   }
+  // 'inspection' = inspectors actively visiting the site = construction is happening.
+  if (s === 'inspection') return 'construction'
   if (
     s === 'approved' ||
     s === 'issued' ||
     s === 'issuing' ||
     s === 'granted' ||
     s === 'reinstated' ||
-    s === 'inspection' ||
     s === 'upheld'
   ) {
-    return 'active'
+    return 'approved'
   }
   return 'filed'
 }
 
 export function isUnderConstruction(permit: Permit): boolean {
-  const s = (permit.status ?? '').toLowerCase()
-  if (s === 'inspection') return true
-  // Issued but not yet completed = work either underway or imminent.
-  return permit.issued_date != null && permit.completed_date == null && permitStage(s) === 'active'
+  return permitStage(permit.status) === 'construction'
 }
 
 export function timeAgo(dateStr: string | null, now: Date = new Date()): string | null {
@@ -118,17 +121,21 @@ export function permitStyle(permit: Permit): PermitStyle {
   const stage = permitStage(permit.status)
 
   switch (stage) {
-    case 'active':
-      // Largest, most prominent: filled circle with white halo so it pops on any base.
-      return { fillColor: ACCENT.fill, color: '#ffffff', weight: 2, fillOpacity: 0.95, radius: 9 }
+    case 'construction':
+      // The headline state: largest pin with thick white halo. This is what the
+      // user wants to see at a glance — work happening right now.
+      return { fillColor: ACCENT.fill, color: '#ffffff', weight: 3, fillOpacity: 1, radius: 10 }
+    case 'approved':
+      // Permit issued, no inspections yet — work likely upcoming. Medium presence.
+      return { fillColor: ACCENT.fill, color: '#ffffff', weight: 2, fillOpacity: 0.7, radius: 7 }
     case 'filed':
-      // White-filled with thick colored stroke — reads as a "ring".
+      // Paperwork phase. Hollow ring with thick colored stroke.
       return { fillColor: '#ffffff', color: ACCENT.stroke, weight: 2.5, fillOpacity: 0.9, radius: 6 }
     case 'complete':
-      // Smallest, dark dot — recedes visually but stays scannable.
+      // Done — recedes to a small dark dot.
       return { fillColor: ACCENT.stroke, color: '#ffffff', weight: 1.5, fillOpacity: 1, radius: 4 }
     case 'inactive':
-      // Faded, low-attention.
+      // Off-track (cancelled/expired). Faded.
       return { fillColor: ACCENT.fill, color: ACCENT.stroke, weight: 1, fillOpacity: 0.2, radius: 5 }
   }
 }

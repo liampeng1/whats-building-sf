@@ -22,10 +22,14 @@ describe('permitTypeId', () => {
 })
 
 describe('permitStage', () => {
-  test('classifies issued/approved/inspection as active', () => {
-    expect(permitStage('issued')).toBe('active')
-    expect(permitStage('approved')).toBe('active')
-    expect(permitStage('inspection')).toBe('active')
+  test('classifies issued/approved as approved', () => {
+    expect(permitStage('issued')).toBe('approved')
+    expect(permitStage('approved')).toBe('approved')
+    expect(permitStage('granted')).toBe('approved')
+  })
+
+  test('classifies inspection as construction (its own stage)', () => {
+    expect(permitStage('inspection')).toBe('construction')
   })
 
   test('classifies complete as complete', () => {
@@ -46,7 +50,8 @@ describe('permitStage', () => {
   })
 
   test('handles uppercase status', () => {
-    expect(permitStage('ISSUED')).toBe('active')
+    expect(permitStage('ISSUED')).toBe('approved')
+    expect(permitStage('INSPECTION')).toBe('construction')
   })
 })
 
@@ -66,11 +71,19 @@ const basePermit: Permit = {
 }
 
 describe('permitStyle', () => {
-  test('active permit is largest with white halo and accent fill', () => {
+  test('under-construction permit is the loudest (largest, halo)', () => {
+    const construction = permitStyle({ ...basePermit, status: 'inspection' })
+    const approved = permitStyle({ ...basePermit, status: 'issued' })
+    expect(construction.fillColor).toBe(ACCENT.fill)
+    expect(construction.color).toBe('#ffffff')
+    expect(construction.radius).toBeGreaterThan(approved.radius)
+  })
+
+  test('approved permit is medium-sized with halo', () => {
     const s = permitStyle({ ...basePermit, status: 'issued' })
     expect(s.fillColor).toBe(ACCENT.fill)
     expect(s.color).toBe('#ffffff')
-    expect(s.radius).toBe(9)
+    expect(s.radius).toBe(7)
   })
 
   test('filed permit reads as a ring (white fill, thick accent stroke)', () => {
@@ -90,12 +103,5 @@ describe('permitStyle', () => {
   test('inactive permit is faded', () => {
     const s = permitStyle({ ...basePermit, status: 'cancelled' })
     expect(s.fillOpacity).toBeLessThan(0.3)
-  })
-
-  test('all stages use the same accent fill family (single category)', () => {
-    const active = permitStyle({ ...basePermit, status: 'issued' })
-    const inactive = permitStyle({ ...basePermit, status: 'cancelled' })
-    expect(active.fillColor).toBe(ACCENT.fill)
-    expect(inactive.fillColor).toBe(ACCENT.fill)
   })
 })
