@@ -7,9 +7,15 @@ export type PermitStage = 'filed' | 'approved' | 'construction' | 'complete' | '
 // Order they appear in the timeline / legend.
 export const STAGE_ORDER: PermitStage[] = ['filed', 'approved', 'construction', 'complete', 'inactive']
 
-// Single accent color (emerald) for all tracked permits — they're all major
-// new construction now. Stage hierarchy is conveyed by size + style instead.
-export const ACCENT = { fill: '#10b981', stroke: '#064e3b' } as const
+// Lifecycle palette — cool blue (paperwork) → warm amber → hot red (construction
+// = headline) → settled forest green (complete). Temperature reads as energy.
+export const STAGE_COLORS = {
+  filed:        { fill: '#334155', stroke: '#1e293b' },  // slate
+  approved:     { fill: '#d97706', stroke: '#78350f' },  // amber
+  construction: { fill: '#b91c1c', stroke: '#7f1d1d' },  // hi-vis red — headline
+  complete:     { fill: '#166534', stroke: '#14532d' },  // forest green
+  inactive:     { fill: '#a8a29e', stroke: '#57534e' },  // taupe
+} as const
 
 export interface PermitStyle {
   fillColor: string
@@ -54,6 +60,15 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   inactive: 'Inactive / cancelled',
 }
 
+// Typographic symbols matching the lifecycle (hollow → half → solid → check → slash).
+export const STAGE_SYMBOLS: Record<PermitStage, string> = {
+  filed: '○',
+  approved: '◐',
+  construction: '●',
+  complete: '✓',
+  inactive: '⊘',
+}
+
 export function permitTypeId(permitType: string | null | undefined): PermitTypeId {
   if (!permitType) return '9'
   return (PERMIT_TYPE_IDS as string[]).includes(permitType) ? (permitType as PermitTypeId) : '9'
@@ -76,18 +91,14 @@ export function permitStage(status: string | null | undefined): PermitStage {
   ) {
     return 'inactive'
   }
-  // 'inspection' = inspectors actively visiting the site = construction is happening.
-  if (s === 'inspection') return 'construction'
-  if (
-    s === 'approved' ||
-    s === 'issued' ||
-    s === 'issuing' ||
-    s === 'granted' ||
-    s === 'reinstated' ||
-    s === 'upheld'
-  ) {
-    return 'approved'
+  // Permit issued or under inspection = work either happening or imminent.
+  // We treat the entire issuance window as "construction" since that's the
+  // colloquial meaning — the building is being built.
+  if (s === 'issued' || s === 'issuing' || s === 'inspection' || s === 'reinstated') {
+    return 'construction'
   }
+  // Approved on paper but not yet issued — closer to filed than to construction.
+  if (s === 'approved' || s === 'granted' || s === 'upheld') return 'approved'
   return 'filed'
 }
 
@@ -119,23 +130,23 @@ export function timeAgo(dateStr: string | null, now: Date = new Date()): string 
 
 export function permitStyle(permit: Permit): PermitStyle {
   const stage = permitStage(permit.status)
+  const c = STAGE_COLORS[stage]
 
   switch (stage) {
     case 'construction':
-      // The headline state: largest pin with thick white halo. This is what the
-      // user wants to see at a glance — work happening right now.
-      return { fillColor: ACCENT.fill, color: '#ffffff', weight: 3, fillOpacity: 1, radius: 10 }
+      // The headline state: largest pin, hot red, thick white halo.
+      return { fillColor: c.fill, color: '#ffffff', weight: 3, fillOpacity: 1, radius: 10 }
     case 'approved':
-      // Permit issued, no inspections yet — work likely upcoming. Medium presence.
-      return { fillColor: ACCENT.fill, color: '#ffffff', weight: 2, fillOpacity: 0.7, radius: 7 }
+      // Warm amber, medium size — work upcoming.
+      return { fillColor: c.fill, color: '#ffffff', weight: 2, fillOpacity: 0.85, radius: 7 }
     case 'filed':
-      // Paperwork phase. Hollow ring with thick colored stroke.
-      return { fillColor: '#ffffff', color: ACCENT.stroke, weight: 2.5, fillOpacity: 0.9, radius: 6 }
+      // Cool slate ring — paperwork phase, low energy.
+      return { fillColor: '#fbf6ec', color: c.stroke, weight: 2.5, fillOpacity: 0.9, radius: 6 }
     case 'complete':
-      // Done — recedes to a small dark dot.
-      return { fillColor: ACCENT.stroke, color: '#ffffff', weight: 1.5, fillOpacity: 1, radius: 4 }
+      // Settled forest dot.
+      return { fillColor: c.fill, color: '#ffffff', weight: 1.5, fillOpacity: 1, radius: 4 }
     case 'inactive':
-      // Off-track (cancelled/expired). Faded.
-      return { fillColor: ACCENT.fill, color: ACCENT.stroke, weight: 1, fillOpacity: 0.2, radius: 5 }
+      // Off-track taupe, faded.
+      return { fillColor: c.fill, color: c.stroke, weight: 1, fillOpacity: 0.25, radius: 5 }
   }
 }

@@ -1,20 +1,63 @@
-/* Cluster bubble styling — single emerald accent matching the pin color. */
+/* Warm the Carto Positron basemap toward the cream paper palette so the map
+   doesn't read as cold gray against the warm chrome. Subtle: just enough sepia
+   + a touch of de-saturation to feel like aged paper. */
+.leaflet-tile-pane {
+  filter: sepia(0.18) saturate(0.85) hue-rotate(-8deg) brightness(1.02);
+}
+
+/* Cluster bubbles — clean navy circles, no doubled-ring. */
 .marker-cluster-small,
 .marker-cluster-medium,
 .marker-cluster-large {
-  background-color: rgba(16, 185, 129, 0.25); /* emerald-500 / .25 */
+  background-color: transparent !important;
 }
 
-.marker-cluster-small div,
-.marker-cluster-medium div,
-.marker-cluster-large div {
-  background-color: rgba(16, 185, 129, 0.85);
-  color: #fff;
+.marker-cluster div {
+  background-color: #1c2438 !important; /* --ink */
+  color: #fbf6ec !important;            /* --paper */
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-weight: 600;
-  border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  font-size: 0.85rem;
+  border: 2px solid #fbf6ec;
+  box-shadow: 0 2px 6px rgba(28, 36, 56, 0.3);
+  width: 32px;
+  height: 32px;
+  margin-left: -1px;
+  margin-top: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-cluster-medium div {
+  width: 38px;
+  height: 38px;
+  margin-left: -4px;
+  margin-top: -4px;
+  font-size: 0.9rem;
+}
+
+.marker-cluster-large div {
+  width: 44px;
+  height: 44px;
+  margin-left: -7px;
+  margin-top: -7px;
+  font-size: 1rem;
+  border-width: 3px;
 }
 
 .marker-cluster span {
-  line-height: 30px;
+  line-height: 1;
+}
+
+/* Soften the default popup chrome so it matches the editorial palette. */
+.leaflet-popup-content-wrapper {
+  background: #fbf6ec;
+  color: #1c2438;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(28, 36, 56, 0.15);
+}
+
+.leaflet-popup-tip {
+  background: #fbf6ec;
 }

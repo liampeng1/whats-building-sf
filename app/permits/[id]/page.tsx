@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
-import { isUnderConstruction, timeAgo } from '@/lib/permit-style'
+import { permitStage, timeAgo, STAGE_COLORS, STAGE_LABELS, STAGE_SYMBOLS } from '@/lib/permit-style'
 import { RelatedSources } from '@/components/RelatedSources'
 import { RelatedArticles } from '@/components/RelatedArticles'
 
@@ -13,7 +13,7 @@ function formatDate(dateStr: string | null): string {
 function dateWithAgo(dateStr: string | null): string {
   if (!dateStr) return '—'
   const ago = timeAgo(dateStr)
-  return ago ? `${formatDate(dateStr)} (${ago})` : formatDate(dateStr)
+  return ago ? `${formatDate(dateStr)} · ${ago}` : formatDate(dateStr)
 }
 
 function formatCost(cost: string | null): string {
@@ -33,42 +33,46 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
     throw error
   }
 
-  // location is GeoJSON Point: coordinates[0]=lng, coordinates[1]=lat
   const coords = permit.location?.coordinates
   const backHref = coords ? `/?lat=${coords[1]}&lng=${coords[0]}` : '/'
 
-  const underConstruction = isUnderConstruction(permit)
-  const isComplete = permit.status === 'complete'
+  const stage = permitStage(permit.status)
+  const stageColor = STAGE_COLORS[stage].fill
   const issuedAgo = timeAgo(permit.issued_date)
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
-      <Link href={backHref} className="text-blue-600 hover:underline text-sm mb-6 inline-block">
+    <main className="max-w-2xl mx-auto px-6 py-10">
+      <Link href={backHref} className="civic-eyebrow hover:text-ink mb-8 inline-block">
         ← Back to map
       </Link>
-      <h1 className="text-2xl font-bold mb-1">{permit.address}</h1>
-      <p className="text-gray-500 text-sm mb-4">Building Permit #{permit.permit_number}</p>
 
-      {underConstruction && (
-        <div className="mb-6 px-4 py-3 rounded bg-red-50 border border-red-300">
-          <div className="font-semibold text-red-700">🚧 Under construction</div>
-          {issuedAgo && (
-            <div className="text-sm text-red-700/80 mt-1">
-              Permit issued {issuedAgo}. SF doesn&apos;t publish formal completion estimates,
-              so the finish date isn&apos;t known until inspections sign off.
-            </div>
-          )}
-        </div>
-      )}
-      {isComplete && permit.completed_date && (
-        <div className="mb-6 px-4 py-3 rounded bg-green-50 border border-green-300">
-          <div className="font-semibold text-green-700">
-            ✓ Completed {formatDate(permit.completed_date)}
-          </div>
-        </div>
-      )}
+      <div className="civic-eyebrow mb-2">Permit #{permit.permit_number}</div>
+      <h1 className="font-serif text-3xl text-ink mb-1 leading-tight">{permit.address}</h1>
+      <p className="text-ink-soft text-sm mb-6">
+        {permit.permit_type_definition ?? `Type ${permit.permit_type}`}
+      </p>
 
-      <dl className="divide-y divide-gray-100">
+      <div
+        className="mb-6 pl-4 py-2 border-l-2"
+        style={{ borderColor: stageColor }}
+      >
+        <div className="font-semibold flex items-center gap-2" style={{ color: stageColor }}>
+          <span className="text-lg leading-none">{STAGE_SYMBOLS[stage]}</span>
+          <span>
+            {stage === 'complete' && permit.completed_date
+              ? `Completed ${formatDate(permit.completed_date)}`
+              : STAGE_LABELS[stage]}
+          </span>
+        </div>
+        {stage === 'construction' && issuedAgo && (
+          <p className="text-sm text-ink-soft mt-1">
+            Permit issued {issuedAgo}. DataSF doesn&apos;t publish formal completion
+            estimates, so the finish date isn&apos;t known until inspections sign off.
+          </p>
+        )}
+      </div>
+
+      <dl className="divide-y divide-paper-edge border-y border-paper-edge">
         {([
           ['Type', permit.permit_type_definition ?? permit.permit_type],
           ['Status', permit.status],
@@ -80,14 +84,14 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
           ['Last status change', dateWithAgo(permit.status_date)],
         ] as [string, string][]).map(([label, value]) => (
           <div key={label} className="py-3 flex gap-4">
-            <dt className="w-36 shrink-0 text-sm text-gray-500">{label}</dt>
-            <dd className="text-sm">{value}</dd>
+            <dt className="w-40 shrink-0 civic-eyebrow pt-0.5">{label}</dt>
+            <dd className="text-sm text-ink">{value}</dd>
           </div>
         ))}
       </dl>
 
       <section className="mt-10">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Recent news mentioning this address</h2>
+        <div className="civic-eyebrow mb-3">In the news</div>
         <RelatedArticles address={permit.address} />
       </section>
 
@@ -101,7 +105,7 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
         href="https://data.sfgov.org/Housing-and-Buildings/Building-Permits/i98e-djp9"
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-8 inline-block text-xs text-gray-400 hover:text-gray-600"
+        className="mt-8 inline-block text-xs text-ink-faint hover:text-ink-soft"
       >
         View source data on DataSF ↗
       </a>

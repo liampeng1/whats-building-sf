@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Warm civic palette — paper cream + deep navy ink + terracotta accent. */
+  --paper: #fbf6ec;
+  --paper-deep: #f3ebd8;
+  --paper-edge: #d6cfbe;
+  --ink: #1c2438;
+  --ink-soft: #475569;
+  --ink-faint: #78716c;
+
+  /* Lifecycle accents. Cool → warm → hot → calm green = temperature progression. */
+  --stage-filed: #334155;        /* slate */
+  --stage-filed-stroke: #1e293b;
+  --stage-approved: #d97706;     /* amber */
+  --stage-approved-stroke: #78350f;
+  --stage-construction: #b91c1c; /* red — the headline */
+  --stage-construction-stroke: #7f1d1d;
+  --stage-complete: #166534;     /* deep forest */
+  --stage-complete-stroke: #14532d;
+  --stage-inactive: #a8a29e;     /* taupe */
+  --stage-inactive-stroke: #57534e;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-paper-edge: var(--paper-edge);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-construction: var(--stage-construction);
+  --color-approved: var(--stage-approved);
+  --color-filed: var(--stage-filed);
+  --color-complete: var(--stage-complete);
+  --color-inactive: var(--stage-inactive);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-source-serif), ui-serif, Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* Underline-bridge style for editorial small caps in section headers */
+.civic-eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
