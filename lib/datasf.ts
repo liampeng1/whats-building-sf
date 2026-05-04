@@ -104,17 +104,33 @@ interface DemolitionApiRow {
 /**
  * Fetch demolition permits (type 6) for a given parcel. Used on the detail
  * page to show demolition history before a new-construction permit.
+ *
+ * Filters to demos within 5 years before the construction's filed_date — a
+ * decades-old demo from a previous building cycle isn't relevant to the
+ * current project (e.g. 198 Valencia St had a 1989 demo + a 2014 demo;
+ * only the 2014 one belongs in the 2014-construction's timeline).
  */
 async function fetchDemolitionsForParcel(
   block: string,
   lot: string,
   excludePermitNumber?: string,
+  constructionFiledDate?: string | null,
 ): Promise<import('./types').DemolitionEvent[]> {
+  let dateClause: string | null = null
+  if (constructionFiledDate) {
+    const filed = new Date(constructionFiledDate)
+    if (!isNaN(filed.getTime())) {
+      const cutoff = new Date(filed)
+      cutoff.setFullYear(cutoff.getFullYear() - 5)
+      dateClause = `filed_date >= '${cutoff.toISOString().slice(0, 10)}'`
+    }
+  }
   const where = [
     `permit_type='6'`,
     `block='${block.replace(/'/g, "''")}'`,
     `lot='${lot.replace(/'/g, "''")}'`,
     excludePermitNumber ? `permit_number != '${excludePermitNumber.replace(/'/g, "''")}'` : null,
+    dateClause,
   ]
     .filter(Boolean)
     .join(' AND ')
@@ -256,6 +272,7 @@ export async function fetchBuildingPermit(id: string): Promise<Permit> {
       permit.block,
       permit.lot,
       permit.permit_number,
+      permit.filed_date,
     )
   }
   return permit
