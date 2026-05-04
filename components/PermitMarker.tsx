@@ -2,6 +2,7 @@
 import { CircleMarker, Popup } from 'react-leaflet'
 import { useRouter } from 'next/navigation'
 import type { Permit } from '@/lib/types'
+import { permitStyle } from '@/lib/permit-style'
 
 export function PermitMarker({ permit }: { permit: Permit }) {
   const router = useRouter()
@@ -9,11 +10,18 @@ export function PermitMarker({ permit }: { permit: Permit }) {
   const [lng, lat] = permit.location.coordinates
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
 
+  const style = permitStyle(permit)
+
   return (
     <CircleMarker
       center={[lat, lng]}
-      radius={6}
-      pathOptions={{ fillColor: '#3b82f6', color: '#1d4ed8', weight: 1, fillOpacity: 0.8 }}
+      radius={style.radius}
+      pathOptions={{
+        fillColor: style.fillColor,
+        color: style.color,
+        weight: style.weight,
+        fillOpacity: style.fillOpacity,
+      }}
       eventHandlers={{ click: () => router.push(`/permits/${permit.permit_number}`) }}
     >
       <Popup>

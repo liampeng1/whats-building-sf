@@ -4,6 +4,7 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
+import { MapLegend } from './MapLegend'
 import type { Permit, MapBounds } from '@/lib/types'
 
 interface Props {
@@ -61,6 +62,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         <MapEventHandler onBoundsChange={handleBoundsChange} />
         {permits.map((p, i) => <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />)}
       </MapContainer>
+      <MapLegend />
     </div>
   )
 }
