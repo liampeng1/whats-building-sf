@@ -7,12 +7,12 @@ export type PermitStage = 'filed' | 'approved' | 'construction' | 'complete' | '
 // Order they appear in the timeline / legend.
 export const STAGE_ORDER: PermitStage[] = ['filed', 'approved', 'construction', 'complete', 'inactive']
 
-// Lifecycle palette — cool blue (paperwork) → warm amber → hot red (construction
-// = headline) → settled forest green (complete). Temperature reads as energy.
+// Lifecycle palette — slate (paperwork) → light green (approved/go) → hazard
+// orange-and-black (construction = active danger) → forest green (settled).
 export const STAGE_COLORS = {
   filed:        { fill: '#334155', stroke: '#1e293b' },  // slate
-  approved:     { fill: '#d97706', stroke: '#78350f' },  // amber
-  construction: { fill: '#b91c1c', stroke: '#7f1d1d' },  // hi-vis red — headline
+  approved:     { fill: '#65a30d', stroke: '#365314' },  // lime / light green
+  construction: { fill: '#ea580c', stroke: '#000000' },  // hazard orange + black
   complete:     { fill: '#166534', stroke: '#14532d' },  // forest green
   inactive:     { fill: '#a8a29e', stroke: '#57534e' },  // taupe
 } as const
@@ -86,10 +86,11 @@ export function stageIconSvg(stage: PermitStage, size: number = 24): string {
         <polyline points="8.5 14 11 16.5 16 11.5" fill="none" stroke-width="2"/>
       </svg>`
     case 'construction':
-      return `<svg ${dims} fill="${c}" stroke="#fbf6ec" stroke-width="0.8" stroke-linejoin="round" aria-hidden="true">
+      // Classic hazard sign: orange triangle with black border + black ! mark.
+      return `<svg ${dims} fill="${c}" stroke="#000000" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 2.5 1 21.5h22z"/>
-        <line x1="12" y1="9" x2="12" y2="14.5" stroke="#fbf6ec" stroke-width="2.4" stroke-linecap="round"/>
-        <circle cx="12" cy="17.6" r="1.1" fill="#fbf6ec" stroke="none"/>
+        <line x1="12" y1="9" x2="12" y2="14.5" stroke="#000000" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="12" cy="17.6" r="1.2" fill="#000000" stroke="none"/>
       </svg>`
     case 'complete':
       return `<svg ${dims} fill="${c}" aria-hidden="true">
