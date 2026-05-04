@@ -6,6 +6,7 @@ import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
+import { PermitPanel } from './PermitPanel'
 import { permitStage, netDelta, STAGE_ORDER, type PermitStage } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 
@@ -25,7 +26,35 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     () => new Set(ALL_STAGES),
   )
   const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
+  const [openPermit, setOpenPermit] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Sync the side-panel state with ?permit=<id> in the URL so deep links work.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const initial = params.get('permit')
+    if (initial) setOpenPermit(initial)
+    const onPop = () => {
+      const sp = new URLSearchParams(window.location.search)
+      setOpenPermit(sp.get('permit'))
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  const openPermitPanel = useCallback((id: string) => {
+    setOpenPermit(id)
+    const url = new URL(window.location.href)
+    url.searchParams.set('permit', id)
+    window.history.pushState({}, '', url)
+  }, [])
+
+  const closePermitPanel = useCallback(() => {
+    setOpenPermit(null)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('permit')
+    window.history.pushState({}, '', url)
+  }, [])
 
   const toggleStage = useCallback((stage: PermitStage) => {
     setSelectedStages((prev) => {
@@ -109,7 +138,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         />
         <MapEventHandler onBoundsChange={handleBoundsChange} />
         {visiblePermits.map((p, i) => (
-          <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />
+          <PermitMarker
+            key={`${p.permit_number}-${i}`}
+            permit={p}
+            onSelect={openPermitPanel}
+          />
         ))}
       </MapContainer>
       <FilterPanel
@@ -118,6 +151,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         minUnits={minUnits}
         onMinUnitsChange={setMinUnits}
       />
+      <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
     </div>
   )
 }

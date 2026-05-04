@@ -1,7 +1,6 @@
 'use client'
 import { Marker, Popup } from 'react-leaflet'
 import { divIcon } from 'leaflet'
-import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import type { Permit } from '@/lib/types'
 import {
@@ -40,8 +39,12 @@ function buildIcon(stage: PermitStage) {
   })
 }
 
-export function PermitMarker({ permit }: { permit: Permit }) {
-  const router = useRouter()
+interface MarkerProps {
+  permit: Permit
+  onSelect?: (permitNumber: string) => void
+}
+
+export function PermitMarker({ permit, onSelect }: MarkerProps) {
   const stage = permitStage(permit.status)
   const icon = useMemo(() => buildIcon(stage), [stage])
 
@@ -59,7 +62,11 @@ export function PermitMarker({ permit }: { permit: Permit }) {
     <Marker
       position={[lat, lng]}
       icon={icon}
-      eventHandlers={{ click: () => router.push(`/permits/${permit.permit_number}`) }}
+      eventHandlers={{
+        click: () => {
+          if (onSelect) onSelect(permit.permit_number)
+        },
+      }}
     >
       <Popup>
         <strong style={{ fontFamily: 'var(--font-source-serif), Georgia, serif', fontSize: '1rem', color: '#1c2438' }}>

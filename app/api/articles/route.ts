@@ -119,6 +119,48 @@ function dedupe(articles: Article[]): Article[] {
   return out
 }
 
+// Common nearby Bay Area cities — if a title mentions one of these, it's
+// almost certainly NOT about an SF address that happens to share a street name.
+const NON_SF_CITIES = [
+  'oakland', 'berkeley', 'san jose', 'san rafael', 'fremont', 'hayward',
+  'palo alto', 'redwood city', 'sunnyvale', 'mountain view', 'san mateo',
+  'daly city', 'san bruno', 'south san francisco', 'walnut creek',
+  'concord', 'richmond', 'alameda', 'novato', 'petaluma', 'santa rosa',
+  'marin', 'sonoma', 'napa', 'vallejo', 'fairfield', 'sausalito',
+]
+
+// Extract searchable tokens from an address.
+// '1310 Junipero Serra Bl' → { number: '1310', streetTokens: ['junipero', 'serra'] }
+// 'Mission St' → { number: null, streetTokens: ['mission'] }
+function tokenizeAddress(address: string) {
+  const cleaned = address.toLowerCase().trim()
+  const parts = cleaned.split(/\s+/)
+  const numberMatch = parts[0].match(/^\d+$/)
+  const number = numberMatch ? parts[0] : null
+  // Drop street-suffix-only tokens (st, ave, bl, blvd, etc.) — too generic
+  const SUFFIX_TOKENS = new Set([
+    'st', 'street', 'ave', 'av', 'avenue', 'bl', 'blvd', 'boulevard',
+    'rd', 'road', 'dr', 'drive', 'ln', 'lane', 'pl', 'place', 'ct',
+    'court', 'way', 'ter', 'terrace', 'pkwy', 'parkway',
+  ])
+  const streetTokens = parts
+    .slice(number ? 1 : 0)
+    .filter((t) => t.length > 1 && !SUFFIX_TOKENS.has(t) && !/^\d/.test(t))
+  return { number, streetTokens }
+}
+
+// Strict relevance check: article title must mention the street name AND
+// must NOT mention any non-SF Bay Area city.
+function isLikelyRelevant(article: Article, address: string): boolean {
+  const title = article.title.toLowerCase()
+  const { streetTokens } = tokenizeAddress(address)
+  if (streetTokens.length === 0) return true // can't filter without tokens
+  const titleMentionsStreet = streetTokens.every((t) => title.includes(t))
+  if (!titleMentionsStreet) return false
+  if (NON_SF_CITIES.some((city) => title.includes(city))) return false
+  return true
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const q = searchParams.get('q')
@@ -127,7 +169,10 @@ export async function GET(request: Request) {
   const [yimby, news] = await Promise.all([fetchSfYimby(q), fetchGoogleNews(q)])
 
   // SF YIMBY first (high signal for SF construction), then Google News for breadth.
-  const articles = dedupe([...yimby, ...news])
+  // Apply strict relevance filtering — article title must mention the street name
+  // and must not mention a different Bay Area city.
+  const merged = dedupe([...yimby, ...news])
+  const articles = merged.filter((a) => isLikelyRelevant(a, q))
 
   return NextResponse.json({ articles })
 }
