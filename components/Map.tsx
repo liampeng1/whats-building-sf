@@ -17,29 +17,40 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [error, setError] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const fetchData = useCallback(async (bounds?: MapBounds) => {
-    setLoading(true)
-    setError(null)
+  const fetchData = useCallback(async (bounds: MapBounds | undefined, signal?: AbortSignal) => {
     const q = bounds
       ? `?north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`
       : ''
     try {
-      const res = await fetch(`/api/permits${q}`)
+      const res = await fetch(`/api/permits${q}`, { signal })
       if (!res.ok) throw new Error('fetch failed')
       const data: Permit[] = await res.json()
+      if (signal?.aborted) return
       setPermits(data)
-    } catch {
+      setError(null)
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return
       setError('Data temporarily unavailable. Please try again.')
     } finally {
-      setLoading(false)
+      if (!signal?.aborted) setLoading(false)
     }
   }, [])
 
-  useEffect(() => { fetchData() }, [fetchData])
+  useEffect(() => {
+    const ctrl = new AbortController()
+    // setState calls inside fetchData run after the awaited fetch (microtask),
+    // not synchronously. The rule's static analysis can't see through async/await.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData(undefined, ctrl.signal)
+    return () => ctrl.abort()
+  }, [fetchData])
 
   const handleBoundsChange = useCallback((bounds: MapBounds) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => fetchData(bounds), 300)
+    debounceRef.current = setTimeout(() => {
+      setLoading(true)
+      fetchData(bounds)
+    }, 300)
   }, [fetchData])
 
   return (

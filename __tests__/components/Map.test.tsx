@@ -35,5 +35,8 @@ test('renders map container', () => {
 
 test('fetches permits on mount', () => {
   render(<Map />)
-  expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/permits'))
+  expect(global.fetch).toHaveBeenCalledWith(
+    expect.stringContaining('/api/permits'),
+    expect.objectContaining({ signal: expect.anything() }),
+  )
 })

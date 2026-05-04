@@ -59,14 +59,14 @@ function permitFromApi(row: PermitApiRow): Permit {
   return {
     permit_number: row.permit_number,
     permit_type: row.permit_type,
-    permit_type_definition: row.permit_type_definition,
+    permit_type_definition: row.permit_type_definition ?? null,
     status: row.status,
-    description: row.description,
+    description: row.description ?? null,
     address,
-    filed_date: row.filed_date,
-    issued_date: row.issued_date,
-    completed_date: row.completed_date,
-    location: row.location,
+    filed_date: row.filed_date ?? null,
+    issued_date: row.issued_date ?? null,
+    completed_date: row.completed_date ?? null,
+    location: row.location ?? null,
   }
 }
 
