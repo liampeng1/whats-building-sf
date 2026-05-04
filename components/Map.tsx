@@ -1,11 +1,20 @@
 'use client'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
-import { MapLegend } from './MapLegend'
+import { FilterPanel } from './FilterPanel'
+import {
+  TRACKED_PERMIT_TYPE_IDS,
+  permitTypeId,
+  permitStage,
+  type PermitTypeId,
+  type PermitStage,
+} from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
+
+const ALL_STAGES: PermitStage[] = ['filed', 'active', 'complete', 'inactive']
 
 interface Props {
   initialCenter?: [number, number]
@@ -15,7 +24,39 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [permits, setPermits] = useState<Permit[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedTypes, setSelectedTypes] = useState<Set<PermitTypeId>>(
+    () => new Set(TRACKED_PERMIT_TYPE_IDS),
+  )
+  const [selectedStages, setSelectedStages] = useState<Set<PermitStage>>(
+    () => new Set(ALL_STAGES),
+  )
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const toggleType = useCallback((id: PermitTypeId) => {
+    setSelectedTypes((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }, [])
+
+  const toggleStage = useCallback((stage: PermitStage) => {
+    setSelectedStages((prev) => {
+      const next = new Set(prev)
+      if (next.has(stage)) next.delete(stage)
+      else next.add(stage)
+      return next
+    })
+  }, [])
+
+  const visiblePermits = useMemo(
+    () =>
+      permits.filter(
+        (p) => selectedTypes.has(permitTypeId(p.permit_type)) && selectedStages.has(permitStage(p.status)),
+      ),
+    [permits, selectedTypes, selectedStages],
+  )
 
   const fetchData = useCallback(async (bounds: MapBounds | undefined, signal?: AbortSignal) => {
     const q = bounds
@@ -71,9 +112,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapEventHandler onBoundsChange={handleBoundsChange} />
-        {permits.map((p, i) => <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />)}
+        {visiblePermits.map((p, i) => <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />)}
       </MapContainer>
-      <MapLegend />
+      <FilterPanel
+        selectedTypes={selectedTypes}
+        selectedStages={selectedStages}
+        onToggleType={toggleType}
+        onToggleStage={toggleStage}
+      />
     </div>
   )
 }

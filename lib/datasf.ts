@@ -70,9 +70,17 @@ function permitFromApi(row: PermitApiRow): Permit {
   }
 }
 
+// Permit type codes that represent new construction or major additions/alterations.
+// 1 = new construction, 2 = new construction (wood frame), 3 = additions/alterations/repairs.
+// Excludes 8 (OTC alterations — small over-the-counter work), 4/7 (signs), 6 (demolitions),
+// 5 (grading), 9 (other).
+const TRACKED_PERMIT_TYPES = ['1', '2', '3']
+const TRACKED_TYPES_FILTER = `permit_type IN (${TRACKED_PERMIT_TYPES.map((t) => `'${t}'`).join(',')})`
+
 export async function fetchBuildingPermits(bounds?: MapBounds): Promise<Permit[]> {
   const params = new URLSearchParams({ $limit: '500', $order: 'filed_date DESC' })
-  if (bounds) params.set('$where', boundsFilter(bounds))
+  const where = bounds ? `${TRACKED_TYPES_FILTER} AND ${boundsFilter(bounds)}` : TRACKED_TYPES_FILTER
+  params.set('$where', where)
   const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
   const rows: PermitApiRow[] = await res.json()

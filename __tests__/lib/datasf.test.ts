@@ -46,6 +46,23 @@ describe('fetchBuildingPermits', () => {
     expect(url).toContain('filed_date')
   })
 
+  test('always restricts to tracked permit types (new construction + additions)', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
+    await fetchBuildingPermits()
+    const url = (global.fetch as jest.Mock).mock.calls[0][0] as string
+    const decoded = decodeURIComponent(url).replace(/\+/g, ' ')
+    expect(decoded).toContain("permit_type IN ('1','2','3')")
+  })
+
+  test('combines tracked-types filter with bounds via AND', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
+    await fetchBuildingPermits(mockBounds)
+    const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
+    expect(url).toContain("permit_type IN ('1','2','3')")
+    expect(url).toContain('within_box')
+    expect(url).toContain(' AND ')
+  })
+
   test('constructs address from street parts', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
     const permits = await fetchBuildingPermits()

@@ -12,6 +12,7 @@ export interface PermitStyle {
 }
 
 export const PERMIT_TYPE_IDS: PermitTypeId[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+export const TRACKED_PERMIT_TYPE_IDS: PermitTypeId[] = ['1', '2', '3']
 
 export const PERMIT_TYPE_LABELS: Record<PermitTypeId, string> = {
   '1': 'New construction',

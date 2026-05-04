@@ -33,6 +33,23 @@ console.log('Legend present:', legendVisible)
 console.log('Loading still showing:', loadingVisible)
 console.log('Error banner showing:', errorVisible)
 
+console.log('\n=== Filter interaction ===')
+const filterCheckboxes = await page.locator('input[type="checkbox"]').count()
+console.log('Filter checkboxes:', filterCheckboxes)
+
+const initialMarkers = await page.locator('.leaflet-interactive').count()
+console.log('Markers before filtering:', initialMarkers)
+
+await page.locator('input[type="checkbox"]').first().uncheck()
+await page.waitForTimeout(200)
+const afterUncheckMarkers = await page.locator('.leaflet-interactive').count()
+console.log('Markers after unchecking first type:', afterUncheckMarkers)
+
+await page.locator('input[type="checkbox"]').first().check()
+await page.waitForTimeout(200)
+const restored = await page.locator('.leaflet-interactive').count()
+console.log('Markers after re-checking:', restored)
+
 console.log('\n=== Sample API hit ===')
 const apiResp = await page.evaluate(async () => {
   const r = await fetch('/api/permits?north=37.81&south=37.75&east=-122.39&west=-122.45')
