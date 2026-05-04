@@ -1,8 +1,7 @@
-/* Warm the Carto Positron basemap toward the cream paper palette so the map
-   doesn't read as cold gray against the warm chrome. Subtle: just enough sepia
-   + a touch of de-saturation to feel like aged paper. */
+/* Just a touch of warming so the basemap sits well against the cream chrome —
+   light enough to preserve Voyager's distinct water-blue and park-sage colors. */
 .leaflet-tile-pane {
-  filter: sepia(0.18) saturate(0.85) hue-rotate(-8deg) brightness(1.02);
+  filter: sepia(0.08) saturate(0.95) brightness(1.01);
 }
 
 /* Cluster bubbles — clean navy circles, no doubled-ring. */

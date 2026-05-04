@@ -88,9 +88,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         </div>
       )}
       <MapContainer center={initialCenter} zoom={13} className="w-full h-full">
+        {/* Carto Voyager: gives water (soft blue), parks (sage), and street
+            hierarchy out of the box. Labels-under variant keeps streets/place
+            names but de-emphasizes them so pins still dominate. */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"
           subdomains="abcd"
           maxZoom={19}
         />
