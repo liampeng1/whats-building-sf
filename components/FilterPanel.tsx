@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useState } from 'react'
 import {
   stageIconSvg,
   STAGE_LABELS,
@@ -137,6 +138,13 @@ export function FilterPanel({
   totalCount,
 }: Props) {
   const housingOn = selectedCategories.has('housing')
+  // Default closed on mobile, open on desktop. Set after mount to avoid SSR mismatch.
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches) {
+      setOpen(true)
+    }
+  }, [])
 
   const homesSubFilter = (
     <div>
@@ -163,23 +171,37 @@ export function FilterPanel({
   )
 
   return (
-    <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden max-h-[calc(100vh-2rem)] flex flex-col">
-      <div className="bg-ink text-paper px-4 py-3 shrink-0">
+    <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[calc(100vw-2rem)] max-w-[300px] overflow-hidden max-h-[calc(100dvh-2rem)] flex flex-col">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="bg-ink text-paper px-4 py-3 shrink-0 text-left w-full focus:outline-none focus:ring-2 focus:ring-paper/50"
+        aria-expanded={open}
+      >
         <div className="flex items-baseline justify-between gap-2">
           <div className="font-serif text-base leading-tight">What&apos;s Building SF</div>
-          {totalCount > 0 && (
-            <div className="text-[11px] tabular-nums opacity-80">
-              <span className="font-semibold">{visibleCount}</span>
-              <span className="opacity-70"> / {totalCount}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {totalCount > 0 && (
+              <div className="text-[11px] tabular-nums opacity-80">
+                <span className="font-semibold">{visibleCount}</span>
+                <span className="opacity-70"> / {totalCount}</span>
+              </div>
+            )}
+            <span
+              aria-hidden
+              className={`text-base leading-none transition-transform ${open ? 'rotate-180' : ''}`}
+            >
+              ⌃
+            </span>
+          </div>
         </div>
         <p className="text-[11px] tracking-wide opacity-70 mt-0.5">
           Major new construction · last 2 years
         </p>
-      </div>
+      </button>
 
-      <div className="p-4 text-sm overflow-y-auto">
+      {open && (
+      <div className="overflow-y-auto text-sm p-4">
         <div className="civic-eyebrow mb-2">Use type</div>
         <ul className="mb-4 space-y-0.5">
           {CATEGORIES.map((cat) => (
@@ -220,7 +242,7 @@ export function FilterPanel({
           </p>
         </div>
       </div>
-
+      )}
     </div>
   )
 }

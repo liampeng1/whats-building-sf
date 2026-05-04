@@ -19,7 +19,7 @@ export default async function MapPage({
   const lng = parseCoord(sp.lng, DEFAULT_LNG)
 
   return (
-    <main className="h-screen w-full">
+    <main className="h-[100dvh] w-full">
       <MapClient initialCenter={[lat, lng]} />
     </main>
   )
