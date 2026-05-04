@@ -122,19 +122,20 @@ describe('permitStyle', () => {
 })
 
 describe('useCategory', () => {
-  test('classifies dwelling as housing', () => {
+  test('classifies dwelling / apartments as housing', () => {
     expect(useCategory('1 family dwelling')).toBe('housing')
     expect(useCategory('apartments')).toBe('housing')
+  })
+
+  test('classifies hotels / motels as housing (SF infill heuristic)', () => {
+    expect(useCategory('tourist hotel/motel')).toBe('housing')
+    expect(useCategory('motel')).toBe('housing')
+    expect(useCategory('misc group residns.')).toBe('housing')
   })
 
   test('classifies retail / restaurant as retail', () => {
     expect(useCategory('retail sales')).toBe('retail')
     expect(useCategory('restaurant')).toBe('retail')
-  })
-
-  test('classifies dwelling + retail as mixed', () => {
-    expect(useCategory('1 family dwelling and retail')).toBe('mixed')
-    expect(useCategory('apartments + office')).toBe('mixed')
   })
 
   test('falls back to other for empty / unknown uses', () => {

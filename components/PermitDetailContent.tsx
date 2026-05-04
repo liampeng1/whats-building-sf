@@ -45,7 +45,6 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
 
 const USE_CATEGORY_BG: Record<UseCategory, string> = {
   housing: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-  mixed: 'bg-violet-100 text-violet-900 border-violet-300',
   retail: 'bg-amber-100 text-amber-900 border-amber-300',
   office: 'bg-sky-100 text-sky-900 border-sky-300',
   industrial: 'bg-stone-200 text-stone-900 border-stone-400',
@@ -155,12 +154,28 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
   const storiesDelta = netDelta(permit.existing_stories, permit.proposed_stories)
   const coords = permit.location?.coordinates
 
-  const steps: TimelineStep[] = [
+  // Compare two date strings by their day component only — DataSF often
+  // stamps status_date with the same day as completed_date / issued_date,
+  // and we don't want to show 'Last activity' as a separate timeline row
+  // when it's redundant with another step.
+  const sameDay = (a: string | null, b: string | null): boolean => {
+    if (!a || !b) return false
+    return a.slice(0, 10) === b.slice(0, 10)
+  }
+  const lastActivityRedundant =
+    sameDay(permit.status_date, permit.completed_date) ||
+    sameDay(permit.status_date, permit.issued_date) ||
+    sameDay(permit.status_date, permit.filed_date)
+
+  const allSteps: TimelineStep[] = [
     { label: 'Filed', date: permit.filed_date, active: !!permit.filed_date },
     { label: 'Issued', date: permit.issued_date, active: !!permit.issued_date },
     { label: 'Last activity', date: permit.status_date, active: !!permit.status_date && stage !== 'complete' },
     { label: 'Completed', date: permit.completed_date, active: !!permit.completed_date },
   ]
+  const steps = allSteps.filter(
+    (s) => !(s.label === 'Last activity' && lastActivityRedundant),
+  )
 
   const isPanel = variant === 'panel'
   const headingSize = isPanel ? 'text-3xl' : 'text-5xl'

@@ -179,8 +179,8 @@ export function FilterPanel({
   // Default closed on mobile, open on desktop. Set after mount to avoid SSR mismatch.
   const [open, setOpen] = useState(false)
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches) {
-      setOpen(true)
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      if (window.matchMedia('(min-width: 768px)').matches) setOpen(true)
     }
   }, [])
 

@@ -144,14 +144,18 @@ export function isUnderConstruction(permit: Permit): boolean {
 
 // Building-use categorization. Derived from DataSF's free-text use fields.
 // Order matters — check housing/retail/office before falling back to other.
-export type UseCategory = 'housing' | 'mixed' | 'retail' | 'office' | 'industrial' | 'other'
+// DataSF's proposed_use field carries a single category per permit (no
+// comma-listed combinations), so a "mixed-use" bucket would always be empty
+// against real data. We bucket hotels/motels under housing because in SF many
+// "tourist hotel" permits are actually large residential projects (950 Market,
+// 425 Washington, 530 Sansome each propose 200+ residential units).
+export type UseCategory = 'housing' | 'retail' | 'office' | 'industrial' | 'other'
 
 // Order matters for legend display.
-export const CATEGORIES: UseCategory[] = ['housing', 'mixed', 'retail', 'office', 'industrial', 'other']
+export const CATEGORIES: UseCategory[] = ['housing', 'retail', 'office', 'industrial', 'other']
 
 export const USE_CATEGORY_LABELS: Record<UseCategory, string> = {
   housing: 'Housing',
-  mixed: 'Mixed-use',
   retail: 'Retail',
   office: 'Office',
   industrial: 'Industrial',
@@ -160,14 +164,18 @@ export const USE_CATEGORY_LABELS: Record<UseCategory, string> = {
 
 export const USE_CATEGORY_COLORS: Record<UseCategory, { fill: string; stroke: string }> = {
   housing:    { fill: '#10b981', stroke: '#064e3b' }, // emerald
-  mixed:      { fill: '#8b5cf6', stroke: '#4c1d95' }, // violet
   retail:     { fill: '#d97706', stroke: '#78350f' }, // amber
   office:     { fill: '#0ea5e9', stroke: '#0c4a6e' }, // sky
   industrial: { fill: '#78716c', stroke: '#292524' }, // stone
   other:      { fill: '#a8a29e', stroke: '#57534e' }, // taupe
 }
 
-const HOUSING_PATTERNS = ['family dwelling', 'apartments', 'residential', 'dwelling', 'condominium', 'group housing', 'sro']
+// Hotels/motels included with housing — many SF "tourist hotel/motel" permits
+// are residential infill (SROs, hotel-to-residential conversions, group-living).
+const HOUSING_PATTERNS = [
+  'family dwelling', 'apartments', 'residential', 'dwelling', 'condominium',
+  'group housing', 'sro', 'hotel', 'motel', 'lodging', 'group residns',
+]
 const RETAIL_PATTERNS = ['retail', 'mercantile', 'restaurant', 'food service', 'store']
 const OFFICE_PATTERNS = ['office']
 const INDUSTRIAL_PATTERNS = ['warehouse', 'manufacturing', 'industrial', 'factory']
@@ -179,15 +187,11 @@ function matchesAny(s: string, patterns: string[]): boolean {
 export function useCategory(proposedUse: string | null | undefined): UseCategory {
   if (!proposedUse) return 'other'
   const s = proposedUse.toLowerCase()
-  // Combination strings like "1 family dwelling and retail" → mixed-use
-  const isHousing = matchesAny(s, HOUSING_PATTERNS)
-  const isRetail = matchesAny(s, RETAIL_PATTERNS)
-  const isOffice = matchesAny(s, OFFICE_PATTERNS)
-  const categories = [isHousing, isRetail, isOffice].filter(Boolean).length
-  if (categories >= 2) return 'mixed'
-  if (isHousing) return 'housing'
-  if (isRetail) return 'retail'
-  if (isOffice) return 'office'
+  // Order matters: housing wins ties because hotels/motels often also match
+  // retail-ish words and we want them in housing.
+  if (matchesAny(s, HOUSING_PATTERNS)) return 'housing'
+  if (matchesAny(s, RETAIL_PATTERNS)) return 'retail'
+  if (matchesAny(s, OFFICE_PATTERNS)) return 'office'
   if (matchesAny(s, INDUSTRIAL_PATTERNS)) return 'industrial'
   return 'other'
 }

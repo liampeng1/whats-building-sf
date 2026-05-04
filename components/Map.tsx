@@ -93,9 +93,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         if (!selectedStages.has(permitStage(p.status))) return false
         const cat = useCategory(p.proposed_use ?? p.existing_use)
         if (!selectedCategories.has(cat)) return false
-        // minUnits only applies to housing/mixed permits — it's a sub-filter
-        // under "housing-related categories." Other categories ignore it.
-        if (minUnits > 0 && (cat === 'housing' || cat === 'mixed')) {
+        // minUnits applies only to the housing category (which now also
+        // includes hotels/motels — see useCategory).
+        if (minUnits > 0 && cat === 'housing') {
           const delta = netDelta(p.existing_units, p.proposed_units)
           if (delta == null || delta < minUnits) return false
         }
