@@ -332,7 +332,12 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
       </section>
 
       <section className="mt-10 pt-8 border-t border-paper-edge">
-        <RelatedSources address={permit.address} lat={coords?.[1]} lng={coords?.[0]} />
+        <RelatedSources
+          address={permit.address}
+          permitNumber={permit.permit_number}
+          lat={coords?.[1]}
+          lng={coords?.[0]}
+        />
       </section>
 
       {!isPanel && (

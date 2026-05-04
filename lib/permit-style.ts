@@ -2,16 +2,23 @@ import type { Permit } from './types'
 
 export type PermitTypeId = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 // Lifecycle stages in order. 'inactive' is off-track (cancelled/expired/denied).
-export type PermitStage = 'filed' | 'approved' | 'construction' | 'complete' | 'inactive'
+//   filed      → paperwork in review
+//   approved   → approved on paper (pre-issuance) OR issued without pipeline data
+//   permitted  → permit issued, but ground truth says NOT yet under construction
+//   construction → pipeline-confirmed actively being built
+//   complete   → done
+export type PermitStage = 'filed' | 'approved' | 'permitted' | 'construction' | 'complete' | 'inactive'
 
 // Order they appear in the timeline / legend.
-export const STAGE_ORDER: PermitStage[] = ['filed', 'approved', 'construction', 'complete', 'inactive']
+export const STAGE_ORDER: PermitStage[] = ['filed', 'approved', 'permitted', 'construction', 'complete', 'inactive']
 
-// Lifecycle palette — slate (paperwork) → light green (approved/go) → hazard
-// orange-and-black (construction = active danger) → forest green (settled).
+// Lifecycle palette — slate (paperwork) → light green (approved/go) → amber
+// (permitted, warming up) → hazard orange+black (construction, hot) →
+// forest green (settled).
 export const STAGE_COLORS = {
   filed:        { fill: '#334155', stroke: '#1e293b' },  // slate
   approved:     { fill: '#65a30d', stroke: '#365314' },  // lime / light green
+  permitted:    { fill: '#ca8a04', stroke: '#713f12' },  // amber (issued, pre-build)
   construction: { fill: '#ea580c', stroke: '#000000' },  // hazard orange + black
   complete:     { fill: '#166534', stroke: '#14532d' },  // forest green
   inactive:     { fill: '#a8a29e', stroke: '#57534e' },  // taupe
@@ -54,7 +61,8 @@ export const PERMIT_TYPE_COLORS: Record<PermitTypeId, { fill: string; stroke: st
 
 export const STAGE_LABELS: Record<PermitStage, string> = {
   filed: 'Filed / under review',
-  approved: 'Approved / issued',
+  approved: 'Approved',
+  permitted: 'Permitted · not yet started',
   construction: 'Under construction',
   complete: 'Complete',
   inactive: 'Inactive / cancelled',
@@ -84,6 +92,15 @@ export function stageIconSvg(stage: PermitStage, size: number = 24): string {
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
         <polyline points="14 2 14 8 20 8" fill="none"/>
         <polyline points="8.5 14 11 16.5 16 11.5" fill="none" stroke-width="2"/>
+      </svg>`
+    case 'permitted':
+      // Stamped/sealed permit — paper with a circular stamp in the corner.
+      return `<svg ${dims} fill="${c}19" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8" fill="none"/>
+        <circle cx="11" cy="15" r="3.2" fill="none" stroke-width="1.6"/>
+        <line x1="11" y1="15" x2="11" y2="13.5" stroke-width="1.4"/>
+        <line x1="11" y1="15" x2="12.4" y2="15.4" stroke-width="1.4"/>
       </svg>`
     case 'construction':
       // Classic hazard sign: orange triangle with black border + black ! mark.
@@ -118,10 +135,16 @@ export function permitTypeId(permitType: string | null | undefined): PermitTypeI
  * actively-being-built projects.
  */
 export function permitStage(input: string | null | undefined | Permit): PermitStage {
-  // Permit-object overload: pipeline_status='Construction' is authoritative.
+  // Permit-object overload: SF Pipeline values are authoritative when present.
   if (input != null && typeof input === 'object') {
     const ps = (input.pipeline_status ?? '').toLowerCase()
     if (ps === 'construction') return 'construction'
+    if (ps === 'bp issued') return 'permitted'
+    if (ps === 'bp approved' || ps === 'pl approved') return 'approved'
+    if (ps === 'bp filed' || ps === 'pl filed') return 'filed'
+    // No pipeline data → fall back to raw status mapping. The fallback maps
+    // 'issued' → 'permitted' too, since without pipeline confirmation we
+    // can't say construction has actually started.
     return permitStage(input.status)
   }
   const status = input
@@ -141,13 +164,14 @@ export function permitStage(input: string | null | undefined | Permit): PermitSt
   ) {
     return 'inactive'
   }
-  // Permit issued or under inspection = work either happening or imminent.
-  // We treat the entire issuance window as "construction" since that's the
-  // colloquial meaning — the building is being built.
+  // Permit issued — without ground-truth pipeline data we can't confirm
+  // construction has actually started. Bucket as 'permitted' (issued but
+  // pre-build) by default; the Permit-object overload escalates to
+  // 'construction' when pipeline_status='Construction'.
   if (s === 'issued' || s === 'issuing' || s === 'inspection' || s === 'reinstated') {
-    return 'construction'
+    return 'permitted'
   }
-  // Approved on paper but not yet issued — closer to filed than to construction.
+  // Approved on paper but not yet issued.
   if (s === 'approved' || s === 'granted' || s === 'upheld') return 'approved'
   return 'filed'
 }
@@ -242,7 +266,7 @@ export function timeAgo(dateStr: string | null, now: Date = new Date()): string 
 }
 
 export function permitStyle(permit: Permit): PermitStyle {
-  const stage = permitStage(permit.status)
+  const stage = permitStage(permit)
   const c = STAGE_COLORS[stage]
 
   switch (stage) {
@@ -250,8 +274,11 @@ export function permitStyle(permit: Permit): PermitStyle {
       // The headline state: largest pin, hot red, thick white halo.
       return { fillColor: c.fill, color: '#ffffff', weight: 3, fillOpacity: 1, radius: 10 }
     case 'approved':
-      // Warm amber, medium size — work upcoming.
+      // Lime, medium size — paperwork done.
       return { fillColor: c.fill, color: '#ffffff', weight: 2, fillOpacity: 0.85, radius: 7 }
+    case 'permitted':
+      // Amber, slightly larger than approved — getting closer to active.
+      return { fillColor: c.fill, color: '#ffffff', weight: 2, fillOpacity: 0.9, radius: 8 }
     case 'filed':
       // Cool slate ring — paperwork phase, low energy.
       return { fillColor: '#fbf6ec', color: c.stroke, weight: 2.5, fillOpacity: 0.9, radius: 6 }

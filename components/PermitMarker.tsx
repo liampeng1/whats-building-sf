@@ -21,6 +21,7 @@ function shortDate(s: string | null): string | null {
 
 const PIN_PIXEL_SIZE: Record<PermitStage, number> = {
   construction: 30,
+  permitted: 26,
   approved: 24,
   filed: 22,
   complete: 22,

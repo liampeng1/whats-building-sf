@@ -11,7 +11,7 @@ import {
 } from '@/lib/permit-style'
 import type { MinUnitsFilter } from './Map'
 
-const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'construction', 'complete']
+const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'permitted', 'construction', 'complete']
 
 const MIN_UNITS_OPTIONS: { value: MinUnitsFilter; label: string }[] = [
   { value: 0, label: 'Any' },
@@ -36,6 +36,7 @@ interface Props {
 const GLYPH_SIZE: Record<PermitStage, number> = {
   filed: 22,
   approved: 22,
+  permitted: 24,
   construction: 28,
   complete: 22,
   inactive: 20,
@@ -279,21 +280,14 @@ export function FilterPanel({
           <MasterCheckbox
             ariaLabel="Toggle all lifecycle stages"
             state={(() => {
-              const lifeOn = LIFECYCLE.filter((s) => selectedStages.has(s)).length
-              if (lifeOn === LIFECYCLE.length) return 'all'
-              if (lifeOn === 0) return 'none'
+              const all: PermitStage[] = [...LIFECYCLE, 'inactive']
+              const on = all.filter((s) => selectedStages.has(s)).length
+              if (on === all.length) return 'all'
+              if (on === 0) return 'none'
               return 'some'
             })()}
-            onSelectAll={() => {
-              const next = new Set<PermitStage>(LIFECYCLE)
-              if (selectedStages.has('inactive')) next.add('inactive')
-              onSetStages(next)
-            }}
-            onClear={() => {
-              const next = new Set<PermitStage>()
-              if (selectedStages.has('inactive')) next.add('inactive')
-              onSetStages(next)
-            }}
+            onSelectAll={() => onSetStages(new Set<PermitStage>([...LIFECYCLE, 'inactive']))}
+            onClear={() => onSetStages(new Set<PermitStage>())}
           />
         </div>
         <ul className="mb-3">

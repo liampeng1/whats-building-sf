@@ -24,11 +24,11 @@ describe('permitTypeId', () => {
 })
 
 describe('permitStage', () => {
-  test('issued / issuing / inspection / reinstated all read as construction', () => {
-    expect(permitStage('issued')).toBe('construction')
-    expect(permitStage('issuing')).toBe('construction')
-    expect(permitStage('inspection')).toBe('construction')
-    expect(permitStage('reinstated')).toBe('construction')
+  test('issued / issuing / inspection / reinstated read as permitted (pre-build) by default', () => {
+    expect(permitStage('issued')).toBe('permitted')
+    expect(permitStage('issuing')).toBe('permitted')
+    expect(permitStage('inspection')).toBe('permitted')
+    expect(permitStage('reinstated')).toBe('permitted')
   })
 
   test('approved / granted / upheld are pre-issuance "approved" stage', () => {
@@ -55,7 +55,7 @@ describe('permitStage', () => {
   })
 
   test('handles uppercase status', () => {
-    expect(permitStage('ISSUED')).toBe('construction')
+    expect(permitStage('ISSUED')).toBe('permitted')
     expect(permitStage('APPROVED')).toBe('approved')
   })
 
@@ -66,8 +66,20 @@ describe('permitStage', () => {
   })
 
   test('Permit without pipeline_status falls through to raw status mapping', () => {
-    expect(permitStage({ ...basePermit, status: 'issued' })).toBe('construction')
+    expect(permitStage({ ...basePermit, status: 'issued' })).toBe('permitted')
     expect(permitStage({ ...basePermit, status: 'approved' })).toBe('approved')
+  })
+
+  test('pipeline BP Issued maps to permitted (issued, not yet building)', () => {
+    expect(
+      permitStage({ ...basePermit, status: 'issued', pipeline_status: 'BP Issued' }),
+    ).toBe('permitted')
+  })
+
+  test('pipeline Construction overrides even when raw status is issued', () => {
+    expect(
+      permitStage({ ...basePermit, status: 'issued', pipeline_status: 'Construction' }),
+    ).toBe('construction')
   })
 })
 
@@ -96,7 +108,8 @@ const basePermit: Permit = {
 
 describe('permitStyle', () => {
   test('under-construction permit is the loudest (largest, halo)', () => {
-    const construction = permitStyle({ ...basePermit, status: 'inspection' })
+    // Construction stage now requires pipeline_status='Construction' confirmation.
+    const construction = permitStyle({ ...basePermit, pipeline_status: 'Construction' })
     const approved = permitStyle({ ...basePermit, status: 'approved' })
     expect(construction.fillColor).toBe(STAGE_COLORS.construction.fill)
     expect(construction.color).toBe('#ffffff')
@@ -109,9 +122,9 @@ describe('permitStyle', () => {
     expect(s.radius).toBe(7)
   })
 
-  test('issued status maps to construction (not approved)', () => {
+  test('issued (no pipeline data) maps to permitted, not construction', () => {
     const s = permitStyle({ ...basePermit, status: 'issued' })
-    expect(s.fillColor).toBe(STAGE_COLORS.construction.fill)
+    expect(s.fillColor).toBe(STAGE_COLORS.permitted.fill)
   })
 
   test('filed permit reads as a paper-filled ring with cool slate stroke', () => {
