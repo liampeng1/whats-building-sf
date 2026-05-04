@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
 import { isUnderConstruction, timeAgo } from '@/lib/permit-style'
+import { RelatedSources } from '@/components/RelatedSources'
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '—'
@@ -83,6 +84,12 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
           </div>
         ))}
       </dl>
+
+      <RelatedSources
+        address={permit.address}
+        lat={coords?.[1]}
+        lng={coords?.[0]}
+      />
 
       <a
         href="https://data.sfgov.org/Housing-and-Buildings/Building-Permits/i98e-djp9"

@@ -71,6 +71,10 @@ if (firstPermit) {
   const detailBody = await page.textContent('main')
   console.log('Detail heading:', detailHeading)
   console.log('Has dl rows:', detailBody?.includes('Type') && detailBody?.includes('Status'))
+  const iframeCount = await page.locator('iframe[title*="Map of"]').count()
+  const sourceLinks = await page.locator('a[href*="socketsite.com"], a[href*="sfstandard.com"], a[href*="missionlocal.org"], a[href*="news.google.com"]').count()
+  console.log('Maps iframe present:', iframeCount)
+  console.log('External source links:', sourceLinks)
 }
 
 console.log('\n=== Console messages ===')
