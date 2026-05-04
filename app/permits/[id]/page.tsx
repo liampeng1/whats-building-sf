@@ -191,7 +191,7 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
           <Link href={backHref} className="civic-eyebrow hover:text-ink transition-colors">
             ← Back to map
           </Link>
-          <div className="civic-eyebrow text-ink-faint">SF In Progress · Permit Record</div>
+          <div className="civic-eyebrow text-ink-faint">What&apos;s Building SF · Permit Record</div>
         </div>
       </div>
 

@@ -19,8 +19,8 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "SF In Progress",
-  description: "Track SF building permits and planning cases on a map",
+  title: "What's Building SF",
+  description: "Every major new-construction permit filed in San Francisco in the last 2 years, mapped.",
 };
 
 export default function RootLayout({

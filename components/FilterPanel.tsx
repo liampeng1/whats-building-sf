@@ -79,7 +79,7 @@ export function FilterPanel({ selectedStages, onToggleStage, minUnits, onMinUnit
   return (
     <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden">
       <div className="bg-ink text-paper px-4 py-3">
-        <div className="font-serif text-base leading-tight">SF In Progress</div>
+        <div className="font-serif text-base leading-tight">What&apos;s Building SF</div>
         <p className="text-[11px] tracking-wide opacity-70 mt-0.5">
           Major new construction · last 2 years
         </p>

@@ -58,7 +58,7 @@ async function fetchGoogleNews(q: string): Promise<Article[]> {
   const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`
   try {
     const res = await fetch(rssUrl, {
-      headers: { 'User-Agent': 'sf-in-progress/1.0' },
+      headers: { 'User-Agent': 'whats-building-sf/1.0' },
       next: { revalidate: 3600 },
     })
     if (!res.ok) return []
@@ -88,7 +88,7 @@ async function fetchSfYimby(q: string): Promise<Article[]> {
   const url = `https://sfyimby.com/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=5&_embed=wp:featuredmedia&_fields=title,link,date,_links,_embedded`
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'sf-in-progress/1.0' },
+      headers: { 'User-Agent': 'whats-building-sf/1.0' },
       next: { revalidate: 3600 },
     })
     if (!res.ok) return []
