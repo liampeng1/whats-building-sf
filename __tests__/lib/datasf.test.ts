@@ -54,6 +54,14 @@ describe('fetchBuildingPermits', () => {
     expect(decoded).toContain("permit_type IN ('1','2','3')")
   })
 
+  test('always applies a 2-year recency filter on completed_date / status_date', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
+    await fetchBuildingPermits()
+    const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
+    expect(url).toMatch(/completed_date >= '\d{4}-\d{2}-\d{2}'/)
+    expect(url).toMatch(/status_date >= '\d{4}-\d{2}-\d{2}'/)
+  })
+
   test('combines tracked-types filter with bounds via AND', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
     await fetchBuildingPermits(mockBounds)

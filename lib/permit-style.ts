@@ -81,6 +81,35 @@ export function permitStage(status: string | null | undefined): PermitStage {
   return 'filed'
 }
 
+export function isUnderConstruction(permit: Permit): boolean {
+  const s = (permit.status ?? '').toLowerCase()
+  if (s === 'inspection') return true
+  // Issued but not yet completed = work either underway or imminent.
+  return permit.issued_date != null && permit.completed_date == null && permitStage(s) === 'active'
+}
+
+export function timeAgo(dateStr: string | null, now: Date = new Date()): string | null {
+  if (!dateStr) return null
+  const then = new Date(dateStr)
+  if (isNaN(then.getTime())) return null
+  const diffMs = now.getTime() - then.getTime()
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  if (days < 0) {
+    const future = -days
+    if (future < 30) return `in ${future} day${future === 1 ? '' : 's'}`
+    const months = Math.round(future / 30)
+    return `in ${months} month${months === 1 ? '' : 's'}`
+  }
+  if (days < 1) return 'today'
+  if (days < 30) return `${days} day${days === 1 ? '' : 's'} ago`
+  const months = Math.floor(days / 30)
+  if (months < 12) return `${months} month${months === 1 ? '' : 's'} ago`
+  const years = Math.floor(days / 365)
+  const remMonths = Math.floor((days - years * 365) / 30)
+  if (remMonths === 0) return `${years} year${years === 1 ? '' : 's'} ago`
+  return `${years}y ${remMonths}mo ago`
+}
+
 export function permitStyle(permit: Permit): PermitStyle {
   const id = permitTypeId(permit.permit_type)
   const stage = permitStage(permit.status)

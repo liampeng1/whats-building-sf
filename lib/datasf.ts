@@ -18,6 +18,8 @@ interface PermitApiRow {
   filed_date?: string | null
   issued_date?: string | null
   completed_date?: string | null
+  status_date?: string | null
+  estimated_cost?: string | null
   location?: Permit['location']
 }
 
@@ -66,6 +68,8 @@ function permitFromApi(row: PermitApiRow): Permit {
     filed_date: row.filed_date ?? null,
     issued_date: row.issued_date ?? null,
     completed_date: row.completed_date ?? null,
+    status_date: row.status_date ?? null,
+    estimated_cost: row.estimated_cost ?? null,
     location: row.location ?? null,
   }
 }
@@ -77,10 +81,22 @@ function permitFromApi(row: PermitApiRow): Permit {
 const TRACKED_PERMIT_TYPES = ['1', '2', '3']
 const TRACKED_TYPES_FILTER = `permit_type IN (${TRACKED_PERMIT_TYPES.map((t) => `'${t}'`).join(',')})`
 
+const RECENCY_YEARS = 2
+
+function recencyFilter(now: Date = new Date()): string {
+  const cutoff = new Date(now)
+  cutoff.setFullYear(cutoff.getFullYear() - RECENCY_YEARS)
+  const iso = cutoff.toISOString().slice(0, 10)
+  // Show: anything completed within the recency window OR anything with recent
+  // status activity (covers long-running active projects). Excludes old/dead permits.
+  return `(completed_date >= '${iso}' OR status_date >= '${iso}')`
+}
+
 export async function fetchBuildingPermits(bounds?: MapBounds): Promise<Permit[]> {
   const params = new URLSearchParams({ $limit: '500', $order: 'filed_date DESC' })
-  const where = bounds ? `${TRACKED_TYPES_FILTER} AND ${boundsFilter(bounds)}` : TRACKED_TYPES_FILTER
-  params.set('$where', where)
+  const clauses = [TRACKED_TYPES_FILTER, recencyFilter()]
+  if (bounds) clauses.push(boundsFilter(bounds))
+  params.set('$where', clauses.join(' AND '))
   const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
   const rows: PermitApiRow[] = await res.json()

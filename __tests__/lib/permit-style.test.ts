@@ -76,6 +76,8 @@ const basePermit: Permit = {
   filed_date: null,
   issued_date: null,
   completed_date: null,
+  status_date: null,
+  estimated_cost: null,
   location: null,
 }
 

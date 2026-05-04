@@ -22,6 +22,8 @@ export interface Permit {
   filed_date: string | null
   issued_date: string | null
   completed_date: string | null
+  status_date: string | null
+  estimated_cost: string | null
   location: GeoPoint | null
 }
 
