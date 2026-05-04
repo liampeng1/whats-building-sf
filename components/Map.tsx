@@ -174,8 +174,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       <FilterPanel
         selectedStages={selectedStages}
         onToggleStage={toggleStage}
+        onSetStages={setSelectedStages}
         selectedCategories={selectedCategories}
         onToggleCategory={toggleCategory}
+        onSetCategories={setSelectedCategories}
         minUnits={minUnits}
         onMinUnitsChange={setMinUnits}
         visibleCount={visiblePermits.length}

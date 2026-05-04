@@ -23,8 +23,10 @@ const MIN_UNITS_OPTIONS: { value: MinUnitsFilter; label: string }[] = [
 interface Props {
   selectedStages: Set<PermitStage>
   onToggleStage: (stage: PermitStage) => void
+  onSetStages: (next: Set<PermitStage>) => void
   selectedCategories: Set<UseCategory>
   onToggleCategory: (cat: UseCategory) => void
+  onSetCategories: (next: Set<UseCategory>) => void
   minUnits: MinUnitsFilter
   onMinUnitsChange: (n: MinUnitsFilter) => void
   visibleCount: number
@@ -127,11 +129,27 @@ function CategoryRow({ cat, on, onToggle, subContent }: CategoryRowProps) {
   )
 }
 
+function BulkToggle({ onAll, onNone }: { onAll: () => void; onNone: () => void }) {
+  return (
+    <div className="text-[10px] uppercase tracking-wider text-ink-faint">
+      <button type="button" onClick={onAll} className="hover:text-ink underline-offset-2 hover:underline">
+        All
+      </button>
+      <span className="mx-1.5 text-paper-edge" aria-hidden>·</span>
+      <button type="button" onClick={onNone} className="hover:text-ink underline-offset-2 hover:underline">
+        None
+      </button>
+    </div>
+  )
+}
+
 export function FilterPanel({
   selectedStages,
   onToggleStage,
+  onSetStages,
   selectedCategories,
   onToggleCategory,
+  onSetCategories,
   minUnits,
   onMinUnitsChange,
   visibleCount,
@@ -202,7 +220,13 @@ export function FilterPanel({
 
       {open && (
       <div className="overflow-y-auto text-sm p-4">
-        <div className="civic-eyebrow mb-2">Use type</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="civic-eyebrow">Use type</div>
+          <BulkToggle
+            onAll={() => onSetCategories(new Set(CATEGORIES))}
+            onNone={() => onSetCategories(new Set())}
+          />
+        </div>
         <ul className="mb-4 space-y-0.5">
           {CATEGORIES.map((cat) => (
             <CategoryRow
@@ -215,7 +239,21 @@ export function FilterPanel({
           ))}
         </ul>
 
-        <div className="civic-eyebrow mb-2">Lifecycle</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="civic-eyebrow">Lifecycle</div>
+          <BulkToggle
+            onAll={() => {
+              const next = new Set<PermitStage>(LIFECYCLE)
+              if (selectedStages.has('inactive')) next.add('inactive')
+              onSetStages(next)
+            }}
+            onNone={() => {
+              const next = new Set<PermitStage>()
+              if (selectedStages.has('inactive')) next.add('inactive')
+              onSetStages(next)
+            }}
+          />
+        </div>
         <ul className="mb-3">
           {LIFECYCLE.map((stage, i) => (
             <StageRow
