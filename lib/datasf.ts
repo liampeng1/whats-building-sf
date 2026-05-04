@@ -105,7 +105,7 @@ function recencyFilter(now: Date = new Date()): string {
 }
 
 export async function fetchBuildingPermits(bounds?: MapBounds): Promise<Permit[]> {
-  const params = new URLSearchParams({ $limit: '500', $order: 'filed_date DESC' })
+  const params = new URLSearchParams({ $limit: '5000', $order: 'filed_date DESC' })
   const clauses = [TRACKED_TYPES_FILTER, recencyFilter()]
   if (bounds) clauses.push(boundsFilter(bounds))
   params.set('$where', clauses.join(' AND '))
@@ -125,7 +125,7 @@ export async function fetchBuildingPermit(id: string): Promise<Permit> {
 }
 
 export async function fetchPlanningCases(): Promise<PlanningCase[]> {
-  const params = new URLSearchParams({ $limit: '500', $order: 'open_date DESC' })
+  const params = new URLSearchParams({ $limit: '5000', $order: 'open_date DESC' })
   const res = await fetch(`${BASE_URL}/${PLANNING_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
   const rows: PlanningCaseApiRow[] = await res.json()

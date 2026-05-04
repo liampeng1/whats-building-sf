@@ -164,11 +164,6 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
 
   const isPanel = variant === 'panel'
   const headingSize = isPanel ? 'text-3xl' : 'text-5xl'
-  const contentGrid = isPanel
-    ? 'mt-8 space-y-6'
-    : 'mt-10 grid md:grid-cols-3 gap-x-8 gap-y-8'
-  const sidebarClass = isPanel ? 'space-y-5' : 'md:col-span-1 space-y-5'
-  const bodyClass = isPanel ? 'space-y-8' : 'md:col-span-2 space-y-8'
 
   return (
     <div>
@@ -201,10 +196,17 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
         </p>
       )}
 
-      <div className={contentGrid}>
-        <aside className={sidebarClass}>
-          <DeltaBlock label="Homes" before={permit.existing_units} after={permit.proposed_units} suffix="net new" />
-          <DeltaBlock label="Stories" before={permit.existing_stories} after={permit.proposed_stories} suffix="taller" />
+      {/* Layout: page variant uses 1+2 column grid, panel variant uses balanced
+          stacked sections (deltas grid → use → facts grid → scope → timeline). */}
+      {isPanel ? (
+        <div className="mt-8 space-y-7">
+          {/* Top: two delta blocks side-by-side — same visual weight, paired. */}
+          <div className="grid grid-cols-2 gap-6 pt-5 border-t border-paper-edge">
+            <DeltaBlock label="Homes" before={permit.existing_units} after={permit.proposed_units} suffix="net new" />
+            <DeltaBlock label="Stories" before={permit.existing_stories} after={permit.proposed_stories} suffix="taller" />
+          </div>
+
+          {/* Use — full-width prose, anchors the layout */}
           {(permit.existing_use || permit.proposed_use) && (
             <div>
               <div className="civic-eyebrow mb-1.5">Use</div>
@@ -215,38 +217,87 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
               </div>
             </div>
           )}
-          <div>
-            <div className="civic-eyebrow mb-1.5">Estimated cost</div>
-            <div className="font-serif text-xl text-ink">{formatCost(permit.estimated_cost)}</div>
-          </div>
-          <div>
-            <div className="civic-eyebrow mb-1.5">Status</div>
-            <div className="text-sm text-ink">{permit.status}</div>
-          </div>
-          {coords && (
-            <div>
-              <div className="civic-eyebrow mb-1.5">Coordinates</div>
-              <div className="text-sm text-ink-soft font-mono">
-                {coords[1].toFixed(5)}, {coords[0].toFixed(5)}
-              </div>
-            </div>
-          )}
-        </aside>
 
-        <div className={bodyClass}>
+          {/* Quick facts — three small text fields in a row */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-5 border-t border-paper-edge">
+            <div>
+              <div className="civic-eyebrow mb-1.5">Estimated cost</div>
+              <div className="font-serif text-lg text-ink">{formatCost(permit.estimated_cost)}</div>
+            </div>
+            <div>
+              <div className="civic-eyebrow mb-1.5">Status</div>
+              <div className="text-sm text-ink">{permit.status}</div>
+            </div>
+            {coords && (
+              <div className="col-span-2">
+                <div className="civic-eyebrow mb-1.5">Coordinates</div>
+                <div className="text-xs text-ink-soft font-mono">
+                  {coords[1].toFixed(5)}, {coords[0].toFixed(5)}
+                </div>
+              </div>
+            )}
+          </div>
+
           {permit.description && (
-            <section>
+            <section className="pt-5 border-t border-paper-edge">
               <div className="civic-eyebrow mb-2">Scope of work</div>
               <p className="text-base text-ink leading-relaxed font-serif">{permit.description}</p>
             </section>
           )}
 
-          <section>
+          <section className="pt-5 border-t border-paper-edge">
             <div className="civic-eyebrow mb-4">Timeline</div>
             <Timeline steps={steps} />
           </section>
         </div>
-      </div>
+      ) : (
+        <div className="mt-10 grid md:grid-cols-3 gap-x-8 gap-y-8">
+          <aside className="md:col-span-1 space-y-5">
+            <DeltaBlock label="Homes" before={permit.existing_units} after={permit.proposed_units} suffix="net new" />
+            <DeltaBlock label="Stories" before={permit.existing_stories} after={permit.proposed_stories} suffix="taller" />
+            {(permit.existing_use || permit.proposed_use) && (
+              <div>
+                <div className="civic-eyebrow mb-1.5">Use</div>
+                <div className="text-sm text-ink leading-snug">
+                  {permit.existing_use && <span className="text-ink-faint">{permit.existing_use}</span>}
+                  {permit.existing_use && permit.proposed_use && <span className="text-ink-faint mx-1">→</span>}
+                  {permit.proposed_use && <span>{permit.proposed_use}</span>}
+                </div>
+              </div>
+            )}
+            <div>
+              <div className="civic-eyebrow mb-1.5">Estimated cost</div>
+              <div className="font-serif text-xl text-ink">{formatCost(permit.estimated_cost)}</div>
+            </div>
+            <div>
+              <div className="civic-eyebrow mb-1.5">Status</div>
+              <div className="text-sm text-ink">{permit.status}</div>
+            </div>
+            {coords && (
+              <div>
+                <div className="civic-eyebrow mb-1.5">Coordinates</div>
+                <div className="text-sm text-ink-soft font-mono">
+                  {coords[1].toFixed(5)}, {coords[0].toFixed(5)}
+                </div>
+              </div>
+            )}
+          </aside>
+
+          <div className="md:col-span-2 space-y-8">
+            {permit.description && (
+              <section>
+                <div className="civic-eyebrow mb-2">Scope of work</div>
+                <p className="text-base text-ink leading-relaxed font-serif">{permit.description}</p>
+              </section>
+            )}
+
+            <section>
+              <div className="civic-eyebrow mb-4">Timeline</div>
+              <Timeline steps={steps} />
+            </section>
+          </div>
+        </div>
+      )}
 
       <section className="mt-12 pt-8 border-t border-paper-edge">
         <div className="civic-eyebrow mb-4">In the news</div>
