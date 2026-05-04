@@ -7,10 +7,19 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
 import { PermitPanel } from './PermitPanel'
-import { permitStage, netDelta, STAGE_ORDER, type PermitStage } from '@/lib/permit-style'
+import {
+  permitStage,
+  netDelta,
+  useCategory,
+  STAGE_ORDER,
+  CATEGORIES,
+  type PermitStage,
+  type UseCategory,
+} from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = STAGE_ORDER
+const ALL_CATEGORIES: UseCategory[] = CATEGORIES
 
 export type MinUnitsFilter = 0 | 5 | 25 | 100
 
@@ -26,6 +35,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     () => new Set(ALL_STAGES),
   )
   const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
+  const [selectedCategories, setSelectedCategories] = useState<Set<UseCategory>>(
+    () => new Set(ALL_CATEGORIES),
+  )
   const [openPermit, setOpenPermit] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -65,17 +77,30 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     })
   }, [])
 
+  const toggleCategory = useCallback((cat: UseCategory) => {
+    setSelectedCategories((prev) => {
+      const next = new Set(prev)
+      if (next.has(cat)) next.delete(cat)
+      else next.add(cat)
+      return next
+    })
+  }, [])
+
   const visiblePermits = useMemo(
     () =>
       permits.filter((p) => {
         if (!selectedStages.has(permitStage(p.status))) return false
-        if (minUnits > 0) {
+        const cat = useCategory(p.proposed_use ?? p.existing_use)
+        if (!selectedCategories.has(cat)) return false
+        // minUnits only applies to housing/mixed permits — it's a sub-filter
+        // under "housing-related categories." Other categories ignore it.
+        if (minUnits > 0 && (cat === 'housing' || cat === 'mixed')) {
           const delta = netDelta(p.existing_units, p.proposed_units)
           if (delta == null || delta < minUnits) return false
         }
         return true
       }),
-    [permits, selectedStages, minUnits],
+    [permits, selectedStages, selectedCategories, minUnits],
   )
 
   const fetchData = useCallback(async (bounds: MapBounds | undefined, signal?: AbortSignal) => {
@@ -148,6 +173,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       <FilterPanel
         selectedStages={selectedStages}
         onToggleStage={toggleStage}
+        selectedCategories={selectedCategories}
+        onToggleCategory={toggleCategory}
         minUnits={minUnits}
         onMinUnitsChange={setMinUnits}
       />

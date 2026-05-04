@@ -1,5 +1,13 @@
 'use client'
-import { stageIconSvg, STAGE_LABELS, type PermitStage } from '@/lib/permit-style'
+import {
+  stageIconSvg,
+  STAGE_LABELS,
+  CATEGORIES,
+  USE_CATEGORY_LABELS,
+  USE_CATEGORY_COLORS,
+  type PermitStage,
+  type UseCategory,
+} from '@/lib/permit-style'
 import type { MinUnitsFilter } from './Map'
 
 const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'construction', 'complete']
@@ -14,6 +22,8 @@ const MIN_UNITS_OPTIONS: { value: MinUnitsFilter; label: string }[] = [
 interface Props {
   selectedStages: Set<PermitStage>
   onToggleStage: (stage: PermitStage) => void
+  selectedCategories: Set<UseCategory>
+  onToggleCategory: (cat: UseCategory) => void
   minUnits: MinUnitsFilter
   onMinUnitsChange: (n: MinUnitsFilter) => void
 }
@@ -37,14 +47,24 @@ function StageGlyph({ stage, on }: { stage: PermitStage; on: boolean }) {
   )
 }
 
-interface RowProps {
+function CategoryDot({ cat, on }: { cat: UseCategory; on: boolean }) {
+  const c = USE_CATEGORY_COLORS[cat]
+  return (
+    <span
+      className={`inline-block w-3.5 h-3.5 rounded-full border-2 shrink-0 ${on ? '' : 'opacity-30'}`}
+      style={{ backgroundColor: c.fill, borderColor: c.stroke }}
+    />
+  )
+}
+
+interface StageRowProps {
   stage: PermitStage
   on: boolean
   onToggle: () => void
   showConnector: boolean
 }
 
-function StageRow({ stage, on, onToggle, showConnector }: RowProps) {
+function StageRow({ stage, on, onToggle, showConnector }: StageRowProps) {
   const isHeadline = stage === 'construction'
   return (
     <li className="relative">
@@ -75,34 +95,91 @@ function StageRow({ stage, on, onToggle, showConnector }: RowProps) {
   )
 }
 
-export function FilterPanel({ selectedStages, onToggleStage, minUnits, onMinUnitsChange }: Props) {
+interface CategoryRowProps {
+  cat: UseCategory
+  on: boolean
+  onToggle: () => void
+  /** Optional content rendered indented underneath this row when on. */
+  subContent?: React.ReactNode
+}
+
+function CategoryRow({ cat, on, onToggle, subContent }: CategoryRowProps) {
   return (
-    <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden">
-      <div className="bg-ink text-paper px-4 py-3">
+    <li>
+      <label className="flex items-center gap-3 cursor-pointer select-none py-1">
+        <CategoryDot cat={cat} on={on} />
+        <span className={`flex-1 ${on ? 'text-ink' : 'text-ink-faint'}`}>
+          {USE_CATEGORY_LABELS[cat]}
+        </span>
+        <input
+          type="checkbox"
+          checked={on}
+          onChange={onToggle}
+          className="w-4 h-4 cursor-pointer"
+          style={{ accentColor: 'var(--ink)' }}
+        />
+      </label>
+      {on && subContent && <div className="ml-6 mt-1 mb-2">{subContent}</div>}
+    </li>
+  )
+}
+
+export function FilterPanel({
+  selectedStages,
+  onToggleStage,
+  selectedCategories,
+  onToggleCategory,
+  minUnits,
+  onMinUnitsChange,
+}: Props) {
+  const housingOn = selectedCategories.has('housing')
+
+  const homesSubFilter = (
+    <div>
+      <div className="text-[10px] uppercase tracking-wider text-ink-faint mb-1">
+        Net new homes
+      </div>
+      <div className="flex gap-1">
+        {MIN_UNITS_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onMinUnitsChange(opt.value)}
+            className={`flex-1 px-2 py-1 text-xs rounded border transition ${
+              minUnits === opt.value
+                ? 'bg-ink text-paper border-ink font-semibold'
+                : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden max-h-[calc(100vh-2rem)] flex flex-col">
+      <div className="bg-ink text-paper px-4 py-3 shrink-0">
         <div className="font-serif text-base leading-tight">What&apos;s Building SF</div>
         <p className="text-[11px] tracking-wide opacity-70 mt-0.5">
           Major new construction · last 2 years
         </p>
       </div>
 
-      <div className="p-4 text-sm">
-        <div className="civic-eyebrow mb-2">Net new homes</div>
-        <div className="flex gap-1 mb-4">
-          {MIN_UNITS_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => onMinUnitsChange(opt.value)}
-              className={`flex-1 px-2 py-1.5 text-xs rounded border transition ${
-                minUnits === opt.value
-                  ? 'bg-ink text-paper border-ink font-semibold'
-                  : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
-              }`}
-            >
-              {opt.label}
-            </button>
+      <div className="p-4 text-sm overflow-y-auto">
+        <div className="civic-eyebrow mb-2">Use type</div>
+        <ul className="mb-4 space-y-0.5">
+          {CATEGORIES.map((cat) => (
+            <CategoryRow
+              key={cat}
+              cat={cat}
+              on={selectedCategories.has(cat)}
+              onToggle={() => onToggleCategory(cat)}
+              subContent={cat === 'housing' && housingOn ? homesSubFilter : undefined}
+            />
           ))}
-        </div>
+        </ul>
 
         <div className="civic-eyebrow mb-2">Lifecycle</div>
         <ul className="mb-3">

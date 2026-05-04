@@ -144,15 +144,27 @@ export function isUnderConstruction(permit: Permit): boolean {
 
 // Building-use categorization. Derived from DataSF's free-text use fields.
 // Order matters — check housing/retail/office before falling back to other.
-export type UseCategory = 'housing' | 'retail' | 'office' | 'mixed' | 'industrial' | 'other'
+export type UseCategory = 'housing' | 'mixed' | 'retail' | 'office' | 'industrial' | 'other'
+
+// Order matters for legend display.
+export const CATEGORIES: UseCategory[] = ['housing', 'mixed', 'retail', 'office', 'industrial', 'other']
 
 export const USE_CATEGORY_LABELS: Record<UseCategory, string> = {
   housing: 'Housing',
+  mixed: 'Mixed-use',
   retail: 'Retail',
   office: 'Office',
-  mixed: 'Mixed-use',
   industrial: 'Industrial',
   other: 'Other',
+}
+
+export const USE_CATEGORY_COLORS: Record<UseCategory, { fill: string; stroke: string }> = {
+  housing:    { fill: '#10b981', stroke: '#064e3b' }, // emerald
+  mixed:      { fill: '#8b5cf6', stroke: '#4c1d95' }, // violet
+  retail:     { fill: '#d97706', stroke: '#78350f' }, // amber
+  office:     { fill: '#0ea5e9', stroke: '#0c4a6e' }, // sky
+  industrial: { fill: '#78716c', stroke: '#292524' }, // stone
+  other:      { fill: '#a8a29e', stroke: '#57534e' }, // taupe
 }
 
 const HOUSING_PATTERNS = ['family dwelling', 'apartments', 'residential', 'dwelling', 'condominium', 'group housing', 'sro']

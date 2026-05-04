@@ -45,9 +45,9 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
 
 const USE_CATEGORY_BG: Record<UseCategory, string> = {
   housing: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+  mixed: 'bg-violet-100 text-violet-900 border-violet-300',
   retail: 'bg-amber-100 text-amber-900 border-amber-300',
   office: 'bg-sky-100 text-sky-900 border-sky-300',
-  mixed: 'bg-violet-100 text-violet-900 border-violet-300',
   industrial: 'bg-stone-200 text-stone-900 border-stone-400',
   other: 'bg-paper-deep text-ink-soft border-paper-edge',
 }
