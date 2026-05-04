@@ -237,7 +237,7 @@ export function FilterPanel({
           </div>
         </div>
         <p className="text-[11px] tracking-wide opacity-70 mt-0.5">
-          Major new construction · last 2 years
+          Major new construction · ongoing &amp; recent
         </p>
       </button>
 

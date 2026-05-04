@@ -103,6 +103,8 @@ const basePermit: Permit = {
   proposed_stories: null,
   pipeline_status: null,
   pipeline_status_date: null,
+  block: null,
+  lot: null,
   location: null,
 }
 

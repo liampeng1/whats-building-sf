@@ -175,6 +175,35 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
   // a human-readable detail so the date isn't context-free.
   const statusVerb = permit.status === 'complete' ? null : `Status set to "${permit.status}"`
 
+  // Demolition steps come first chronologically — earlier than the
+  // new-construction permit's filed_date. Skip events whose dates are in the
+  // future relative to this permit (rare; would indicate a re-demo).
+  const demoSteps: TimelineStep[] = []
+  for (const d of permit.demolitions ?? []) {
+    if (d.filed_date) {
+      demoSteps.push({
+        label: 'Demolition filed',
+        date: d.filed_date,
+        active: true,
+        detail: `Permit #${d.permit_number} · status ${d.status}`,
+      })
+    }
+    if (d.completed_date) {
+      demoSteps.push({
+        label: 'Demolition complete',
+        date: d.completed_date,
+        active: true,
+        detail: `Permit #${d.permit_number}`,
+      })
+    }
+  }
+  // Sort demos chronologically among themselves so multiple demos read in order.
+  demoSteps.sort((a, b) => {
+    const ad = a.date ? new Date(a.date).getTime() : 0
+    const bd = b.date ? new Date(b.date).getTime() : 0
+    return ad - bd
+  })
+
   const pipelineStep: TimelineStep | null =
     permit.pipeline_status &&
     permit.pipeline_status_date &&
@@ -191,6 +220,7 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
   // Each step represents a phase; "Not yet" placeholders are kept so users see
   // the full pipeline even when a permit hasn't reached every stage.
   const allSteps: TimelineStep[] = [
+    ...demoSteps,
     { label: 'Filed', date: permit.filed_date, active: !!permit.filed_date },
     { label: 'Issued', date: permit.issued_date, active: !!permit.issued_date },
     {

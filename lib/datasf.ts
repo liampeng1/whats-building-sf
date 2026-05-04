@@ -27,6 +27,8 @@ interface PermitApiRow {
   proposed_units?: string | null
   number_of_existing_stories?: string | null
   number_of_proposed_stories?: string | null
+  block?: string | null
+  lot?: string | null
   location?: Permit['location']
 }
 
@@ -86,7 +88,55 @@ function permitFromApi(row: PermitApiRow): Permit {
     location: row.location ?? null,
     pipeline_status: null,
     pipeline_status_date: null,
+    block: row.block ?? null,
+    lot: row.lot ?? null,
   }
+}
+
+interface DemolitionApiRow {
+  permit_number?: string
+  filed_date?: string | null
+  issued_date?: string | null
+  completed_date?: string | null
+  status?: string
+}
+
+/**
+ * Fetch demolition permits (type 6) for a given parcel. Used on the detail
+ * page to show demolition history before a new-construction permit.
+ */
+async function fetchDemolitionsForParcel(
+  block: string,
+  lot: string,
+  excludePermitNumber?: string,
+): Promise<import('./types').DemolitionEvent[]> {
+  const where = [
+    `permit_type='6'`,
+    `block='${block.replace(/'/g, "''")}'`,
+    `lot='${lot.replace(/'/g, "''")}'`,
+    excludePermitNumber ? `permit_number != '${excludePermitNumber.replace(/'/g, "''")}'` : null,
+  ]
+    .filter(Boolean)
+    .join(' AND ')
+  const params = new URLSearchParams({
+    $select: 'permit_number,filed_date,issued_date,completed_date,status',
+    $where: where,
+    $order: 'filed_date DESC',
+    $limit: '5',
+  })
+  const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, {
+    headers: headers(),
+    next: { revalidate: 3600 },
+  })
+  if (!res.ok) return []
+  const rows: DemolitionApiRow[] = await res.json()
+  return rows.map((r) => ({
+    permit_number: r.permit_number ?? '',
+    filed_date: r.filed_date ?? null,
+    issued_date: r.issued_date ?? null,
+    completed_date: r.completed_date ?? null,
+    status: r.status ?? 'unknown',
+  }))
 }
 
 interface PipelineRow {
@@ -133,15 +183,23 @@ async function fetchPipelineMap(): Promise<Map<string, { status: string; date: s
 const TRACKED_PERMIT_TYPES = ['1', '2']
 const TRACKED_TYPES_FILTER = `permit_type IN (${TRACKED_PERMIT_TYPES.map((t) => `'${t}'`).join(',')})`
 
-const RECENCY_YEARS = 2
+const RECENT_COMPLETION_YEARS = 2 // recent finishes lookback
+const ACTIVITY_YEARS = 5 // long-running projects need *some* activity within this window
+
+function isoYearsAgo(years: number, now: Date = new Date()): string {
+  const c = new Date(now)
+  c.setFullYear(c.getFullYear() - years)
+  return c.toISOString().slice(0, 10)
+}
 
 function recencyFilter(now: Date = new Date()): string {
-  const cutoff = new Date(now)
-  cutoff.setFullYear(cutoff.getFullYear() - RECENCY_YEARS)
-  const iso = cutoff.toISOString().slice(0, 10)
-  // Show: anything completed within the recency window OR anything with recent
-  // status activity (covers long-running active projects). Excludes old/dead permits.
-  return `(completed_date >= '${iso}' OR status_date >= '${iso}')`
+  const completedCutoff = isoYearsAgo(RECENT_COMPLETION_YEARS, now)
+  const activityCutoff = isoYearsAgo(ACTIVITY_YEARS, now)
+  // A permit shows if EITHER:
+  //   1) it was completed within the last 2 years (recent finishes), OR
+  //   2) it had any status activity within the last 5 years (covers
+  //      long-running construction without dragging in stalled zombies).
+  return `(completed_date >= '${completedCutoff}' OR status_date >= '${activityCutoff}')`
 }
 
 export async function fetchBuildingPermits(bounds?: MapBounds): Promise<Permit[]> {
@@ -192,6 +250,13 @@ export async function fetchBuildingPermit(id: string): Promise<Permit> {
       permit.pipeline_status = p.current_status
       permit.pipeline_status_date = p.current_status_date ?? null
     }
+  }
+  if (permit.block && permit.lot) {
+    permit.demolitions = await fetchDemolitionsForParcel(
+      permit.block,
+      permit.lot,
+      permit.permit_number,
+    )
   }
   return permit
 }

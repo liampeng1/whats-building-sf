@@ -37,6 +37,22 @@ export interface Permit {
   // truth (better than the raw permit `status` field).
   pipeline_status: string | null
   pipeline_status_date: string | null
+  // Assessor parcel identifiers — used to link related permits at the same
+  // location (e.g. the demolition permit that preceded a new-construction
+  // permit on this lot).
+  block: string | null
+  lot: string | null
+  // Demolition permits for this parcel, fetched on the detail page only.
+  // Empty/undefined when not enriched (e.g. on the map list view).
+  demolitions?: DemolitionEvent[]
+}
+
+export interface DemolitionEvent {
+  permit_number: string
+  filed_date: string | null
+  issued_date: string | null
+  completed_date: string | null
+  status: string
 }
 
 export interface PlanningCase {
