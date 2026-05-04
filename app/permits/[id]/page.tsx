@@ -4,9 +4,9 @@ import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
 import {
   permitStage,
   timeAgo,
+  stageIconSvg,
   STAGE_COLORS,
   STAGE_LABELS,
-  STAGE_SYMBOLS,
   type PermitStage,
 } from '@/lib/permit-style'
 import { RelatedSources } from '@/components/RelatedSources'
@@ -35,7 +35,10 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold"
       style={{ color, backgroundColor: `${color}15`, border: `1px solid ${color}40` }}
     >
-      <span className="text-lg leading-none">{STAGE_SYMBOLS[stage]}</span>
+      <span
+        className="inline-flex"
+        dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 18) }}
+      />
       <span>{label}</span>
     </div>
   )

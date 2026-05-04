@@ -6,6 +6,7 @@ interface Article {
   url: string
   source: string | null
   published: string | null
+  highlighted?: boolean
 }
 
 function formatPubDate(s: string | null): string | null {
@@ -31,32 +32,44 @@ export function RelatedArticles({ address }: { address: string }) {
     return () => ctrl.abort()
   }, [address])
 
-  if (error) return <div className="text-xs text-gray-400">{error}</div>
-  if (articles === null) return <div className="text-xs text-gray-400">Searching news…</div>
+  if (error) return <div className="text-xs text-ink-faint">{error}</div>
+  if (articles === null) return <div className="text-xs text-ink-faint italic">Searching news…</div>
   if (articles.length === 0) {
     return (
-      <div className="text-xs text-gray-400">
+      <div className="text-sm text-ink-faint italic">
         No recent articles mention this address. Try the search links below.
       </div>
     )
   }
 
   return (
-    <ul className="space-y-3">
+    <ul className="space-y-4">
       {articles.map((a, i) => (
-        <li key={`${a.url}-${i}`} className="text-sm">
+        <li
+          key={`${a.url}-${i}`}
+          className={a.highlighted ? 'pl-3 border-l-2 border-construction' : ''}
+        >
           <a
             href={a.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-700 hover:underline font-medium"
+            className="font-serif text-base text-ink hover:underline leading-tight block"
           >
             {a.title}
           </a>
-          <div className="text-xs text-gray-500 mt-0.5">
-            {a.source}
-            {a.source && a.published ? ' · ' : ''}
-            {formatPubDate(a.published)}
+          <div className="text-xs text-ink-faint mt-1 flex items-center gap-2 flex-wrap">
+            {a.highlighted && (
+              <span className="text-construction font-semibold tracking-wide uppercase text-[10px]">
+                Tagged on SF YIMBY
+              </span>
+            )}
+            <span>{a.source}</span>
+            {a.published && (
+              <>
+                <span aria-hidden>·</span>
+                <span>{formatPubDate(a.published)}</span>
+              </>
+            )}
           </div>
         </li>
       ))}

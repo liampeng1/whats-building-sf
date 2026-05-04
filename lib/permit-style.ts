@@ -60,13 +60,48 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   inactive: 'Inactive / cancelled',
 }
 
-// Typographic symbols matching the lifecycle (hollow → half → solid → check → slash).
-export const STAGE_SYMBOLS: Record<PermitStage, string> = {
-  filed: '○',
-  approved: '◐',
-  construction: '●',
-  complete: '✓',
-  inactive: '⊘',
+// Pictographic SVG icons per stage. Returns a complete SVG string sized to fit
+// inside a `size`x`size` box. The fill/stroke uses the stage's color.
+//
+// filed       = paper / document outline
+// approved    = paper with checkmark (signed off)
+// construction = warning triangle with exclamation (road-sign / barricade)
+// complete    = filled circle with white check
+// inactive    = circle with diagonal slash
+export function stageIconSvg(stage: PermitStage, size: number = 24): string {
+  const c = STAGE_COLORS[stage].fill
+  const dims = `width="${size}" height="${size}" viewBox="0 0 24 24"`
+  switch (stage) {
+    case 'filed':
+      return `<svg ${dims} fill="${c}19" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8" fill="none"/>
+        <line x1="8" y1="13" x2="16" y2="13"/>
+        <line x1="8" y1="17" x2="14" y2="17"/>
+      </svg>`
+    case 'approved':
+      return `<svg ${dims} fill="${c}19" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8" fill="none"/>
+        <polyline points="8.5 14 11 16.5 16 11.5" fill="none" stroke-width="2"/>
+      </svg>`
+    case 'construction':
+      return `<svg ${dims} fill="${c}" stroke="#fbf6ec" stroke-width="0.8" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2.5 1 21.5h22z"/>
+        <line x1="12" y1="9" x2="12" y2="14.5" stroke="#fbf6ec" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="12" cy="17.6" r="1.1" fill="#fbf6ec" stroke="none"/>
+      </svg>`
+    case 'complete':
+      return `<svg ${dims} fill="${c}" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="7.5 12.5 10.5 15.5 16.5 9.5" fill="none" stroke="#fbf6ec" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`
+    case 'inactive':
+      return `<svg ${dims} fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <line x1="6" y1="18" x2="18" y2="6"/>
+      </svg>`
+  }
 }
 
 export function permitTypeId(permitType: string | null | undefined): PermitTypeId {

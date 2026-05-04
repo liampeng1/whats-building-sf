@@ -7,9 +7,9 @@ import type { Permit } from '@/lib/types'
 import {
   permitStage,
   timeAgo,
+  stageIconSvg,
   STAGE_COLORS,
   STAGE_LABELS,
-  STAGE_SYMBOLS,
   type PermitStage,
 } from '@/lib/permit-style'
 
@@ -20,21 +20,20 @@ function shortDate(s: string | null): string | null {
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-const SYMBOL_PIXEL_SIZE: Record<PermitStage, number> = {
-  construction: 28,
-  approved: 22,
+const PIN_PIXEL_SIZE: Record<PermitStage, number> = {
+  construction: 30,
+  approved: 24,
   filed: 22,
-  complete: 20,
-  inactive: 18,
+  complete: 22,
+  inactive: 20,
 }
 
-function buildSymbolIcon(stage: PermitStage) {
-  const size = SYMBOL_PIXEL_SIZE[stage]
-  const color = STAGE_COLORS[stage].fill
-  const symbol = STAGE_SYMBOLS[stage]
+function buildIcon(stage: PermitStage) {
+  const size = PIN_PIXEL_SIZE[stage]
+  const svg = stageIconSvg(stage, size)
   return divIcon({
     className: '',
-    html: `<div class="permit-symbol permit-symbol-${stage}" style="color:${color}">${symbol}</div>`,
+    html: `<div class="permit-pin permit-pin-${stage}">${svg}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
     popupAnchor: [0, -size / 2],
@@ -44,7 +43,7 @@ function buildSymbolIcon(stage: PermitStage) {
 export function PermitMarker({ permit }: { permit: Permit }) {
   const router = useRouter()
   const stage = permitStage(permit.status)
-  const icon = useMemo(() => buildSymbolIcon(stage), [stage])
+  const icon = useMemo(() => buildIcon(stage), [stage])
 
   if (!permit.location) return null
   const [lng, lat] = permit.location.coordinates
@@ -54,6 +53,7 @@ export function PermitMarker({ permit }: { permit: Permit }) {
   const issuedShort = shortDate(permit.issued_date)
   const issuedAgo = timeAgo(permit.issued_date)
   const completedShort = shortDate(permit.completed_date)
+  const popupIcon = stageIconSvg(stage, 16)
 
   return (
     <Marker
@@ -70,8 +70,8 @@ export function PermitMarker({ permit }: { permit: Permit }) {
           {permit.permit_type_definition ?? permit.permit_type}
         </span>
         <br />
-        <span style={{ color: stageColor, fontWeight: 600, fontSize: '0.85rem' }}>
-          <span style={{ marginRight: 4 }}>{STAGE_SYMBOLS[stage]}</span>
+        <span style={{ color: stageColor, fontWeight: 600, fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span dangerouslySetInnerHTML={{ __html: popupIcon }} style={{ display: 'inline-flex' }} />
           {stage === 'complete' && completedShort
             ? `Completed ${completedShort}`
             : STAGE_LABELS[stage]}

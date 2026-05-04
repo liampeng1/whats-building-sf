@@ -1,5 +1,5 @@
 'use client'
-import { STAGE_COLORS, STAGE_LABELS, type PermitStage } from '@/lib/permit-style'
+import { stageIconSvg, STAGE_LABELS, type PermitStage } from '@/lib/permit-style'
 
 const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'construction', 'complete']
 
@@ -8,51 +8,23 @@ interface Props {
   onToggleStage: (stage: PermitStage) => void
 }
 
-interface GlyphProps {
-  stage: PermitStage
-  on: boolean
+const GLYPH_SIZE: Record<PermitStage, number> = {
+  filed: 22,
+  approved: 22,
+  construction: 28,
+  complete: 22,
+  inactive: 20,
 }
 
-function StageGlyph({ stage, on }: GlyphProps) {
-  const dim = on ? '' : 'opacity-30'
-  const c = STAGE_COLORS[stage]
-  switch (stage) {
-    case 'filed':
-      return (
-        <span
-          className={`inline-block w-4 h-4 rounded-full bg-paper border-2 ${dim}`}
-          style={{ borderColor: c.stroke }}
-        />
-      )
-    case 'approved':
-      return (
-        <span
-          className={`inline-block w-4 h-4 rounded-full border-2 border-white shadow-sm ${dim}`}
-          style={{ backgroundColor: c.fill }}
-        />
-      )
-    case 'construction':
-      return (
-        <span
-          className={`inline-block w-6 h-6 rounded-full border-[3px] border-white shadow-md ${dim}`}
-          style={{ backgroundColor: c.fill }}
-        />
-      )
-    case 'complete':
-      return (
-        <span
-          className={`inline-block w-3 h-3 rounded-full ${dim}`}
-          style={{ backgroundColor: c.fill }}
-        />
-      )
-    case 'inactive':
-      return (
-        <span
-          className={`inline-block w-4 h-4 rounded-full opacity-50 border ${dim}`}
-          style={{ backgroundColor: c.fill, borderColor: c.stroke }}
-        />
-      )
-  }
+function StageGlyph({ stage, on }: { stage: PermitStage; on: boolean }) {
+  const size = GLYPH_SIZE[stage]
+  return (
+    <span
+      className={`inline-flex items-center justify-center shrink-0 ${on ? '' : 'opacity-30'}`}
+      style={{ width: 28, height: 28 }}
+      dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, size) }}
+    />
+  )
 }
 
 interface RowProps {
@@ -67,7 +39,7 @@ function StageRow({ stage, on, onToggle, showConnector }: RowProps) {
   return (
     <li className="relative">
       <label className="flex items-center gap-3 cursor-pointer select-none py-1.5">
-        <span className="relative flex items-center justify-center w-6 h-6 shrink-0 z-10">
+        <span className="relative flex items-center justify-center w-7 h-7 shrink-0 z-10">
           {showConnector && (
             <span
               aria-hidden
@@ -80,9 +52,6 @@ function StageRow({ stage, on, onToggle, showConnector }: RowProps) {
           className={`flex-1 ${isHeadline ? 'font-semibold' : ''} ${on ? 'text-ink' : 'text-ink-faint'}`}
         >
           {STAGE_LABELS[stage]}
-          {isHeadline && on && (
-            <span className="ml-1.5 text-construction text-xs">●</span>
-          )}
         </span>
         <input
           type="checkbox"
@@ -98,7 +67,7 @@ function StageRow({ stage, on, onToggle, showConnector }: RowProps) {
 
 export function FilterPanel({ selectedStages, onToggleStage }: Props) {
   return (
-    <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[290px] overflow-hidden">
+    <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden">
       <div className="bg-ink text-paper px-4 py-3">
         <div className="font-serif text-base leading-tight">SF In Progress</div>
         <p className="text-[11px] tracking-wide opacity-70 mt-0.5">
@@ -129,7 +98,7 @@ export function FilterPanel({ selectedStages, onToggleStage }: Props) {
               showConnector={false}
             />
           </ul>
-          <p className="text-[10px] text-ink-faint ml-9 -mt-0.5">
+          <p className="text-[10px] text-ink-faint ml-10 -mt-0.5">
             Off-track: cancelled, expired, denied
           </p>
         </div>

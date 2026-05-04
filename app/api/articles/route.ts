@@ -6,6 +6,7 @@ export interface Article {
   url: string
   source: string | null
   published: string | null
+  highlighted?: boolean
 }
 
 interface RssItem {
@@ -13,6 +14,12 @@ interface RssItem {
   link?: string
   pubDate?: string
   source?: string | { '#text'?: string; url?: string }
+}
+
+interface WpPost {
+  title?: { rendered?: string }
+  link?: string
+  date?: string
 }
 
 function stripHtml(s: string): string {
@@ -25,37 +32,79 @@ function parseSource(src: RssItem['source']): string | null {
   return src['#text'] ?? null
 }
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const q = searchParams.get('q')
-  if (!q) return NextResponse.json({ articles: [] })
-
+async function fetchGoogleNews(q: string): Promise<Article[]> {
   const query = `"${q}" San Francisco`
   const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`
-
   try {
     const res = await fetch(rssUrl, {
       headers: { 'User-Agent': 'sf-in-progress/1.0' },
       next: { revalidate: 3600 },
     })
-    if (!res.ok) throw new Error(`RSS error: ${res.status}`)
-
+    if (!res.ok) return []
     const xml = await res.text()
     const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '' })
     const parsed = parser.parse(xml) as { rss?: { channel?: { item?: RssItem | RssItem[] } } }
     const raw = parsed?.rss?.channel?.item ?? []
     const items: RssItem[] = Array.isArray(raw) ? raw : [raw]
-
-    const articles: Article[] = items.slice(0, 10).map((item) => ({
+    return items.slice(0, 10).map((item) => ({
       title: stripHtml(item.title ?? ''),
       url: item.link ?? '',
       source: parseSource(item.source),
       published: item.pubDate ?? null,
     }))
-
-    return NextResponse.json({ articles })
   } catch (err) {
-    console.error('articles fetch failed', err)
-    return NextResponse.json({ articles: [], error: 'Could not load articles' }, { status: 500 })
+    console.error('google news fetch failed', err)
+    return []
   }
+}
+
+async function fetchSfYimby(q: string): Promise<Article[]> {
+  // SF YIMBY runs WordPress and exposes the standard REST API. They don't tag
+  // posts by street address, but full-text search hits address strings in
+  // titles/content reliably and is much higher-signal than Google News for
+  // SF development coverage.
+  const url = `https://sfyimby.com/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=5&_fields=title,link,date`
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'sf-in-progress/1.0' },
+      next: { revalidate: 3600 },
+    })
+    if (!res.ok) return []
+    const posts: WpPost[] = await res.json()
+    return posts.map((p) => ({
+      title: stripHtml(p.title?.rendered ?? ''),
+      url: p.link ?? '',
+      source: 'SF YIMBY',
+      published: p.date ?? null,
+      highlighted: true,
+    }))
+  } catch (err) {
+    console.error('sf yimby fetch failed', err)
+    return []
+  }
+}
+
+function dedupe(articles: Article[]): Article[] {
+  const seen = new Set<string>()
+  const out: Article[] = []
+  for (const a of articles) {
+    const key = a.url || a.title
+    if (!key || seen.has(key)) continue
+    seen.add(key)
+    out.push(a)
+  }
+  return out
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const q = searchParams.get('q')
+  if (!q) return NextResponse.json({ articles: [] })
+
+  const [yimby, news] = await Promise.all([fetchSfYimby(q), fetchGoogleNews(q)])
+
+  // SF YIMBY first (high signal for SF construction), then Google News for breadth.
+  const articles = dedupe([...yimby, ...news])
+
+  return NextResponse.json({ articles })
 }
