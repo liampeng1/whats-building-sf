@@ -124,7 +124,7 @@ function CategoryRow({ cat, on, onToggle, subContent }: CategoryRowProps) {
           style={{ accentColor: 'var(--ink)' }}
         />
       </label>
-      {on && subContent && <div className="ml-6 mt-1 mb-2">{subContent}</div>}
+      {subContent && <div className="ml-6 mt-1 mb-2">{subContent}</div>}
     </li>
   )
 }
@@ -165,7 +165,7 @@ export function FilterPanel({
   }, [])
 
   const homesSubFilter = (
-    <div>
+    <div className={`${housingOn ? '' : 'opacity-40 pointer-events-none'} transition-opacity duration-200`}>
       <div className="text-[10px] uppercase tracking-wider text-ink-faint mb-1">
         Net new homes
       </div>
@@ -175,6 +175,8 @@ export function FilterPanel({
             key={opt.value}
             type="button"
             onClick={() => onMinUnitsChange(opt.value)}
+            disabled={!housingOn}
+            aria-disabled={!housingOn}
             className={`flex-1 px-2 py-1 text-xs rounded border transition ${
               minUnits === opt.value
                 ? 'bg-ink text-paper border-ink font-semibold'
@@ -218,8 +220,13 @@ export function FilterPanel({
         </p>
       </button>
 
-      {open && (
-      <div className="overflow-y-auto text-sm p-4">
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+        }`}
+      >
+        <div className="overflow-hidden min-h-0">
+      <div className="overflow-y-auto text-sm p-4 max-h-[calc(100dvh-9rem)]">
         <div className="flex items-center justify-between mb-2">
           <div className="civic-eyebrow">Use type</div>
           <BulkToggle
@@ -234,7 +241,7 @@ export function FilterPanel({
               cat={cat}
               on={selectedCategories.has(cat)}
               onToggle={() => onToggleCategory(cat)}
-              subContent={cat === 'housing' && housingOn ? homesSubFilter : undefined}
+              subContent={cat === 'housing' ? homesSubFilter : undefined}
             />
           ))}
         </ul>
@@ -280,7 +287,8 @@ export function FilterPanel({
           </p>
         </div>
       </div>
-      )}
+        </div>
+      </div>
     </div>
   )
 }

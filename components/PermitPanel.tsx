@@ -59,13 +59,13 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
         aria-label="Close panel"
         type="button"
         onClick={onClose}
-        className={`fixed inset-0 bg-ink/20 z-[1100] transition-opacity ${
+        className={`fixed inset-0 bg-ink/20 z-[1100] transition-opacity duration-300 ease-out ${
           open ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       />
       {/* Right-edge drawer */}
       <aside
-        className={`fixed top-0 right-0 h-screen w-full md:w-[640px] bg-paper border-l-2 border-ink shadow-2xl z-[1200] overflow-y-auto transition-transform ${
+        className={`fixed top-0 right-0 h-[100dvh] w-full md:w-[640px] bg-paper border-l-2 border-ink shadow-2xl z-[1200] overflow-y-auto transition-transform duration-300 ease-out ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-hidden={!open}
