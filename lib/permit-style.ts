@@ -44,11 +44,13 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   inactive: 'Inactive',
 }
 
-export function permitTypeId(permitType: string): PermitTypeId {
+export function permitTypeId(permitType: string | null | undefined): PermitTypeId {
+  if (!permitType) return '9'
   return (PERMIT_TYPE_IDS as string[]).includes(permitType) ? (permitType as PermitTypeId) : '9'
 }
 
-export function permitStage(status: string): PermitStage {
+export function permitStage(status: string | null | undefined): PermitStage {
+  if (!status) return 'filed'
   const s = status.toLowerCase()
   if (s === 'complete') return 'complete'
   if (

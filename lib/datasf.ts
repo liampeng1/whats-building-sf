@@ -7,18 +7,18 @@ const PLANNING_DATASET = 'qvu5-m3a2'
 export class NotFoundError extends Error {}
 
 interface PermitApiRow {
-  permit_number: string
-  permit_type: string
-  permit_type_definition: string | null
-  status: string
-  description: string | null
-  street_number: string | null
-  street_name: string | null
-  street_suffix: string | null
-  filed_date: string | null
-  issued_date: string | null
-  completed_date: string | null
-  location: Permit['location']
+  permit_number?: string
+  permit_type?: string
+  permit_type_definition?: string | null
+  status?: string
+  description?: string | null
+  street_number?: string | null
+  street_name?: string | null
+  street_suffix?: string | null
+  filed_date?: string | null
+  issued_date?: string | null
+  completed_date?: string | null
+  location?: Permit['location']
 }
 
 interface PlanningCaseApiRow {
@@ -57,12 +57,12 @@ function permitFromApi(row: PermitApiRow): Permit {
     .filter((p): p is string => Boolean(p))
     .join(' ')
   return {
-    permit_number: row.permit_number,
-    permit_type: row.permit_type,
+    permit_number: row.permit_number ?? '',
+    permit_type: row.permit_type ?? '9',
     permit_type_definition: row.permit_type_definition ?? null,
-    status: row.status,
+    status: row.status ?? 'unknown',
     description: row.description ?? null,
-    address,
+    address: address || '(address unavailable)',
     filed_date: row.filed_date ?? null,
     issued_date: row.issued_date ?? null,
     completed_date: row.completed_date ?? null,
