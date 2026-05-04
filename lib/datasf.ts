@@ -19,6 +19,16 @@ interface PermitApiRow {
   location: Permit['location']
 }
 
+interface PlanningCaseApiRow {
+  record_id: string
+  record_type: string
+  description: string | null
+  project_address: string
+  record_status: string
+  open_date: string | null
+  [key: string]: unknown
+}
+
 function headers(): HeadersInit {
   const h: Record<string, string> = { 'Content-Type': 'application/json' }
   if (process.env.DATASF_APP_TOKEN) h['X-App-Token'] = process.env.DATASF_APP_TOKEN
@@ -27,6 +37,17 @@ function headers(): HeadersInit {
 
 function boundsFilter(bounds: MapBounds): string {
   return `within_box(location,${bounds.north},${bounds.west},${bounds.south},${bounds.east})`
+}
+
+function caseFromApi(row: PlanningCaseApiRow): PlanningCase {
+  return {
+    record_id: row.record_id,
+    record_type: row.record_type,
+    description: row.description ?? null,
+    project_address: row.project_address,
+    record_status: row.record_status,
+    open_date: row.open_date ?? null,
+  }
 }
 
 function permitFromApi(row: PermitApiRow): Permit {
@@ -69,14 +90,15 @@ export async function fetchPlanningCases(): Promise<PlanningCase[]> {
   const params = new URLSearchParams({ $limit: '500', $order: 'open_date DESC' })
   const res = await fetch(`${BASE_URL}/${PLANNING_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
-  return res.json()
+  const rows: PlanningCaseApiRow[] = await res.json()
+  return rows.map(caseFromApi)
 }
 
 export async function fetchPlanningCase(id: string): Promise<PlanningCase> {
   const params = new URLSearchParams({ record_id: id, $limit: '1' })
   const res = await fetch(`${BASE_URL}/${PLANNING_DATASET}.json?${params}`, { headers: headers() })
   if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
-  const data: PlanningCase[] = await res.json()
-  if (data.length === 0) throw new Error('Planning case not found')
-  return data[0]
+  const rows: PlanningCaseApiRow[] = await res.json()
+  if (rows.length === 0) throw new Error('Planning case not found')
+  return caseFromApi(rows[0])
 }

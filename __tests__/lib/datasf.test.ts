@@ -115,6 +115,29 @@ describe('fetchPlanningCases', () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: false, status: 429 })
     await expect(fetchPlanningCases()).rejects.toThrow('DataSF error: 429')
   })
+
+  test('strips unknown fields from API response', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ ...mockCaseApi, block: '1353', lot: '003', applicant: 'Acme', pim_link: 'https://example' }],
+    })
+    const cases = await fetchPlanningCases()
+    expect(cases[0]).not.toHaveProperty('block')
+    expect(cases[0]).not.toHaveProperty('lot')
+    expect(cases[0]).not.toHaveProperty('applicant')
+    expect(cases[0]).not.toHaveProperty('pim_link')
+    expect(Object.keys(cases[0]).sort()).toEqual(
+      ['description', 'open_date', 'project_address', 'record_id', 'record_status', 'record_type'],
+    )
+  })
+
+  test('defaults missing description and open_date to null', async () => {
+    const { description: _d, open_date: _o, ...partial } = mockCaseApi
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [partial] })
+    const cases = await fetchPlanningCases()
+    expect(cases[0].description).toBeNull()
+    expect(cases[0].open_date).toBeNull()
+  })
 })
 
 describe('fetchPlanningCase', () => {
@@ -129,5 +152,18 @@ describe('fetchPlanningCase', () => {
   test('throws when case not found', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [] })
     await expect(fetchPlanningCase('nonexistent')).rejects.toThrow('Planning case not found')
+  })
+
+  test('strips unknown fields and defaults nullables on single record', async () => {
+    const { description: _d, open_date: _o, ...partial } = mockCaseApi
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ ...partial, block: '1353', applicant: 'Acme' }],
+    })
+    const c = await fetchPlanningCase('2025-012220PRJ')
+    expect(c).not.toHaveProperty('block')
+    expect(c).not.toHaveProperty('applicant')
+    expect(c.description).toBeNull()
+    expect(c.open_date).toBeNull()
   })
 })
