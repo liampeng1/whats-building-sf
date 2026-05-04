@@ -142,6 +142,53 @@ export function isUnderConstruction(permit: Permit): boolean {
   return permitStage(permit.status) === 'construction'
 }
 
+// Building-use categorization. Derived from DataSF's free-text use fields.
+// Order matters — check housing/retail/office before falling back to other.
+export type UseCategory = 'housing' | 'retail' | 'office' | 'mixed' | 'industrial' | 'other'
+
+export const USE_CATEGORY_LABELS: Record<UseCategory, string> = {
+  housing: 'Housing',
+  retail: 'Retail',
+  office: 'Office',
+  mixed: 'Mixed-use',
+  industrial: 'Industrial',
+  other: 'Other',
+}
+
+const HOUSING_PATTERNS = ['family dwelling', 'apartments', 'residential', 'dwelling', 'condominium', 'group housing', 'sro']
+const RETAIL_PATTERNS = ['retail', 'mercantile', 'restaurant', 'food service', 'store']
+const OFFICE_PATTERNS = ['office']
+const INDUSTRIAL_PATTERNS = ['warehouse', 'manufacturing', 'industrial', 'factory']
+
+function matchesAny(s: string, patterns: string[]): boolean {
+  return patterns.some((p) => s.includes(p))
+}
+
+export function useCategory(proposedUse: string | null | undefined): UseCategory {
+  if (!proposedUse) return 'other'
+  const s = proposedUse.toLowerCase()
+  // Combination strings like "1 family dwelling and retail" → mixed-use
+  const isHousing = matchesAny(s, HOUSING_PATTERNS)
+  const isRetail = matchesAny(s, RETAIL_PATTERNS)
+  const isOffice = matchesAny(s, OFFICE_PATTERNS)
+  const categories = [isHousing, isRetail, isOffice].filter(Boolean).length
+  if (categories >= 2) return 'mixed'
+  if (isHousing) return 'housing'
+  if (isRetail) return 'retail'
+  if (isOffice) return 'office'
+  if (matchesAny(s, INDUSTRIAL_PATTERNS)) return 'industrial'
+  return 'other'
+}
+
+// Returns the net change for a numeric field; null when either side is missing.
+export function netDelta(existing: string | null, proposed: string | null): number | null {
+  if (!existing && !proposed) return null
+  const e = existing != null ? Number(existing) : 0
+  const p = proposed != null ? Number(proposed) : 0
+  if (!Number.isFinite(e) || !Number.isFinite(p)) return null
+  return p - e
+}
+
 export function timeAgo(dateStr: string | null, now: Date = new Date()): string | null {
   if (!dateStr) return null
   const then = new Date(dateStr)

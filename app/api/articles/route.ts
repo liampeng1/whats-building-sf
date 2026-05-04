@@ -7,6 +7,7 @@ export interface Article {
   source: string | null
   published: string | null
   highlighted?: boolean
+  imageUrl?: string | null
 }
 
 interface RssItem {
@@ -20,6 +21,26 @@ interface WpPost {
   title?: { rendered?: string }
   link?: string
   date?: string
+  _embedded?: {
+    'wp:featuredmedia'?: Array<{
+      source_url?: string
+      media_details?: {
+        sizes?: Record<string, { source_url?: string; width?: number }>
+      }
+    }>
+  }
+}
+
+function extractFeaturedImage(post: WpPost): string | null {
+  const media = post._embedded?.['wp:featuredmedia']?.[0]
+  if (!media) return null
+  // Prefer a medium-sized version when available — full-size renderings can be huge.
+  const sizes = media.media_details?.sizes
+  if (sizes) {
+    const preferred = sizes.medium_large ?? sizes.large ?? sizes.medium ?? sizes.full
+    if (preferred?.source_url) return preferred.source_url
+  }
+  return media.source_url ?? null
 }
 
 function stripHtml(s: string): string {
@@ -61,9 +82,10 @@ async function fetchGoogleNews(q: string): Promise<Article[]> {
 async function fetchSfYimby(q: string): Promise<Article[]> {
   // SF YIMBY runs WordPress and exposes the standard REST API. They don't tag
   // posts by street address, but full-text search hits address strings in
-  // titles/content reliably and is much higher-signal than Google News for
-  // SF development coverage.
-  const url = `https://sfyimby.com/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=5&_fields=title,link,date`
+  // titles/content reliably. Featured images on SF YIMBY posts are typically
+  // architectural renderings of the project — gold for "show me what this
+  // building will look like."
+  const url = `https://sfyimby.com/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=5&_embed=wp:featuredmedia&_fields=title,link,date,_links,_embedded`
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'sf-in-progress/1.0' },
@@ -77,6 +99,7 @@ async function fetchSfYimby(q: string): Promise<Article[]> {
       source: 'SF YIMBY',
       published: p.date ?? null,
       highlighted: true,
+      imageUrl: extractFeaturedImage(p),
     }))
   } catch (err) {
     console.error('sf yimby fetch failed', err)

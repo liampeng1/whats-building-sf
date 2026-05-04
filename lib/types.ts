@@ -24,6 +24,12 @@ export interface Permit {
   completed_date: string | null
   status_date: string | null
   estimated_cost: string | null
+  existing_use: string | null
+  proposed_use: string | null
+  existing_units: string | null
+  proposed_units: string | null
+  existing_stories: string | null
+  proposed_stories: string | null
   location: GeoPoint | null
 }
 

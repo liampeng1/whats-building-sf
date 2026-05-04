@@ -1,11 +1,21 @@
 'use client'
 import { stageIconSvg, STAGE_LABELS, type PermitStage } from '@/lib/permit-style'
+import type { MinUnitsFilter } from './Map'
 
 const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'construction', 'complete']
+
+const MIN_UNITS_OPTIONS: { value: MinUnitsFilter; label: string }[] = [
+  { value: 0, label: 'Any' },
+  { value: 5, label: '5+' },
+  { value: 25, label: '25+' },
+  { value: 100, label: '100+' },
+]
 
 interface Props {
   selectedStages: Set<PermitStage>
   onToggleStage: (stage: PermitStage) => void
+  minUnits: MinUnitsFilter
+  onMinUnitsChange: (n: MinUnitsFilter) => void
 }
 
 const GLYPH_SIZE: Record<PermitStage, number> = {
@@ -65,7 +75,7 @@ function StageRow({ stage, on, onToggle, showConnector }: RowProps) {
   )
 }
 
-export function FilterPanel({ selectedStages, onToggleStage }: Props) {
+export function FilterPanel({ selectedStages, onToggleStage, minUnits, onMinUnitsChange }: Props) {
   return (
     <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden">
       <div className="bg-ink text-paper px-4 py-3">
@@ -76,6 +86,24 @@ export function FilterPanel({ selectedStages, onToggleStage }: Props) {
       </div>
 
       <div className="p-4 text-sm">
+        <div className="civic-eyebrow mb-2">Net new homes</div>
+        <div className="flex gap-1 mb-4">
+          {MIN_UNITS_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onMinUnitsChange(opt.value)}
+              className={`flex-1 px-2 py-1.5 text-xs rounded border transition ${
+                minUnits === opt.value
+                  ? 'bg-ink text-paper border-ink font-semibold'
+                  : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         <div className="civic-eyebrow mb-2">Lifecycle</div>
         <ul className="mb-3">
           {LIFECYCLE.map((stage, i) => (

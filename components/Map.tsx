@@ -1,16 +1,17 @@
 'use client'
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
-import MarkerClusterGroup from 'react-leaflet-cluster'
 import 'leaflet/dist/leaflet.css'
 import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
-import { permitStage, STAGE_ORDER, type PermitStage } from '@/lib/permit-style'
+import { permitStage, netDelta, STAGE_ORDER, type PermitStage } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = STAGE_ORDER
+
+export type MinUnitsFilter = 0 | 5 | 25 | 100
 
 interface Props {
   initialCenter?: [number, number]
@@ -23,6 +24,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [selectedStages, setSelectedStages] = useState<Set<PermitStage>>(
     () => new Set(ALL_STAGES),
   )
+  const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const toggleStage = useCallback((stage: PermitStage) => {
@@ -35,8 +37,16 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   }, [])
 
   const visiblePermits = useMemo(
-    () => permits.filter((p) => selectedStages.has(permitStage(p.status))),
-    [permits, selectedStages],
+    () =>
+      permits.filter((p) => {
+        if (!selectedStages.has(permitStage(p.status))) return false
+        if (minUnits > 0) {
+          const delta = netDelta(p.existing_units, p.proposed_units)
+          if (delta == null || delta < minUnits) return false
+        }
+        return true
+      }),
+    [permits, selectedStages, minUnits],
   )
 
   const fetchData = useCallback(async (bounds: MapBounds | undefined, signal?: AbortSignal) => {
@@ -98,19 +108,16 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           maxZoom={19}
         />
         <MapEventHandler onBoundsChange={handleBoundsChange} />
-        <MarkerClusterGroup
-          chunkedLoading
-          showCoverageOnHover={false}
-          spiderfyOnMaxZoom
-          disableClusteringAtZoom={16}
-          maxClusterRadius={50}
-        >
-          {visiblePermits.map((p, i) => (
-            <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />
-          ))}
-        </MarkerClusterGroup>
+        {visiblePermits.map((p, i) => (
+          <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />
+        ))}
       </MapContainer>
-      <FilterPanel selectedStages={selectedStages} onToggleStage={toggleStage} />
+      <FilterPanel
+        selectedStages={selectedStages}
+        onToggleStage={toggleStage}
+        minUnits={minUnits}
+        onMinUnitsChange={setMinUnits}
+      />
     </div>
   )
 }

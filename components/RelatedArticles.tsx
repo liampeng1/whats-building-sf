@@ -7,6 +7,7 @@ interface Article {
   source: string | null
   published: string | null
   highlighted?: boolean
+  imageUrl?: string | null
 }
 
 function formatPubDate(s: string | null): string | null {
@@ -43,7 +44,7 @@ export function RelatedArticles({ address }: { address: string }) {
   }
 
   return (
-    <ul className="space-y-4">
+    <ul className="space-y-5">
       {articles.map((a, i) => (
         <li
           key={`${a.url}-${i}`}
@@ -53,9 +54,20 @@ export function RelatedArticles({ address }: { address: string }) {
             href={a.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-serif text-base text-ink hover:underline leading-tight block"
+            className="block group"
           >
-            {a.title}
+            {a.imageUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={a.imageUrl}
+                alt={a.title}
+                loading="lazy"
+                className="w-full max-h-72 object-cover rounded mb-2 border border-paper-edge"
+              />
+            )}
+            <span className="font-serif text-base text-ink group-hover:underline leading-tight block">
+              {a.title}
+            </span>
           </a>
           <div className="text-xs text-ink-faint mt-1 flex items-center gap-2 flex-wrap">
             {a.highlighted && (

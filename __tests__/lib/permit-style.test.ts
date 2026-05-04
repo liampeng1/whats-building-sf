@@ -2,6 +2,8 @@ import {
   permitTypeId,
   permitStage,
   permitStyle,
+  useCategory,
+  netDelta,
   STAGE_COLORS,
   PERMIT_TYPE_IDS,
 } from '@/lib/permit-style'
@@ -70,6 +72,12 @@ const basePermit: Permit = {
   completed_date: null,
   status_date: null,
   estimated_cost: null,
+  existing_use: null,
+  proposed_use: null,
+  existing_units: null,
+  proposed_units: null,
+  existing_stories: null,
+  proposed_stories: null,
   location: null,
 }
 
@@ -110,5 +118,50 @@ describe('permitStyle', () => {
     const s = permitStyle({ ...basePermit, status: 'cancelled' })
     expect(s.fillColor).toBe(STAGE_COLORS.inactive.fill)
     expect(s.fillOpacity).toBeLessThan(0.3)
+  })
+})
+
+describe('useCategory', () => {
+  test('classifies dwelling as housing', () => {
+    expect(useCategory('1 family dwelling')).toBe('housing')
+    expect(useCategory('apartments')).toBe('housing')
+  })
+
+  test('classifies retail / restaurant as retail', () => {
+    expect(useCategory('retail sales')).toBe('retail')
+    expect(useCategory('restaurant')).toBe('retail')
+  })
+
+  test('classifies dwelling + retail as mixed', () => {
+    expect(useCategory('1 family dwelling and retail')).toBe('mixed')
+    expect(useCategory('apartments + office')).toBe('mixed')
+  })
+
+  test('falls back to other for empty / unknown uses', () => {
+    expect(useCategory(null)).toBe('other')
+    expect(useCategory('')).toBe('other')
+    expect(useCategory('parking lot')).toBe('other')
+  })
+})
+
+describe('netDelta', () => {
+  test('returns positive delta when proposed > existing', () => {
+    expect(netDelta('1', '12')).toBe(11)
+  })
+
+  test('returns negative delta when proposed < existing', () => {
+    expect(netDelta('5', '2')).toBe(-3)
+  })
+
+  test('treats missing existing as 0', () => {
+    expect(netDelta(null, '8')).toBe(8)
+  })
+
+  test('returns null when both sides are missing', () => {
+    expect(netDelta(null, null)).toBeNull()
+  })
+
+  test('returns null on non-numeric input', () => {
+    expect(netDelta('abc', '5')).toBeNull()
   })
 })

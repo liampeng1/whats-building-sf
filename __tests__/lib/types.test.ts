@@ -13,6 +13,12 @@ test('Permit type accepts a valid permit object', () => {
     completed_date: null,
     status_date: null,
     estimated_cost: null,
+    existing_use: null,
+    proposed_use: null,
+    existing_units: null,
+    proposed_units: null,
+    existing_stories: null,
+    proposed_stories: null,
     location: { type: 'Point', coordinates: [-122.4194, 37.7749] },
   }
   expect(permit.permit_number).toBe('202301010001')
@@ -32,6 +38,12 @@ test('Permit type allows null location', () => {
     completed_date: null,
     status_date: null,
     estimated_cost: null,
+    existing_use: null,
+    proposed_use: null,
+    existing_units: null,
+    proposed_units: null,
+    existing_stories: null,
+    proposed_stories: null,
     location: null,
   }
   expect(permit.location).toBeNull()
@@ -62,6 +74,12 @@ test('Permit type allows null filed_date', () => {
     completed_date: null,
     status_date: null,
     estimated_cost: null,
+    existing_use: null,
+    proposed_use: null,
+    existing_units: null,
+    proposed_units: null,
+    existing_stories: null,
+    proposed_stories: null,
     location: null,
   }
   expect(permit.filed_date).toBeNull()

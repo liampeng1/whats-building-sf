@@ -20,6 +20,12 @@ interface PermitApiRow {
   completed_date?: string | null
   status_date?: string | null
   estimated_cost?: string | null
+  existing_use?: string | null
+  proposed_use?: string | null
+  existing_units?: string | null
+  proposed_units?: string | null
+  number_of_existing_stories?: string | null
+  number_of_proposed_stories?: string | null
   location?: Permit['location']
 }
 
@@ -70,6 +76,12 @@ function permitFromApi(row: PermitApiRow): Permit {
     completed_date: row.completed_date ?? null,
     status_date: row.status_date ?? null,
     estimated_cost: row.estimated_cost ?? null,
+    existing_use: row.existing_use ?? null,
+    proposed_use: row.proposed_use ?? null,
+    existing_units: row.existing_units ?? null,
+    proposed_units: row.proposed_units ?? null,
+    existing_stories: row.number_of_existing_stories ?? null,
+    proposed_stories: row.number_of_proposed_stories ?? null,
     location: row.location ?? null,
   }
 }
