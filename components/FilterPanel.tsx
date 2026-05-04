@@ -129,17 +129,37 @@ function CategoryRow({ cat, on, onToggle, subContent }: CategoryRowProps) {
   )
 }
 
-function BulkToggle({ onAll, onNone }: { onAll: () => void; onNone: () => void }) {
+/**
+ * Master checkbox for a section header. Three states:
+ * - all selected → checked, click clears
+ * - none selected → unchecked, click selects all
+ * - some selected → indeterminate (rendered as a dash), click selects all
+ */
+function MasterCheckbox({
+  state,
+  onSelectAll,
+  onClear,
+  ariaLabel,
+}: {
+  state: 'all' | 'none' | 'some'
+  onSelectAll: () => void
+  onClear: () => void
+  ariaLabel: string
+}) {
+  const checked = state === 'all'
+  const indeterminate = state === 'some'
   return (
-    <div className="text-[10px] uppercase tracking-wider text-ink-faint">
-      <button type="button" onClick={onAll} className="hover:text-ink underline-offset-2 hover:underline">
-        All
-      </button>
-      <span className="mx-1.5 text-paper-edge" aria-hidden>·</span>
-      <button type="button" onClick={onNone} className="hover:text-ink underline-offset-2 hover:underline">
-        None
-      </button>
-    </div>
+    <input
+      type="checkbox"
+      aria-label={ariaLabel}
+      checked={checked}
+      ref={(el) => {
+        if (el) el.indeterminate = indeterminate
+      }}
+      onChange={() => (state === 'all' ? onClear() : onSelectAll())}
+      className="w-4 h-4 cursor-pointer"
+      style={{ accentColor: 'var(--ink)' }}
+    />
   )
 }
 
@@ -229,9 +249,17 @@ export function FilterPanel({
       <div className="overflow-y-auto text-sm p-4 max-h-[calc(100dvh-9rem)]">
         <div className="flex items-center justify-between mb-2">
           <div className="civic-eyebrow">Use type</div>
-          <BulkToggle
-            onAll={() => onSetCategories(new Set(CATEGORIES))}
-            onNone={() => onSetCategories(new Set())}
+          <MasterCheckbox
+            ariaLabel="Toggle all use types"
+            state={
+              selectedCategories.size === CATEGORIES.length
+                ? 'all'
+                : selectedCategories.size === 0
+                  ? 'none'
+                  : 'some'
+            }
+            onSelectAll={() => onSetCategories(new Set(CATEGORIES))}
+            onClear={() => onSetCategories(new Set())}
           />
         </div>
         <ul className="mb-4 space-y-0.5">
@@ -248,13 +276,20 @@ export function FilterPanel({
 
         <div className="flex items-center justify-between mb-2">
           <div className="civic-eyebrow">Lifecycle</div>
-          <BulkToggle
-            onAll={() => {
+          <MasterCheckbox
+            ariaLabel="Toggle all lifecycle stages"
+            state={(() => {
+              const lifeOn = LIFECYCLE.filter((s) => selectedStages.has(s)).length
+              if (lifeOn === LIFECYCLE.length) return 'all'
+              if (lifeOn === 0) return 'none'
+              return 'some'
+            })()}
+            onSelectAll={() => {
               const next = new Set<PermitStage>(LIFECYCLE)
               if (selectedStages.has('inactive')) next.add('inactive')
               onSetStages(next)
             }}
-            onNone={() => {
+            onClear={() => {
               const next = new Set<PermitStage>()
               if (selectedStages.has('inactive')) next.add('inactive')
               onSetStages(next)
