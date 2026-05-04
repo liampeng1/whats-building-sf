@@ -22,8 +22,6 @@ const NEWS_SOURCES: SourceLink[] = [
 
 export function RelatedSources({ address, lat, lng }: Props) {
   const q = encodeURIComponent(address)
-  const coordsQ = lat != null && lng != null ? `${lat},${lng}` : address
-  const mapsEmbed = `https://www.google.com/maps?q=${encodeURIComponent(coordsQ)}&output=embed`
   const streetView =
     lat != null && lng != null
       ? `https://www.google.com/maps?layer=c&cbll=${lat},${lng}`
@@ -31,19 +29,7 @@ export function RelatedSources({ address, lat, lng }: Props) {
 
   return (
     <div>
-      <div className="civic-eyebrow mb-4">Photos &amp; outside coverage</div>
-
-      <div className="rounded overflow-hidden border border-paper-edge mb-4">
-        <iframe
-          title={`Map of ${address}`}
-          src={mapsEmbed}
-          width="100%"
-          height="260"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          style={{ border: 0 }}
-        />
-      </div>
+      <div className="civic-eyebrow mb-4">Outside coverage</div>
 
       <div className="flex flex-wrap gap-2 mb-5">
         <a

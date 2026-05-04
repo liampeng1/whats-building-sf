@@ -26,6 +26,8 @@ interface Props {
   onToggleCategory: (cat: UseCategory) => void
   minUnits: MinUnitsFilter
   onMinUnitsChange: (n: MinUnitsFilter) => void
+  visibleCount: number
+  totalCount: number
 }
 
 const GLYPH_SIZE: Record<PermitStage, number> = {
@@ -131,6 +133,8 @@ export function FilterPanel({
   onToggleCategory,
   minUnits,
   onMinUnitsChange,
+  visibleCount,
+  totalCount,
 }: Props) {
   const housingOn = selectedCategories.has('housing')
 
@@ -161,7 +165,15 @@ export function FilterPanel({
   return (
     <div className="absolute bottom-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[300px] overflow-hidden max-h-[calc(100vh-2rem)] flex flex-col">
       <div className="bg-ink text-paper px-4 py-3 shrink-0">
-        <div className="font-serif text-base leading-tight">What&apos;s Building SF</div>
+        <div className="flex items-baseline justify-between gap-2">
+          <div className="font-serif text-base leading-tight">What&apos;s Building SF</div>
+          {totalCount > 0 && (
+            <div className="text-[11px] tabular-nums opacity-80">
+              <span className="font-semibold">{visibleCount}</span>
+              <span className="opacity-70"> / {totalCount}</span>
+            </div>
+          )}
+        </div>
         <p className="text-[11px] tracking-wide opacity-70 mt-0.5">
           Major new construction · last 2 years
         </p>

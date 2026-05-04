@@ -43,48 +43,73 @@ export function RelatedArticles({ address }: { address: string }) {
     )
   }
 
+  // Articles with images shown as a horizontal-scrolling renderings strip;
+  // every article (with or without image) listed below as a compact text list.
+  const withImages = articles.filter((a) => a.imageUrl)
+
   return (
-    <ul className="space-y-5">
-      {articles.map((a, i) => (
-        <li
-          key={`${a.url}-${i}`}
-          className={a.highlighted ? 'pl-3 border-l-2 border-construction' : ''}
-        >
-          <a
-            href={a.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block group"
-          >
-            {a.imageUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={a.imageUrl}
-                alt={a.title}
-                loading="lazy"
-                className="w-full max-h-72 object-cover rounded mb-2 border border-paper-edge"
-              />
-            )}
-            <span className="font-serif text-base text-ink group-hover:underline leading-tight block">
-              {a.title}
-            </span>
-          </a>
-          <div className="text-xs text-ink-faint mt-1 flex items-center gap-2 flex-wrap">
-            {a.highlighted && (
-              <span className="text-construction font-semibold tracking-wide uppercase text-[10px]">
-                Tagged on SF YIMBY
-              </span>
-            )}
-            <span>{a.source}</span>
-            {a.published && (
-              <>
-                <span aria-hidden>·</span>
-                <span>{formatPubDate(a.published)}</span>
-              </>
-            )}
+    <div className="space-y-6">
+      {withImages.length > 0 && (
+        <div className="-mx-6 px-6">
+          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scroll-px-6">
+            {withImages.map((a, i) => (
+              <a
+                key={`img-${a.url}-${i}`}
+                href={a.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 w-64 snap-start group"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={a.imageUrl ?? ''}
+                  alt={a.title}
+                  loading="lazy"
+                  className="w-64 h-44 object-cover rounded border border-paper-edge group-hover:border-ink transition-colors"
+                />
+                <div className="mt-1.5 text-xs text-ink leading-tight line-clamp-2">{a.title}</div>
+                <div className="mt-0.5 text-[10px] uppercase tracking-wider text-construction font-semibold">
+                  SF YIMBY · rendering
+                </div>
+              </a>
+            ))}
           </div>
-        </li>
-      ))}
-    </ul>
+        </div>
+      )}
+
+      <ul className="space-y-3">
+        {articles.map((a, i) => (
+          <li
+            key={`${a.url}-${i}`}
+            className={a.highlighted ? 'pl-3 border-l-2 border-construction' : ''}
+          >
+            <a
+              href={a.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group"
+            >
+              <span className="font-serif text-base text-ink group-hover:underline leading-tight block">
+                {a.title}
+              </span>
+            </a>
+            <div className="text-xs text-ink-faint mt-0.5 flex items-center gap-2 flex-wrap">
+              {a.highlighted && (
+                <span className="text-construction font-semibold tracking-wide uppercase text-[10px]">
+                  Tagged on SF YIMBY
+                </span>
+              )}
+              <span>{a.source}</span>
+              {a.published && (
+                <>
+                  <span aria-hidden>·</span>
+                  <span>{formatPubDate(a.published)}</span>
+                </>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

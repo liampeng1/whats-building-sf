@@ -70,23 +70,33 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
         }`}
         aria-hidden={!open}
       >
-        <div className="sticky top-0 z-10 bg-paper-deep border-b-2 border-ink px-6 py-3 flex items-center justify-between">
-          <div className="civic-eyebrow text-ink-faint">Permit Record</div>
-          <div className="flex items-center gap-3">
+        {/* Sticky header — shows the address itself so it's always visible
+            even when scrolled deep into news. Floating close stays clickable. */}
+        <div className="sticky top-0 z-10 bg-paper/95 backdrop-blur border-b border-paper-edge px-6 py-3 flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="civic-eyebrow text-ink-faint">
+              {permit ? `Permit #${permit.permit_number}` : 'Permit Record'}
+            </div>
+            <div className="font-serif text-base text-ink truncate leading-tight">
+              {permit?.address ?? ' '}
+            </div>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
             {permit && (
               <a
                 href={`/permits/${permit.permit_number}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="civic-eyebrow text-ink-faint hover:text-ink"
+                title="Open in a new tab"
               >
-                Open page ↗
+                ↗
               </a>
             )}
             <button
               type="button"
               onClick={onClose}
-              className="text-ink-soft hover:text-ink text-2xl leading-none px-2 py-0.5 rounded hover:bg-paper-edge/40 transition-colors"
+              className="text-ink-soft hover:text-ink text-2xl leading-none w-7 h-7 flex items-center justify-center rounded hover:bg-paper-edge/40 transition-colors"
               aria-label="Close"
             >
               ×

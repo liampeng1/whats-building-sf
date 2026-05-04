@@ -177,6 +177,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onToggleCategory={toggleCategory}
         minUnits={minUnits}
         onMinUnitsChange={setMinUnits}
+        visibleCount={visiblePermits.length}
+        totalCount={permits.length}
       />
       <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
     </div>
