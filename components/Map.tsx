@@ -59,7 +59,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapEventHandler onBoundsChange={handleBoundsChange} />
-        {permits.map(p => <PermitMarker key={p.permit_number} permit={p} />)}
+        {permits.map((p, i) => <PermitMarker key={`${p.permit_number}-${i}`} permit={p} />)}
       </MapContainer>
     </div>
   )
