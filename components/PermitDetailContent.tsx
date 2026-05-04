@@ -148,7 +148,7 @@ interface Props {
 }
 
 export function PermitDetailContent({ permit, variant = 'page' }: Props) {
-  const stage = permitStage(permit.status)
+  const stage = permitStage(permit)
   const category = useCategory(permit.proposed_use ?? permit.existing_use)
   const unitsDelta = netDelta(permit.existing_units, permit.proposed_units)
   const storiesDelta = netDelta(permit.existing_stories, permit.proposed_stories)
@@ -206,8 +206,20 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
 
       {stage === 'construction' && (
         <p className="text-sm text-ink-soft mt-4 leading-relaxed border-l-2 border-paper-edge pl-4">
-          Permit issued {timeAgo(permit.issued_date) ?? 'recently'}. DataSF doesn&apos;t publish
-          formal completion estimates — the finish date isn&apos;t known until inspections sign off.
+          {permit.pipeline_status === 'Construction' ? (
+            <>
+              SF Planning&apos;s Development Pipeline marks this project as <strong>under construction</strong>
+              {permit.pipeline_status_date
+                ? ` since ${formatDate(permit.pipeline_status_date)}`
+                : ''}
+              . Permit issued {timeAgo(permit.issued_date) ?? 'recently'}.
+            </>
+          ) : (
+            <>
+              Permit issued {timeAgo(permit.issued_date) ?? 'recently'}. DataSF doesn&apos;t publish
+              formal completion estimates — the finish date isn&apos;t known until inspections sign off.
+            </>
+          )}
         </p>
       )}
 

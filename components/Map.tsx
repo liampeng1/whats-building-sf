@@ -90,7 +90,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const visiblePermits = useMemo(
     () =>
       permits.filter((p) => {
-        if (!selectedStages.has(permitStage(p.status))) return false
+        if (!selectedStages.has(permitStage(p))) return false
         const cat = useCategory(p.proposed_use ?? p.existing_use)
         if (!selectedCategories.has(cat)) return false
         // minUnits applies only to the housing category (which now also

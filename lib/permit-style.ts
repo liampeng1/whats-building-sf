@@ -110,7 +110,21 @@ export function permitTypeId(permitType: string | null | undefined): PermitTypeI
   return (PERMIT_TYPE_IDS as string[]).includes(permitType) ? (permitType as PermitTypeId) : '9'
 }
 
-export function permitStage(status: string | null | undefined): PermitStage {
+/**
+ * Map a permit's status to a lifecycle stage. Accepts either a plain status
+ * string (back-compat) or a full Permit object — when given the latter we
+ * also consider `pipeline_status` from the SF Development Pipeline, which
+ * SF Planning curates with a 'Construction' value as ground truth for
+ * actively-being-built projects.
+ */
+export function permitStage(input: string | null | undefined | Permit): PermitStage {
+  // Permit-object overload: pipeline_status='Construction' is authoritative.
+  if (input != null && typeof input === 'object') {
+    const ps = (input.pipeline_status ?? '').toLowerCase()
+    if (ps === 'construction') return 'construction'
+    return permitStage(input.status)
+  }
+  const status = input
   if (!status) return 'filed'
   const s = status.toLowerCase()
   if (s === 'complete') return 'complete'

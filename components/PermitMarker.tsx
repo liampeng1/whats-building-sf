@@ -45,7 +45,7 @@ interface MarkerProps {
 }
 
 export function PermitMarker({ permit, onSelect }: MarkerProps) {
-  const stage = permitStage(permit.status)
+  const stage = permitStage(permit)
   const icon = useMemo(() => buildIcon(stage), [stage])
 
   if (!permit.location) return null

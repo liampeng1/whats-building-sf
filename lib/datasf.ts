@@ -3,6 +3,7 @@ import type { MapBounds, Permit, PlanningCase } from './types'
 const BASE_URL = 'https://data.sfgov.org/resource'
 const PERMITS_DATASET = 'i98e-djp9'
 const PLANNING_DATASET = 'qvu5-m3a2'
+const PIPELINE_DATASET = '6jgi-cpb4' // SF Development Pipeline
 
 export class NotFoundError extends Error {}
 
@@ -83,7 +84,46 @@ function permitFromApi(row: PermitApiRow): Permit {
     existing_stories: row.number_of_existing_stories ?? null,
     proposed_stories: row.number_of_proposed_stories ?? null,
     location: row.location ?? null,
+    pipeline_status: null,
+    pipeline_status_date: null,
   }
+}
+
+interface PipelineRow {
+  bpa_no?: string
+  current_status?: string
+  current_status_date?: string
+}
+
+/**
+ * Fetch the SF Development Pipeline (6jgi-cpb4) and return a Map keyed by
+ * permit number with the curated current_status + status_date. SF Planning
+ * marks projects as 'Construction' based on field reports and inspection
+ * activity — a better signal than the raw permit status field.
+ *
+ * Single fetch covers all stages; we filter on the client by current_status.
+ */
+async function fetchPipelineMap(): Promise<Map<string, { status: string; date: string | null }>> {
+  const params = new URLSearchParams({
+    $select: 'bpa_no,current_status,current_status_date',
+    $where: 'bpa_no IS NOT NULL',
+    $limit: '5000',
+  })
+  const res = await fetch(`${BASE_URL}/${PIPELINE_DATASET}.json?${params}`, {
+    headers: headers(),
+    next: { revalidate: 3600 }, // pipeline updates daily; 1h cache is plenty
+  })
+  if (!res.ok) return new Map()
+  const rows: PipelineRow[] = await res.json()
+  const out = new Map<string, { status: string; date: string | null }>()
+  for (const r of rows) {
+    if (!r.bpa_no || !r.current_status) continue
+    out.set(r.bpa_no, {
+      status: r.current_status,
+      date: r.current_status_date ?? null,
+    })
+  }
+  return out
 }
 
 // Permit type codes that represent major new construction.
@@ -109,19 +149,51 @@ export async function fetchBuildingPermits(bounds?: MapBounds): Promise<Permit[]
   const clauses = [TRACKED_TYPES_FILTER, recencyFilter()]
   if (bounds) clauses.push(boundsFilter(bounds))
   params.set('$where', clauses.join(' AND '))
-  const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() })
-  if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
-  const rows: PermitApiRow[] = await res.json()
-  return rows.map(permitFromApi)
+
+  const [permitsRes, pipelineMap] = await Promise.all([
+    fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() }),
+    fetchPipelineMap(),
+  ])
+  if (!permitsRes.ok) throw new Error(`DataSF error: ${permitsRes.status}`)
+  const rows: PermitApiRow[] = await permitsRes.json()
+  return rows.map((row) => {
+    const p = permitFromApi(row)
+    const pipe = pipelineMap.get(p.permit_number)
+    if (pipe) {
+      p.pipeline_status = pipe.status
+      p.pipeline_status_date = pipe.date
+    }
+    return p
+  })
 }
 
 export async function fetchBuildingPermit(id: string): Promise<Permit> {
   const params = new URLSearchParams({ permit_number: id, $limit: '1' })
-  const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() })
-  if (!res.ok) throw new Error(`DataSF error: ${res.status}`)
-  const rows: PermitApiRow[] = await res.json()
+  const pipelineParams = new URLSearchParams({
+    $select: 'bpa_no,current_status,current_status_date',
+    $where: `bpa_no='${id.replace(/'/g, "''")}'`,
+    $limit: '1',
+  })
+  const [permitRes, pipelineRes] = await Promise.all([
+    fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() }),
+    fetch(`${BASE_URL}/${PIPELINE_DATASET}.json?${pipelineParams}`, {
+      headers: headers(),
+      next: { revalidate: 3600 },
+    }),
+  ])
+  if (!permitRes.ok) throw new Error(`DataSF error: ${permitRes.status}`)
+  const rows: PermitApiRow[] = await permitRes.json()
   if (rows.length === 0) throw new NotFoundError('Permit not found')
-  return permitFromApi(rows[0])
+  const permit = permitFromApi(rows[0])
+  if (pipelineRes.ok) {
+    const pipeRows: PipelineRow[] = await pipelineRes.json()
+    const p = pipeRows[0]
+    if (p?.current_status) {
+      permit.pipeline_status = p.current_status
+      permit.pipeline_status_date = p.current_status_date ?? null
+    }
+  }
+  return permit
 }
 
 export async function fetchPlanningCases(): Promise<PlanningCase[]> {

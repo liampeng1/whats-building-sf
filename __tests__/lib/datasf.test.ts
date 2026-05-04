@@ -32,7 +32,13 @@ const mockCaseApi = {
 
 const mockBounds = { north: 37.8, south: 37.7, east: -122.4, west: -122.5 }
 
-beforeEach(() => { global.fetch = jest.fn() })
+beforeEach(() => {
+  // Default any fetch to an empty success response so tests only need to
+  // set up explicit mocks for the calls they care about (e.g. fetchBuildingPermits
+  // makes a parallel call to the SF Pipeline endpoint that's irrelevant to most
+  // unit tests).
+  global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => [] })
+})
 afterEach(() => { jest.resetAllMocks() })
 
 describe('fetchBuildingPermits', () => {

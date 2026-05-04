@@ -31,6 +31,12 @@ export interface Permit {
   existing_stories: string | null
   proposed_stories: string | null
   location: GeoPoint | null
+  // Enrichment from SF Development Pipeline (dataset 6jgi-cpb4) — joined via
+  // bpa_no = permit_number. SF Planning curates current_status for major
+  // projects. When pipeline_status === 'Construction' we treat it as ground
+  // truth (better than the raw permit `status` field).
+  pipeline_status: string | null
+  pipeline_status_date: string | null
 }
 
 export interface PlanningCase {

@@ -58,6 +58,17 @@ describe('permitStage', () => {
     expect(permitStage('ISSUED')).toBe('construction')
     expect(permitStage('APPROVED')).toBe('approved')
   })
+
+  test('pipeline_status="Construction" overrides raw status when given a Permit', () => {
+    // Raw status maps to 'filed' but pipeline says construction → wins.
+    const p = { ...basePermit, status: 'filing', pipeline_status: 'Construction' }
+    expect(permitStage(p)).toBe('construction')
+  })
+
+  test('Permit without pipeline_status falls through to raw status mapping', () => {
+    expect(permitStage({ ...basePermit, status: 'issued' })).toBe('construction')
+    expect(permitStage({ ...basePermit, status: 'approved' })).toBe('approved')
+  })
 })
 
 const basePermit: Permit = {
@@ -78,6 +89,8 @@ const basePermit: Permit = {
   proposed_units: null,
   existing_stories: null,
   proposed_stories: null,
+  pipeline_status: null,
+  pipeline_status_date: null,
   location: null,
 }
 
