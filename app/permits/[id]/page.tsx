@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
 import { isUnderConstruction, timeAgo } from '@/lib/permit-style'
 import { RelatedSources } from '@/components/RelatedSources'
+import { RelatedArticles } from '@/components/RelatedArticles'
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '—'
@@ -84,6 +85,11 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
           </div>
         ))}
       </dl>
+
+      <section className="mt-10">
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">Recent news mentioning this address</h2>
+        <RelatedArticles address={permit.address} />
+      </section>
 
       <RelatedSources
         address={permit.address}

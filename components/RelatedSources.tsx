@@ -11,6 +11,7 @@ interface SourceLink {
 }
 
 const NEWS_SOURCES: SourceLink[] = [
+  { label: 'SF YIMBY', url: (q) => `https://sfyimby.com/?s=${q}`, note: 'YIMBY-aligned SF development blog' },
   { label: 'SocketSite', url: (q) => `https://socketsite.com/?s=${q}`, note: 'SF real estate / development blog' },
   { label: 'The Standard', url: (q) => `https://sfstandard.com/?s=${q}` },
   { label: 'Mission Local', url: (q) => `https://missionlocal.org/?s=${q}` },
