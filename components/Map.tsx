@@ -171,7 +171,17 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     url.searchParams.set('nhood', name)
     window.history.pushState({}, '', url)
     if (mapRef.current) {
-      mapRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
+      // On desktop the 520px panel slides in from the right and would cover
+      // the polygon if we fit-bounds against the full map. Reserve that
+      // space so the neighborhood lands in the still-visible left portion
+      // of the map. On mobile the panel covers the whole screen, so fit
+      // normally — the user closes it to see the map again anyway.
+      const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
+      mapRef.current.fitBounds(bounds, {
+        paddingTopLeft: [40, 40],
+        paddingBottomRight: isWide ? [560, 40] : [40, 40],
+        maxZoom: 15,
+      })
     }
   }, [])
 

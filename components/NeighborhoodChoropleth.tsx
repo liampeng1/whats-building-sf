@@ -152,13 +152,14 @@ export function NeighborhoodChoropleth({
     const isDimmed = selected != null && !isSelected
 
     if (isSelected) {
-      // Persistent active state — heavier navy stroke + bright fill, kept
-      // visible even when zoomed past the choropleth threshold so the
-      // active region stays anchored while the panel is open.
+      // Persistent active state — burnt-amber stroke (the deep end of the
+      // choropleth ramp) sets the selection apart from hover's heavier-navy
+      // treatment without going to a discordant brand color. Kept visible
+      // even when zoomed past the choropleth fade threshold.
       return {
         fillColor,
-        fillOpacity: isFilled ? 0.7 : 0.25,
-        color: '#0c1424',
+        fillOpacity: isFilled ? 0.7 : 0.22,
+        color: '#7c2d12',
         weight: 3,
         opacity: 1,
       }
@@ -167,7 +168,7 @@ export function NeighborhoodChoropleth({
       return {
         fillColor,
         fillOpacity: 0.75,
-        color: '#0c1424',
+        color: '#1c2438',
         weight: 2.5,
         opacity: 1,
       }
