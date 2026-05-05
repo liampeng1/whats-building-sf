@@ -179,9 +179,10 @@ export default function AboutPage() {
               <span className="font-semibold">type 2 (new construction, wood-frame)</span>. Type 3 (additions / alterations / repairs) is excluded — it&apos;s dominated by minor remodels.
             </li>
             <li>
-              <span className="font-semibold">Construction</span> is determined by SF Planning&apos;s Development
-              Pipeline, not the permit&apos;s raw status field. An issued permit can sit for months before
-              ground breaks; the Pipeline tells you when it actually does.
+              <span className="font-semibold">Construction</span>
+              {' '}is determined by SF Planning&apos;s Development Pipeline, not the permit&apos;s
+              raw status field. An issued permit can sit for months before ground breaks;
+              the Pipeline tells you when it actually does.
             </li>
             <li>
               When a permit lists multiple addresses (a parcel-merger project), the rows are deduped
