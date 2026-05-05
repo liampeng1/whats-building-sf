@@ -162,19 +162,24 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       url.searchParams.set('permit', id)
       window.history.pushState({}, '', url)
 
-      // Pan so the pin lands in the still-visible left portion of the map
-      // when the desktop side panel slides in (otherwise the user clicks a
-      // pin and immediately loses sight of it). Mobile keeps current center.
       const map = mapRef.current
       const p = permits.find((x) => x.permit_number === id)
+      if (!map || !p?.location) return
+
+      // Zoom in far enough that the parcel polygon is clearly larger than
+      // the marker pin — at z18 a typical SF parcel is ~80–120px while the
+      // pin is ~20–30px. Don't zoom *out* if the user's already deeper.
+      const [lng, lat] = p.location.coordinates
+      const targetZoom = Math.max(map.getZoom(), 18)
       const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
-      if (map && p?.location && isWide) {
-        const [lng, lat] = p.location.coordinates
-        const targetZoom = Math.max(map.getZoom(), PIN_FADE_MAX)
-        const px = map.project([lat, lng], targetZoom)
-        const shifted = px.add(L.point(260, 0)) // ~half the 520px panel
-        map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
-      }
+      const px = map.project([lat, lng], targetZoom)
+      // Shift the map's geographic center away from the panel so the pin
+      // lands in the still-visible portion: ~half the panel width on
+      // desktop (right drawer); ~half the bottom-sheet height on mobile.
+      const shifted = isWide
+        ? px.add(L.point(260, 0))
+        : px.add(L.point(0, (typeof window !== 'undefined' ? window.innerHeight : 800) * 0.275))
+      map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
     },
     [permits],
   )

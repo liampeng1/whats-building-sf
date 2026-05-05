@@ -12,6 +12,14 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
   const [permit, setPermit] = useState<Permit | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  // Mobile bottom-sheet: starts at ~55dvh so the user can still see the
+  // map (and the highlighted lot) above the panel. Expands to full height
+  // when the user scrolls into the panel content. Desktop ignores this
+  // since the panel is a side drawer.
+  const [expanded, setExpanded] = useState(false)
+  useEffect(() => {
+    if (!permitNumber) setExpanded(false)
+  }, [permitNumber])
 
   useEffect(() => {
     if (!permitNumber) {
@@ -54,22 +62,41 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
 
   return (
     <>
-      {/* Click-outside backdrop — click to dismiss */}
+      {/* Backdrop — desktop only. On mobile the bottom sheet leaves the
+          top of the screen showing the map, so we don't want to mask it. */}
       <button
         aria-label="Close panel"
         type="button"
         onClick={onClose}
-        className={`fixed inset-0 bg-ink/20 z-[1100] transition-opacity duration-300 ease-out ${
+        className={`hidden md:block fixed inset-0 bg-ink/20 z-[1100] transition-opacity duration-300 ease-out ${
           open ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       />
-      {/* Right-edge drawer */}
+      {/* Mobile: bottom sheet. Desktop: right-edge drawer. Same component;
+          responsive Tailwind utilities choose the layout. */}
       <aside
-        className={`fixed top-0 right-0 h-[100dvh] w-full md:w-[640px] bg-paper border-l-2 border-ink shadow-2xl z-[1200] overflow-y-auto transition-transform duration-300 ease-out ${
-          open ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        onScroll={(e) => {
+          const top = e.currentTarget.scrollTop
+          if (top > 40 && !expanded) setExpanded(true)
+          else if (top < 4 && expanded) setExpanded(false)
+        }}
+        className={`fixed bg-paper shadow-2xl z-[1200] overflow-y-auto transition-all duration-300 ease-out
+          bottom-0 left-0 right-0 border-t-2 border-ink rounded-t-xl
+          ${expanded ? 'h-[100dvh] rounded-t-none' : 'h-[55dvh]'}
+          md:top-0 md:right-0 md:left-auto md:bottom-auto md:w-[640px]
+          md:h-[100dvh] md:rounded-none md:border-t-0 md:border-l-2
+          ${open ? 'translate-y-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}
+          md:translate-y-0
+        `}
         aria-hidden={!open}
       >
+        {/* Mobile drag handle — visual cue that the sheet pulls up. */}
+        <div
+          aria-hidden
+          className={`md:hidden mx-auto mt-2 mb-1 h-1 w-10 rounded-full bg-paper-edge transition-opacity ${
+            expanded ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
         {/* Sticky header — shows the address itself so it's always visible
             even when scrolled deep into news. Floating close stays clickable. */}
         <div className="sticky top-0 z-10 bg-paper/95 backdrop-blur border-b border-paper-edge px-6 py-3 flex items-center justify-between gap-3">
