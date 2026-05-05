@@ -22,26 +22,48 @@ import type { Permit, MapBounds } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = STAGE_ORDER
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
-const PIN_ZOOM_THRESHOLD = 14 // below this, choropleth carries the visualization
+// Pins fade in across this band — choropleth is the visualization below
+// PIN_FADE_MIN, individual pins above PIN_FADE_MAX. Between, both render
+// with a smooth opacity ramp so there's no abrupt swap.
+const PIN_FADE_MIN = 13.5
+const PIN_FADE_MAX = 14.5
+
+function pinOpacity(zoom: number): number {
+  if (zoom <= PIN_FADE_MIN) return 0
+  if (zoom >= PIN_FADE_MAX) return 1
+  return (zoom - PIN_FADE_MIN) / (PIN_FADE_MAX - PIN_FADE_MIN)
+}
 
 /**
- * Renders pins only when the user has zoomed in past PIN_ZOOM_THRESHOLD.
- * At city zoom, the choropleth tells the macro story (no pins). At
- * neighborhood/street zoom, individual permits become clickable.
+ * Tracks the live map zoom and pushes it to the parent. Listens on `zoom`
+ * (during-zoom) so opacity transitions start the moment zoom begins —
+ * not after `zoomend` fires post-animation.
+ */
+function ZoomTracker({ onZoom }: { onZoom: (z: number) => void }) {
+  const map = useMap()
+  useMapEvents({
+    zoom: () => onZoom(map.getZoom()),
+    zoomend: () => onZoom(map.getZoom()),
+  })
+  return null
+}
+
+/**
+ * Renders pins above PIN_FADE_MIN. Actual opacity ramp is applied via the
+ * --pin-opacity CSS variable set on the outer wrapper, so Leaflet's
+ * DivIcon DOM (attached to the marker-pane, not as React children) picks
+ * it up through inheritance.
  */
 function ZoomGatedPins({
   visiblePermits,
   onSelect,
+  zoom,
 }: {
   visiblePermits: Permit[]
   onSelect: (id: string) => void
+  zoom: number
 }) {
-  const map = useMap()
-  const [show, setShow] = useState(map.getZoom() >= PIN_ZOOM_THRESHOLD)
-  useMapEvents({
-    zoomend: () => setShow(map.getZoom() >= PIN_ZOOM_THRESHOLD),
-  })
-  if (!show) return null
+  if (pinOpacity(zoom) <= 0) return null
   return (
     <>
       {visiblePermits.map((p) => (
@@ -79,6 +101,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const handleViewportChange = useCallback((b: MapBounds) => {
     setViewportBounds(b)
   }, [])
+  const [mapZoom, setMapZoom] = useState<number>(13)
 
   // Sync the side-panel state with ?permit=<id> in the URL so deep links work.
   useEffect(() => {
@@ -187,8 +210,17 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     return () => ctrl.abort()
   }, [completedYears, recentActivity])
 
+  // CSS custom property → inherited by .permit-pin via marker-cluster.css.
+  // Leaflet attaches markers to .leaflet-marker-pane (not as React children),
+  // so we can't wrap them in a div with opacity — but the CSS var on the
+  // outer wrapper cascades through to all DivIcon HTML.
+  const pinOp = pinOpacity(mapZoom)
+
   return (
-    <div className="relative w-full h-full">
+    <div
+      className="relative w-full h-full"
+      style={{ ['--pin-opacity' as string]: String(pinOp) }}
+    >
       {loading && (
         <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/40 pointer-events-none">
           <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded shadow">Loading…</span>
@@ -200,6 +232,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         </div>
       )}
       <MapContainer center={initialCenter} zoom={13} className="w-full h-full">
+        <ZoomTracker onZoom={setMapZoom} />
         {/* Carto Voyager: gives water (soft blue), parks (sage), and street
             hierarchy out of the box. Labels-under variant keeps streets/place
             names but de-emphasizes them so pins still dominate. */}
@@ -210,11 +243,15 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           maxZoom={19}
         />
         <MapEventHandler onBoundsChange={handleViewportChange} />
-        {/* Choropleth fills SF neighborhoods by permit density at low zoom.
-            Hides automatically once you zoom in past street level so it
-            doesn't compete with individual pins. */}
-        <NeighborhoodChoropleth permits={filteredPermits} hideAtZoom={PIN_ZOOM_THRESHOLD} />
-        <ZoomGatedPins visiblePermits={visiblePermits} onSelect={openPermitPanel} />
+        {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
+            visualization; above, only the navy stroke remains so neighborhood
+            outlines stay visible while inspecting pins. */}
+        <NeighborhoodChoropleth permits={filteredPermits} hideAtZoom={PIN_FADE_MIN} />
+        <ZoomGatedPins
+          visiblePermits={visiblePermits}
+          onSelect={openPermitPanel}
+          zoom={mapZoom}
+        />
       </MapContainer>
       <FilterPanel
         selectedStages={selectedStages}

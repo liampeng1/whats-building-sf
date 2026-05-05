@@ -67,6 +67,10 @@
   filter: drop-shadow(0 1px 2px rgba(251, 246, 236, 0.95))
           drop-shadow(0 0 3px rgba(251, 246, 236, 0.8))
           drop-shadow(0 1px 2px rgba(28, 36, 56, 0.18));
+  /* --pin-opacity is set by the Map.tsx wrapper from the live zoom. Default
+     1 keeps pins visible if the variable hasn't been set yet (e.g. test env). */
+  opacity: var(--pin-opacity, 1);
+  transition: opacity 220ms ease-out;
 }
 
 @media (pointer: coarse) {
