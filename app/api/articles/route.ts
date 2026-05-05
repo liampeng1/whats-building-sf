@@ -85,7 +85,7 @@ async function fetchSfYimby(q: string): Promise<Article[]> {
   // titles/content reliably. Featured images on SF YIMBY posts are typically
   // architectural renderings of the project — gold for "show me what this
   // building will look like."
-  const url = `https://sfyimby.com/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=5&_embed=wp:featuredmedia&_fields=title,link,date,_links,_embedded`
+  const url = `https://sfyimby.com/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=15&_embed=wp:featuredmedia&_fields=title,link,date,_links,_embedded`
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'whats-building-sf/1.0' },

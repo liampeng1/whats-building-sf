@@ -139,7 +139,7 @@ async function fetchDemolitionsForParcel(
     $select: 'permit_number,filed_date,issued_date,completed_date,status',
     $where: where,
     $order: 'filed_date DESC',
-    $limit: '5',
+    $limit: '20',
   })
   const res = await fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, {
     headers: headers(),
@@ -234,8 +234,10 @@ function recencyFilter(completedYears: number, now: Date = new Date()): string {
 export async function fetchAllTrackedPermitsForSnapshot(): Promise<Permit[]> {
   // No recency clause — we want the full tracked-type slice. Filtering by
   // recency at request time keeps the snapshot reusable across UI choices.
+  // 50,000 is DataSF's hard SoQL maximum per page; current real count is
+  // ~15,585, so this gives 3x headroom before we'd need to paginate.
   const params = new URLSearchParams({
-    $limit: '10000',
+    $limit: '50000',
     $order: 'filed_date DESC',
     $where: TRACKED_TYPES_FILTER,
   })
@@ -266,7 +268,9 @@ export async function fetchBuildingPermits(
   const cached = await readPermitsSnapshot()
   if (cached) return filterPermits(cached, completedYears, recentActivityMonths)
 
-  const params = new URLSearchParams({ $limit: '5000', $order: 'filed_date DESC' })
+  // Live-fallback path (used only when KV cache is empty/unconfigured).
+  // Same 50K headroom as the snapshot path.
+  const params = new URLSearchParams({ $limit: '50000', $order: 'filed_date DESC' })
   const clauses = [TRACKED_TYPES_FILTER, recencyFilter(completedYears)]
   if (recentActivityMonths > 0) {
     const cutoff = new Date()

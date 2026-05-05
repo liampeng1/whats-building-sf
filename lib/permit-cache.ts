@@ -5,25 +5,26 @@
  * Architecture:
  *   - A daily Vercel cron route fetches the *complete* tracked permits +
  *     pipeline statuses + assessor parcel IDs from DataSF and writes the
- *     full array as a single Redis value under PERMITS_KEY.
- *   - Every API request reads that snapshot and filters in memory.
+ *     full array into Redis as a meta-record + N chunks (Upstash Hobby tier
+ *     caps single requests at 10 MB; the full ~16K-permit blob is ~11 MB).
+ *   - Every API request reads the meta + chunks, filters in memory.
  *   - When Upstash isn't provisioned (env vars missing) or the snapshot is
  *     missing, callers fall back to a live DataSF fetch — nothing breaks.
  */
 
 import type { Permit } from './types'
 
-const PERMITS_KEY = 'permits:tracked-snapshot:v1'
-const SNAPSHOT_MAX_AGE_MS = 48 * 60 * 60 * 1000 // 48h — even if cron stalls a day
+const META_KEY = 'permits:snap:v2:meta'
+const CHUNK_PREFIX = 'permits:snap:v2:chunk:'
+const CHUNK_SIZE = 5000 // ~3-4 MB per chunk in JSON; safely under Upstash's 10MB request cap
+const SNAPSHOT_MAX_AGE_MS = 48 * 60 * 60 * 1000
 
-interface PermitSnapshot {
+interface SnapshotMeta {
   capturedAt: number
-  permits: Permit[]
+  chunkCount: number
+  totalCount: number
 }
 
-// Vercel's Upstash KV integration ships KV_* env vars (legacy compat with
-// the sunset @vercel/kv product). Direct Upstash setups use UPSTASH_* vars.
-// We accept either.
 function getRedisCreds(): { url: string; token: string } | null {
   const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL
   const token =
@@ -32,15 +33,6 @@ function getRedisCreds(): { url: string; token: string } | null {
   return { url, token }
 }
 
-function isRedisConfigured(): boolean {
-  return getRedisCreds() !== null
-}
-
-/**
- * Returns the cached permits array if a fresh snapshot exists.
- * Returns null when Redis isn't configured, the snapshot is missing, or it's
- * stale beyond SNAPSHOT_MAX_AGE_MS.
- */
 async function getRedis() {
   const creds = getRedisCreds()
   if (!creds) return null
@@ -52,10 +44,19 @@ export async function readPermitsSnapshot(): Promise<Permit[] | null> {
   try {
     const redis = await getRedis()
     if (!redis) return null
-    const snap = await redis.get<PermitSnapshot>(PERMITS_KEY)
-    if (!snap) return null
-    if (Date.now() - snap.capturedAt > SNAPSHOT_MAX_AGE_MS) return null
-    return snap.permits
+    const meta = await redis.get<SnapshotMeta>(META_KEY)
+    if (!meta) return null
+    if (Date.now() - meta.capturedAt > SNAPSHOT_MAX_AGE_MS) return null
+
+    // Read all chunks in parallel.
+    const keys = Array.from({ length: meta.chunkCount }, (_, i) => `${CHUNK_PREFIX}${i}`)
+    const chunks = await Promise.all(keys.map((k) => redis.get<Permit[]>(k)))
+    const merged: Permit[] = []
+    for (const c of chunks) {
+      if (Array.isArray(c)) merged.push(...c)
+    }
+    if (merged.length === 0) return null
+    return merged
   } catch (err) {
     console.error('Redis read failed', err)
     return null
@@ -69,15 +70,26 @@ export async function writePermitsSnapshot(permits: Permit[]): Promise<void> {
       'Upstash Redis not configured (missing UPSTASH_REDIS_REST_URL/TOKEN or KV_REST_API_URL/TOKEN)',
     )
   }
-  const payload: PermitSnapshot = { capturedAt: Date.now(), permits }
-  await redis.set(PERMITS_KEY, payload)
+
+  const chunks: Permit[][] = []
+  for (let i = 0; i < permits.length; i += CHUNK_SIZE) {
+    chunks.push(permits.slice(i, i + CHUNK_SIZE))
+  }
+
+  // Write chunks first, then meta last so a partial write never advertises
+  // a chunkCount that doesn't fully exist yet. Old v1 keys (if any) age
+  // out naturally; not worth a separate cleanup pass.
+  await Promise.all(
+    chunks.map((chunk, i) => redis.set(`${CHUNK_PREFIX}${i}`, chunk)),
+  )
+  const meta: SnapshotMeta = {
+    capturedAt: Date.now(),
+    chunkCount: chunks.length,
+    totalCount: permits.length,
+  }
+  await redis.set(META_KEY, meta)
 }
 
-/**
- * Filter an in-memory permits array using the same rules as the server-side
- * recency clauses. Mirrors the SoQL filter so cached + live paths return the
- * same shape.
- */
 export function filterPermits(
   all: Permit[],
   completedYears: number,
