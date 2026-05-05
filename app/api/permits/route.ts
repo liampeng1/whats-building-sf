@@ -1,5 +1,4 @@
 import { fetchBuildingPermits } from '@/lib/datasf'
-import type { MapBounds } from '@/lib/types'
 
 // Cache the route output for 6 hours. DataSF refreshes daily; 6h gives users
 // a snappy experience while keeping data near-fresh. Vercel's fetch cache
@@ -8,27 +7,6 @@ export const revalidate = 21600
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const north = searchParams.get('north')
-  const south = searchParams.get('south')
-  const east = searchParams.get('east')
-  const west = searchParams.get('west')
-
-  let bounds: MapBounds | undefined
-  const anyPresent = north !== null || south !== null || east !== null || west !== null
-  const allPresent = north !== null && south !== null && east !== null && west !== null
-  if (allPresent) {
-    const n = Number(north)
-    const s = Number(south)
-    const e = Number(east)
-    const w = Number(west)
-    if ([n, s, e, w].every(Number.isFinite)) {
-      bounds = { north: n, south: s, east: e, west: w }
-    } else {
-      return Response.json({ error: 'Invalid bounds' }, { status: 400 })
-    }
-  } else if (anyPresent) {
-    // Partial bounds: ignore and call without bounds (preserves existing behavior).
-  }
 
   // Completed-window control. Pass ?completedYears=0 to hide completed,
   // 1/2/5/etc. to show that many years of recent finishes.
@@ -46,8 +24,14 @@ export async function GET(req: Request) {
     : 0
 
   try {
-    const permits = await fetchBuildingPermits(bounds, completedYears, recentMonths)
-    return Response.json(permits)
+    const permits = await fetchBuildingPermits(completedYears, recentMonths)
+    // Browser cache + CDN cache. stale-while-revalidate lets users see cached
+    // data instantly even when the server cache is being refreshed.
+    return Response.json(permits, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=21600, stale-while-revalidate=86400',
+      },
+    })
   } catch (err) {
     console.error(err)
     return Response.json({ error: 'Failed to fetch permits' }, { status: 500 })

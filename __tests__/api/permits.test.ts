@@ -51,7 +51,7 @@ describe('GET /api/permits', () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request('http://localhost/api/permits')
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 2, 0)
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(2, 0)
   })
 
   test('passes parsed bounds to datasf when bounds params present', async () => {
@@ -60,43 +60,40 @@ describe('GET /api/permits', () => {
       'http://localhost/api/permits?north=37.8&south=37.7&east=-122.4&west=-122.5'
     )
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(
-      { north: 37.8, south: 37.7, east: -122.4, west: -122.5 },
-      2,
-      0,
-    )
+    // Bounds are no longer passed server-side (filtering happens client-side
+    // for cache-reuse). The bounds query params are simply ignored.
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(2, 0)
   })
 
   test('ignores partial bounds params (calls without bounds)', async () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request('http://localhost/api/permits?north=37.8&south=37.7')
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 2, 0)
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(2, 0)
   })
 
   test('honors completedYears query param', async () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request('http://localhost/api/permits?completedYears=5')
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 5, 0)
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(5, 0)
   })
 
   test('honors recentMonths query param', async () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request('http://localhost/api/permits?recentMonths=12')
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 2, 12)
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(2, 12)
   })
 
-  test('returns 400 when all bounds are present but unparseable', async () => {
+  test('ignores legacy bounds query params (filtered client-side now)', async () => {
+    ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request(
       'http://localhost/api/permits?north=abc&south=def&east=ghi&west=jkl'
     )
     const res = await listPermits(req)
-    expect(res.status).toBe(400)
-    const data = await res.json()
-    expect(data).toEqual({ error: 'Invalid bounds' })
-    expect(datasf.fetchBuildingPermits).not.toHaveBeenCalled()
+    expect(res.status).toBe(200)
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(2, 0)
   })
 
   test('returns 500 on DataSF error', async () => {

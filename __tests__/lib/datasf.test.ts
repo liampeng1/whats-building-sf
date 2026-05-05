@@ -72,20 +72,18 @@ describe('fetchBuildingPermits', () => {
 
   test('completedYears=0 hides completed entirely (in-progress only)', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
-    await fetchBuildingPermits(undefined, 0)
+    await fetchBuildingPermits(0)
     const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
     expect(url).toMatch(/completed_date IS NULL AND status NOT IN/)
-    // No completed_date >= clause
     expect(url).not.toMatch(/completed_date >= '/)
   })
 
-  test('combines tracked-types filter with bounds via AND', async () => {
+  test('does NOT include within_box (bounds filtered client-side)', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
-    await fetchBuildingPermits(mockBounds)
+    await fetchBuildingPermits()
     const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
     expect(url).toContain("permit_type IN ('1','2')")
-    expect(url).toContain('within_box')
-    expect(url).toContain(' AND ')
+    expect(url).not.toContain('within_box')
   })
 
   test('constructs address from street parts', async () => {
@@ -109,14 +107,7 @@ describe('fetchBuildingPermits', () => {
     expect(permits[0].location).toEqual({ type: 'Point', coordinates: [-122.4194, 37.7749] })
   })
 
-  test('includes within_box filter when bounds provided', async () => {
-    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
-    await fetchBuildingPermits(mockBounds)
-    const url = (global.fetch as jest.Mock).mock.calls[0][0] as string
-    expect(url).toContain('within_box')
-    expect(url).toContain('37.8')
-    expect(url).toContain('-122.5')
-  })
+  // (bounds parameter removed — viewport filtering is client-side now)
 
   test('throws on DataSF API error', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: false, status: 503 })

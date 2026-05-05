@@ -1,10 +1,9 @@
 'use client'
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
-import { MapEventHandler } from './MapEventHandler'
 import { FilterPanel } from './FilterPanel'
 import { PermitPanel } from './PermitPanel'
 import { CoffeeButton } from './CoffeeButton'
@@ -17,7 +16,7 @@ import {
   type PermitStage,
   type UseCategory,
 } from '@/lib/permit-style'
-import type { Permit, MapBounds } from '@/lib/types'
+import type { Permit } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = STAGE_ORDER
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
@@ -44,7 +43,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     () => new Set(ALL_CATEGORIES),
   )
   const [openPermit, setOpenPermit] = useState<string | null>(null)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Sync the side-panel state with ?permit=<id> in the URL so deep links work.
   useEffect(() => {
@@ -108,60 +106,32 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     [permits, selectedStages, selectedCategories, minUnits],
   )
 
-  const fetchData = useCallback(
-    async (
-      bounds: MapBounds | undefined,
-      completedYearsArg: CompletedYearsFilter,
-      recentActivityArg: RecentActivityFilter,
-      signal?: AbortSignal,
-    ) => {
-      const params = new URLSearchParams()
-      if (bounds) {
-        params.set('north', String(bounds.north))
-        params.set('south', String(bounds.south))
-        params.set('east', String(bounds.east))
-        params.set('west', String(bounds.west))
-      }
-      params.set('completedYears', String(completedYearsArg))
-      if (recentActivityArg > 0) params.set('recentMonths', String(recentActivityArg))
-      const q = `?${params.toString()}`
-      try {
-        const res = await fetch(`/api/permits${q}`, { signal })
-        if (!res.ok) throw new Error('fetch failed')
-        const data: Permit[] = await res.json()
-        if (signal?.aborted) return
-        setPermits(data)
-        setError(null)
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return
-        setError('Data temporarily unavailable. Please try again.')
-      } finally {
-        if (!signal?.aborted) setLoading(false)
-      }
-    },
-    [],
-  )
-
+  // Single fetch keyed only by filter values — no bounds, no per-pan refetch.
+  // Vercel caches the result so all users hit the same warm entry.
+  // Panning/zooming filters client-side from this cached list.
   useEffect(() => {
     const ctrl = new AbortController()
-    // setState calls inside fetchData run after the awaited fetch (microtask),
-    // not synchronously. The rule's static analysis can't see through async/await.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
-    fetchData(undefined, completedYears, recentActivity, ctrl.signal)
+    setError(null)
+    const params = new URLSearchParams()
+    params.set('completedYears', String(completedYears))
+    if (recentActivity > 0) params.set('recentMonths', String(recentActivity))
+    fetch(`/api/permits?${params}`, { signal: ctrl.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error('fetch failed')
+        return res.json() as Promise<Permit[]>
+      })
+      .then((data) => {
+        setPermits(data)
+        setLoading(false)
+      })
+      .catch((err: Error) => {
+        if (err.name === 'AbortError') return
+        setError('Data temporarily unavailable. Please try again.')
+        setLoading(false)
+      })
     return () => ctrl.abort()
-  }, [fetchData, completedYears, recentActivity])
-
-  const handleBoundsChange = useCallback(
-    (bounds: MapBounds) => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-      debounceRef.current = setTimeout(() => {
-        setLoading(true)
-        fetchData(bounds, completedYears, recentActivity)
-      }, 300)
-    },
-    [fetchData, completedYears, recentActivity],
-  )
+  }, [completedYears, recentActivity])
 
   return (
     <div className="relative w-full h-full">
@@ -185,7 +155,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           subdomains="abcd"
           maxZoom={19}
         />
-        <MapEventHandler onBoundsChange={handleBoundsChange} />
         {visiblePermits.map((p, i) => (
           <PermitMarker
             key={`${p.permit_number}-${i}`}

@@ -1,4 +1,5 @@
 import type { MapBounds, Permit, PlanningCase } from './types'
+import { readPermitsSnapshot, filterPermits } from './permit-cache'
 
 const BASE_URL = 'https://data.sfgov.org/resource'
 const PERMITS_DATASET = 'i98e-djp9'
@@ -225,11 +226,46 @@ function recencyFilter(completedYears: number, now: Date = new Date()): string {
   return `(${inProgress} OR completed_date >= '${completedCutoff}')`
 }
 
+/**
+ * Daily-cron version: fetches *all* tracked-type permits regardless of
+ * recency, joined with pipeline statuses. Returned array is what gets
+ * written to the KV snapshot. Per-request callers filter this in memory.
+ */
+export async function fetchAllTrackedPermitsForSnapshot(): Promise<Permit[]> {
+  // No recency clause — we want the full tracked-type slice. Filtering by
+  // recency at request time keeps the snapshot reusable across UI choices.
+  const params = new URLSearchParams({
+    $limit: '10000',
+    $order: 'filed_date DESC',
+    $where: TRACKED_TYPES_FILTER,
+  })
+  const [permitsRes, pipelineMap] = await Promise.all([
+    fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() }),
+    fetchPipelineMap(),
+  ])
+  if (!permitsRes.ok) throw new Error(`DataSF error: ${permitsRes.status}`)
+  const rows: PermitApiRow[] = await permitsRes.json()
+  return rows.map((row) => {
+    const p = permitFromApi(row)
+    const pipe = pipelineMap.get(p.permit_number)
+    if (pipe) {
+      p.pipeline_status = pipe.status
+      p.pipeline_status_date = pipe.date
+    }
+    return p
+  })
+}
+
 export async function fetchBuildingPermits(
-  bounds?: MapBounds,
   completedYears: number = 2,
   recentActivityMonths: number = 0,
 ): Promise<Permit[]> {
+  // Try the KV-cached "all permits" snapshot first — refreshed daily by the
+  // cron route. Filtering happens in memory below. Falls back to a live
+  // DataSF call when KV isn't provisioned or the entry is missing.
+  const cached = await readPermitsSnapshot()
+  if (cached) return filterPermits(cached, completedYears, recentActivityMonths)
+
   const params = new URLSearchParams({ $limit: '5000', $order: 'filed_date DESC' })
   const clauses = [TRACKED_TYPES_FILTER, recencyFilter(completedYears)]
   if (recentActivityMonths > 0) {
@@ -237,7 +273,6 @@ export async function fetchBuildingPermits(
     cutoff.setMonth(cutoff.getMonth() - recentActivityMonths)
     clauses.push(`status_date >= '${cutoff.toISOString().slice(0, 10)}'`)
   }
-  if (bounds) clauses.push(boundsFilter(bounds))
   params.set('$where', clauses.join(' AND '))
 
   const [permitsRes, pipelineMap] = await Promise.all([
