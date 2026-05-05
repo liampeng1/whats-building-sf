@@ -123,18 +123,6 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
                 }
               />
             )}
-            {permit && (
-              <a
-                href={`/permits/${permit.permit_number}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ink-soft hover:text-ink w-7 h-7 flex items-center justify-center rounded hover:bg-paper-edge/40 transition-colors"
-                title="Open in a new tab"
-                aria-label="Open in a new tab"
-              >
-                ↗
-              </a>
-            )}
             <button
               type="button"
               onClick={onClose}
