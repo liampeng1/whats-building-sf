@@ -361,9 +361,9 @@ export function FilterPanel({
                   <span aria-hidden className="inline-block transition-transform group-open:rotate-90">›</span>
                   What do these mean?
                 </summary>
-                <dl className="mt-2 space-y-1.5 pl-3 border-l border-paper-edge">
+                <dl className="mt-2 space-y-2 pl-3 border-l border-paper-edge">
                   {LIFECYCLE.map((stage) => (
-                    <div key={stage} className="text-[11px] leading-snug">
+                    <div key={stage} className="text-[11px] leading-relaxed">
                       <dt
                         className="font-semibold inline"
                         style={{ color: STAGE_COLORS[stage].fill }}
@@ -375,6 +375,9 @@ export function FilterPanel({
                       </dd>
                     </div>
                   ))}
+                  <div className="text-[10px] text-ink-faint italic pt-1">
+                    Sources: SF Department of Building Inspection · SF Planning Development Pipeline
+                  </div>
                 </dl>
               </details>
 

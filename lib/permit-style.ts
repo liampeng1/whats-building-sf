@@ -70,23 +70,24 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   inactive: 'Inactive / cancelled',
 }
 
-// Plain-language definitions surfaced in the FilterPanel legend and as
-// chip tooltips. Captures the meaningful distinction between "approved"
-// (signed off on paper, no permit yet) and "permitted" (permit issued,
-// physical work allowed but no ground-truth that anything's started).
+// Plain-language stage definitions, surfaced in the FilterPanel legend
+// and as chip tooltips. Captures the distinction (often a multi-month
+// gap in SF) between "approved" (plans passed review, permit document
+// not yet issued — work cannot start) and "permitted" (permit document
+// issued — work is legally allowed but may not have begun).
 export const STAGE_DEFINITIONS: Record<PermitStage, string> = {
   filed:
-    'Application submitted to DBI and under review. No decision yet.',
+    'Application submitted to DBI and under plan review — staff check it against building, fire, zoning, and housing codes. No decision yet, and work is not allowed.',
   approved:
-    'Plans approved on paper but the building permit has not been issued. Work cannot start yet.',
+    'Plans have passed review and the permit is ready for issuance, but the permit document itself has not been issued yet (often pending fees, disclosures, or sign-offs). Work cannot start.',
   permitted:
-    'Permit issued — work is legally allowed to start. SF Planning Pipeline has not (yet) confirmed construction is underway.',
+    'The permit document has been issued — the property owner is legally allowed to begin construction. Some projects break ground immediately; others sit issued for months. SF Planning’s Development Pipeline has not (yet) confirmed construction is underway.',
   construction:
-    'SF Planning Pipeline confirms the project is actively under construction.',
+    'SF Planning’s Development Pipeline confirms the project is actively under construction — the only stage with ground-truth that physical work has started.',
   complete:
-    'All inspections signed off; the project is finished.',
+    'All required inspections have signed off and the permit has been closed. The project is finished.',
   inactive:
-    'Cancelled, denied, expired, withdrawn, or otherwise off-track.',
+    'The permit was cancelled, denied, expired, withdrawn, suspended, revoked, or otherwise taken off DBI’s active rolls.',
 }
 
 // Pictographic SVG icons per stage. Returns a complete SVG string sized to fit
