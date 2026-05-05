@@ -31,6 +31,32 @@ interface PermitApiRow {
   block?: string | null
   lot?: string | null
   location?: Permit['location']
+  primary_address_flag?: string | null
+}
+
+/**
+ * DataSF returns one row per (permit, parcel) pair — a project that assembled
+ * three lots into one building shows up three times with the same
+ * permit_number, identical proposed_units, but different block/lot/address.
+ * Collapse to one row per permit_number, preferring the row marked
+ * primary_address_flag='Y' (DataSF's canonical address for the permit).
+ */
+function dedupeByPermitNumber(rows: PermitApiRow[]): PermitApiRow[] {
+  const byId = new Map<string, PermitApiRow>()
+  for (const row of rows) {
+    const id = row.permit_number
+    if (!id) continue
+    const existing = byId.get(id)
+    if (!existing) {
+      byId.set(id, row)
+      continue
+    }
+    // Replace only if the new row is the primary address and the existing isn't.
+    if (row.primary_address_flag === 'Y' && existing.primary_address_flag !== 'Y') {
+      byId.set(id, row)
+    }
+  }
+  return [...byId.values()]
 }
 
 interface PlanningCaseApiRow {
@@ -247,7 +273,7 @@ export async function fetchAllTrackedPermitsForSnapshot(): Promise<Permit[]> {
   ])
   if (!permitsRes.ok) throw new Error(`DataSF error: ${permitsRes.status}`)
   const rows: PermitApiRow[] = await permitsRes.json()
-  return rows.map((row) => {
+  return dedupeByPermitNumber(rows).map((row) => {
     const p = permitFromApi(row)
     const pipe = pipelineMap.get(p.permit_number)
     if (pipe) {
@@ -288,7 +314,7 @@ export async function fetchBuildingPermits(
   ])
   if (!permitsRes.ok) throw new Error(`DataSF error: ${permitsRes.status}`)
   const rows: PermitApiRow[] = await permitsRes.json()
-  return rows.map((row) => {
+  return dedupeByPermitNumber(rows).map((row) => {
     const p = permitFromApi(row)
     const pipe = pipelineMap.get(p.permit_number)
     if (pipe) {
@@ -300,7 +326,9 @@ export async function fetchBuildingPermits(
 }
 
 export async function fetchBuildingPermit(id: string): Promise<Permit> {
-  const params = new URLSearchParams({ permit_number: id, $limit: '1' })
+  // Multi-parcel projects (e.g. lot mergers) yield several rows for one
+  // permit_number — fetch up to a handful and pick the primary address.
+  const params = new URLSearchParams({ permit_number: id, $limit: '20' })
   const pipelineParams = new URLSearchParams({
     $select: 'bpa_no,current_status,current_status_date',
     $where: `bpa_no='${id.replace(/'/g, "''")}'`,
@@ -316,7 +344,8 @@ export async function fetchBuildingPermit(id: string): Promise<Permit> {
   if (!permitRes.ok) throw new Error(`DataSF error: ${permitRes.status}`)
   const rows: PermitApiRow[] = await permitRes.json()
   if (rows.length === 0) throw new NotFoundError('Permit not found')
-  const permit = permitFromApi(rows[0])
+  const deduped = dedupeByPermitNumber(rows)
+  const permit = permitFromApi(deduped[0])
   if (pipelineRes.ok) {
     const pipeRows: PipelineRow[] = await pipelineRes.json()
     const p = pipeRows[0]
