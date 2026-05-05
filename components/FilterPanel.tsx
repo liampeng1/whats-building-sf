@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import {
   stageIconSvg,
   STAGE_LABELS,
@@ -75,16 +75,26 @@ function StageChip({
       type="button"
       onClick={onToggle}
       aria-pressed={on}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors"
+      // Selected vs not is signaled by THREE cumulative cues so the state
+      // is unmistakable: (1) saturated tinted fill vs transparent, (2) solid
+      // colored border at 1.5px vs dashed neutral, (3) glyph at full vs
+      // 0.3 opacity. Plus a slight overall opacity drop on the off state.
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+        on ? '' : 'opacity-60'
+      }`}
       style={
         on
-          ? { color, backgroundColor: `${color}10`, border: `1px solid ${color}33` }
-          : { color: '#78716c', backgroundColor: 'transparent', border: '1px solid #d6cfbe' }
+          ? { color, backgroundColor: `${color}1f`, border: `1.5px solid ${color}` }
+          : {
+              color: '#78716c',
+              backgroundColor: 'transparent',
+              border: '1.5px dashed #d6cfbe',
+            }
       }
     >
       <span
         className="inline-flex w-3.5 h-3.5"
-        style={{ opacity: on ? 1 : 0.4 }}
+        style={{ opacity: on ? 1 : 0.3 }}
         dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 14) }}
       />
       {label}
@@ -112,16 +122,28 @@ function CategoryChip({
       type="button"
       onClick={onToggle}
       aria-pressed={on}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors"
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+        on ? '' : 'opacity-60'
+      }`}
       style={
         on
-          ? { color, backgroundColor: `${color}10`, border: `1px solid ${color}33` }
-          : { color: '#78716c', backgroundColor: 'transparent', border: '1px solid #d6cfbe' }
+          ? { color, backgroundColor: `${color}1f`, border: `1.5px solid ${color}` }
+          : {
+              color: '#78716c',
+              backgroundColor: 'transparent',
+              border: '1.5px dashed #d6cfbe',
+            }
       }
     >
+      {/* Filled dot when selected, hollow ring when not — same dichotomy as
+          the chip body: solid vs outlined. */}
       <span
         className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-        style={{ backgroundColor: on ? color : '#a8a29e' }}
+        style={
+          on
+            ? { backgroundColor: color }
+            : { backgroundColor: 'transparent', border: '1.5px solid #a8a29e' }
+        }
       />
       {USE_CATEGORY_LABELS[cat]}
     </button>
@@ -187,15 +209,15 @@ export function FilterPanel({
         ? 'none'
         : 'some'
 
-  // Closed-state subtitle: a one-line description of what the user is
-  // looking at right now. Mentions filtering only when something is filtered
-  // out; otherwise reads as a brand tagline.
+  // Header reads as a quiet civic-data tagline rather than a stat readout.
+  // When filters are reducing the visible set, append a small note so the
+  // user understands why the map looks like it does.
   const filtered = visibleCount !== totalCount
-  const subtitle = !totalCount
-    ? 'Major new construction, mapped'
-    : filtered
-      ? `${visibleCount.toLocaleString()} of ${totalCount.toLocaleString()} permits · tap to refine`
-      : `${totalCount.toLocaleString()} active major construction permits`
+  const subtitle =
+    'Every major new-construction project in San Francisco — from filing through completion.'
+  const filterNote = filtered && totalCount
+    ? `${visibleCount.toLocaleString()} of ${totalCount.toLocaleString()} visible`
+    : null
 
   return (
     <div className="absolute top-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[calc(100vw-2rem)] max-w-[340px] overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]">
@@ -219,6 +241,32 @@ export function FilterPanel({
         <p className="text-[11px] tracking-wide opacity-80 mt-0.5 leading-snug">
           {subtitle}
         </p>
+        {/* Lifecycle key — always visible. Glyphs in left-to-right order
+            with arrow connectors so the progression filed → … → complete
+            reads at a glance. Doubles as the legend for the icons used on
+            map pins and in the chip toggles below. */}
+        <div className="flex items-center gap-1 mt-2 pt-2 border-t border-paper/15">
+          {LIFECYCLE.map((stage, i) => (
+            <Fragment key={stage}>
+              {i > 0 && (
+                <span aria-hidden className="text-paper/40 text-[10px] leading-none">
+                  →
+                </span>
+              )}
+              <span
+                className="inline-flex shrink-0"
+                style={{ width: 18, height: 18 }}
+                dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 18) }}
+                title={STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]}
+              />
+            </Fragment>
+          ))}
+          {filterNote && (
+            <span className="ml-auto text-[10px] uppercase tracking-wider opacity-70">
+              {filterNote}
+            </span>
+          )}
+        </div>
       </button>
 
       <div
