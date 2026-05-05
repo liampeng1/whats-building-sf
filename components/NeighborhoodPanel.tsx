@@ -6,6 +6,7 @@ import {
   netDelta,
   useCategory,
   stageIconSvg,
+  dedupeProjectPermits,
   STAGE_COLORS,
   STAGE_LABELS,
   STAGE_ORDER,
@@ -44,6 +45,10 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
+  // Dedupe by parcel for project-level metrics (homes, cost, top projects).
+  // Permit counts and recent-activity stay raw — a permit is a permit.
+  const projectPermits = useMemo(() => dedupeProjectPermits(permits), [permits])
+
   const stats = useMemo(() => {
     let totalHomes = 0
     let totalCost = 0
@@ -55,6 +60,9 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
       stageCounts.set(stage, (stageCounts.get(stage) ?? 0) + 1)
       const cat = useCategory(p.proposed_use ?? p.existing_use)
       useCounts.set(cat, (useCounts.get(cat) ?? 0) + 1)
+    }
+    for (const p of projectPermits) {
+      const stage = permitStage(p)
       const homes = netDelta(p.existing_units, p.proposed_units)
       if (homes != null && homes > 0) {
         totalHomes += homes
@@ -64,15 +72,15 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
       if (Number.isFinite(c)) totalCost += c
     }
     return { totalHomes, totalCost, stageCounts, useCounts, homesByStage }
-  }, [permits])
+  }, [permits, projectPermits])
 
   const topProjects = useMemo(() => {
-    return [...permits]
+    return [...projectPermits]
       .map((p) => ({ p, homes: netDelta(p.existing_units, p.proposed_units) ?? 0 }))
       .filter((x) => x.homes > 0)
       .sort((a, b) => b.homes - a.homes)
       .slice(0, 5)
-  }, [permits])
+  }, [projectPermits])
 
   const recentActivity = useMemo(() => {
     return [...permits]

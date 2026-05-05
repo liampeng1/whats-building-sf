@@ -243,6 +243,28 @@ export function netDelta(existing: string | null, proposed: string | null): numb
   return p - e
 }
 
+// Big projects often generate several permits on one parcel — a master site
+// permit plus phased addenda or revisions, all with the same proposed_units.
+// Naive summing across those rows triple-counts the homes. Group by
+// (block, lot) and keep the single permit with the largest positive delta as
+// that parcel's representative project. Permits with no parcel info fall back
+// to permit_number as their own key.
+export function dedupeProjectPermits(permits: Permit[]): Permit[] {
+  const byParcel = new Map<string, Permit>()
+  for (const p of permits) {
+    const key = p.block && p.lot ? `${p.block}/${p.lot}` : `pn:${p.permit_number}`
+    const homes = netDelta(p.existing_units, p.proposed_units) ?? 0
+    const existing = byParcel.get(key)
+    if (!existing) {
+      byParcel.set(key, p)
+      continue
+    }
+    const existingHomes = netDelta(existing.existing_units, existing.proposed_units) ?? 0
+    if (homes > existingHomes) byParcel.set(key, p)
+  }
+  return [...byParcel.values()]
+}
+
 export function timeAgo(dateStr: string | null, now: Date = new Date()): string | null {
   if (!dateStr) return null
   const then = new Date(dateStr)
