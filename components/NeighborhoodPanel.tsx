@@ -193,22 +193,58 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
           {/* Top projects */}
           {topProjects.length > 0 && (
             <div className="pt-4 border-t border-paper-edge">
-              <div className="civic-eyebrow mb-3">Biggest projects</div>
+              <div className="civic-eyebrow mb-3">Biggest projects (by net new homes)</div>
               <ul className="space-y-2">
-                {topProjects.map(({ p, homes }) => (
-                  <li key={p.permit_number}>
-                    <button
-                      type="button"
-                      onClick={() => onOpenPermit(p.permit_number)}
-                      className="w-full text-left flex items-baseline gap-3 hover:bg-paper-deep -mx-2 px-2 py-1 rounded transition-colors"
-                    >
-                      <span className="font-serif text-construction text-sm font-semibold tabular-nums shrink-0 w-12">
-                        +{homes}
-                      </span>
-                      <span className="font-serif text-ink leading-tight">{p.address}</span>
-                    </button>
-                  </li>
-                ))}
+                {topProjects.map(({ p, homes }) => {
+                  const stage = permitStage(p)
+                  const stageColor = STAGE_COLORS[stage].fill
+                  const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
+                  const cat = useCategory(p.proposed_use ?? p.existing_use)
+                  const cost = Number(p.estimated_cost ?? 0)
+                  return (
+                    <li key={p.permit_number}>
+                      <button
+                        type="button"
+                        onClick={() => onOpenPermit(p.permit_number)}
+                        className="w-full text-left flex gap-3 hover:bg-paper-deep -mx-2 px-2 py-1.5 rounded transition-colors"
+                      >
+                        <span className="shrink-0 w-14 pt-0.5">
+                          <span className="font-serif text-construction text-base font-semibold tabular-nums leading-none">
+                            +{homes}
+                          </span>
+                          <span className="block text-[0.65rem] uppercase tracking-wide text-ink-faint mt-0.5">
+                            {homes === 1 ? 'home' : 'homes'}
+                          </span>
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block font-serif text-ink leading-tight">
+                            {p.address}
+                          </span>
+                          <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-[0.7rem]">
+                            <span
+                              className="inline-flex items-center gap-1 font-semibold uppercase tracking-wide"
+                              style={{ color: stageColor }}
+                            >
+                              <span
+                                className="inline-flex w-3 h-3"
+                                dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 12) }}
+                              />
+                              {stageLabel}
+                            </span>
+                            <span className="text-ink-faint">·</span>
+                            <span className="text-ink-soft">{USE_CATEGORY_LABELS[cat]}</span>
+                            {cost > 0 && (
+                              <>
+                                <span className="text-ink-faint">·</span>
+                                <span className="text-ink-soft tabular-nums">{formatCost(cost)}</span>
+                              </>
+                            )}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           )}
