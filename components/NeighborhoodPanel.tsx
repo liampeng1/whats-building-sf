@@ -74,12 +74,26 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
     return { totalHomes, totalCost, stageCounts, useCounts, homesByStage }
   }, [permits, projectPermits])
 
+  // Rank biggest projects by net new homes when housing is in the mix; fall
+  // back to estimated cost so non-residential categories (office/retail/
+  // industrial) still surface a meaningful "biggest" list.
   const topProjects = useMemo(() => {
-    return [...projectPermits]
+    const withHomes = projectPermits
       .map((p) => ({ p, homes: netDelta(p.existing_units, p.proposed_units) ?? 0 }))
       .filter((x) => x.homes > 0)
-      .sort((a, b) => b.homes - a.homes)
-      .slice(0, 5)
+    if (withHomes.length > 0) {
+      return {
+        rankedBy: 'homes' as const,
+        rows: withHomes.sort((a, b) => b.homes - a.homes).slice(0, 5),
+      }
+    }
+    const withCost = projectPermits
+      .map((p) => ({ p, cost: Number(p.estimated_cost ?? 0) }))
+      .filter((x) => Number.isFinite(x.cost) && x.cost > 0)
+    return {
+      rankedBy: 'cost' as const,
+      rows: withCost.sort((a, b) => b.cost - a.cost).slice(0, 5),
+    }
   }, [projectPermits])
 
   const recentActivity = useMemo(() => {
@@ -133,9 +147,15 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
               <div className="font-serif text-3xl text-ink leading-none">{total}</div>
             </div>
             <div>
-              <div className="civic-eyebrow mb-1.5">Net new homes</div>
+              <div className="civic-eyebrow mb-1.5">
+                {stats.totalHomes > 0 ? 'Net new homes' : 'Estimated cost'}
+              </div>
               <div className="font-serif text-3xl text-construction leading-none">
-                +{stats.totalHomes}
+                {stats.totalHomes > 0
+                  ? `+${stats.totalHomes}`
+                  : stats.totalCost > 0
+                    ? formatCost(stats.totalCost)
+                    : '—'}
               </div>
               {stats.totalHomes > 0 && (
                 <ul className="mt-2 space-y-0.5">
@@ -222,8 +242,9 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
             </div>
           )}
 
-          {/* Combined estimated cost */}
-          {stats.totalCost > 0 && (
+          {/* Combined estimated cost — only when housing has displaced it as the
+              headline; otherwise it'd duplicate the top-line "Estimated cost". */}
+          {stats.totalHomes > 0 && stats.totalCost > 0 && (
             <div>
               <div className="civic-eyebrow mb-1.5">Combined estimated cost</div>
               <div className="font-serif text-xl text-ink">{formatCost(stats.totalCost)}</div>
@@ -231,11 +252,15 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
           )}
 
           {/* Top projects */}
-          {topProjects.length > 0 && (
+          {topProjects.rows.length > 0 && (
             <div className="pt-4 border-t border-paper-edge">
-              <div className="civic-eyebrow mb-3">Biggest projects (by net new homes)</div>
+              <div className="civic-eyebrow mb-3">
+                Biggest projects (by {topProjects.rankedBy === 'homes' ? 'net new homes' : 'estimated cost'})
+              </div>
               <ul className="space-y-2">
-                {topProjects.map(({ p, homes }) => {
+                {topProjects.rows.map((row) => {
+                  const p = row.p
+                  const homes = 'homes' in row ? row.homes : 0
                   const stage = permitStage(p)
                   const stageColor = STAGE_COLORS[stage].fill
                   const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
@@ -248,13 +273,26 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
                         onClick={() => onOpenPermit(p.permit_number)}
                         className="w-full text-left flex gap-3 hover:bg-paper-deep -mx-2 px-2 py-1.5 rounded transition-colors"
                       >
-                        <span className="shrink-0 w-14 pt-0.5">
-                          <span className="font-serif text-construction text-base font-semibold tabular-nums leading-none">
-                            +{homes}
-                          </span>
-                          <span className="block text-[0.65rem] uppercase tracking-wide text-ink-faint mt-0.5">
-                            {homes === 1 ? 'home' : 'homes'}
-                          </span>
+                        <span className="shrink-0 w-16 pt-0.5">
+                          {topProjects.rankedBy === 'homes' ? (
+                            <>
+                              <span className="font-serif text-construction text-base font-semibold tabular-nums leading-none">
+                                +{homes}
+                              </span>
+                              <span className="block text-[0.65rem] uppercase tracking-wide text-ink-faint mt-0.5">
+                                {homes === 1 ? 'home' : 'homes'}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="font-serif text-construction text-sm font-semibold tabular-nums leading-none">
+                                {formatCost(cost)}
+                              </span>
+                              <span className="block text-[0.65rem] uppercase tracking-wide text-ink-faint mt-0.5">
+                                est. cost
+                              </span>
+                            </>
+                          )}
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block font-serif text-ink leading-tight">
@@ -273,7 +311,7 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
                             </span>
                             <span className="text-ink-faint">·</span>
                             <span className="text-ink-soft">{USE_CATEGORY_LABELS[cat]}</span>
-                            {cost > 0 && (
+                            {topProjects.rankedBy === 'homes' && cost > 0 && (
                               <>
                                 <span className="text-ink-faint">·</span>
                                 <span className="text-ink-soft tabular-nums">{formatCost(cost)}</span>
