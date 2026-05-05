@@ -15,6 +15,7 @@ const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'permitted', 'constructio
 
 const MIN_UNITS_OPTIONS: { value: MinUnitsFilter; label: string }[] = [
   { value: 0, label: 'Any' },
+  { value: 2, label: '2+' },
   { value: 5, label: '5+' },
   { value: 25, label: '25+' },
   { value: 100, label: '100+' },

@@ -95,7 +95,7 @@ function ZoomGatedPins({
   )
 }
 
-export type MinUnitsFilter = 0 | 5 | 25 | 100
+export type MinUnitsFilter = 0 | 2 | 5 | 25 | 100
 export type CompletedYearsFilter = 0 | 1 | 2 | 5
 export type RecentActivityFilter = 0 | 6 | 12 | 24 | 60 // months; 0 = any
 
