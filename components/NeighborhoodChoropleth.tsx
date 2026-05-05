@@ -81,11 +81,17 @@ function tooltipHtml(name: string, total: number, breakdown: Map<PermitStage, nu
 export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: Props) {
   const map = useMap()
   const [geo, setGeo] = useState<NhoodGeo | null>(null)
-  const [zoom, setZoom] = useState<number>(map.getZoom())
+  // Track only whether we're below or above the fill-fade threshold — a
+  // boolean changes far less often than the raw zoom level, so the layer
+  // re-styles once per crossing instead of on every settled zoom.
+  const [isFilled, setIsFilled] = useState<boolean>(map.getZoom() < hideAtZoom)
   const layerRef = useRef<L.GeoJSON | null>(null)
 
   useMapEvents({
-    zoomend: () => setZoom(map.getZoom()),
+    zoomend: () => {
+      const next = map.getZoom() < hideAtZoom
+      setIsFilled((prev) => (prev === next ? prev : next))
+    },
   })
 
   useEffect(() => {
@@ -120,9 +126,26 @@ export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: P
     return { totals, breakdowns, max: Math.max(0, ...totals.values()) }
   }, [geo, permits])
 
-  if (!geo) return null
+  // Re-style the existing GeoJSON layer when the fade threshold flips.
+  // Avoids the cost of unmounting and remounting all 41 polygons.
+  useEffect(() => {
+    const layer = layerRef.current
+    if (!layer) return
+    layer.setStyle((feature) => {
+      const name = (feature?.properties as { nhood?: string } | undefined)?.nhood ?? ''
+      const count = totals.get(name) ?? 0
+      const fraction = max > 0 ? count / max : 0
+      return {
+        fillColor: colorForFraction(fraction),
+        fillOpacity: isFilled ? (count === 0 ? 0.05 : 0.45) : 0,
+        color: '#1c2438',
+        weight: isFilled ? 0.6 : 0.5,
+        opacity: isFilled ? 0.4 : 0.3,
+      }
+    })
+  }, [isFilled, totals, max])
 
-  const isFilled = zoom < hideAtZoom
+  if (!geo) return null
 
   const baseStyleFor = (count: number, fraction: number) => ({
     fillColor: colorForFraction(fraction),
@@ -134,8 +157,9 @@ export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: P
 
   return (
     <GeoJSON
-      // Force a re-mount when fill mode flips so styles re-apply cleanly.
-      key={`choropleth-${isFilled}-${permits.length}-${max}`}
+      // Re-mount only when the underlying data changes; isFilled is handled
+      // by the useEffect below which re-styles the existing layer in place.
+      key={`choropleth-${permits.length}-${max}`}
       ref={(r) => {
         layerRef.current = r ?? null
       }}

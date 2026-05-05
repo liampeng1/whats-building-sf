@@ -39,15 +39,30 @@ function pinOpacity(zoom: number): number {
 }
 
 /**
- * Tracks the live map zoom and pushes it to the parent. Listens on `zoom`
- * (during-zoom) so opacity transitions start the moment zoom begins —
- * not after `zoomend` fires post-animation.
+ * Drives the pin-opacity CSS variable directly on the wrapper element each
+ * zoom frame, bypassing React so we don't re-render the whole map tree at
+ * 60Hz during a pinch/scroll-zoom. React state only catches the settled
+ * zoom on `zoomend` so gates like ZoomGatedPins update once per gesture.
  */
-function ZoomTracker({ onZoom }: { onZoom: (z: number) => void }) {
+function ZoomTracker({
+  onSettled,
+  wrapperRef,
+}: {
+  onSettled: (z: number) => void
+  wrapperRef: React.RefObject<HTMLDivElement | null>
+}) {
   const map = useMap()
   useMapEvents({
-    zoom: () => onZoom(map.getZoom()),
-    zoomend: () => onZoom(map.getZoom()),
+    zoom: () => {
+      const el = wrapperRef.current
+      if (el) el.style.setProperty('--pin-opacity', String(pinOpacity(map.getZoom())))
+    },
+    zoomend: () => {
+      const z = map.getZoom()
+      const el = wrapperRef.current
+      if (el) el.style.setProperty('--pin-opacity', String(pinOpacity(z)))
+      onSettled(z)
+    },
   })
   return null
 }
@@ -266,16 +281,18 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     return () => ctrl.abort()
   }, [completedYears, recentActivity])
 
-  // CSS custom property → inherited by .permit-pin via marker-cluster.css.
-  // Leaflet attaches markers to .leaflet-marker-pane (not as React children),
-  // so we can't wrap them in a div with opacity — but the CSS var on the
-  // outer wrapper cascades through to all DivIcon HTML.
-  const pinOp = pinOpacity(mapZoom)
+  // The --pin-opacity CSS variable is written directly to wrapperRef.current
+  // by ZoomTracker on every zoom frame. We seed it via inline style for the
+  // first paint (using the settled zoom from React state) and never let
+  // React touch it again during animation — that's the whole point.
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const initialPinOp = pinOpacity(mapZoom)
 
   return (
     <div
+      ref={wrapperRef}
       className="relative w-full h-full"
-      style={{ ['--pin-opacity' as string]: String(pinOp) }}
+      style={{ ['--pin-opacity' as string]: String(initialPinOp) }}
     >
       {loading && (
         <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/40 pointer-events-none">
@@ -295,7 +312,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           mapRef.current = m ?? null
         }}
       >
-        <ZoomTracker onZoom={setMapZoom} />
+        <ZoomTracker onSettled={setMapZoom} wrapperRef={wrapperRef} />
         {/* Carto Voyager: gives water (soft blue), parks (sage), and street
             hierarchy out of the box. Labels-under variant keeps streets/place
             names but de-emphasizes them so pins still dominate. */}
