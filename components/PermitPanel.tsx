@@ -111,7 +111,17 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {permit && (
-              <ShareButton title={`${permit.address} · What's Building SF`} />
+              <ShareButton
+                title={`${permit.address} · What's Building SF`}
+                // Share the canonical detail URL so the unfurl picks up the
+                // permit-specific OG image — the in-map URL (?permit=...)
+                // resolves to the home page's default meta otherwise.
+                url={
+                  typeof window !== 'undefined'
+                    ? `${window.location.origin}/permits/${encodeURIComponent(permit.permit_number)}`
+                    : undefined
+                }
+              />
             )}
             {permit && (
               <a

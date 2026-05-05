@@ -160,7 +160,16 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {neighborhood && (
-              <ShareButton title={`${neighborhood} · What's Building SF`} />
+              <ShareButton
+                title={`${neighborhood} · What's Building SF`}
+                // Canonical neighborhood URL so the unfurl picks up the
+                // per-neighborhood OG image instead of the home default.
+                url={
+                  typeof window !== 'undefined'
+                    ? `${window.location.origin}/neighborhoods/${encodeURIComponent(neighborhood)}`
+                    : undefined
+                }
+              />
             )}
             <button
               type="button"

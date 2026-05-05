@@ -18,9 +18,38 @@ const sourceSerif = Source_Serif_4({
   weight: ["400", "600", "700"],
 });
 
+// Resolve a stable canonical URL so OG/Twitter unfurls find the right image.
+// Order: explicit override → Vercel preview deploy → localhost.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000')
+
 export const metadata: Metadata = {
-  title: "What's Building SF",
-  description: "Every major new-construction permit filed in San Francisco in the last 2 years, mapped.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "What's Building SF",
+    template: "%s · What's Building SF",
+  },
+  description:
+    'Every major new-construction permit filed in San Francisco in the last 2 years, mapped.',
+  openGraph: {
+    siteName: "What's Building SF",
+    type: 'website',
+    locale: 'en_US',
+    title: "What's Building SF",
+    description:
+      'Every major new-construction permit filed in San Francisco in the last 2 years, mapped.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "What's Building SF",
+    description:
+      'Every major new-construction permit filed in San Francisco in the last 2 years, mapped.',
+  },
 };
 
 export default function RootLayout({

@@ -1,7 +1,38 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
 import { PermitDetailContent } from '@/components/PermitDetailContent'
+import {
+  permitStage,
+  netDelta,
+  STAGE_LABELS,
+} from '@/lib/permit-style'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  try {
+    const permit = await fetchBuildingPermit(id)
+    const stage = permitStage(permit)
+    const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
+    const homes = netDelta(permit.existing_units, permit.proposed_units) ?? 0
+    const homesPart = homes > 0 ? ` · +${homes} net new homes` : ''
+    const title = permit.address || `Permit #${permit.permit_number}`
+    const description = `${stageLabel}${homesPart}. ${permit.permit_type_definition ?? 'Building permit'} in San Francisco.`
+    return {
+      title,
+      description,
+      openGraph: { title, description, type: 'article' },
+      twitter: { card: 'summary_large_image', title, description },
+    }
+  } catch {
+    return { title: `Permit #${id}` }
+  }
+}
 
 export default async function PermitDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
