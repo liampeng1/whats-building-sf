@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, useMapEvents, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
@@ -119,6 +119,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [openPermit, setOpenPermit] = useState<string | null>(null)
   const [selectedNhood, setSelectedNhood] = useState<string | null>(null)
   const [nhoodGeo, setNhoodGeo] = useState<FeatureCollection<MultiPolygon | Polygon, { nhood: string }> | null>(null)
+  // Parcel polygon for the currently-open permit. Fetched lazily from
+  // /api/parcel and rendered as a thin amber outline under the marker so
+  // the user can see which lot the project sits on.
+  const [parcelShape, setParcelShape] = useState<Polygon | MultiPolygon | null>(null)
   const mapRef = useRef<L.Map | null>(null)
 
   useEffect(() => {
@@ -151,19 +155,63 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  const openPermitPanel = useCallback((id: string) => {
-    setOpenPermit(id)
-    const url = new URL(window.location.href)
-    url.searchParams.set('permit', id)
-    window.history.pushState({}, '', url)
-  }, [])
+  const openPermitPanel = useCallback(
+    (id: string) => {
+      setOpenPermit(id)
+      const url = new URL(window.location.href)
+      url.searchParams.set('permit', id)
+      window.history.pushState({}, '', url)
+
+      // Pan so the pin lands in the still-visible left portion of the map
+      // when the desktop side panel slides in (otherwise the user clicks a
+      // pin and immediately loses sight of it). Mobile keeps current center.
+      const map = mapRef.current
+      const p = permits.find((x) => x.permit_number === id)
+      const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
+      if (map && p?.location && isWide) {
+        const [lng, lat] = p.location.coordinates
+        const targetZoom = Math.max(map.getZoom(), PIN_FADE_MAX)
+        const px = map.project([lat, lng], targetZoom)
+        const shifted = px.add(L.point(260, 0)) // ~half the 520px panel
+        map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
+      }
+    },
+    [permits],
+  )
 
   const closePermitPanel = useCallback(() => {
     setOpenPermit(null)
+    setParcelShape(null)
     const url = new URL(window.location.href)
     url.searchParams.delete('permit')
     window.history.pushState({}, '', url)
   }, [])
+
+  // Fetch the parcel polygon for the currently-open permit. Cached on the
+  // server (24h) and per browser session via SWR-style caching headers.
+  useEffect(() => {
+    if (!openPermit) {
+      setParcelShape(null)
+      return
+    }
+    const p = permits.find((x) => x.permit_number === openPermit)
+    if (!p?.block || !p?.lot) {
+      setParcelShape(null)
+      return
+    }
+    const ctrl = new AbortController()
+    const url = `/api/parcel?block=${encodeURIComponent(p.block)}&lot=${encodeURIComponent(p.lot)}`
+    fetch(url, { signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.shape) setParcelShape(data.shape as Polygon | MultiPolygon)
+        else setParcelShape(null)
+      })
+      .catch(() => {
+        // Ignore aborts and fetch failures — the parcel outline is non-essential.
+      })
+    return () => ctrl.abort()
+  }, [openPermit, permits])
 
   const openNhoodPanel = useCallback((name: string, bounds: L.LatLngBounds) => {
     setSelectedNhood(name)
@@ -360,6 +408,21 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           onSelect={openNhoodPanel}
           selectedNhood={selectedNhood}
         />
+        {parcelShape && (
+          <GeoJSON
+            // Re-mount when the parcel changes so Leaflet picks up the new geometry.
+            key={`parcel-${openPermit}`}
+            data={parcelShape}
+            style={{
+              color: '#7c2d12',
+              weight: 2.5,
+              opacity: 1,
+              fillColor: '#d97706',
+              fillOpacity: 0.18,
+              interactive: false,
+            }}
+          />
+        )}
         <ZoomGatedPins
           visiblePermits={visiblePermits}
           onSelect={openPermitPanel}
