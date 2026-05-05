@@ -19,7 +19,7 @@ export const STAGE_COLORS = {
   filed:        { fill: '#334155', stroke: '#1e293b' },  // slate
   approved:     { fill: '#65a30d', stroke: '#365314' },  // lime / light green
   permitted:    { fill: '#ca8a04', stroke: '#713f12' },  // amber (issued, pre-build)
-  construction: { fill: '#ea580c', stroke: '#000000' },  // hazard orange + black
+  construction: { fill: '#b35c44', stroke: '#1c2438' },  // terracotta + ink
   complete:     { fill: '#166534', stroke: '#14532d' },  // forest green
   inactive:     { fill: '#a8a29e', stroke: '#57534e' },  // taupe
 } as const
@@ -103,11 +103,13 @@ export function stageIconSvg(stage: PermitStage, size: number = 24): string {
         <line x1="11" y1="15" x2="12.4" y2="15.4" stroke-width="1.4"/>
       </svg>`
     case 'construction':
-      // Classic hazard sign: orange triangle with black border + black ! mark.
-      return `<svg ${dims} fill="${c}" stroke="#000000" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+      // Hazard-sign silhouette in terracotta + ink (instead of orange + pure
+      // black) — keeps the "active build" semantics without the highway-cone
+      // saturation against the cream basemap.
+      return `<svg ${dims} fill="${c}" stroke="#1c2438" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 2.5 1 21.5h22z"/>
-        <line x1="12" y1="9" x2="12" y2="14.5" stroke="#000000" stroke-width="2.4" stroke-linecap="round"/>
-        <circle cx="12" cy="17.6" r="1.2" fill="#000000" stroke="none"/>
+        <line x1="12" y1="9" x2="12" y2="14.5" stroke="#1c2438" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="12" cy="17.6" r="1.2" fill="#1c2438" stroke="none"/>
       </svg>`
     case 'complete':
       return `<svg ${dims} fill="${c}" aria-hidden="true">
