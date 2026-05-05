@@ -152,14 +152,13 @@ export function NeighborhoodChoropleth({
     const isDimmed = selected != null && !isSelected
 
     if (isSelected) {
-      // Persistent active state — burnt-amber stroke (the deep end of the
-      // choropleth ramp) sets the selection apart from hover's navy
-      // treatment without going off-palette. Fill is kept light so the
-      // basemap (streets, parks) still reads through.
+      // Persistent active state — burnt-sienna stroke matching the
+      // headline accent so selection across the app (panel "+homes" stat,
+      // parcel outline, selected polygon) speaks one warm-amber language.
       return {
         fillColor,
         fillOpacity: isFilled ? 0.4 : 0.15,
-        color: '#7c2d12',
+        color: '#9a4a31',
         weight: 3,
         opacity: 1,
       }

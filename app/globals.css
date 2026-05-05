@@ -9,17 +9,25 @@
   --ink-soft: #475569;
   --ink-faint: #78716c;
 
-  /* Lifecycle accents. Cool → warm → hot → calm green = temperature progression. */
-  --stage-filed: #334155;        /* slate */
-  --stage-filed-stroke: #1e293b;
-  --stage-approved: #d97706;     /* amber */
-  --stage-approved-stroke: #78350f;
-  --stage-construction: #b91c1c; /* red — the headline */
-  --stage-construction-stroke: #7f1d1d;
-  --stage-complete: #166534;     /* deep forest */
-  --stage-complete-stroke: #14532d;
-  --stage-inactive: #a8a29e;     /* taupe */
+  /* Lifecycle accents — earthy editorial progression. Stays in sync with
+     STAGE_COLORS in lib/permit-style.ts; if you change one, change the other. */
+  --stage-filed: #64748b;        /* softened slate */
+  --stage-filed-stroke: #475569;
+  --stage-approved: #7d9b76;     /* sage */
+  --stage-approved-stroke: #4e6b4a;
+  --stage-permitted: #b08968;    /* dusty gold */
+  --stage-permitted-stroke: #6e5340;
+  --stage-construction: #b35c44; /* terracotta — active build */
+  --stage-construction-stroke: #1c2438;
+  --stage-complete: #3a6e58;     /* deep teal-green */
+  --stage-complete-stroke: #1e3f33;
+  --stage-inactive: #a8a29e;     /* warm taupe */
   --stage-inactive-stroke: #57534e;
+
+  /* Headline accent — burnt sienna. Used by `text-construction` for the
+     "+homes" stat, the parcel outline, and the selected-neighborhood
+     stroke so the warm-amber language is consistent across surfaces. */
+  --accent-headline: #9a4a31;
 }
 
 @theme inline {
@@ -29,9 +37,14 @@
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ink-faint: var(--ink-faint);
-  --color-construction: var(--stage-construction);
+  /* `text-construction` historically meant the headline accent (used for the
+     "+homes" stat, etc.) — keep that semantic and point it at the dedicated
+     accent token rather than the construction-stage fill, so editorial
+     emphasis stays consistent even if we re-tune stage colors later. */
+  --color-construction: var(--accent-headline);
   --color-approved: var(--stage-approved);
   --color-filed: var(--stage-filed);
+  --color-permitted: var(--stage-permitted);
   --color-complete: var(--stage-complete);
   --color-inactive: var(--stage-inactive);
 

@@ -414,11 +414,13 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
             key={`parcel-${openPermit}`}
             data={parcelShape}
             style={{
-              color: '#7c2d12',
+              // Burnt sienna — same accent the panel headline uses, so the
+              // selected-permit "thread" reads consistently across surfaces.
+              color: '#9a4a31',
               weight: 2.5,
               opacity: 1,
-              fillColor: '#d97706',
-              fillOpacity: 0.18,
+              fillColor: '#b08968',
+              fillOpacity: 0.2,
               interactive: false,
             }}
           />

@@ -12,16 +12,18 @@ export type PermitStage = 'filed' | 'approved' | 'permitted' | 'construction' | 
 // Order they appear in the timeline / legend.
 export const STAGE_ORDER: PermitStage[] = ['filed', 'approved', 'permitted', 'construction', 'complete', 'inactive']
 
-// Lifecycle palette — slate (paperwork) → light green (approved/go) → amber
-// (permitted, warming up) → hazard orange+black (construction, hot) →
-// forest green (settled).
+// Editorial lifecycle palette — earthy progression that sits inside the
+// cream + navy chrome instead of competing with it:
+//   slate (paperwork) → sage (approved / go) → dusty gold (permitted,
+//   warming) → terracotta (construction, active build) → deep teal-green
+//   (settled / complete) → warm taupe (off-track / inactive).
 export const STAGE_COLORS = {
-  filed:        { fill: '#334155', stroke: '#1e293b' },  // slate
-  approved:     { fill: '#65a30d', stroke: '#365314' },  // lime / light green
-  permitted:    { fill: '#ca8a04', stroke: '#713f12' },  // amber (issued, pre-build)
+  filed:        { fill: '#64748b', stroke: '#475569' },  // softened slate
+  approved:     { fill: '#7d9b76', stroke: '#4e6b4a' },  // sage
+  permitted:    { fill: '#b08968', stroke: '#6e5340' },  // dusty gold
   construction: { fill: '#b35c44', stroke: '#1c2438' },  // terracotta + ink
-  complete:     { fill: '#166534', stroke: '#14532d' },  // forest green
-  inactive:     { fill: '#a8a29e', stroke: '#57534e' },  // taupe
+  complete:     { fill: '#3a6e58', stroke: '#1e3f33' },  // deep teal-green
+  inactive:     { fill: '#a8a29e', stroke: '#57534e' },  // warm taupe
 } as const
 
 export interface PermitStyle {
