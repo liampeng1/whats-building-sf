@@ -1,24 +1,16 @@
 'use client'
-import { Marker, Popup, Tooltip } from 'react-leaflet'
+import { Marker, Tooltip } from 'react-leaflet'
 import { divIcon } from 'leaflet'
 import { memo, useMemo } from 'react'
 import type { Permit } from '@/lib/types'
 import {
   permitStage,
-  timeAgo,
   stageIconSvg,
   netDelta,
   STAGE_COLORS,
   STAGE_LABELS,
   type PermitStage,
 } from '@/lib/permit-style'
-
-function shortDate(s: string | null): string | null {
-  if (!s) return null
-  const d = new Date(s)
-  if (isNaN(d.getTime())) return null
-  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-}
 
 const PIN_PIXEL_SIZE: Record<PermitStage, number> = {
   construction: 30,
@@ -55,10 +47,6 @@ function PermitMarkerImpl({ permit, onSelect }: MarkerProps) {
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
 
   const stageColor = STAGE_COLORS[stage].fill
-  const issuedShort = shortDate(permit.issued_date)
-  const issuedAgo = timeAgo(permit.issued_date)
-  const completedShort = shortDate(permit.completed_date)
-  const popupIcon = stageIconSvg(stage, 16)
   const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
   const homes = netDelta(permit.existing_units, permit.proposed_units)
 
@@ -91,30 +79,6 @@ function PermitMarkerImpl({ permit, onSelect }: MarkerProps) {
           )}
         </div>
       </Tooltip>
-      <Popup>
-        <strong style={{ fontFamily: 'var(--font-source-serif), Georgia, serif', fontSize: '1rem', color: '#1c2438' }}>
-          {permit.address}
-        </strong>
-        <br />
-        <span style={{ color: '#475569', fontSize: '0.85rem' }}>
-          {permit.permit_type_definition ?? permit.permit_type}
-        </span>
-        <br />
-        <span style={{ color: stageColor, fontWeight: 600, fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span dangerouslySetInnerHTML={{ __html: popupIcon }} style={{ display: 'inline-flex' }} />
-          {stage === 'complete' && completedShort
-            ? `Completed ${completedShort}`
-            : STAGE_LABELS[stage]}
-        </span>
-        {issuedShort && stage !== 'complete' && (
-          <>
-            <br />
-            <span style={{ color: '#78716c', fontSize: '0.78rem' }}>
-              Issued {issuedShort}{issuedAgo ? ` · ${issuedAgo}` : ''}
-            </span>
-          </>
-        )}
-      </Popup>
     </Marker>
   )
 }
