@@ -1,9 +1,11 @@
 'use client'
 import { useEffect, useState, useCallback, useMemo } from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
+import { MapEventHandler } from './MapEventHandler'
+import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { FilterPanel } from './FilterPanel'
 import { PermitPanel } from './PermitPanel'
 import { CoffeeButton } from './CoffeeButton'
@@ -16,10 +18,38 @@ import {
   type PermitStage,
   type UseCategory,
 } from '@/lib/permit-style'
-import type { Permit } from '@/lib/types'
+import type { Permit, MapBounds } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = STAGE_ORDER
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
+const PIN_ZOOM_THRESHOLD = 14 // below this, choropleth carries the visualization
+
+/**
+ * Renders pins only when the user has zoomed in past PIN_ZOOM_THRESHOLD.
+ * At city zoom, the choropleth tells the macro story (no pins). At
+ * neighborhood/street zoom, individual permits become clickable.
+ */
+function ZoomGatedPins({
+  visiblePermits,
+  onSelect,
+}: {
+  visiblePermits: Permit[]
+  onSelect: (id: string) => void
+}) {
+  const map = useMap()
+  const [show, setShow] = useState(map.getZoom() >= PIN_ZOOM_THRESHOLD)
+  useMapEvents({
+    zoomend: () => setShow(map.getZoom() >= PIN_ZOOM_THRESHOLD),
+  })
+  if (!show) return null
+  return (
+    <>
+      {visiblePermits.map((p) => (
+        <PermitMarker key={p.permit_number} permit={p} onSelect={onSelect} />
+      ))}
+    </>
+  )
+}
 
 export type MinUnitsFilter = 0 | 5 | 25 | 100
 export type CompletedYearsFilter = 0 | 1 | 2 | 5
@@ -43,6 +73,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     () => new Set(ALL_CATEGORIES),
   )
   const [openPermit, setOpenPermit] = useState<string | null>(null)
+  // Client-side viewport bounds — used to cull off-screen markers from the
+  // DOM. We don't refetch on pan; just narrow what's rendered.
+  const [viewportBounds, setViewportBounds] = useState<MapBounds | null>(null)
+  const handleViewportChange = useCallback((b: MapBounds) => {
+    setViewportBounds(b)
+  }, [])
 
   // Sync the side-panel state with ?permit=<id> in the URL so deep links work.
   useEffect(() => {
@@ -89,14 +125,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     })
   }, [])
 
-  const visiblePermits = useMemo(
+  // Pre-bounds filter: stage + category + housing delta. Memoized separately
+  // so a viewport pan doesn't invalidate this expensive pass.
+  const filteredPermits = useMemo(
     () =>
       permits.filter((p) => {
         if (!selectedStages.has(permitStage(p))) return false
         const cat = useCategory(p.proposed_use ?? p.existing_use)
         if (!selectedCategories.has(cat)) return false
-        // minUnits applies only to the housing category (which now also
-        // includes hotels/motels — see useCategory).
         if (minUnits > 0 && cat === 'housing') {
           const delta = netDelta(p.existing_units, p.proposed_units)
           if (delta == null || delta < minUnits) return false
@@ -105,6 +141,24 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       }),
     [permits, selectedStages, selectedCategories, minUnits],
   )
+
+  // Viewport cull — only render permits within the current map bounds plus
+  // a 25% buffer so pins near the edge don't pop in/out during a pan.
+  // Massive perf win: at default zoom we render ~150-300 instead of all 1800.
+  const visiblePermits = useMemo(() => {
+    if (!viewportBounds) return filteredPermits
+    const latBuffer = (viewportBounds.north - viewportBounds.south) * 0.25
+    const lngBuffer = (viewportBounds.east - viewportBounds.west) * 0.25
+    const n = viewportBounds.north + latBuffer
+    const s = viewportBounds.south - latBuffer
+    const e = viewportBounds.east + lngBuffer
+    const w = viewportBounds.west - lngBuffer
+    return filteredPermits.filter((p) => {
+      if (!p.location) return false
+      const [lng, lat] = p.location.coordinates
+      return lat >= s && lat <= n && lng >= w && lng <= e
+    })
+  }, [filteredPermits, viewportBounds])
 
   // Single fetch keyed only by filter values — no bounds, no per-pan refetch.
   // Vercel caches the result so all users hit the same warm entry.
@@ -155,13 +209,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           subdomains="abcd"
           maxZoom={19}
         />
-        {visiblePermits.map((p, i) => (
-          <PermitMarker
-            key={`${p.permit_number}-${i}`}
-            permit={p}
-            onSelect={openPermitPanel}
-          />
-        ))}
+        <MapEventHandler onBoundsChange={handleViewportChange} />
+        {/* Choropleth fills SF neighborhoods by permit density at low zoom.
+            Hides automatically once you zoom in past street level so it
+            doesn't compete with individual pins. */}
+        <NeighborhoodChoropleth permits={filteredPermits} hideAtZoom={PIN_ZOOM_THRESHOLD} />
+        <ZoomGatedPins visiblePermits={visiblePermits} onSelect={openPermitPanel} />
       </MapContainer>
       <FilterPanel
         selectedStages={selectedStages}

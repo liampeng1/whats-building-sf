@@ -1,7 +1,7 @@
 'use client'
 import { Marker, Popup } from 'react-leaflet'
 import { divIcon } from 'leaflet'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import type { Permit } from '@/lib/types'
 import {
   permitStage,
@@ -45,7 +45,7 @@ interface MarkerProps {
   onSelect?: (permitNumber: string) => void
 }
 
-export function PermitMarker({ permit, onSelect }: MarkerProps) {
+function PermitMarkerImpl({ permit, onSelect }: MarkerProps) {
   const stage = permitStage(permit)
   const icon = useMemo(() => buildIcon(stage), [stage])
 
@@ -96,3 +96,9 @@ export function PermitMarker({ permit, onSelect }: MarkerProps) {
     </Marker>
   )
 }
+
+// Memoize so unchanged markers don't re-render when the parent's
+// visiblePermits set changes (e.g. on filter toggle or pan). Permit objects
+// are stable references within a fetch batch, so default shallow compare
+// works.
+export const PermitMarker = memo(PermitMarkerImpl)
