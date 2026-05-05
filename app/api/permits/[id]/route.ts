@@ -1,5 +1,10 @@
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
 
+// Cache individual permit responses for 1 hour — pipeline_status and demos
+// don't change minute-by-minute, but we want shorter than the bulk list since
+// these are deeper-dive lookups.
+export const revalidate = 3600
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }

@@ -175,29 +175,30 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
   // a human-readable detail so the date isn't context-free.
   const statusVerb = permit.status === 'complete' ? null : `Status set to "${permit.status}"`
 
-  // Demolition steps come first chronologically — earlier than the
-  // new-construction permit's filed_date. Skip events whose dates are in the
-  // future relative to this permit (rare; would indicate a re-demo).
+  // One row per demolition permit. Use completed_date when available
+  // (better signal — proves the demo actually happened), otherwise fall
+  // back to filed_date. The sublabel surfaces the other date plus status.
   const demoSteps: TimelineStep[] = []
   for (const d of permit.demolitions ?? []) {
-    if (d.filed_date) {
-      demoSteps.push({
-        label: 'Demolition filed',
-        date: d.filed_date,
-        active: true,
-        detail: `Permit #${d.permit_number} · status ${d.status}`,
-      })
-    }
-    if (d.completed_date) {
-      demoSteps.push({
-        label: 'Demolition complete',
-        date: d.completed_date,
-        active: true,
-        detail: `Permit #${d.permit_number}`,
-      })
-    }
+    const isComplete = d.status === 'complete' && !!d.completed_date
+    const primaryDate = isComplete ? d.completed_date : d.filed_date
+    if (!primaryDate) continue
+    const label = isComplete ? 'Demolition complete' : 'Demolition filed'
+    const otherDate =
+      isComplete && d.filed_date
+        ? `filed ${formatDate(d.filed_date)}`
+        : !isComplete && d.completed_date
+          ? `completed ${formatDate(d.completed_date)}`
+          : null
+    const detailParts = [`Permit #${d.permit_number}`, `status ${d.status}`]
+    if (otherDate) detailParts.push(otherDate)
+    demoSteps.push({
+      label,
+      date: primaryDate,
+      active: true,
+      detail: detailParts.join(' · '),
+    })
   }
-  // Sort demos chronologically among themselves so multiple demos read in order.
   demoSteps.sort((a, b) => {
     const ad = a.date ? new Date(a.date).getTime() : 0
     const bd = b.date ? new Date(b.date).getTime() : 0

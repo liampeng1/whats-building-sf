@@ -228,14 +228,23 @@ function recencyFilter(completedYears: number, now: Date = new Date()): string {
 export async function fetchBuildingPermits(
   bounds?: MapBounds,
   completedYears: number = 2,
+  recentActivityMonths: number = 0,
 ): Promise<Permit[]> {
   const params = new URLSearchParams({ $limit: '5000', $order: 'filed_date DESC' })
   const clauses = [TRACKED_TYPES_FILTER, recencyFilter(completedYears)]
+  if (recentActivityMonths > 0) {
+    const cutoff = new Date()
+    cutoff.setMonth(cutoff.getMonth() - recentActivityMonths)
+    clauses.push(`status_date >= '${cutoff.toISOString().slice(0, 10)}'`)
+  }
   if (bounds) clauses.push(boundsFilter(bounds))
   params.set('$where', clauses.join(' AND '))
 
   const [permitsRes, pipelineMap] = await Promise.all([
-    fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, { headers: headers() }),
+    fetch(`${BASE_URL}/${PERMITS_DATASET}.json?${params}`, {
+      headers: headers(),
+      next: { revalidate: 21600 }, // 6h — DataSF refreshes daily
+    }),
     fetchPipelineMap(),
   ])
   if (!permitsRes.ok) throw new Error(`DataSF error: ${permitsRes.status}`)

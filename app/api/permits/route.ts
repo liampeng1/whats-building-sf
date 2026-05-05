@@ -1,6 +1,11 @@
 import { fetchBuildingPermits } from '@/lib/datasf'
 import type { MapBounds } from '@/lib/types'
 
+// Cache the route output for 6 hours. DataSF refreshes daily; 6h gives users
+// a snappy experience while keeping data near-fresh. Vercel's fetch cache
+// also dedupes the underlying DataSF calls across requests.
+export const revalidate = 21600
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const north = searchParams.get('north')
@@ -33,8 +38,15 @@ export async function GET(req: Request) {
     ? Math.min(20, completedYearsParsed)
     : 2
 
+  // Recent activity filter (in months). 0 = no filter.
+  const recentMonthsRaw = searchParams.get('recentMonths')
+  const recentMonthsParsed = recentMonthsRaw != null ? Number(recentMonthsRaw) : 0
+  const recentMonths = Number.isFinite(recentMonthsParsed) && recentMonthsParsed >= 0
+    ? Math.min(120, recentMonthsParsed)
+    : 0
+
   try {
-    const permits = await fetchBuildingPermits(bounds, completedYears)
+    const permits = await fetchBuildingPermits(bounds, completedYears, recentMonths)
     return Response.json(permits)
   } catch (err) {
     console.error(err)

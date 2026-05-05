@@ -24,6 +24,7 @@ const ALL_CATEGORIES: UseCategory[] = CATEGORIES
 
 export type MinUnitsFilter = 0 | 5 | 25 | 100
 export type CompletedYearsFilter = 0 | 1 | 2 | 5
+export type RecentActivityFilter = 0 | 6 | 12 | 24 | 60 // months; 0 = any
 
 interface Props {
   initialCenter?: [number, number]
@@ -38,6 +39,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   )
   const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
   const [completedYears, setCompletedYears] = useState<CompletedYearsFilter>(2)
+  const [recentActivity, setRecentActivity] = useState<RecentActivityFilter>(0)
   const [selectedCategories, setSelectedCategories] = useState<Set<UseCategory>>(
     () => new Set(ALL_CATEGORIES),
   )
@@ -106,30 +108,39 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     [permits, selectedStages, selectedCategories, minUnits],
   )
 
-  const fetchData = useCallback(async (bounds: MapBounds | undefined, completedYearsArg: CompletedYearsFilter, signal?: AbortSignal) => {
-    const params = new URLSearchParams()
-    if (bounds) {
-      params.set('north', String(bounds.north))
-      params.set('south', String(bounds.south))
-      params.set('east', String(bounds.east))
-      params.set('west', String(bounds.west))
-    }
-    params.set('completedYears', String(completedYearsArg))
-    const q = `?${params.toString()}`
-    try {
-      const res = await fetch(`/api/permits${q}`, { signal })
-      if (!res.ok) throw new Error('fetch failed')
-      const data: Permit[] = await res.json()
-      if (signal?.aborted) return
-      setPermits(data)
-      setError(null)
-    } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return
-      setError('Data temporarily unavailable. Please try again.')
-    } finally {
-      if (!signal?.aborted) setLoading(false)
-    }
-  }, [])
+  const fetchData = useCallback(
+    async (
+      bounds: MapBounds | undefined,
+      completedYearsArg: CompletedYearsFilter,
+      recentActivityArg: RecentActivityFilter,
+      signal?: AbortSignal,
+    ) => {
+      const params = new URLSearchParams()
+      if (bounds) {
+        params.set('north', String(bounds.north))
+        params.set('south', String(bounds.south))
+        params.set('east', String(bounds.east))
+        params.set('west', String(bounds.west))
+      }
+      params.set('completedYears', String(completedYearsArg))
+      if (recentActivityArg > 0) params.set('recentMonths', String(recentActivityArg))
+      const q = `?${params.toString()}`
+      try {
+        const res = await fetch(`/api/permits${q}`, { signal })
+        if (!res.ok) throw new Error('fetch failed')
+        const data: Permit[] = await res.json()
+        if (signal?.aborted) return
+        setPermits(data)
+        setError(null)
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return
+        setError('Data temporarily unavailable. Please try again.')
+      } finally {
+        if (!signal?.aborted) setLoading(false)
+      }
+    },
+    [],
+  )
 
   useEffect(() => {
     const ctrl = new AbortController()
@@ -137,19 +148,19 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     // not synchronously. The rule's static analysis can't see through async/await.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
-    fetchData(undefined, completedYears, ctrl.signal)
+    fetchData(undefined, completedYears, recentActivity, ctrl.signal)
     return () => ctrl.abort()
-  }, [fetchData, completedYears])
+  }, [fetchData, completedYears, recentActivity])
 
   const handleBoundsChange = useCallback(
     (bounds: MapBounds) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
         setLoading(true)
-        fetchData(bounds, completedYears)
+        fetchData(bounds, completedYears, recentActivity)
       }, 300)
     },
-    [fetchData, completedYears],
+    [fetchData, completedYears, recentActivity],
   )
 
   return (
@@ -194,6 +205,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onMinUnitsChange={setMinUnits}
         completedYears={completedYears}
         onCompletedYearsChange={setCompletedYears}
+        recentActivity={recentActivity}
+        onRecentActivityChange={setRecentActivity}
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />

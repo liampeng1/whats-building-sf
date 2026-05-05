@@ -9,7 +9,7 @@ import {
   type PermitStage,
   type UseCategory,
 } from '@/lib/permit-style'
-import type { MinUnitsFilter, CompletedYearsFilter } from './Map'
+import type { MinUnitsFilter, CompletedYearsFilter, RecentActivityFilter } from './Map'
 
 const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'permitted', 'construction', 'complete']
 
@@ -27,6 +27,14 @@ const COMPLETED_YEARS_OPTIONS: { value: CompletedYearsFilter; label: string }[] 
   { value: 5, label: '5y' },
 ]
 
+const RECENT_ACTIVITY_OPTIONS: { value: RecentActivityFilter; label: string }[] = [
+  { value: 0, label: 'Any' },
+  { value: 6, label: '6mo' },
+  { value: 12, label: '1y' },
+  { value: 24, label: '2y' },
+  { value: 60, label: '5y' },
+]
+
 interface Props {
   selectedStages: Set<PermitStage>
   onToggleStage: (stage: PermitStage) => void
@@ -38,6 +46,8 @@ interface Props {
   onMinUnitsChange: (n: MinUnitsFilter) => void
   completedYears: CompletedYearsFilter
   onCompletedYearsChange: (n: CompletedYearsFilter) => void
+  recentActivity: RecentActivityFilter
+  onRecentActivityChange: (n: RecentActivityFilter) => void
   visibleCount: number
   totalCount: number
 }
@@ -77,9 +87,11 @@ interface StageRowProps {
   on: boolean
   onToggle: () => void
   showConnector: boolean
+  /** Optional content rendered indented under this row when on. */
+  subContent?: React.ReactNode
 }
 
-function StageRow({ stage, on, onToggle, showConnector }: StageRowProps) {
+function StageRow({ stage, on, onToggle, showConnector, subContent }: StageRowProps) {
   const isHeadline = stage === 'construction'
   return (
     <li className="relative">
@@ -106,6 +118,7 @@ function StageRow({ stage, on, onToggle, showConnector }: StageRowProps) {
           style={{ accentColor: 'var(--ink)' }}
         />
       </label>
+      {subContent && <div className="ml-10 -mt-1 mb-2">{subContent}</div>}
     </li>
   )
 }
@@ -184,10 +197,13 @@ export function FilterPanel({
   onMinUnitsChange,
   completedYears,
   onCompletedYearsChange,
+  recentActivity,
+  onRecentActivityChange,
   visibleCount,
   totalCount,
 }: Props) {
   const housingOn = selectedCategories.has('housing')
+  const completeOn = selectedStages.has('complete')
   // Default closed on mobile, open on desktop. Set after mount to avoid SSR mismatch.
   const [open, setOpen] = useState(false)
   useEffect(() => {
@@ -308,20 +324,49 @@ export function FilterPanel({
               on={selectedStages.has(stage)}
               onToggle={() => onToggleStage(stage)}
               showConnector={i > 0}
+              subContent={
+                stage === 'complete' ? (
+                  <div
+                    className={`${completeOn ? '' : 'opacity-40 pointer-events-none'} transition-opacity duration-200`}
+                  >
+                    <div className="text-[10px] uppercase tracking-wider text-ink-faint mb-1">
+                      Within
+                    </div>
+                    <div className="flex gap-1">
+                      {COMPLETED_YEARS_OPTIONS.filter((o) => o.value > 0).map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => onCompletedYearsChange(opt.value)}
+                          disabled={!completeOn}
+                          aria-disabled={!completeOn}
+                          className={`flex-1 px-2 py-1 text-xs rounded border transition ${
+                            completedYears === opt.value
+                              ? 'bg-ink text-paper border-ink font-semibold'
+                              : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : undefined
+              }
             />
           ))}
         </ul>
 
         <div className="border-t border-paper-edge pt-3">
-          <div className="civic-eyebrow mb-2">Show completed within</div>
+          <div className="civic-eyebrow mb-2">Recent activity</div>
           <div className="flex gap-1">
-            {COMPLETED_YEARS_OPTIONS.map((opt) => (
+            {RECENT_ACTIVITY_OPTIONS.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
-                onClick={() => onCompletedYearsChange(opt.value)}
+                onClick={() => onRecentActivityChange(opt.value)}
                 className={`flex-1 px-2 py-1 text-xs rounded border transition ${
-                  completedYears === opt.value
+                  recentActivity === opt.value
                     ? 'bg-ink text-paper border-ink font-semibold'
                     : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
                 }`}
@@ -331,7 +376,7 @@ export function FilterPanel({
             ))}
           </div>
           <p className="text-[10px] text-ink-faint mt-1.5 leading-snug">
-            In-progress permits always shown. Cancelled / withdrawn excluded.
+            Hide stalled permits — only show those with recent status updates.
           </p>
         </div>
       </div>
