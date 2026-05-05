@@ -7,7 +7,7 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
-import type * as L from 'leaflet'
+import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { pointInGeometry } from '@/lib/point-in-polygon'
 import { FilterPanel } from './FilterPanel'
@@ -170,19 +170,34 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     const url = new URL(window.location.href)
     url.searchParams.set('nhood', name)
     window.history.pushState({}, '', url)
-    if (mapRef.current) {
-      // On desktop the 520px panel slides in from the right and would cover
-      // the polygon if we fit-bounds against the full map. Reserve that
-      // space so the neighborhood lands in the still-visible left portion
-      // of the map. On mobile the panel covers the whole screen, so fit
-      // normally — the user closes it to see the map again anyway.
-      const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
-      mapRef.current.fitBounds(bounds, {
-        paddingTopLeft: [40, 40],
-        paddingBottomRight: isWide ? [560, 40] : [40, 40],
-        maxZoom: 15,
-      })
+    const map = mapRef.current
+    if (!map) return
+    // On desktop the 520px panel slides in from the right and would cover
+    // the polygon if we fit-bounds against the full map. Reserve that space
+    // so the neighborhood lands in the still-visible left portion. Mobile
+    // panel takes the whole screen — symmetric padding is fine.
+    const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
+    const panelOffset = isWide ? 520 : 0
+    const paddingTopLeft: [number, number] = [40, 40]
+    const paddingBottomRight: [number, number] = [panelOffset + 40, 40]
+
+    // Pins fade in starting at PIN_FADE_MIN; for the user to actually see
+    // the icons in the selected neighborhood we want the natural fit to
+    // reach PIN_FADE_MAX. If the polygon is so large it'd otherwise fit at
+    // a lower zoom, override and zoom to a target the pins are visible at.
+    const naturalZoom = map.getBoundsZoom(bounds, false, L.point(40, 40))
+    const minTargetZoom = PIN_FADE_MAX
+    if (naturalZoom >= minTargetZoom) {
+      map.fitBounds(bounds, { paddingTopLeft, paddingBottomRight, maxZoom: 15 })
+      return
     }
+    // Polygon is too big to fit at pin-visible zoom — re-center on it at
+    // the threshold zoom, shifting the visible center to account for the
+    // side panel so the neighborhood doesn't land behind the drawer.
+    const targetZoom = Math.min(15, minTargetZoom)
+    const centerPx = map.project(bounds.getCenter(), targetZoom)
+    const shifted = centerPx.add(L.point(panelOffset / 2, 0))
+    map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
   }, [])
 
   const closeNhoodPanel = useCallback(() => {
