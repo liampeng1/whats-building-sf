@@ -118,3 +118,19 @@
 .leaflet-popup-tip {
   background: #fbf6ec;
 }
+
+/* Hover tooltip on permit pins — paper card with navy text, no border. */
+.leaflet-tooltip.permit-tooltip {
+  background: #fbf6ec;
+  color: #1c2438;
+  border: 1px solid rgba(28, 36, 56, 0.18);
+  border-radius: 4px;
+  padding: 6px 10px;
+  box-shadow: 0 2px 6px rgba(28, 36, 56, 0.14);
+  white-space: normal;
+  max-width: 240px;
+}
+
+.leaflet-tooltip.permit-tooltip::before {
+  border-top-color: rgba(28, 36, 56, 0.18);
+}

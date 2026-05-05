@@ -1,5 +1,5 @@
 'use client'
-import { Marker, Popup } from 'react-leaflet'
+import { Marker, Popup, Tooltip } from 'react-leaflet'
 import { divIcon } from 'leaflet'
 import { memo, useMemo } from 'react'
 import type { Permit } from '@/lib/types'
@@ -7,6 +7,7 @@ import {
   permitStage,
   timeAgo,
   stageIconSvg,
+  netDelta,
   STAGE_COLORS,
   STAGE_LABELS,
   type PermitStage,
@@ -58,6 +59,8 @@ function PermitMarkerImpl({ permit, onSelect }: MarkerProps) {
   const issuedAgo = timeAgo(permit.issued_date)
   const completedShort = shortDate(permit.completed_date)
   const popupIcon = stageIconSvg(stage, 16)
+  const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
+  const homes = netDelta(permit.existing_units, permit.proposed_units)
 
   return (
     <Marker
@@ -69,6 +72,25 @@ function PermitMarkerImpl({ permit, onSelect }: MarkerProps) {
         },
       }}
     >
+      <Tooltip
+        direction="top"
+        offset={[0, -PIN_PIXEL_SIZE[stage] / 2]}
+        opacity={1}
+        className="permit-tooltip"
+      >
+        <div style={{ fontFamily: 'var(--font-source-serif), Georgia, serif', fontSize: '0.9rem', fontWeight: 600, color: '#1c2438', lineHeight: 1.2 }}>
+          {permit.address}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: stageColor, fontWeight: 600 }}>
+          <span style={{ display: 'inline-flex', width: 12, height: 12 }} dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 12) }} />
+          {stageLabel}
+          {homes != null && homes > 0 && (
+            <span style={{ color: '#78716c', fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>
+              · +{homes} home{homes === 1 ? '' : 's'}
+            </span>
+          )}
+        </div>
+      </Tooltip>
       <Popup>
         <strong style={{ fontFamily: 'var(--font-source-serif), Georgia, serif', fontSize: '1rem', color: '#1c2438' }}>
           {permit.address}
