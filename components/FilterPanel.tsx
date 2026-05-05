@@ -357,6 +357,20 @@ export function FilterPanel({
           ))}
         </ul>
 
+        <label className="flex items-center gap-2 text-xs text-ink-soft mb-4 -mt-1 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={selectedStages.has('inactive')}
+            onChange={() => onToggleStage('inactive')}
+            className="accent-ink"
+          />
+          <span
+            className="inline-flex w-4 h-4 shrink-0"
+            dangerouslySetInnerHTML={{ __html: stageIconSvg('inactive', 14) }}
+          />
+          <span>Include cancelled / expired</span>
+        </label>
+
         <div className="border-t border-paper-edge pt-3">
           <div className="civic-eyebrow mb-2">Recent activity</div>
           <div className="flex gap-1">

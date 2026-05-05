@@ -25,6 +25,9 @@ import {
 import type { Permit, MapBounds } from '@/lib/types'
 
 const ALL_STAGES: PermitStage[] = STAGE_ORDER
+// Inactive (cancelled / denied / expired / etc.) is off-track noise — exclude
+// it from the default selection. Users can opt it back in via the filter panel.
+const DEFAULT_STAGES: PermitStage[] = STAGE_ORDER.filter((s) => s !== 'inactive')
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
 // Pins fade in across this band — choropleth is the visualization below
 // PIN_FADE_MIN, individual pins above PIN_FADE_MAX. Between, both render
@@ -105,7 +108,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedStages, setSelectedStages] = useState<Set<PermitStage>>(
-    () => new Set(ALL_STAGES),
+    () => new Set(DEFAULT_STAGES),
   )
   const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
   const [completedYears, setCompletedYears] = useState<CompletedYearsFilter>(2)
