@@ -48,3 +48,4 @@ next-env.d.ts
 
 # debug screenshots from playwright runs
 scripts/_*.png
+.env*.local
