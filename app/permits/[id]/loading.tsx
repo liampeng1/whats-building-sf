@@ -1,10 +1,15 @@
+import { Logo } from '@/components/Logo'
+
 export default function PermitLoading() {
   return (
     <main className="min-h-screen bg-paper">
       <div className="border-b-2 border-ink bg-paper-deep">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="h-3 w-24 bg-paper-edge rounded animate-pulse" />
-          <div className="h-3 w-44 bg-paper-edge rounded animate-pulse" />
+          <div className="flex items-center gap-2 civic-eyebrow text-ink-faint">
+            <Logo size={20} variant="on-paper" />
+            <span>What&apos;s Building SF · Permit Record</span>
+          </div>
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-10 space-y-6">

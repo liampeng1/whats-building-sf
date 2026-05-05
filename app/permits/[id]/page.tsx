@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
 import { PermitDetailContent } from '@/components/PermitDetailContent'
+import { Logo } from '@/components/Logo'
 import {
   permitStage,
   netDelta,
@@ -54,7 +55,10 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
           <Link href={backHref} className="civic-eyebrow hover:text-ink transition-colors">
             ← Back to map
           </Link>
-          <div className="civic-eyebrow text-ink-faint">What&apos;s Building SF · Permit Record</div>
+          <div className="flex items-center gap-2 civic-eyebrow text-ink-faint">
+            <Logo size={20} variant="on-paper" />
+            <span>What&apos;s Building SF · Permit Record</span>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 'use client'
 import { Fragment, useState } from 'react'
+import { Logo } from './Logo'
 import {
   stageIconSvg,
   STAGE_LABELS,
@@ -227,9 +228,12 @@ export function FilterPanel({
         className="bg-ink text-paper px-4 py-3 shrink-0 text-left w-full focus:outline-none focus:ring-2 focus:ring-paper/50"
         aria-expanded={open}
       >
-        <div className="flex items-baseline justify-between gap-2">
-          <div className="font-serif text-base leading-tight">
-            What&apos;s Building SF
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <Logo size={22} variant="on-ink" />
+            <div className="font-serif text-base leading-tight">
+              What&apos;s Building SF
+            </div>
           </div>
           <span
             aria-hidden

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from '@/components/Logo'
 
 export default function PermitNotFound() {
   return (
@@ -8,8 +9,9 @@ export default function PermitNotFound() {
           <Link href="/" className="civic-eyebrow hover:text-ink transition-colors">
             ← Back to map
           </Link>
-          <div className="civic-eyebrow text-ink-faint">
-            What&apos;s Building SF · Permit Record
+          <div className="flex items-center gap-2 civic-eyebrow text-ink-faint">
+            <Logo size={20} variant="on-paper" />
+            <span>What&apos;s Building SF · Permit Record</span>
           </div>
         </div>
       </div>

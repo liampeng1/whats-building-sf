@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchPlanningCase, NotFoundError } from '@/lib/datasf'
+import { Logo } from '@/components/Logo'
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '—'
@@ -32,8 +33,9 @@ export default async function PlanningDetailPage({
           <Link href="/" className="civic-eyebrow hover:text-ink transition-colors">
             ← Back to map
           </Link>
-          <div className="civic-eyebrow text-ink-faint">
-            What&apos;s Building SF · Planning Case
+          <div className="flex items-center gap-2 civic-eyebrow text-ink-faint">
+            <Logo size={20} variant="on-paper" />
+            <span>What&apos;s Building SF · Planning Case</span>
           </div>
         </div>
       </div>
