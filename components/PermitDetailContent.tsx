@@ -27,6 +27,9 @@ function formatCost(cost: string | null): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 }
 
+// Chip styling matches the legend's ON state (FilterPanel) so the entire
+// site speaks one chip language: tinted fill (#color1f) + 1.5px solid
+// colored border + colored text/glyph.
 function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDate: string | null }) {
   const color = STAGE_COLORS[stage].fill
   const label =
@@ -36,7 +39,7 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
   return (
     <div
       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold"
-      style={{ color, backgroundColor: `${color}10`, border: `1px solid ${color}33` }}
+      style={{ color, backgroundColor: `${color}1f`, border: `1.5px solid ${color}` }}
     >
       <span className="inline-flex" dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 18) }} />
       <span>{label}</span>
@@ -45,19 +48,20 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
 }
 
 function UseTypePill({ category }: { category: UseCategory }) {
-  // Use the same earthy palette as the FilterPanel dots — same paper-tinted
-  // background + matching colored stroke pattern as StatusBadge so all chips
-  // on the page speak the same visual language.
   const color = USE_CATEGORY_COLORS[category].fill
   return (
     <span
-      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
       style={{
         color,
-        backgroundColor: `${color}14`,
-        border: `1px solid ${color}40`,
+        backgroundColor: `${color}1f`,
+        border: `1.5px solid ${color}`,
       }}
     >
+      <span
+        className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+        style={{ backgroundColor: color }}
+      />
       {USE_CATEGORY_LABELS[category]}
     </span>
   )
@@ -81,34 +85,6 @@ function DeltaBlock({ label, before, after, suffix }: { label: string; before: s
       {delta != null && delta !== 0 && (
         <div className="text-xs text-ink-soft mt-1">{sign}{delta} {suffix}</div>
       )}
-    </div>
-  )
-}
-
-function ChangeHeadline({
-  category, unitsDelta, storiesDelta, existingUse, proposedUse,
-}: {
-  category: UseCategory
-  unitsDelta: number | null
-  storiesDelta: number | null
-  existingUse: string | null
-  proposedUse: string | null
-}) {
-  const parts: string[] = []
-  if (unitsDelta != null && unitsDelta !== 0) {
-    parts.push(`${unitsDelta > 0 ? '+' : ''}${unitsDelta} ${Math.abs(unitsDelta) === 1 ? 'home' : 'homes'}`)
-  }
-  if (storiesDelta != null && storiesDelta !== 0) {
-    parts.push(`${storiesDelta > 0 ? '+' : ''}${storiesDelta} ${Math.abs(storiesDelta) === 1 ? 'story' : 'stories'}`)
-  }
-  if (existingUse && proposedUse && existingUse.toLowerCase() !== proposedUse.toLowerCase()) {
-    parts.push(`${existingUse} → ${proposedUse}`)
-  }
-  if (parts.length === 0) return null
-  return (
-    <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
-      <UseTypePill category={category} />
-      <span className="text-ink-soft">{parts.join(' · ')}</span>
     </div>
   )
 }
@@ -260,6 +236,13 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
 
   const isPanel = variant === 'panel'
   const headingSize = isPanel ? 'text-3xl' : 'text-5xl'
+  // Page variant fans the four stats out across 4 columns on wide screens;
+  // panel stays at 2 cols regardless. One shape, two viewports.
+  const statGridCols = isPanel ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'
+  const useDistinct =
+    !!permit.existing_use &&
+    !!permit.proposed_use &&
+    permit.existing_use.toLowerCase() !== permit.proposed_use.toLowerCase()
 
   return (
     <div>
@@ -269,21 +252,35 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
         {permit.address}
       </h1>
 
-      <p className="font-serif italic text-lg text-ink-soft mb-6">
+      <p className="font-serif italic text-lg text-ink-soft mb-5">
         {permit.permit_type_definition ?? `Type ${permit.permit_type}`}
       </p>
 
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Chip strip — stage + use type. Both pulled into the same row so the
+          masthead reads like an article header (lede + tags), no sidebar. */}
+      <div className="flex flex-wrap items-center gap-2">
         <StatusBadge stage={stage} completedDate={permit.completed_date} />
+        <UseTypePill category={category} />
       </div>
 
-      <ChangeHeadline
-        category={category}
-        unitsDelta={unitsDelta}
-        storiesDelta={storiesDelta}
-        existingUse={permit.existing_use}
-        proposedUse={permit.proposed_use}
-      />
+      {/* Quick narrative summary — only when there's something to summarize.
+          Replaces the previous ChangeHeadline by leaning on the chip row +
+          the stat strip for the structured data. */}
+      {(unitsDelta || storiesDelta || useDistinct) && (
+        <p className="text-sm text-ink-soft mt-3 leading-relaxed">
+          {[
+            unitsDelta && unitsDelta !== 0
+              ? `${unitsDelta > 0 ? '+' : ''}${unitsDelta} ${Math.abs(unitsDelta) === 1 ? 'home' : 'homes'}`
+              : null,
+            storiesDelta && storiesDelta !== 0
+              ? `${storiesDelta > 0 ? '+' : ''}${storiesDelta} ${Math.abs(storiesDelta) === 1 ? 'story' : 'stories'}`
+              : null,
+            useDistinct ? `${permit.existing_use} → ${permit.proposed_use}` : null,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+        </p>
+      )}
 
       {stage === 'construction' && (
         <p className="text-sm text-ink-soft mt-4 leading-relaxed border-l-2 border-paper-edge pl-4">
@@ -304,107 +301,43 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
         </p>
       )}
 
-      {/* Layout: page variant uses 1+2 column grid, panel variant uses balanced
-          stacked sections (deltas grid → use → facts grid → scope → timeline). */}
-      {isPanel ? (
-        <div className="mt-8 space-y-7">
-          {/* Top: two delta blocks side-by-side — same visual weight, paired. */}
-          <div className="grid grid-cols-2 gap-6 pt-5 border-t border-paper-edge">
-            <DeltaBlock label="Homes" before={permit.existing_units} after={permit.proposed_units} suffix="net new" />
-            <DeltaBlock label="Stories" before={permit.existing_stories} after={permit.proposed_stories} suffix="taller" />
-          </div>
-
-          {/* Use — full-width prose, anchors the layout */}
-          {(permit.existing_use || permit.proposed_use) && (
-            <div>
-              <div className="civic-eyebrow mb-1.5">Use</div>
-              <div className="text-sm text-ink leading-snug">
-                {permit.existing_use && <span className="text-ink-faint">{permit.existing_use}</span>}
-                {permit.existing_use && permit.proposed_use && <span className="text-ink-faint mx-1">→</span>}
-                {permit.proposed_use && <span>{permit.proposed_use}</span>}
-              </div>
-            </div>
-          )}
-
-          {/* Quick facts — three small text fields in a row */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-5 border-t border-paper-edge">
-            <div>
-              <div className="civic-eyebrow mb-1.5">Estimated cost</div>
-              <div className="font-serif text-lg text-ink">{formatCost(permit.estimated_cost)}</div>
-            </div>
-            <div>
-              <div className="civic-eyebrow mb-1.5">Status</div>
-              <div className="text-sm text-ink">{permit.status}</div>
-            </div>
-            {coords && (
-              <div className="col-span-2">
-                <div className="civic-eyebrow mb-1.5">Coordinates</div>
-                <div className="text-xs text-ink-soft font-mono">
-                  {coords[1].toFixed(5)}, {coords[0].toFixed(5)}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {permit.description && (
-            <section className="pt-5 border-t border-paper-edge">
-              <div className="civic-eyebrow mb-2">Scope of work</div>
-              <p className="text-base text-ink leading-relaxed font-serif">{permit.description}</p>
-            </section>
-          )}
-
-          <section className="pt-5 border-t border-paper-edge">
-            <div className="civic-eyebrow mb-4">Timeline</div>
-            <Timeline steps={steps} />
-          </section>
-        </div>
-      ) : (
-        <div className="mt-10 grid md:grid-cols-3 gap-x-8 gap-y-8">
-          <aside className="md:col-span-1 space-y-5">
-            <DeltaBlock label="Homes" before={permit.existing_units} after={permit.proposed_units} suffix="net new" />
-            <DeltaBlock label="Stories" before={permit.existing_stories} after={permit.proposed_stories} suffix="taller" />
-            {(permit.existing_use || permit.proposed_use) && (
-              <div>
-                <div className="civic-eyebrow mb-1.5">Use</div>
-                <div className="text-sm text-ink leading-snug">
-                  {permit.existing_use && <span className="text-ink-faint">{permit.existing_use}</span>}
-                  {permit.existing_use && permit.proposed_use && <span className="text-ink-faint mx-1">→</span>}
-                  {permit.proposed_use && <span>{permit.proposed_use}</span>}
-                </div>
-              </div>
-            )}
-            <div>
-              <div className="civic-eyebrow mb-1.5">Estimated cost</div>
-              <div className="font-serif text-xl text-ink">{formatCost(permit.estimated_cost)}</div>
-            </div>
-            <div>
-              <div className="civic-eyebrow mb-1.5">Status</div>
-              <div className="text-sm text-ink">{permit.status}</div>
-            </div>
-            {coords && (
-              <div>
-                <div className="civic-eyebrow mb-1.5">Coordinates</div>
-                <div className="text-sm text-ink-soft font-mono">
-                  {coords[1].toFixed(5)}, {coords[0].toFixed(5)}
-                </div>
-              </div>
-            )}
-          </aside>
-
-          <div className="md:col-span-2 space-y-8">
-            {permit.description && (
-              <section>
-                <div className="civic-eyebrow mb-2">Scope of work</div>
-                <p className="text-base text-ink leading-relaxed font-serif">{permit.description}</p>
-              </section>
-            )}
-
-            <section>
-              <div className="civic-eyebrow mb-4">Timeline</div>
-              <Timeline steps={steps} />
-            </section>
+      {/* Stat strip — flat, no sidebar. Page fans 4 cols across; panel stays 2.
+          Same visual weight per stat block, no vertical dead zone like the
+          1+2 grid produced. */}
+      <div className={`mt-8 pt-5 border-t border-paper-edge grid ${statGridCols} gap-x-6 gap-y-5`}>
+        <DeltaBlock label="Homes" before={permit.existing_units} after={permit.proposed_units} suffix="net new" />
+        <DeltaBlock label="Stories" before={permit.existing_stories} after={permit.proposed_stories} suffix="taller" />
+        <div>
+          <div className="civic-eyebrow mb-1.5">Est. cost</div>
+          <div className="font-serif text-2xl text-ink leading-none">
+            {formatCost(permit.estimated_cost)}
           </div>
         </div>
+        <div>
+          <div className="civic-eyebrow mb-1.5">Status</div>
+          <div className="text-base text-ink leading-none capitalize">{permit.status}</div>
+        </div>
+      </div>
+
+      {permit.description && (
+        <section className="mt-8 pt-5 border-t border-paper-edge">
+          <div className="civic-eyebrow mb-2">Scope of work</div>
+          <p className="text-base text-ink leading-relaxed font-serif">{permit.description}</p>
+        </section>
+      )}
+
+      <section className="mt-8 pt-5 border-t border-paper-edge">
+        <div className="civic-eyebrow mb-4">Timeline</div>
+        <Timeline steps={steps} />
+      </section>
+
+      {coords && (
+        <section className="mt-8 pt-5 border-t border-paper-edge">
+          <div className="civic-eyebrow mb-1.5">Coordinates</div>
+          <div className="text-xs text-ink-soft font-mono">
+            {coords[1].toFixed(5)}, {coords[0].toFixed(5)}
+          </div>
+        </section>
       )}
 
       <section className="mt-12 pt-8 border-t border-paper-edge">
