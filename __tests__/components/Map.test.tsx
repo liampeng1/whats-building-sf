@@ -13,6 +13,8 @@ jest.mock('react-leaflet', () => ({
   Marker: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Popup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   useMapEvents: () => ({}),
+  useMap: () => ({ getZoom: () => 12, fitBounds: () => {} }),
+  GeoJSON: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }))
 
 jest.mock('leaflet', () => ({

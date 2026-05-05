@@ -1,11 +1,15 @@
 'use client'
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
+import { NeighborhoodPanel } from './NeighborhoodPanel'
+import type * as L from 'leaflet'
+import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
+import { pointInGeometry } from '@/lib/point-in-polygon'
 import { FilterPanel } from './FilterPanel'
 import { PermitPanel } from './PermitPanel'
 import { CoffeeButton } from './CoffeeButton'
@@ -95,6 +99,16 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     () => new Set(ALL_CATEGORIES),
   )
   const [openPermit, setOpenPermit] = useState<string | null>(null)
+  const [selectedNhood, setSelectedNhood] = useState<string | null>(null)
+  const [nhoodGeo, setNhoodGeo] = useState<FeatureCollection<MultiPolygon | Polygon, { nhood: string }> | null>(null)
+  const mapRef = useRef<L.Map | null>(null)
+
+  useEffect(() => {
+    fetch('/sf-neighborhoods.geojson')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('failed'))))
+      .then(setNhoodGeo)
+      .catch(() => setNhoodGeo(null))
+  }, [])
   // Client-side viewport bounds — used to cull off-screen markers from the
   // DOM. We don't refetch on pan; just narrow what's rendered.
   const [viewportBounds, setViewportBounds] = useState<MapBounds | null>(null)
@@ -103,14 +117,17 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   }, [])
   const [mapZoom, setMapZoom] = useState<number>(13)
 
-  // Sync the side-panel state with ?permit=<id> in the URL so deep links work.
+  // Sync the side-panel state with URL (?permit=<id> or ?nhood=<name>)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const initial = params.get('permit')
-    if (initial) setOpenPermit(initial)
+    const ip = params.get('permit')
+    if (ip) setOpenPermit(ip)
+    const inh = params.get('nhood')
+    if (inh) setSelectedNhood(inh)
     const onPop = () => {
       const sp = new URLSearchParams(window.location.search)
       setOpenPermit(sp.get('permit'))
+      setSelectedNhood(sp.get('nhood'))
     }
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
@@ -127,6 +144,23 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     setOpenPermit(null)
     const url = new URL(window.location.href)
     url.searchParams.delete('permit')
+    window.history.pushState({}, '', url)
+  }, [])
+
+  const openNhoodPanel = useCallback((name: string, bounds: L.LatLngBounds) => {
+    setSelectedNhood(name)
+    const url = new URL(window.location.href)
+    url.searchParams.set('nhood', name)
+    window.history.pushState({}, '', url)
+    if (mapRef.current) {
+      mapRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
+    }
+  }, [])
+
+  const closeNhoodPanel = useCallback(() => {
+    setSelectedNhood(null)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('nhood')
     window.history.pushState({}, '', url)
   }, [])
 
@@ -164,6 +198,28 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       }),
     [permits, selectedStages, selectedCategories, minUnits],
   )
+
+  // Permits grouped by neighborhood (point-in-polygon). Lifted up here so
+  // the choropleth and the neighborhood panel share one computation.
+  // (Record, not Map<>, because this file's default export is named `Map`
+  // and shadows the global Map constructor.)
+  const permitsByNhood = useMemo<Record<string, Permit[]>>(() => {
+    const out: Record<string, Permit[]> = {}
+    if (!nhoodGeo) return out
+    for (const p of filteredPermits) {
+      if (!p.location) continue
+      const [lng, lat] = p.location.coordinates
+      for (const f of nhoodGeo.features) {
+        if (pointInGeometry(lng, lat, f.geometry)) {
+          const name = f.properties?.nhood ?? ''
+          if (!out[name]) out[name] = []
+          out[name].push(p)
+          break
+        }
+      }
+    }
+    return out
+  }, [nhoodGeo, filteredPermits])
 
   // Viewport cull — only render permits within the current map bounds plus
   // a 25% buffer so pins near the edge don't pop in/out during a pan.
@@ -231,7 +287,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           {error}
         </div>
       )}
-      <MapContainer center={initialCenter} zoom={13} className="w-full h-full">
+      <MapContainer
+        center={initialCenter}
+        zoom={13}
+        className="w-full h-full"
+        ref={(m) => {
+          mapRef.current = m ?? null
+        }}
+      >
         <ZoomTracker onZoom={setMapZoom} />
         {/* Carto Voyager: gives water (soft blue), parks (sage), and street
             hierarchy out of the box. Labels-under variant keeps streets/place
@@ -246,7 +309,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
             visualization; above, only the navy stroke remains so neighborhood
             outlines stay visible while inspecting pins. */}
-        <NeighborhoodChoropleth permits={filteredPermits} hideAtZoom={PIN_FADE_MIN} />
+        <NeighborhoodChoropleth
+          permits={filteredPermits}
+          hideAtZoom={PIN_FADE_MIN}
+          onSelect={openNhoodPanel}
+        />
         <ZoomGatedPins
           visiblePermits={visiblePermits}
           onSelect={openPermitPanel}
@@ -271,6 +338,15 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       />
       <CoffeeButton />
       <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
+      <NeighborhoodPanel
+        neighborhood={selectedNhood}
+        permits={selectedNhood ? (permitsByNhood[selectedNhood] ?? []) : []}
+        onClose={closeNhoodPanel}
+        onOpenPermit={(id) => {
+          closeNhoodPanel()
+          openPermitPanel(id)
+        }}
+      />
     </div>
   )
 }

@@ -89,6 +89,14 @@
   opacity: 0.5;
 }
 
+/* Kill the default browser focus outline on Leaflet's interactive SVG paths
+   (neighborhood polygons, etc.). The blue rectangle on click was unprofessional;
+   our hover/active state already provides the visual feedback. */
+.leaflet-interactive:focus,
+.leaflet-interactive:focus-visible {
+  outline: none;
+}
+
 /* Soften the default popup chrome so it matches the editorial palette. */
 .leaflet-popup-content-wrapper {
   background: #fbf6ec;

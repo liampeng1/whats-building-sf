@@ -18,6 +18,7 @@ interface Props {
   permits: Permit[]
   /** Above this zoom, the fill fades out — outlines remain visible. */
   hideAtZoom?: number
+  onSelect?: (name: string, bounds: L.LatLngBounds) => void
 }
 
 type NhoodFeature = Feature<MultiPolygon | Polygon, { nhood: string }>
@@ -77,7 +78,7 @@ function tooltipHtml(name: string, total: number, breakdown: Map<PermitStage, nu
   `
 }
 
-export function NeighborhoodChoropleth({ permits, hideAtZoom = 14 }: Props) {
+export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: Props) {
   const map = useMap()
   const [geo, setGeo] = useState<NhoodGeo | null>(null)
   const [zoom, setZoom] = useState<number>(map.getZoom())
@@ -172,6 +173,14 @@ export function NeighborhoodChoropleth({ permits, hideAtZoom = 14 }: Props) {
             if (layerRef.current) {
               layerRef.current.resetStyle(e.target as L.Layer)
             }
+          },
+          click: (e) => {
+            if (!onSelect) return
+            // Cast through unknown — react-leaflet's GeoJSON layer at this
+            // call site is a vector layer with getBounds(); the GeoJSON
+            // type doesn't expose it directly.
+            const target = e.target as unknown as { getBounds: () => L.LatLngBounds }
+            onSelect(name, target.getBounds())
           },
         })
       }}
