@@ -376,7 +376,13 @@ export function FilterPanel({
                     </div>
                   ))}
                   <div className="text-[10px] text-ink-faint italic pt-1">
-                    Sources: SF Department of Building Inspection · SF Planning Development Pipeline
+                    Sources: SF Department of Building Inspection · SF Planning Development Pipeline.{' '}
+                    <a
+                      href="/about"
+                      className="not-italic underline decoration-paper-edge underline-offset-2 hover:decoration-ink hover:text-ink"
+                    >
+                      Full methodology →
+                    </a>
                   </div>
                 </dl>
               </details>
