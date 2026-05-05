@@ -110,9 +110,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [selectedStages, setSelectedStages] = useState<Set<PermitStage>>(
     () => new Set(DEFAULT_STAGES),
   )
-  const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
+  const [minUnits, setMinUnits] = useState<MinUnitsFilter>(5)
   const [completedYears, setCompletedYears] = useState<CompletedYearsFilter>(2)
-  const [recentActivity, setRecentActivity] = useState<RecentActivityFilter>(0)
+  const [recentActivity, setRecentActivity] = useState<RecentActivityFilter>(24)
   const [selectedCategories, setSelectedCategories] = useState<Set<UseCategory>>(
     () => new Set(ALL_CATEGORIES),
   )
