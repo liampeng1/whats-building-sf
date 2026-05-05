@@ -242,7 +242,7 @@ export function FilterPanel({
             ▾
           </span>
         </div>
-        <p className="text-[11px] tracking-wide opacity-80 mt-0.5 leading-snug">
+        <p className="text-[13px] tracking-normal opacity-90 mt-1 leading-snug">
           {subtitle}
         </p>
         {/* Lifecycle key — always visible. Glyphs in left-to-right order
