@@ -164,18 +164,17 @@ export function NeighborhoodChoropleth({
       }
     }
     if (hovered && !isDimmed) {
-      // Unified hover tint — a single ink-navy fill across all polygons so
-      // the hover feedback feels consistent regardless of which choropleth
-      // bucket the neighborhood lives in. Without this the fill color
-      // shifted from cream → sand → burnt as the cursor moved between
-      // neighborhoods, which read as the polygon "changing" rather than
-      // "being highlighted."
+      // Paper-cream tint + navy hairline — mirrors the pin tooltip's
+      // "paper card on navy border" gesture, so hovering a pin and
+      // hovering a polygon read as the same affordance instead of two
+      // different visual languages. Uniform color across all polygons
+      // keeps the feedback a UI signal, not a data redraw.
       return {
-        fillColor: '#1c2438',
-        fillOpacity: 0.16,
+        fillColor: '#fbf6ec',
+        fillOpacity: 0.5,
         color: '#1c2438',
-        weight: 2,
-        opacity: 1,
+        weight: 1.5,
+        opacity: 0.6,
       }
     }
     if (isDimmed) {
