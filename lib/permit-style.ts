@@ -70,6 +70,25 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   inactive: 'Inactive / cancelled',
 }
 
+// Plain-language definitions surfaced in the FilterPanel legend and as
+// chip tooltips. Captures the meaningful distinction between "approved"
+// (signed off on paper, no permit yet) and "permitted" (permit issued,
+// physical work allowed but no ground-truth that anything's started).
+export const STAGE_DEFINITIONS: Record<PermitStage, string> = {
+  filed:
+    'Application submitted to DBI and under review. No decision yet.',
+  approved:
+    'Plans approved on paper but the building permit has not been issued. Work cannot start yet.',
+  permitted:
+    'Permit issued — work is legally allowed to start. SF Planning Pipeline has not (yet) confirmed construction is underway.',
+  construction:
+    'SF Planning Pipeline confirms the project is actively under construction.',
+  complete:
+    'All inspections signed off; the project is finished.',
+  inactive:
+    'Cancelled, denied, expired, withdrawn, or otherwise off-track.',
+}
+
 // Pictographic SVG icons per stage. Returns a complete SVG string sized to fit
 // inside a `size`x`size` box. The fill/stroke uses the stage's color.
 //

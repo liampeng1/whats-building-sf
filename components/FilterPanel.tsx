@@ -5,6 +5,7 @@ import {
   stageIconSvg,
   STAGE_LABELS,
   STAGE_COLORS,
+  STAGE_DEFINITIONS,
   CATEGORIES,
   USE_CATEGORY_LABELS,
   USE_CATEGORY_COLORS,
@@ -76,6 +77,7 @@ function StageChip({
       type="button"
       onClick={onToggle}
       aria-pressed={on}
+      title={STAGE_DEFINITIONS[stage]}
       // Selected vs not is signaled by THREE cumulative cues so the state
       // is unmistakable: (1) saturated tinted fill vs transparent, (2) solid
       // colored border at 1.5px vs dashed neutral, (3) glyph at full vs
@@ -350,6 +352,31 @@ export function FilterPanel({
                   />
                 ))}
               </div>
+
+              {/* Plain-language definitions — collapsed by default. The
+                  filed/approved/permitted distinction trips most people up,
+                  so the link is here, not buried in tooltips alone. */}
+              <details className="mt-2 group">
+                <summary className="text-[11px] text-ink-faint hover:text-ink cursor-pointer select-none list-none flex items-center gap-1">
+                  <span aria-hidden className="inline-block transition-transform group-open:rotate-90">›</span>
+                  What do these mean?
+                </summary>
+                <dl className="mt-2 space-y-1.5 pl-3 border-l border-paper-edge">
+                  {LIFECYCLE.map((stage) => (
+                    <div key={stage} className="text-[11px] leading-snug">
+                      <dt
+                        className="font-semibold inline"
+                        style={{ color: STAGE_COLORS[stage].fill }}
+                      >
+                        {STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]}
+                      </dt>
+                      <dd className="inline text-ink-soft">
+                        {' '}— {STAGE_DEFINITIONS[stage]}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
 
               <div
                 className={`mt-3 transition-opacity duration-200 ${
