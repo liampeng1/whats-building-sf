@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { stageIconSvg, type PermitStage } from '@/lib/permit-style'
+import { BRAND_LOGO_DATA_URL } from '@/lib/og-brand'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -27,17 +28,21 @@ export default function Image() {
           fontFamily: 'serif',
         }}
       >
-        <div
-          style={{
-            fontSize: 20,
-            color: '#78716c',
-            textTransform: 'uppercase',
-            letterSpacing: '0.16em',
-            fontFamily: 'sans-serif',
-            display: 'flex',
-          }}
-        >
-          San Francisco · Civic Data
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={BRAND_LOGO_DATA_URL} width={48} height={48} alt="" />
+          <div
+            style={{
+              fontSize: 20,
+              color: '#78716c',
+              textTransform: 'uppercase',
+              letterSpacing: '0.16em',
+              fontFamily: 'sans-serif',
+              display: 'flex',
+            }}
+          >
+            San Francisco · Civic Data
+          </div>
         </div>
 
         <div

@@ -4,6 +4,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { polygonToSvgPath, polygonDataUrl } from '@/lib/og-polygon'
 import { buildMapboxStaticUrl, simplifyGeometry } from '@/lib/og-mapbox'
+import { BRAND_LOGO_DATA_URL } from '@/lib/og-brand'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -34,7 +35,7 @@ export default async function Image({
     (f) => f.properties?.nhood?.toLowerCase() === decodedName.toLowerCase(),
   )
 
-  const MAP_H = 460
+  const MAP_H = 430
   const CARD_H = size.height - MAP_H
 
   // Neighborhood polygons can be 50–500 vertices and would blow past
@@ -46,7 +47,7 @@ export default async function Image({
         geometry: simplified,
         width: size.width,
         height: MAP_H,
-        padding: 50,
+        padding: 30,
       })
     : null
 
@@ -114,7 +115,7 @@ export default async function Image({
         <div
           style={{
             height: CARD_H,
-            padding: '20px 64px 24px',
+            padding: '24px 56px',
             background: '#fbf6ec',
             borderTop: '2px solid #1c2438',
             display: 'flex',
@@ -122,31 +123,66 @@ export default async function Image({
             justifyContent: 'space-between',
           }}
         >
+          {/* Brand row */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              fontSize: 16,
-              color: '#78716c',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              fontFamily: 'sans-serif',
             }}
           >
-            <div style={{ display: 'flex' }}>What&apos;s Building SF</div>
-            <div style={{ display: 'flex' }}>Neighborhood · San Francisco</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={BRAND_LOGO_DATA_URL} width={36} height={36} alt="" />
+              <div
+                style={{
+                  fontSize: 18,
+                  color: '#1c2438',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.14em',
+                  fontFamily: 'sans-serif',
+                  display: 'flex',
+                }}
+              >
+                What&apos;s Building SF
+              </div>
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                color: '#78716c',
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                fontFamily: 'sans-serif',
+                display: 'flex',
+              }}
+            >
+              Neighborhood · San Francisco
+            </div>
           </div>
+
+          {/* Title row */}
           <div
             style={{
-              fontSize: 56,
-              fontWeight: 600,
-              lineHeight: 1.05,
-              letterSpacing: '-0.01em',
               display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              gap: 24,
             }}
           >
-            {feature ? feature.properties?.nhood : decodedName}
+            <div
+              style={{
+                fontSize: 64,
+                fontWeight: 600,
+                lineHeight: 1,
+                letterSpacing: '-0.01em',
+                display: 'flex',
+                color: '#1c2438',
+              }}
+            >
+              {feature ? feature.properties?.nhood : decodedName}
+            </div>
           </div>
         </div>
       </div>

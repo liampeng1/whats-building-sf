@@ -9,6 +9,7 @@ import {
 } from '@/lib/permit-style'
 import { polygonToSvgPath, polygonDataUrl } from '@/lib/og-polygon'
 import { buildMapboxStaticUrl } from '@/lib/og-mapbox'
+import { BRAND_LOGO_DATA_URL } from '@/lib/og-brand'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -74,11 +75,11 @@ export default async function Image({
     // Fall through to default card.
   }
 
-  // Map area takes the upper 460px; the editorial card sits in the bottom
-  // 170px. When MAPBOX_TOKEN is set, the map area is a real basemap with
-  // the parcel polygon overlaid; otherwise it's a paper-cream area with
-  // just the polygon silhouette (the previous design).
-  const MAP_H = 460
+  // Map takes the upper 430px; the editorial card sits in the bottom 200px.
+  // Tighter Mapbox padding zooms further into the parcel so the polygon
+  // dominates instead of floating in a sea of basemap. Card has more room
+  // for the brand mark + address + stage chip.
+  const MAP_H = 430
   const CARD_H = size.height - MAP_H
 
   const mapUrl = parcelShape
@@ -86,9 +87,7 @@ export default async function Image({
         geometry: parcelShape,
         width: size.width,
         height: MAP_H,
-        // Parcels are small — give the basemap room to breathe so streets
-        // around the lot show context.
-        padding: 80,
+        padding: 30,
       })
     : null
 
@@ -156,7 +155,7 @@ export default async function Image({
         <div
           style={{
             height: CARD_H,
-            padding: '20px 64px 24px',
+            padding: '24px 56px',
             background: '#fbf6ec',
             borderTop: '2px solid #1c2438',
             display: 'flex',
@@ -164,22 +163,46 @@ export default async function Image({
             justifyContent: 'space-between',
           }}
         >
+          {/* Brand row */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              fontSize: 16,
-              color: '#78716c',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              fontFamily: 'sans-serif',
             }}
           >
-            <div style={{ display: 'flex' }}>What&apos;s Building SF</div>
-            <div style={{ display: 'flex' }}>Permit #{permitNumber}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={BRAND_LOGO_DATA_URL} width={36} height={36} alt="" />
+              <div
+                style={{
+                  fontSize: 18,
+                  color: '#1c2438',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.14em',
+                  fontFamily: 'sans-serif',
+                  display: 'flex',
+                }}
+              >
+                What&apos;s Building SF
+              </div>
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                color: '#78716c',
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                fontFamily: 'sans-serif',
+                display: 'flex',
+              }}
+            >
+              Permit #{permitNumber}
+            </div>
           </div>
 
+          {/* Title + meta row */}
           <div
             style={{
               display: 'flex',
@@ -190,28 +213,29 @@ export default async function Image({
           >
             <div
               style={{
-                fontSize: 48,
+                fontSize: 52,
                 fontWeight: 600,
-                lineHeight: 1.05,
+                lineHeight: 1,
                 letterSpacing: '-0.01em',
                 display: 'flex',
                 flex: 1,
                 minWidth: 0,
+                color: '#1c2438',
               }}
             >
               {address}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexShrink: 0 }}>
               {stageLabel && stageColor && (
                 <div
                   style={{
                     background: stageColor,
                     color: '#fbf6ec',
-                    padding: '6px 16px',
+                    padding: '8px 18px',
                     borderRadius: 4,
                     fontSize: 18,
                     fontWeight: 600,
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.06em',
                     textTransform: 'uppercase',
                     fontFamily: 'sans-serif',
                     display: 'flex',
@@ -223,8 +247,8 @@ export default async function Image({
               {homes > 0 && (
                 <div
                   style={{
-                    fontSize: 28,
-                    fontWeight: 600,
+                    fontSize: 32,
+                    fontWeight: 700,
                     color: '#9a4a31',
                     display: 'flex',
                     alignItems: 'baseline',
