@@ -19,6 +19,9 @@ interface Props {
   /** Above this zoom, the fill fades out — outlines remain visible. */
   hideAtZoom?: number
   onSelect?: (name: string, bounds: L.LatLngBounds) => void
+  /** When set, that polygon gets the persistent selected treatment and
+   *  every other polygon dims so the eye is anchored on the active region. */
+  selectedNhood?: string | null
 }
 
 type NhoodFeature = Feature<MultiPolygon | Polygon, { nhood: string }>
@@ -78,7 +81,12 @@ function tooltipHtml(name: string, total: number, breakdown: Map<PermitStage, nu
   `
 }
 
-export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: Props) {
+export function NeighborhoodChoropleth({
+  permits,
+  hideAtZoom = 14,
+  onSelect,
+  selectedNhood = null,
+}: Props) {
   const map = useMap()
   const [geo, setGeo] = useState<NhoodGeo | null>(null)
   // Track only whether we're below or above the fill-fade threshold — a
@@ -86,6 +94,12 @@ export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: P
   // re-styles once per crossing instead of on every settled zoom.
   const [isFilled, setIsFilled] = useState<boolean>(map.getZoom() < hideAtZoom)
   const layerRef = useRef<L.GeoJSON | null>(null)
+  // Hover/event handlers close over selectedNhood; without a ref they'd see
+  // the value at bind time (mount) and never update.
+  const selectedRef = useRef<string | null>(selectedNhood)
+  useEffect(() => {
+    selectedRef.current = selectedNhood
+  }, [selectedNhood])
 
   useMapEvents({
     zoomend: () => {
@@ -126,49 +140,93 @@ export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: P
     return { totals, breakdowns, max: Math.max(0, ...totals.values()) }
   }, [geo, permits])
 
-  // Re-style the existing GeoJSON layer when the fade threshold flips.
-  // Avoids the cost of unmounting and remounting all 41 polygons.
+  // Compute the visual treatment for one polygon. Centralizing this means
+  // hover, selection, and dim-the-rest all stay consistent — and a mouseout
+  // is just "recompute with hovered=false".
+  const styleFor = (name: string, hovered: boolean) => {
+    const count = totals.get(name) ?? 0
+    const fraction = max > 0 ? count / max : 0
+    const fillColor = colorForFraction(fraction)
+    const selected = selectedRef.current
+    const isSelected = selected != null && selected === name
+    const isDimmed = selected != null && !isSelected
+
+    if (isSelected) {
+      // Persistent active state — heavier navy stroke + bright fill, kept
+      // visible even when zoomed past the choropleth threshold so the
+      // active region stays anchored while the panel is open.
+      return {
+        fillColor,
+        fillOpacity: isFilled ? 0.7 : 0.25,
+        color: '#0c1424',
+        weight: 3,
+        opacity: 1,
+      }
+    }
+    if (hovered && !isDimmed) {
+      return {
+        fillColor,
+        fillOpacity: 0.75,
+        color: '#0c1424',
+        weight: 2.5,
+        opacity: 1,
+      }
+    }
+    if (isDimmed) {
+      return {
+        fillColor,
+        fillOpacity: isFilled ? 0.12 : 0,
+        color: '#1c2438',
+        weight: 0.4,
+        opacity: 0.18,
+      }
+    }
+    // Default
+    return {
+      fillColor,
+      fillOpacity: isFilled ? (count === 0 ? 0.05 : 0.45) : 0,
+      color: '#1c2438',
+      weight: isFilled ? 0.6 : 0.5,
+      opacity: isFilled ? 0.4 : 0.3,
+    }
+  }
+
+  // Re-apply styles whenever isFilled, selection, or data change. Avoids
+  // unmounting all 41 polygons and lets the selected one stay highlighted
+  // across zoom-threshold crossings.
   useEffect(() => {
     const layer = layerRef.current
     if (!layer) return
-    layer.setStyle((feature) => {
-      const name = (feature?.properties as { nhood?: string } | undefined)?.nhood ?? ''
-      const count = totals.get(name) ?? 0
-      const fraction = max > 0 ? count / max : 0
-      return {
-        fillColor: colorForFraction(fraction),
-        fillOpacity: isFilled ? (count === 0 ? 0.05 : 0.45) : 0,
-        color: '#1c2438',
-        weight: isFilled ? 0.6 : 0.5,
-        opacity: isFilled ? 0.4 : 0.3,
+    layer.eachLayer((sub) => {
+      const f = (sub as unknown as { feature?: { properties?: { nhood?: string } } }).feature
+      const name = f?.properties?.nhood ?? ''
+      ;(sub as L.Path).setStyle(styleFor(name, false))
+      // Selected polygon goes on top so its heavier stroke isn't clipped
+      // by neighbors.
+      if (selectedNhood && name === selectedNhood) {
+        ;(sub as unknown as { bringToFront: () => void }).bringToFront()
       }
     })
-  }, [isFilled, totals, max])
+    // styleFor reads selectedRef.current, but we still need the effect to
+    // fire on selectedNhood changes — hence including it in deps.
+  }, [isFilled, totals, max, selectedNhood])
 
   if (!geo) return null
 
-  const baseStyleFor = (count: number, fraction: number) => ({
-    fillColor: colorForFraction(fraction),
-    fillOpacity: isFilled ? (count === 0 ? 0.05 : 0.45) : 0,
-    color: '#1c2438',
-    weight: isFilled ? 0.6 : 0.5,
-    opacity: isFilled ? 0.4 : 0.3,
-  })
-
   return (
     <GeoJSON
-      // Re-mount only when the underlying data changes; isFilled is handled
-      // by the useEffect below which re-styles the existing layer in place.
+      // Re-mount only when the underlying data changes; isFilled and
+      // selectedNhood are handled by the useEffect that re-styles in place.
       key={`choropleth-${permits.length}-${max}`}
       ref={(r) => {
         layerRef.current = r ?? null
       }}
       data={geo}
+      // Class on the SVG layer drives `cursor: pointer` (see marker-cluster.css).
+      pathOptions={{ className: 'nhood-poly' }}
       style={(feature) => {
         const name = (feature?.properties as { nhood?: string } | undefined)?.nhood ?? ''
-        const count = totals.get(name) ?? 0
-        const fraction = max > 0 ? count / max : 0
-        return baseStyleFor(count, fraction)
+        return styleFor(name, false)
       }}
       onEachFeature={(feature, layer) => {
         const name = (feature.properties as { nhood?: string } | undefined)?.nhood ?? '—'
@@ -180,22 +238,27 @@ export function NeighborhoodChoropleth({ permits, hideAtZoom = 14, onSelect }: P
           className: 'nhood-tooltip',
           opacity: 1,
         })
-        // Hover = brighter fill + thicker stroke. Reset via the parent
-        // GeoJSON layer's resetStyle so we don't drift over time.
         layer.on({
           mouseover: (e) => {
             const target = e.target as L.Path
-            target.setStyle({
-              fillOpacity: 0.75,
-              weight: 2.5,
-              color: '#0c1424',
-              opacity: 1,
-            })
-            target.bringToFront()
+            target.setStyle(styleFor(name, true))
+            // Don't yank the selected polygon out from under itself; only
+            // raise unselected ones on hover.
+            if (selectedRef.current !== name) {
+              target.bringToFront()
+            }
           },
           mouseout: (e) => {
-            if (layerRef.current) {
-              layerRef.current.resetStyle(e.target as L.Layer)
+            const target = e.target as L.Path
+            target.setStyle(styleFor(name, false))
+            // After mouse leaves, the selected polygon should still sit on top.
+            if (selectedRef.current && layerRef.current) {
+              layerRef.current.eachLayer((sub) => {
+                const f = (sub as unknown as { feature?: { properties?: { nhood?: string } } }).feature
+                if (f?.properties?.nhood === selectedRef.current) {
+                  ;(sub as unknown as { bringToFront: () => void }).bringToFront()
+                }
+              })
             }
           },
           click: (e) => {

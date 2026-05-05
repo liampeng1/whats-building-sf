@@ -97,6 +97,16 @@
   outline: none;
 }
 
+/* Neighborhood polygons should signal interactivity. */
+.nhood-poly {
+  cursor: pointer;
+  /* Leaflet rewrites the inline `style` attribute on every setStyle call,
+     so a CSS transition on stroke / fill won't survive — but stroke-width
+     and opacity do animate well, giving hover and select a soft feel. */
+  transition: stroke-width 140ms ease-out, stroke-opacity 140ms ease-out,
+              fill-opacity 140ms ease-out;
+}
+
 /* Soften the default popup chrome so it matches the editorial palette. */
 .leaflet-popup-content-wrapper {
   background: #fbf6ec;

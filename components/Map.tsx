@@ -333,6 +333,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           permits={filteredPermits}
           hideAtZoom={PIN_FADE_MIN}
           onSelect={openNhoodPanel}
+          selectedNhood={selectedNhood}
         />
         <ZoomGatedPins
           visiblePermits={visiblePermits}
