@@ -378,12 +378,17 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       style={{ ['--pin-opacity' as string]: String(initialPinOp) }}
     >
       {loading && (
-        <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/40 pointer-events-none">
-          <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded shadow">Loading…</span>
+        <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-paper/40 pointer-events-none">
+          <span className="text-sm text-ink-soft bg-paper border border-paper-edge px-3 py-1 rounded shadow-sm">
+            Loading…
+          </span>
         </div>
       )}
       {error && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-300 text-red-700 px-4 py-2 rounded text-sm shadow">
+        <div
+          className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-paper border border-paper-edge text-ink px-4 py-2 rounded text-sm shadow-md flex items-center gap-2"
+          style={{ borderLeft: '3px solid #b35c44' }}
+        >
           {error}
         </div>
       )}

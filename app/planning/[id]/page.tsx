@@ -4,10 +4,18 @@ import { fetchPlanningCase, NotFoundError } from '@/lib/datasf'
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 }
 
-export default async function PlanningDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PlanningDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = await params
   let planningCase
   try {
@@ -18,35 +26,53 @@ export default async function PlanningDetailPage({ params }: { params: Promise<{
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
-      <Link href="/" className="text-blue-600 hover:underline text-sm mb-6 inline-block">
-        ← Back to map
-      </Link>
-      <h1 className="text-2xl font-bold mb-1">{planningCase.project_address}</h1>
-      <p className="text-gray-500 text-sm mb-6">Planning Case #{planningCase.record_id}</p>
-
-      <dl className="divide-y divide-gray-100">
-        {([
-          ['Type', planningCase.record_type],
-          ['Status', planningCase.record_status],
-          ['Description', planningCase.description ?? '—'],
-          ['Opened', formatDate(planningCase.open_date)],
-        ] as [string, string][]).map(([label, value]) => (
-          <div key={label} className="py-3 flex gap-4">
-            <dt className="w-28 shrink-0 text-sm text-gray-500">{label}</dt>
-            <dd className="text-sm">{value}</dd>
+    <main className="min-h-screen bg-paper">
+      <div className="border-b-2 border-ink bg-paper-deep">
+        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="civic-eyebrow hover:text-ink transition-colors">
+            ← Back to map
+          </Link>
+          <div className="civic-eyebrow text-ink-faint">
+            What&apos;s Building SF · Planning Case
           </div>
-        ))}
-      </dl>
+        </div>
+      </div>
 
-      <a
-        href="https://data.sfgov.org/resource/qvu5-m3a2"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-8 inline-block text-xs text-gray-400 hover:text-gray-600"
-      >
-        View source data on DataSF ↗
-      </a>
+      <article className="max-w-3xl mx-auto px-6 py-10">
+        <div className="civic-eyebrow text-ink-faint mb-2">
+          Planning Case #{planningCase.record_id}
+        </div>
+        <h1 className="font-serif text-4xl md:text-5xl text-ink leading-tight tracking-tight">
+          {planningCase.project_address}
+        </h1>
+
+        <dl className="mt-10 divide-y divide-paper-edge border-y border-paper-edge">
+          {(
+            [
+              ['Type', planningCase.record_type],
+              ['Status', planningCase.record_status],
+              ['Description', planningCase.description ?? '—'],
+              ['Opened', formatDate(planningCase.open_date)],
+            ] as [string, string][]
+          ).map(([label, value]) => (
+            <div key={label} className="py-3 flex gap-6">
+              <dt className="w-32 shrink-0 civic-eyebrow text-ink-faint">{label}</dt>
+              <dd className="text-sm text-ink leading-snug">{value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <footer className="mt-12 pt-6 border-t border-paper-edge">
+          <a
+            href="https://data.sfgov.org/resource/qvu5-m3a2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="civic-eyebrow text-ink-faint hover:text-ink"
+          >
+            Source · DataSF Planning Records
+          </a>
+        </footer>
+      </article>
     </main>
   )
 }
