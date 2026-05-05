@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Permit } from '@/lib/types'
 import { ShareButton } from './ShareButton'
+import { Logo } from './Logo'
 import {
   permitStage,
   netDelta,
@@ -153,7 +154,10 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
         />
         <div className="sticky top-0 z-10 bg-paper/95 backdrop-blur border-b border-paper-edge px-6 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="civic-eyebrow text-ink-faint">Neighborhood</div>
+            <div className="flex items-center gap-1.5 civic-eyebrow text-ink-faint">
+              <Logo size={14} variant="on-paper" />
+              <span>Neighborhood</span>
+            </div>
             <div className="font-serif text-lg text-ink truncate leading-tight">
               {neighborhood ?? '—'}
             </div>

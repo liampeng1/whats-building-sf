@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import type { Permit } from '@/lib/types'
 import { PermitDetailContent } from './PermitDetailContent'
 import { ShareButton } from './ShareButton'
+import { Logo } from './Logo'
 
 interface Props {
   permitNumber: string | null
@@ -102,8 +103,9 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
             even when scrolled deep into news. Floating close stays clickable. */}
         <div className="sticky top-0 z-10 bg-paper/95 backdrop-blur border-b border-paper-edge px-6 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="civic-eyebrow text-ink-faint">
-              {permit ? `Permit #${permit.permit_number}` : 'Permit Record'}
+            <div className="flex items-center gap-1.5 civic-eyebrow text-ink-faint">
+              <Logo size={14} variant="on-paper" />
+              <span>{permit ? `Permit #${permit.permit_number}` : 'Permit Record'}</span>
             </div>
             <div className="font-serif text-base text-ink truncate leading-tight">
               {permit?.address ?? ' '}
