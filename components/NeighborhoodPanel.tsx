@@ -49,17 +49,21 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
     let totalCost = 0
     const stageCounts = new Map<PermitStage, number>()
     const useCounts = new Map<UseCategory, number>()
+    const homesByStage = new Map<PermitStage, number>()
     for (const p of permits) {
       const stage = permitStage(p)
       stageCounts.set(stage, (stageCounts.get(stage) ?? 0) + 1)
       const cat = useCategory(p.proposed_use ?? p.existing_use)
       useCounts.set(cat, (useCounts.get(cat) ?? 0) + 1)
       const homes = netDelta(p.existing_units, p.proposed_units)
-      if (homes != null && homes > 0) totalHomes += homes
+      if (homes != null && homes > 0) {
+        totalHomes += homes
+        homesByStage.set(stage, (homesByStage.get(stage) ?? 0) + homes)
+      }
       const c = Number(p.estimated_cost ?? 0)
       if (Number.isFinite(c)) totalCost += c
     }
-    return { totalHomes, totalCost, stageCounts, useCounts }
+    return { totalHomes, totalCost, stageCounts, useCounts, homesByStage }
   }, [permits])
 
   const topProjects = useMemo(() => {
@@ -125,6 +129,34 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
               <div className="font-serif text-3xl text-construction leading-none">
                 +{stats.totalHomes}
               </div>
+              {stats.totalHomes > 0 && (
+                <ul className="mt-2 space-y-0.5">
+                  {PIPELINE_STAGES.map((stage) => {
+                    const count = stats.homesByStage.get(stage) ?? 0
+                    if (count === 0) return null
+                    const color = STAGE_COLORS[stage].fill
+                    const label = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
+                    return (
+                      <li
+                        key={stage}
+                        className="flex items-center gap-1.5 text-[0.7rem]"
+                      >
+                        <span
+                          className="inline-flex w-3 h-3 shrink-0"
+                          dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 12) }}
+                        />
+                        <span
+                          className="font-semibold tabular-nums"
+                          style={{ color }}
+                        >
+                          +{count}
+                        </span>
+                        <span className="text-ink-soft">{label}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
             </div>
           </div>
 
