@@ -153,12 +153,12 @@ export function NeighborhoodChoropleth({
 
     if (isSelected) {
       // Persistent active state — burnt-amber stroke (the deep end of the
-      // choropleth ramp) sets the selection apart from hover's heavier-navy
-      // treatment without going to a discordant brand color. Kept visible
-      // even when zoomed past the choropleth fade threshold.
+      // choropleth ramp) sets the selection apart from hover's navy
+      // treatment without going off-palette. Fill is kept light so the
+      // basemap (streets, parks) still reads through.
       return {
         fillColor,
-        fillOpacity: isFilled ? 0.7 : 0.22,
+        fillOpacity: isFilled ? 0.4 : 0.15,
         color: '#7c2d12',
         weight: 3,
         opacity: 1,
@@ -167,7 +167,7 @@ export function NeighborhoodChoropleth({
     if (hovered && !isDimmed) {
       return {
         fillColor,
-        fillOpacity: 0.75,
+        fillOpacity: 0.45,
         color: '#1c2438',
         weight: 2.5,
         opacity: 1,
@@ -176,16 +176,17 @@ export function NeighborhoodChoropleth({
     if (isDimmed) {
       return {
         fillColor,
-        fillOpacity: isFilled ? 0.12 : 0,
+        fillOpacity: isFilled ? 0.06 : 0,
         color: '#1c2438',
         weight: 0.4,
         opacity: 0.18,
       }
     }
-    // Default
+    // Default — translucent enough that streets, parks, and labels stay
+    // legible underneath the choropleth.
     return {
       fillColor,
-      fillOpacity: isFilled ? (count === 0 ? 0.05 : 0.45) : 0,
+      fillOpacity: isFilled ? (count === 0 ? 0 : 0.22) : 0,
       color: '#1c2438',
       weight: isFilled ? 0.6 : 0.5,
       opacity: isFilled ? 0.4 : 0.3,
