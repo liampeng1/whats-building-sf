@@ -5,6 +5,7 @@ import {
   useCategory,
   netDelta,
   USE_CATEGORY_LABELS,
+  USE_CATEGORY_COLORS,
   STAGE_COLORS,
   STAGE_LABELS,
   type PermitStage,
@@ -35,7 +36,7 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
   return (
     <div
       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold"
-      style={{ color, backgroundColor: `${color}15`, border: `1px solid ${color}40` }}
+      style={{ color, backgroundColor: `${color}10`, border: `1px solid ${color}33` }}
     >
       <span className="inline-flex" dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 18) }} />
       <span>{label}</span>
@@ -43,17 +44,20 @@ function StatusBadge({ stage, completedDate }: { stage: PermitStage; completedDa
   )
 }
 
-const USE_CATEGORY_BG: Record<UseCategory, string> = {
-  housing: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-  retail: 'bg-amber-100 text-amber-900 border-amber-300',
-  office: 'bg-sky-100 text-sky-900 border-sky-300',
-  industrial: 'bg-stone-200 text-stone-900 border-stone-400',
-  other: 'bg-paper-deep text-ink-soft border-paper-edge',
-}
-
 function UseTypePill({ category }: { category: UseCategory }) {
+  // Use the same earthy palette as the FilterPanel dots — same paper-tinted
+  // background + matching colored stroke pattern as StatusBadge so all chips
+  // on the page speak the same visual language.
+  const color = USE_CATEGORY_COLORS[category].fill
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${USE_CATEGORY_BG[category]}`}>
+    <span
+      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+      style={{
+        color,
+        backgroundColor: `${color}14`,
+        border: `1px solid ${color}40`,
+      }}
+    >
       {USE_CATEGORY_LABELS[category]}
     </span>
   )
