@@ -119,8 +119,11 @@
   background: #fbf6ec;
 }
 
-/* Hover tooltip on permit pins — paper card with navy text, no border. */
-.leaflet-tooltip.permit-tooltip {
+/* Hover tooltips — paper card with navy text and a navy hairline. Both
+   permit-pin and neighborhood-polygon tooltips share the chrome so the
+   hover affordance reads as one editorial gesture across the map. */
+.leaflet-tooltip.permit-tooltip,
+.leaflet-tooltip.nhood-tooltip {
   background: #fbf6ec;
   color: #1c2438;
   border: 1px solid rgba(28, 36, 56, 0.18);
@@ -128,9 +131,17 @@
   padding: 6px 10px;
   box-shadow: 0 2px 6px rgba(28, 36, 56, 0.14);
   white-space: normal;
+}
+
+.leaflet-tooltip.permit-tooltip {
   max-width: 240px;
 }
 
-.leaflet-tooltip.permit-tooltip::before {
+.leaflet-tooltip.nhood-tooltip {
+  max-width: 260px;
+}
+
+.leaflet-tooltip.permit-tooltip::before,
+.leaflet-tooltip.nhood-tooltip::before {
   border-top-color: rgba(28, 36, 56, 0.18);
 }
