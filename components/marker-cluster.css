@@ -154,3 +154,11 @@
     display: none !important;
   }
 }
+
+/* While a panel is open the active permit / neighborhood is already
+   described in detail — hover tooltips just repeat the data and obscure
+   the polygon / lot you're trying to look at. Hide them whenever the
+   wrapper carries a selection. */
+.has-selection .leaflet-tooltip {
+  display: none !important;
+}

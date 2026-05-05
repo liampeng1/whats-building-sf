@@ -374,7 +374,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   return (
     <div
       ref={wrapperRef}
-      className="relative w-full h-full"
+      className={`relative w-full h-full ${openPermit || selectedNhood ? 'has-selection' : ''}`}
       style={{ ['--pin-opacity' as string]: String(initialPinOp) }}
     >
       {loading && (
