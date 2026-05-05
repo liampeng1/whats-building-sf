@@ -162,11 +162,13 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
             {neighborhood && (
               <ShareButton
                 title={`${neighborhood} · What's Building SF`}
-                // Canonical neighborhood URL so the unfurl picks up the
-                // per-neighborhood OG image instead of the home default.
+                // Share the in-map URL so recipients land on the polygon
+                // already highlighted with the side panel open. The home
+                // page's generateMetadata maps ?nhood= to the per-
+                // neighborhood OG card on unfurls.
                 url={
                   typeof window !== 'undefined'
-                    ? `${window.location.origin}/neighborhoods/${encodeURIComponent(neighborhood)}`
+                    ? `${window.location.origin}/?nhood=${encodeURIComponent(neighborhood)}`
                     : undefined
                 }
               />

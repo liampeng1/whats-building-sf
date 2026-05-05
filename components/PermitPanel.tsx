@@ -113,14 +113,21 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
             {permit && (
               <ShareButton
                 title={`${permit.address} · What's Building SF`}
-                // Share the canonical detail URL so the unfurl picks up the
-                // permit-specific OG image — the in-map URL (?permit=...)
-                // resolves to the home page's default meta otherwise.
-                url={
-                  typeof window !== 'undefined'
-                    ? `${window.location.origin}/permits/${encodeURIComponent(permit.permit_number)}`
-                    : undefined
-                }
+                // Share the in-map URL so recipients land on the panel
+                // already open at the right lat/lng, with the rest of the
+                // map around for context. generateMetadata in app/page.tsx
+                // gives this URL the permit-specific OG card on unfurls.
+                url={(() => {
+                  if (typeof window === 'undefined') return undefined
+                  const params = new URLSearchParams()
+                  const coords = permit.location?.coordinates
+                  if (coords) {
+                    params.set('lat', String(coords[1]))
+                    params.set('lng', String(coords[0]))
+                  }
+                  params.set('permit', permit.permit_number)
+                  return `${window.location.origin}/?${params.toString()}`
+                })()}
               />
             )}
             <button
