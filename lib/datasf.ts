@@ -199,8 +199,11 @@ async function fetchPipelineMap(): Promise<Map<string, { status: string; date: s
 const TRACKED_PERMIT_TYPES = ['1', '2']
 const TRACKED_TYPES_FILTER = `permit_type IN (${TRACKED_PERMIT_TYPES.map((t) => `'${t}'`).join(',')})`
 
-const RECENT_COMPLETION_YEARS = 2 // recent finishes lookback
-const ACTIVITY_YEARS = 5 // long-running projects need *some* activity within this window
+// Statuses that mean the permit is dead — never going to progress.
+const INACTIVE_STATUSES = [
+  'cancelled', 'denied', 'disapproved', 'expired',
+  'revoked', 'withdrawn', 'overruled', 'unknown',
+]
 
 function isoYearsAgo(years: number, now: Date = new Date()): string {
   const c = new Date(now)
@@ -208,19 +211,26 @@ function isoYearsAgo(years: number, now: Date = new Date()): string {
   return c.toISOString().slice(0, 10)
 }
 
-function recencyFilter(now: Date = new Date()): string {
-  const completedCutoff = isoYearsAgo(RECENT_COMPLETION_YEARS, now)
-  const activityCutoff = isoYearsAgo(ACTIVITY_YEARS, now)
-  // A permit shows if EITHER:
-  //   1) it was completed within the last 2 years (recent finishes), OR
-  //   2) it had any status activity within the last 5 years (covers
-  //      long-running construction without dragging in stalled zombies).
-  return `(completed_date >= '${completedCutoff}' OR status_date >= '${activityCutoff}')`
+/**
+ * Build the server-side recency clause.
+ *   - "in progress" = not completed AND not in an inactive status
+ *   - "recently completed" = completed_date within the last `completedYears`
+ * Set `completedYears` to 0 to hide completed entirely.
+ */
+function recencyFilter(completedYears: number, now: Date = new Date()): string {
+  const inactiveList = INACTIVE_STATUSES.map((s) => `'${s}'`).join(',')
+  const inProgress = `(completed_date IS NULL AND status NOT IN (${inactiveList}))`
+  if (completedYears <= 0) return inProgress
+  const completedCutoff = isoYearsAgo(completedYears, now)
+  return `(${inProgress} OR completed_date >= '${completedCutoff}')`
 }
 
-export async function fetchBuildingPermits(bounds?: MapBounds): Promise<Permit[]> {
+export async function fetchBuildingPermits(
+  bounds?: MapBounds,
+  completedYears: number = 2,
+): Promise<Permit[]> {
   const params = new URLSearchParams({ $limit: '5000', $order: 'filed_date DESC' })
-  const clauses = [TRACKED_TYPES_FILTER, recencyFilter()]
+  const clauses = [TRACKED_TYPES_FILTER, recencyFilter(completedYears)]
   if (bounds) clauses.push(boundsFilter(bounds))
   params.set('$where', clauses.join(' AND '))
 

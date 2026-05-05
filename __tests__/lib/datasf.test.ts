@@ -60,12 +60,23 @@ describe('fetchBuildingPermits', () => {
     expect(decoded).toContain("permit_type IN ('1','2')")
   })
 
-  test('always applies a 2-year recency filter on completed_date / status_date', async () => {
+  test('default filter shows in-progress permits + recent completions', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
     await fetchBuildingPermits()
     const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
+    // In-progress clause: completed_date IS NULL AND status NOT IN inactive set
+    expect(url).toMatch(/completed_date IS NULL AND status NOT IN/)
+    // Default 2-year recent completion clause
     expect(url).toMatch(/completed_date >= '\d{4}-\d{2}-\d{2}'/)
-    expect(url).toMatch(/status_date >= '\d{4}-\d{2}-\d{2}'/)
+  })
+
+  test('completedYears=0 hides completed entirely (in-progress only)', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => [mockPermitApi] })
+    await fetchBuildingPermits(undefined, 0)
+    const url = decodeURIComponent((global.fetch as jest.Mock).mock.calls[0][0] as string).replace(/\+/g, ' ')
+    expect(url).toMatch(/completed_date IS NULL AND status NOT IN/)
+    // No completed_date >= clause
+    expect(url).not.toMatch(/completed_date >= '/)
   })
 
   test('combines tracked-types filter with bounds via AND', async () => {

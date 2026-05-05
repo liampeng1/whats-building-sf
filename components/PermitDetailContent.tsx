@@ -233,9 +233,25 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
     { label: 'Completed', date: permit.completed_date, active: !!permit.completed_date },
   ]
 
-  const steps = allSteps.filter(
+  // Drop the redundant Last activity step when its date matches another.
+  const filtered = allSteps.filter(
     (s) => !(s.label === 'Last activity' && lastActivityRedundant),
   )
+
+  // For inactive (cancelled/withdrawn/etc) permits, the "Not yet" lifecycle
+  // placeholders are misleading — those stages will never happen. Drop them.
+  const showsPlaceholders = stage !== 'inactive'
+  const dated = filtered.filter((s) => s.date)
+  const undated = showsPlaceholders ? filtered.filter((s) => !s.date) : []
+
+  // Strictly chronological for dated events, with future-stage placeholders
+  // appended at the end in their natural lifecycle order.
+  dated.sort((a, b) => {
+    const ad = a.date ? new Date(a.date).getTime() : 0
+    const bd = b.date ? new Date(b.date).getTime() : 0
+    return ad - bd
+  })
+  const steps = [...dated, ...undated]
 
   const isPanel = variant === 'panel'
   const headingSize = isPanel ? 'text-3xl' : 'text-5xl'

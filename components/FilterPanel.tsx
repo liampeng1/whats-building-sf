@@ -9,7 +9,7 @@ import {
   type PermitStage,
   type UseCategory,
 } from '@/lib/permit-style'
-import type { MinUnitsFilter } from './Map'
+import type { MinUnitsFilter, CompletedYearsFilter } from './Map'
 
 const LIFECYCLE: PermitStage[] = ['filed', 'approved', 'permitted', 'construction', 'complete']
 
@@ -18,6 +18,13 @@ const MIN_UNITS_OPTIONS: { value: MinUnitsFilter; label: string }[] = [
   { value: 5, label: '5+' },
   { value: 25, label: '25+' },
   { value: 100, label: '100+' },
+]
+
+const COMPLETED_YEARS_OPTIONS: { value: CompletedYearsFilter; label: string }[] = [
+  { value: 0, label: 'Hide' },
+  { value: 1, label: '1y' },
+  { value: 2, label: '2y' },
+  { value: 5, label: '5y' },
 ]
 
 interface Props {
@@ -29,6 +36,8 @@ interface Props {
   onSetCategories: (next: Set<UseCategory>) => void
   minUnits: MinUnitsFilter
   onMinUnitsChange: (n: MinUnitsFilter) => void
+  completedYears: CompletedYearsFilter
+  onCompletedYearsChange: (n: CompletedYearsFilter) => void
   visibleCount: number
   totalCount: number
 }
@@ -173,6 +182,8 @@ export function FilterPanel({
   onSetCategories,
   minUnits,
   onMinUnitsChange,
+  completedYears,
+  onCompletedYearsChange,
   visibleCount,
   totalCount,
 }: Props) {
@@ -280,17 +291,16 @@ export function FilterPanel({
           <MasterCheckbox
             ariaLabel="Toggle all lifecycle stages"
             state={(() => {
-              const all: PermitStage[] = [...LIFECYCLE, 'inactive']
-              const on = all.filter((s) => selectedStages.has(s)).length
-              if (on === all.length) return 'all'
+              const on = LIFECYCLE.filter((s) => selectedStages.has(s)).length
+              if (on === LIFECYCLE.length) return 'all'
               if (on === 0) return 'none'
               return 'some'
             })()}
-            onSelectAll={() => onSetStages(new Set<PermitStage>([...LIFECYCLE, 'inactive']))}
+            onSelectAll={() => onSetStages(new Set<PermitStage>(LIFECYCLE))}
             onClear={() => onSetStages(new Set<PermitStage>())}
           />
         </div>
-        <ul className="mb-3">
+        <ul className="mb-4">
           {LIFECYCLE.map((stage, i) => (
             <StageRow
               key={stage}
@@ -302,17 +312,26 @@ export function FilterPanel({
           ))}
         </ul>
 
-        <div className="border-t border-paper-edge pt-2 mt-2">
-          <ul>
-            <StageRow
-              stage="inactive"
-              on={selectedStages.has('inactive')}
-              onToggle={() => onToggleStage('inactive')}
-              showConnector={false}
-            />
-          </ul>
-          <p className="text-[10px] text-ink-faint ml-10 -mt-0.5">
-            Off-track: cancelled, expired, denied
+        <div className="border-t border-paper-edge pt-3">
+          <div className="civic-eyebrow mb-2">Show completed within</div>
+          <div className="flex gap-1">
+            {COMPLETED_YEARS_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => onCompletedYearsChange(opt.value)}
+                className={`flex-1 px-2 py-1 text-xs rounded border transition ${
+                  completedYears === opt.value
+                    ? 'bg-ink text-paper border-ink font-semibold'
+                    : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-ink-faint mt-1.5 leading-snug">
+            In-progress permits always shown. Cancelled / withdrawn excluded.
           </p>
         </div>
       </div>

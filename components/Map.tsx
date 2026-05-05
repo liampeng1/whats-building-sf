@@ -23,6 +23,7 @@ const ALL_STAGES: PermitStage[] = STAGE_ORDER
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
 
 export type MinUnitsFilter = 0 | 5 | 25 | 100
+export type CompletedYearsFilter = 0 | 1 | 2 | 5
 
 interface Props {
   initialCenter?: [number, number]
@@ -36,6 +37,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     () => new Set(ALL_STAGES),
   )
   const [minUnits, setMinUnits] = useState<MinUnitsFilter>(0)
+  const [completedYears, setCompletedYears] = useState<CompletedYearsFilter>(2)
   const [selectedCategories, setSelectedCategories] = useState<Set<UseCategory>>(
     () => new Set(ALL_CATEGORIES),
   )
@@ -104,10 +106,16 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     [permits, selectedStages, selectedCategories, minUnits],
   )
 
-  const fetchData = useCallback(async (bounds: MapBounds | undefined, signal?: AbortSignal) => {
-    const q = bounds
-      ? `?north=${bounds.north}&south=${bounds.south}&east=${bounds.east}&west=${bounds.west}`
-      : ''
+  const fetchData = useCallback(async (bounds: MapBounds | undefined, completedYearsArg: CompletedYearsFilter, signal?: AbortSignal) => {
+    const params = new URLSearchParams()
+    if (bounds) {
+      params.set('north', String(bounds.north))
+      params.set('south', String(bounds.south))
+      params.set('east', String(bounds.east))
+      params.set('west', String(bounds.west))
+    }
+    params.set('completedYears', String(completedYearsArg))
+    const q = `?${params.toString()}`
     try {
       const res = await fetch(`/api/permits${q}`, { signal })
       if (!res.ok) throw new Error('fetch failed')
@@ -128,17 +136,21 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     // setState calls inside fetchData run after the awaited fetch (microtask),
     // not synchronously. The rule's static analysis can't see through async/await.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchData(undefined, ctrl.signal)
+    setLoading(true)
+    fetchData(undefined, completedYears, ctrl.signal)
     return () => ctrl.abort()
-  }, [fetchData])
+  }, [fetchData, completedYears])
 
-  const handleBoundsChange = useCallback((bounds: MapBounds) => {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      setLoading(true)
-      fetchData(bounds)
-    }, 300)
-  }, [fetchData])
+  const handleBoundsChange = useCallback(
+    (bounds: MapBounds) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => {
+        setLoading(true)
+        fetchData(bounds, completedYears)
+      }, 300)
+    },
+    [fetchData, completedYears],
+  )
 
   return (
     <div className="relative w-full h-full">
@@ -180,6 +192,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onSetCategories={setSelectedCategories}
         minUnits={minUnits}
         onMinUnitsChange={setMinUnits}
+        completedYears={completedYears}
+        onCompletedYearsChange={setCompletedYears}
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />

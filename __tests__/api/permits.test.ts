@@ -51,7 +51,7 @@ describe('GET /api/permits', () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request('http://localhost/api/permits')
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith()
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 2)
   })
 
   test('passes parsed bounds to datasf when bounds params present', async () => {
@@ -60,19 +60,24 @@ describe('GET /api/permits', () => {
       'http://localhost/api/permits?north=37.8&south=37.7&east=-122.4&west=-122.5'
     )
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith({
-      north: 37.8,
-      south: 37.7,
-      east: -122.4,
-      west: -122.5,
-    })
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(
+      { north: 37.8, south: 37.7, east: -122.4, west: -122.5 },
+      2,
+    )
   })
 
   test('ignores partial bounds params (calls without bounds)', async () => {
     ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
     const req = new Request('http://localhost/api/permits?north=37.8&south=37.7')
     await listPermits(req)
-    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith()
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 2)
+  })
+
+  test('honors completedYears query param', async () => {
+    ;(datasf.fetchBuildingPermits as jest.Mock).mockResolvedValueOnce([])
+    const req = new Request('http://localhost/api/permits?completedYears=5')
+    await listPermits(req)
+    expect(datasf.fetchBuildingPermits).toHaveBeenCalledWith(undefined, 5)
   })
 
   test('returns 400 when all bounds are present but unparseable', async () => {

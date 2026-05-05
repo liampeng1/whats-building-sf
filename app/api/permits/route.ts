@@ -25,8 +25,16 @@ export async function GET(req: Request) {
     // Partial bounds: ignore and call without bounds (preserves existing behavior).
   }
 
+  // Completed-window control. Pass ?completedYears=0 to hide completed,
+  // 1/2/5/etc. to show that many years of recent finishes.
+  const completedYearsRaw = searchParams.get('completedYears')
+  const completedYearsParsed = completedYearsRaw != null ? Number(completedYearsRaw) : 2
+  const completedYears = Number.isFinite(completedYearsParsed) && completedYearsParsed >= 0
+    ? Math.min(20, completedYearsParsed)
+    : 2
+
   try {
-    const permits = bounds ? await fetchBuildingPermits(bounds) : await fetchBuildingPermits()
+    const permits = await fetchBuildingPermits(bounds, completedYears)
     return Response.json(permits)
   } catch (err) {
     console.error(err)
