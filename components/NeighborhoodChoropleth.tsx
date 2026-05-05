@@ -164,13 +164,15 @@ export function NeighborhoodChoropleth({
       }
     }
     if (hovered && !isDimmed) {
-      // Subtle bump from the 0.22 default so moving the cursor between a
-      // pin (its tooltip card) and the surrounding polygon doesn't feel
-      // like crossing a hard boundary. The CSS transition on fill-opacity
-      // smooths what's left.
+      // Unified hover tint — a single ink-navy fill across all polygons so
+      // the hover feedback feels consistent regardless of which choropleth
+      // bucket the neighborhood lives in. Without this the fill color
+      // shifted from cream → sand → burnt as the cursor moved between
+      // neighborhoods, which read as the polygon "changing" rather than
+      // "being highlighted."
       return {
-        fillColor,
-        fillOpacity: 0.32,
+        fillColor: '#1c2438',
+        fillOpacity: 0.16,
         color: '#1c2438',
         weight: 2,
         opacity: 1,
