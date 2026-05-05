@@ -13,6 +13,7 @@ import { pointInGeometry } from '@/lib/point-in-polygon'
 import { FilterPanel } from './FilterPanel'
 import { PermitPanel } from './PermitPanel'
 import { CoffeeButton } from './CoffeeButton'
+import { AboutLink } from './AboutLink'
 import {
   permitStage,
   netDelta,
@@ -459,6 +460,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />
+      <AboutLink />
       <CoffeeButton />
       <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
       <NeighborhoodPanel
