@@ -207,11 +207,16 @@ export const USE_CATEGORY_LABELS: Record<UseCategory, string> = {
   other: 'Other',
 }
 
+// Category dots organize use type — orthogonal to lifecycle stage. Shifted
+// to muted hues that don't compete with the lifecycle palette: cool blue
+// for housing (calm, residential), rust for retail (commercial warmth),
+// plum for office (cool, distinct from any stage color), slate for
+// industrial (utilitarian), and the existing taupe for "other".
 export const USE_CATEGORY_COLORS: Record<UseCategory, { fill: string; stroke: string }> = {
-  housing:    { fill: '#10b981', stroke: '#064e3b' }, // emerald
-  retail:     { fill: '#d97706', stroke: '#78350f' }, // amber
-  office:     { fill: '#0ea5e9', stroke: '#0c4a6e' }, // sky
-  industrial: { fill: '#78716c', stroke: '#292524' }, // stone
+  housing:    { fill: '#5d7a99', stroke: '#3d5a7a' }, // muted blue
+  retail:     { fill: '#a5634a', stroke: '#774432' }, // rust
+  office:     { fill: '#8a6c87', stroke: '#6a4f67' }, // plum
+  industrial: { fill: '#67615a', stroke: '#4a4641' }, // slate stone
   other:      { fill: '#a8a29e', stroke: '#57534e' }, // taupe
 }
 

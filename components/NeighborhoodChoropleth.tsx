@@ -164,11 +164,15 @@ export function NeighborhoodChoropleth({
       }
     }
     if (hovered && !isDimmed) {
+      // Subtle bump from the 0.22 default so moving the cursor between a
+      // pin (its tooltip card) and the surrounding polygon doesn't feel
+      // like crossing a hard boundary. The CSS transition on fill-opacity
+      // smooths what's left.
       return {
         fillColor,
-        fillOpacity: 0.45,
+        fillOpacity: 0.32,
         color: '#1c2438',
-        weight: 2.5,
+        weight: 2,
         opacity: 1,
       }
     }
