@@ -52,10 +52,9 @@
   line-height: 1;
 }
 
-/* Pictographic SVG pins (DivIcon). Soft paper halo so glyphs read on any base.
-   The DivIcon's sized box already gives a tap target larger than the rendered
-   SVG; on touch devices we expand the hitbox via a transparent ::after so
-   small icons are still finger-friendly. */
+/* Pictographic SVG pins (DivIcon). The DivIcon's sized box already gives a
+   tap target larger than the rendered SVG; on touch devices we expand the
+   hitbox via a transparent ::after so small icons are still finger-friendly. */
 .permit-pin {
   display: flex;
   align-items: center;
@@ -64,9 +63,6 @@
   height: 100%;
   cursor: pointer;
   position: relative;
-  filter: drop-shadow(0 1px 2px rgba(251, 246, 236, 0.95))
-          drop-shadow(0 0 3px rgba(251, 246, 236, 0.8))
-          drop-shadow(0 1px 2px rgba(28, 36, 56, 0.18));
   /* --pin-opacity is set by the Map.tsx wrapper from the live zoom. Default
      1 keeps pins visible if the variable hasn't been set yet (e.g. test env). */
   opacity: var(--pin-opacity, 1);
