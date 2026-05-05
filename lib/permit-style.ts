@@ -65,7 +65,7 @@ export const STAGE_LABELS: Record<PermitStage, string> = {
   filed: 'Filed / under review',
   approved: 'Approved',
   permitted: 'Permitted · not yet started',
-  construction: 'Under construction',
+  construction: 'Construction',
   complete: 'Complete',
   inactive: 'Inactive / cancelled',
 }

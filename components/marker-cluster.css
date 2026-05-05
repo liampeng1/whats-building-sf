@@ -145,3 +145,12 @@
 .leaflet-tooltip.nhood-tooltip::before {
   border-top-color: rgba(28, 36, 56, 0.18);
 }
+
+/* On touch devices "hover" is a non-event — taps fire briefly and cause
+   tooltips to flash open before / during the actual selection. Suppress
+   them entirely. The bottom-sheet panel is the touch-optimal experience. */
+@media (hover: none) {
+  .leaflet-tooltip {
+    display: none !important;
+  }
+}

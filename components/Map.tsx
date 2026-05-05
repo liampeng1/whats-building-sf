@@ -225,31 +225,33 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     window.history.pushState({}, '', url)
     const map = mapRef.current
     if (!map) return
-    // On desktop the 520px panel slides in from the right and would cover
-    // the polygon if we fit-bounds against the full map. Reserve that space
-    // so the neighborhood lands in the still-visible left portion. Mobile
-    // panel takes the whole screen — symmetric padding is fine.
-    const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
-    const panelOffset = isWide ? 520 : 0
-    const paddingTopLeft: [number, number] = [40, 40]
-    const paddingBottomRight: [number, number] = [panelOffset + 40, 40]
 
-    // Pins fade in starting at PIN_FADE_MIN; for the user to actually see
-    // the icons in the selected neighborhood we want the natural fit to
-    // reach PIN_FADE_MAX. If the polygon is so large it'd otherwise fit at
-    // a lower zoom, override and zoom to a target the pins are visible at.
+    const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
+    const winH = typeof window !== 'undefined' ? window.innerHeight : 800
+    // Reserve the panel's footprint so the polygon doesn't land behind it:
+    //   desktop = 520px to the right; mobile = ~55dvh at the bottom.
+    const sheetHeight = isWide ? 0 : Math.round(winH * 0.55)
+    const panelWidth = isWide ? 520 : 0
+    const paddingTopLeft: [number, number] = [40, 40]
+    const paddingBottomRight: [number, number] = [
+      panelWidth + 40,
+      sheetHeight + 40,
+    ]
+
     const naturalZoom = map.getBoundsZoom(bounds, false, L.point(40, 40))
     const minTargetZoom = PIN_FADE_MAX
     if (naturalZoom >= minTargetZoom) {
       map.fitBounds(bounds, { paddingTopLeft, paddingBottomRight, maxZoom: 15 })
       return
     }
-    // Polygon is too big to fit at pin-visible zoom — re-center on it at
-    // the threshold zoom, shifting the visible center to account for the
-    // side panel so the neighborhood doesn't land behind the drawer.
+    // Polygon is too big to fit at pin-visible zoom — re-center it at the
+    // threshold zoom, shifting the visible center to account for the side
+    // panel (desktop) or the bottom sheet (mobile).
     const targetZoom = Math.min(15, minTargetZoom)
     const centerPx = map.project(bounds.getCenter(), targetZoom)
-    const shifted = centerPx.add(L.point(panelOffset / 2, 0))
+    const shifted = centerPx.add(
+      L.point(panelWidth / 2, sheetHeight / 2),
+    )
     map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
   }, [])
 

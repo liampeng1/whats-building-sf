@@ -164,17 +164,16 @@ export function NeighborhoodChoropleth({
       }
     }
     if (hovered && !isDimmed) {
-      // Paper-cream tint + navy hairline — mirrors the pin tooltip's
-      // "paper card on navy border" gesture, so hovering a pin and
-      // hovering a polygon read as the same affordance instead of two
-      // different visual languages. Uniform color across all polygons
-      // keeps the feedback a UI signal, not a data redraw.
+      // Hover changes the *stroke only* — keeps the choropleth fill
+      // exactly as it was at rest so moving the cursor between a pin
+      // and the surrounding polygon doesn't flash a different fill
+      // tone. The card tooltip carries the rest of the affordance.
       return {
-        fillColor: '#fbf6ec',
-        fillOpacity: 0.5,
+        fillColor,
+        fillOpacity: isFilled ? (count === 0 ? 0 : 0.22) : 0,
         color: '#1c2438',
-        weight: 1.5,
-        opacity: 0.6,
+        weight: 1.6,
+        opacity: 1,
       }
     }
     if (isDimmed) {

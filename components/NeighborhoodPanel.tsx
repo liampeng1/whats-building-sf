@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Permit } from '@/lib/types'
+import { ShareButton } from './ShareButton'
 import {
   permitStage,
   netDelta,
@@ -34,6 +35,14 @@ function formatCost(n: number): string {
 
 export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit }: Props) {
   const open = !!neighborhood
+
+  // Bottom-sheet expansion on mobile (mirrors PermitPanel): start at ~55dvh
+  // so the polygon is visible above; expand on scroll past the threshold;
+  // collapse back when scrolled to the top.
+  const [expanded, setExpanded] = useState(false)
+  useEffect(() => {
+    if (!open) setExpanded(false)
+  }, [open])
 
   // Close on Escape.
   useEffect(() => {
@@ -108,20 +117,40 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
 
   return (
     <>
+      {/* Backdrop — desktop only. On mobile the bottom sheet leaves the
+          top of the screen showing the highlighted polygon, so we don't
+          want to mask it. */}
       <button
         aria-label="Close neighborhood panel"
         type="button"
         onClick={onClose}
-        className={`fixed inset-0 bg-ink/20 z-[1100] transition-opacity duration-300 ease-out ${
+        className={`hidden md:block fixed inset-0 bg-ink/20 z-[1100] transition-opacity duration-300 ease-out ${
           open ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       />
       <aside
-        className={`fixed top-0 right-0 h-[100dvh] w-full md:w-[520px] bg-paper border-l-2 border-ink shadow-2xl z-[1200] overflow-y-auto transition-transform duration-300 ease-out ${
-          open ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        onScroll={(e) => {
+          const top = e.currentTarget.scrollTop
+          if (top > 40 && !expanded) setExpanded(true)
+          else if (top < 4 && expanded) setExpanded(false)
+        }}
+        className={`fixed bg-paper shadow-2xl z-[1200] overflow-y-auto transition-all duration-300 ease-out
+          bottom-0 left-0 right-0 border-t-2 border-ink rounded-t-xl
+          ${expanded ? 'h-[100dvh] rounded-t-none' : 'h-[55dvh]'}
+          md:top-0 md:right-0 md:left-auto md:bottom-auto md:w-[520px]
+          md:h-[100dvh] md:rounded-none md:border-t-0 md:border-l-2
+          ${open ? 'translate-y-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}
+          md:translate-y-0
+        `}
         aria-hidden={!open}
       >
+        {/* Mobile drag handle — visual cue that the sheet pulls up. */}
+        <div
+          aria-hidden
+          className={`md:hidden mx-auto mt-2 mb-1 h-1 w-10 rounded-full bg-paper-edge transition-opacity ${
+            expanded ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
         <div className="sticky top-0 z-10 bg-paper/95 backdrop-blur border-b border-paper-edge px-6 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
             <div className="civic-eyebrow text-ink-faint">Neighborhood</div>
@@ -129,14 +158,19 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
               {neighborhood ?? '—'}
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-ink-soft hover:text-ink text-2xl leading-none w-7 h-7 flex items-center justify-center rounded hover:bg-paper-edge/40 transition-colors"
-            aria-label="Close"
-          >
-            ×
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {neighborhood && (
+              <ShareButton title={`${neighborhood} · What's Building SF`} />
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-ink-soft hover:text-ink text-2xl leading-none w-7 h-7 flex items-center justify-center rounded hover:bg-paper-edge/40 transition-colors"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         <div className="px-6 py-8 space-y-7">

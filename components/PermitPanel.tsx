@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import type { Permit } from '@/lib/types'
 import { PermitDetailContent } from './PermitDetailContent'
+import { ShareButton } from './ShareButton'
 
 interface Props {
   permitNumber: string | null
@@ -108,14 +109,18 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
               {permit?.address ?? ' '}
             </div>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
+            {permit && (
+              <ShareButton title={`${permit.address} · What's Building SF`} />
+            )}
             {permit && (
               <a
                 href={`/permits/${permit.permit_number}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="civic-eyebrow text-ink-faint hover:text-ink"
+                className="text-ink-soft hover:text-ink w-7 h-7 flex items-center justify-center rounded hover:bg-paper-edge/40 transition-colors"
                 title="Open in a new tab"
+                aria-label="Open in a new tab"
               >
                 ↗
               </a>
