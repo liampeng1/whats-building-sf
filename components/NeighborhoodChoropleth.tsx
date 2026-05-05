@@ -183,15 +183,15 @@ export function NeighborhoodChoropleth({
       }
     }
     // Default — translucent fill so the basemap reads through. Outline
-    // uses ink (#1c2438) at moderate opacity: enough to read as the same
-    // navy as the legend chrome, soft enough not to feel like 41 hard
-    // borders carving up the city.
+    // is warm taupe-grey (--ink-faint), which reads as a clean boundary
+    // without competing with the navy chrome or the amber ramp. Reads
+    // confidently against the cream basemap.
     return {
       fillColor,
       fillOpacity: isFilled ? (count === 0 ? 0 : 0.22) : 0,
-      color: '#1c2438',
-      weight: isFilled ? 0.6 : 0.5,
-      opacity: 0.55,
+      color: '#78716c',
+      weight: isFilled ? 0.7 : 0.6,
+      opacity: 0.85,
     }
   }
 
