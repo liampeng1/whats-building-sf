@@ -8,6 +8,7 @@ import {
   STAGE_LABELS,
 } from '@/lib/permit-style'
 import { polygonToSvgPath, polygonDataUrl } from '@/lib/og-polygon'
+import { buildMapboxStaticUrl } from '@/lib/og-mapbox'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -73,17 +74,31 @@ export default async function Image({
     // Fall through to default card.
   }
 
-  // Polygon area centered in the upper portion of the card so address +
-  // metadata can sit cleanly underneath. 540 wide × 320 tall.
-  const polyW = 540
-  const polyH = 320
-  const polyX = (size.width - polyW) / 2
-  const polyY = 96
-  const pathD = parcelShape
-    ? polygonToSvgPath(parcelShape, { x: 0, y: 0, width: polyW, height: polyH })
-    : ''
-  const polyDataUrl = pathD
-    ? polygonDataUrl(pathD, polyW, polyH, {
+  // Map area takes the upper 460px; the editorial card sits in the bottom
+  // 170px. When MAPBOX_TOKEN is set, the map area is a real basemap with
+  // the parcel polygon overlaid; otherwise it's a paper-cream area with
+  // just the polygon silhouette (the previous design).
+  const MAP_H = 460
+  const CARD_H = size.height - MAP_H
+
+  const mapUrl = parcelShape
+    ? buildMapboxStaticUrl({
+        geometry: parcelShape,
+        width: size.width,
+        height: MAP_H,
+        // Parcels are small — give the basemap room to breathe so streets
+        // around the lot show context.
+        padding: 80,
+      })
+    : null
+
+  // Fallback (no Mapbox token): render the polygon-only silhouette like before.
+  const fallbackPathD =
+    !mapUrl && parcelShape
+      ? polygonToSvgPath(parcelShape, { x: 0, y: 0, width: size.width, height: MAP_H })
+      : ''
+  const fallbackPolyUrl = fallbackPathD
+    ? polygonDataUrl(fallbackPathD, size.width, MAP_H, {
         fill: '#b08968',
         fillOpacity: 0.45,
         stroke: '#9a4a31',
@@ -97,50 +112,33 @@ export default async function Image({
         style={{
           width: '100%',
           height: '100%',
-          background: '#fbf6ec',
           display: 'flex',
           flexDirection: 'column',
-          padding: '48px 64px',
+          background: '#fbf6ec',
           color: '#1c2438',
           fontFamily: 'serif',
         }}
       >
-        {/* Eyebrow row: brand + permit id */}
+        {/* Map area */}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: 18,
-            color: '#78716c',
-            textTransform: 'uppercase',
-            letterSpacing: '0.12em',
-            fontFamily: 'sans-serif',
-          }}
-        >
-          <div style={{ display: 'flex' }}>What&apos;s Building SF</div>
-          <div style={{ display: 'flex' }}>Permit #{permitNumber}</div>
-        </div>
-
-        {/* Polygon hero */}
-        <div
-          style={{
-            position: 'absolute',
-            left: polyX,
-            top: polyY,
-            width: polyW,
-            height: polyH,
+            width: '100%',
+            height: MAP_H,
+            position: 'relative',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            background: '#fbf6ec',
+            overflow: 'hidden',
           }}
         >
-          {polyDataUrl ? (
+          {mapUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={polyDataUrl} width={polyW} height={polyH} alt="" />
+            <img src={mapUrl} width={size.width} height={MAP_H} alt="" />
+          ) : fallbackPolyUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={fallbackPolyUrl} width={size.width} height={MAP_H} alt="" />
           ) : (
-            // Fallback when no parcel polygon is available — a paper plate
-            // with a soft amber circle so the card still has visual weight.
             <div
               style={{
                 width: 240,
@@ -154,72 +152,101 @@ export default async function Image({
           )}
         </div>
 
-        {/* Bottom block: address + stage chip + homes */}
+        {/* Editorial card */}
         <div
           style={{
-            marginTop: 'auto',
+            height: CARD_H,
+            padding: '20px 64px 24px',
+            background: '#fbf6ec',
+            borderTop: '2px solid #1c2438',
             display: 'flex',
             flexDirection: 'column',
-            gap: 16,
+            justifyContent: 'space-between',
           }}
         >
           <div
             style={{
-              fontSize: 64,
-              fontWeight: 600,
-              lineHeight: 1.05,
-              letterSpacing: '-0.01em',
-              maxWidth: '100%',
               display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              fontSize: 16,
+              color: '#78716c',
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              fontFamily: 'sans-serif',
             }}
           >
-            {address}
+            <div style={{ display: 'flex' }}>What&apos;s Building SF</div>
+            <div style={{ display: 'flex' }}>Permit #{permitNumber}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-            {stageLabel && stageColor && (
-              <div
-                style={{
-                  background: stageColor,
-                  color: '#fbf6ec',
-                  padding: '6px 16px',
-                  borderRadius: 4,
-                  fontSize: 22,
-                  fontWeight: 600,
-                  letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                  fontFamily: 'sans-serif',
-                  display: 'flex',
-                }}
-              >
-                {stageLabel}
-              </div>
-            )}
-            {homes > 0 && (
-              <div
-                style={{
-                  fontSize: 32,
-                  fontWeight: 600,
-                  color: '#9a4a31',
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: 8,
-                }}
-              >
-                <span style={{ fontFamily: 'serif', display: 'flex' }}>+{homes}</span>
-                <span
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              gap: 24,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 48,
+                fontWeight: 600,
+                lineHeight: 1.05,
+                letterSpacing: '-0.01em',
+                display: 'flex',
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
+              {address}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+              {stageLabel && stageColor && (
+                <div
                   style={{
+                    background: stageColor,
+                    color: '#fbf6ec',
+                    padding: '6px 16px',
+                    borderRadius: 4,
                     fontSize: 18,
-                    fontFamily: 'sans-serif',
-                    color: '#78716c',
+                    fontWeight: 600,
+                    letterSpacing: '0.04em',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
+                    fontFamily: 'sans-serif',
                     display: 'flex',
                   }}
                 >
-                  net new homes
-                </span>
-              </div>
-            )}
+                  {stageLabel}
+                </div>
+              )}
+              {homes > 0 && (
+                <div
+                  style={{
+                    fontSize: 28,
+                    fontWeight: 600,
+                    color: '#9a4a31',
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    gap: 8,
+                  }}
+                >
+                  <span style={{ fontFamily: 'serif', display: 'flex' }}>+{homes}</span>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'sans-serif',
+                      color: '#78716c',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      display: 'flex',
+                    }}
+                  >
+                    homes
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { polygonToSvgPath, polygonDataUrl } from '@/lib/og-polygon'
+import { buildMapboxStaticUrl, simplifyGeometry } from '@/lib/og-mapbox'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -33,17 +34,29 @@ export default async function Image({
     (f) => f.properties?.nhood?.toLowerCase() === decodedName.toLowerCase(),
   )
 
-  // Polygon hero takes the bulk of the canvas — neighborhood silhouettes
-  // are recognizable to locals, so we let the shape be the visual.
-  const polyW = 720
-  const polyH = 380
-  const polyX = (size.width - polyW) / 2
-  const polyY = 80
-  const pathD = feature?.geometry
-    ? polygonToSvgPath(feature.geometry, { x: 0, y: 0, width: polyW, height: polyH })
-    : ''
-  const polyDataUrl = pathD
-    ? polygonDataUrl(pathD, polyW, polyH, {
+  const MAP_H = 460
+  const CARD_H = size.height - MAP_H
+
+  // Neighborhood polygons can be 50–500 vertices and would blow past
+  // Mapbox's URL length cap if encoded raw — simplify to ~30m tolerance
+  // first. The basemap shows the streets so high polygon detail isn't needed.
+  const simplified = feature?.geometry ? simplifyGeometry(feature.geometry, 0.0005) : null
+  const mapUrl = simplified
+    ? buildMapboxStaticUrl({
+        geometry: simplified,
+        width: size.width,
+        height: MAP_H,
+        padding: 50,
+      })
+    : null
+
+  // Fallback to the polygon-only silhouette if no Mapbox token.
+  const fallbackPathD =
+    !mapUrl && feature?.geometry
+      ? polygonToSvgPath(feature.geometry, { x: 0, y: 0, width: size.width, height: MAP_H })
+      : ''
+  const fallbackPolyUrl = fallbackPathD
+    ? polygonDataUrl(fallbackPathD, size.width, MAP_H, {
         fill: '#b08968',
         fillOpacity: 0.45,
         stroke: '#9a4a31',
@@ -57,47 +70,32 @@ export default async function Image({
         style={{
           width: '100%',
           height: '100%',
-          background: '#fbf6ec',
           display: 'flex',
           flexDirection: 'column',
-          padding: '48px 64px',
+          background: '#fbf6ec',
           color: '#1c2438',
           fontFamily: 'serif',
         }}
       >
-        {/* Eyebrow */}
+        {/* Map / silhouette area */}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: 18,
-            color: '#78716c',
-            textTransform: 'uppercase',
-            letterSpacing: '0.12em',
-            fontFamily: 'sans-serif',
-          }}
-        >
-          <div style={{ display: 'flex' }}>What&apos;s Building SF</div>
-          <div style={{ display: 'flex' }}>Neighborhood</div>
-        </div>
-
-        {/* Polygon hero */}
-        <div
-          style={{
-            position: 'absolute',
-            left: polyX,
-            top: polyY,
-            width: polyW,
-            height: polyH,
+            width: '100%',
+            height: MAP_H,
+            position: 'relative',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            background: '#fbf6ec',
+            overflow: 'hidden',
           }}
         >
-          {polyDataUrl ? (
+          {mapUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={polyDataUrl} width={polyW} height={polyH} alt="" />
+            <img src={mapUrl} width={size.width} height={MAP_H} alt="" />
+          ) : fallbackPolyUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={fallbackPolyUrl} width={size.width} height={MAP_H} alt="" />
           ) : (
             <div
               style={{
@@ -112,30 +110,36 @@ export default async function Image({
           )}
         </div>
 
-        {/* Bottom block */}
+        {/* Editorial card */}
         <div
           style={{
-            marginTop: 'auto',
+            height: CARD_H,
+            padding: '20px 64px 24px',
+            background: '#fbf6ec',
+            borderTop: '2px solid #1c2438',
             display: 'flex',
             flexDirection: 'column',
-            gap: 8,
+            justifyContent: 'space-between',
           }}
         >
           <div
             style={{
-              fontSize: 24,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              fontSize: 16,
               color: '#78716c',
               textTransform: 'uppercase',
-              letterSpacing: '0.14em',
+              letterSpacing: '0.12em',
               fontFamily: 'sans-serif',
-              display: 'flex',
             }}
           >
-            San Francisco
+            <div style={{ display: 'flex' }}>What&apos;s Building SF</div>
+            <div style={{ display: 'flex' }}>Neighborhood · San Francisco</div>
           </div>
           <div
             style={{
-              fontSize: 76,
+              fontSize: 56,
               fontWeight: 600,
               lineHeight: 1.05,
               letterSpacing: '-0.01em',
