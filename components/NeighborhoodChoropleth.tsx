@@ -182,14 +182,15 @@ export function NeighborhoodChoropleth({
         opacity: 0.18,
       }
     }
-    // Default — translucent enough that streets, parks, and labels stay
-    // legible underneath the choropleth.
+    // Default — translucent fill so the basemap reads through, but the
+    // outline goes full opacity so the navy matches the ink (#1c2438) used
+    // throughout the legend / chrome.
     return {
       fillColor,
       fillOpacity: isFilled ? (count === 0 ? 0 : 0.22) : 0,
       color: '#1c2438',
-      weight: isFilled ? 0.6 : 0.5,
-      opacity: isFilled ? 0.4 : 0.3,
+      weight: isFilled ? 0.7 : 0.6,
+      opacity: 1,
     }
   }
 
