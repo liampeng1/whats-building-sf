@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchBuildingPermit, NotFoundError } from '@/lib/datasf'
+import { fetchBmrForParcel } from '@/lib/mohcd'
 import { PermitDetailContent } from '@/components/PermitDetailContent'
 import { Logo } from '@/components/Logo'
 import {
@@ -45,6 +46,9 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
     throw error
   }
 
+  // MOHCD lookup is best-effort; never block the permit page on it.
+  const bmr = await fetchBmrForParcel(permit.block, permit.lot).catch(() => null)
+
   const coords = permit.location?.coordinates
   const backHref = coords ? `/?lat=${coords[1]}&lng=${coords[0]}` : '/'
 
@@ -63,7 +67,7 @@ export default async function PermitDetailPage({ params }: { params: Promise<{ i
       </div>
 
       <article className="max-w-3xl mx-auto px-6 py-10">
-        <PermitDetailContent permit={permit} variant="page" />
+        <PermitDetailContent permit={permit} variant="page" bmr={bmr} />
       </article>
     </main>
   )

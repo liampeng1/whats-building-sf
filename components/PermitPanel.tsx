@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import type { Permit } from '@/lib/types'
+import type { BmrRow } from '@/lib/mohcd'
 import { PermitDetailContent } from './PermitDetailContent'
 import { ShareButton } from './ShareButton'
 import { Logo } from './Logo'
@@ -12,6 +13,7 @@ interface Props {
 
 export function PermitPanel({ permitNumber, onClose }: Props) {
   const [permit, setPermit] = useState<Permit | null>(null)
+  const [bmr, setBmr] = useState<BmrRow | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   // Mobile bottom-sheet: starts at ~55dvh so the user can still see the
@@ -26,6 +28,7 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
   useEffect(() => {
     if (!permitNumber) {
       setPermit(null)
+      setBmr(null)
       setError(null)
       return
     }
@@ -49,6 +52,29 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
       })
     return () => ctrl.abort()
   }, [permitNumber])
+
+  // Best-effort BMR lookup once we have the permit's block + lot. Non-blocking;
+  // if it fails the badge just doesn't render.
+  useEffect(() => {
+    if (!permit?.block || !permit?.lot) {
+      setBmr(null)
+      return
+    }
+    const ctrl = new AbortController()
+    fetch(
+      `/api/bmr/${encodeURIComponent(permit.block)}/${encodeURIComponent(permit.lot)}`,
+      { signal: ctrl.signal },
+    )
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && data.found) setBmr(data as BmrRow)
+        else setBmr(null)
+      })
+      .catch(() => {})
+    return () => ctrl.abort()
+    // Depend on block/lot specifically — permit object identity flips on
+    // every fetch but block/lot are the only fields the lookup needs.
+  }, [permit?.block, permit?.lot])
 
   // Close on Escape key.
   useEffect(() => {
@@ -153,7 +179,9 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
               </button>
             </div>
           )}
-          {permit && !loading && !error && <PermitDetailContent permit={permit} variant="panel" />}
+          {permit && !loading && !error && (
+            <PermitDetailContent permit={permit} variant="panel" bmr={bmr} />
+          )}
         </div>
       </aside>
     </>

@@ -129,9 +129,47 @@ function Timeline({ steps }: { steps: TimelineStep[] }) {
 interface Props {
   permit: Permit
   variant?: 'page' | 'panel'
+  bmr?: import('@/lib/mohcd').BmrRow | null
 }
 
-export function PermitDetailContent({ permit, variant = 'page' }: Props) {
+function BmrBadge({ bmr }: { bmr: import('@/lib/mohcd').BmrRow }) {
+  // Two visual variants: 100% affordable gets a stronger sage chip; mixed-
+  // income inclusionary projects get the lighter amber-toned chip.
+  if (bmr.is_fully_affordable) {
+    return (
+      <span
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+        style={{
+          color: '#3a6e58',
+          backgroundColor: '#3a6e581f',
+          border: '1.5px solid #3a6e58',
+        }}
+        title={`${bmr.mohcd_affordable_units} of ${bmr.total_project_units} units affordable`}
+      >
+        <span aria-hidden>★</span>
+        100% affordable
+      </span>
+    )
+  }
+  if (bmr.mohcd_affordable_units > 0) {
+    return (
+      <span
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+        style={{
+          color: '#9a4a31',
+          backgroundColor: '#9a4a311f',
+          border: '1.5px solid #9a4a31',
+        }}
+        title={`${bmr.mohcd_affordable_units} below-market-rate of ${bmr.total_project_units} units`}
+      >
+        {bmr.mohcd_affordable_units} BMR · {bmr.affordable_percent ?? '—'}%
+      </span>
+    )
+  }
+  return null
+}
+
+export function PermitDetailContent({ permit, variant = 'page', bmr = null }: Props) {
   const stage = permitStage(permit)
   const category = useCategory(permit.proposed_use ?? permit.existing_use)
   const unitsDelta = netDelta(permit.existing_units, permit.proposed_units)
@@ -261,6 +299,7 @@ export function PermitDetailContent({ permit, variant = 'page' }: Props) {
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge stage={stage} completedDate={permit.completed_date} />
         <UseTypePill category={category} />
+        {bmr && <BmrBadge bmr={bmr} />}
       </div>
 
       {/* Quick narrative summary — only when there's something to summarize.

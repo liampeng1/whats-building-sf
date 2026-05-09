@@ -21,14 +21,16 @@ The launch narrative leans on "the report the city doesn't publish."
 
 | # | Task | Effort | Impact | Status |
 |---|---|---|---|---|
-| 1 | About-page pitch tightened — daily-vs-quarterly callout, "open data, no key" framing | ⚡ | 🔥🔥 | |
-| 2 | Public JSON + CSV API — `/api/public/permits.json`, `.csv`, daily-refreshed, no key | ⚡ | 🔥🔥🔥 | |
-| 3 | `/stats` page combining timing distributions + conversion rates + stalled list + RHNA progress | 🔧 | 🔥🔥🔥 | |
-| 4 | Per-stat permalinks + per-stat OG images so individual charts go viral on their own | 🔧 | 🔥🔥🔥 | |
-| 5 | Zoning overlay (DataSF `8br2-5xn8`) — toggleable map layer | 🔧 | 🔥🔥🔥 | |
-| 6 | MOHCD BMR inventory join — affordability badges on projects | 🔧 | 🔥🔥🔥 | |
-| 7 | Transit-adjacent filter chip (≤½ mi BART/Muni rail), pre-computed in nightly cron | ⚡ | 🔥🔥 | |
-| 8 | Embeddable neighborhood widget — `/embed/neighborhood/[name]` iframe | 🔧 | 🔥🔥🔥 | |
+| 1 | About-page pitch tightened — daily-vs-quarterly callout, "open data, no key" framing | ⚡ | 🔥🔥 | ✓ shipped |
+| 2 | Public JSON + CSV API — `/api/public/permits.json`, `.csv`, daily-refreshed, no key | ⚡ | 🔥🔥🔥 | ✓ shipped |
+| 3 | `/stats` page combining timing distributions + conversion rates + stalled list + RHNA progress | 🔧 | 🔥🔥🔥 | ✓ shipped |
+| 4 | Per-stat permalinks (anchor IDs); per-stat OG images deferred to fast-follow | 🔧 | 🔥🔥🔥 | ✓ anchors shipped |
+| 5 | Zoning overlay (DataSF `3i4a-hu95`) — toggleable map layer | 🔧 | 🔥🔥🔥 | ✓ shipped |
+| 6 | MOHCD BMR inventory join (DataSF `aaxw-2cb8`) — affordability badges on permit pages | 🔧 | 🔥🔥🔥 | ✓ shipped |
+| 7 | Transit-adjacent filter chip (≤½ mi BART/Muni rail) | ⚡ | 🔥🔥 | ✓ shipped |
+| 8 | Embeddable neighborhood widget — `/embed/neighborhood/[name]` iframe | 🔧 | 🔥🔥🔥 | ✓ shipped |
+
+**Test coverage:** 70 → 101 tests. New test files for `lib/stats.ts`, `lib/public-permits.ts`, `lib/transit.ts`, `lib/mohcd.ts`. All pre-launch items have unit tests.
 
 ## Week 1–2 after launch (capitalize)
 
