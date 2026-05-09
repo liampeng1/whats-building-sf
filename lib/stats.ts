@@ -1,5 +1,7 @@
 import type { Permit } from './types'
+import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { permitStage, netDelta, type PermitStage } from './permit-style'
+import { pointInGeometry } from './point-in-polygon'
 
 /**
  * Pre-launch stats helpers. These compute aggregations over the permits
@@ -37,6 +39,14 @@ export interface StalledEntry {
   permit: Permit
   daysInStage: number
   stage: PermitStage
+}
+
+export interface NeighborhoodStat {
+  nhood: string
+  active: number          // permits not in inactive
+  underConstruction: number
+  unitsInPipeline: number
+  unitsCompletedLast2y: number
 }
 
 export interface StageCount {
@@ -89,6 +99,58 @@ const RHNA_CYCLE = {
   start: '2023-01-15',
   end: '2031-01-31',
   target: 82069,
+}
+
+/**
+ * Per-neighborhood aggregation. Returns one row per SF Analysis Neighborhood
+ * with active permit count, unit counts in pipeline, and recent completions.
+ * Sorted by units-in-pipeline descending — i.e. "where is SF actually
+ * building." Pass the bundled `public/sf-neighborhoods.geojson` as `geo`.
+ */
+export function computeNeighborhoodStats(
+  permits: Permit[],
+  geo: FeatureCollection<MultiPolygon | Polygon, { nhood: string }>,
+  now: number = Date.now(),
+): NeighborhoodStat[] {
+  const cutoff2y = now - 2 * DAY_MS * 365
+  const map = new Map<string, NeighborhoodStat>()
+  const features = geo.features as Feature<MultiPolygon | Polygon, { nhood: string }>[]
+  for (const f of features) {
+    const name = f.properties?.nhood ?? '—'
+    map.set(name, {
+      nhood: name,
+      active: 0,
+      underConstruction: 0,
+      unitsInPipeline: 0,
+      unitsCompletedLast2y: 0,
+    })
+  }
+
+  for (const p of permits) {
+    if (!p.location) continue
+    const [lng, lat] = p.location.coordinates
+    let nameMatch: string | null = null
+    for (const f of features) {
+      if (pointInGeometry(lng, lat, f.geometry)) {
+        nameMatch = f.properties?.nhood ?? null
+        break
+      }
+    }
+    if (!nameMatch) continue
+    const row = map.get(nameMatch)
+    if (!row) continue
+    const stage = permitStage(p)
+    if (stage === 'inactive') continue
+    row.active += 1
+    if (stage === 'construction') row.underConstruction += 1
+    const homes = Math.max(0, netDelta(p.existing_units, p.proposed_units) ?? 0)
+    if (stage !== 'complete') row.unitsInPipeline += homes
+    if (stage === 'complete' && p.completed_date) {
+      const t = new Date(p.completed_date).getTime()
+      if (Number.isFinite(t) && t >= cutoff2y) row.unitsCompletedLast2y += homes
+    }
+  }
+  return [...map.values()].sort((a, b) => b.unitsInPipeline - a.unitsInPipeline)
 }
 
 export function computeStats(permits: Permit[], now: number = Date.now()): StatsBundle {

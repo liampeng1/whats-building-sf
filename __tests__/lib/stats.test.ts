@@ -1,5 +1,6 @@
-import { computeStats } from '@/lib/stats'
+import { computeStats, computeNeighborhoodStats } from '@/lib/stats'
 import type { Permit } from '@/lib/types'
+import type { FeatureCollection, Polygon } from 'geojson'
 
 function permit(overrides: Partial<Permit> = {}): Permit {
   return {
@@ -139,6 +140,106 @@ test('aggregates filings by year', () => {
   expect(y2024?.count).toBe(2)
   const y2023 = s.filingsByYear.find((r) => r.year === 2023)
   expect(y2023?.count).toBe(1)
+})
+
+describe('computeNeighborhoodStats', () => {
+  // Two synthetic SF neighborhoods: a unit square around Mission and another
+  // around Sunset. Coordinates are fake but contiguous and disjoint.
+  const geo: FeatureCollection<Polygon, { nhood: string }> = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: { nhood: 'Mission' },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[
+            [-122.43, 37.74],
+            [-122.41, 37.74],
+            [-122.41, 37.77],
+            [-122.43, 37.77],
+            [-122.43, 37.74],
+          ]],
+        },
+      },
+      {
+        type: 'Feature',
+        properties: { nhood: 'Sunset' },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[
+            [-122.51, 37.74],
+            [-122.46, 37.74],
+            [-122.46, 37.77],
+            [-122.51, 37.77],
+            [-122.51, 37.74],
+          ]],
+        },
+      },
+    ],
+  }
+
+  test('assigns permits to the correct neighborhood and aggregates units', () => {
+    const permits: Permit[] = [
+      permit({
+        permit_number: 'mission-1',
+        existing_units: '0',
+        proposed_units: '50',
+        status: 'issued',
+        location: { type: 'Point', coordinates: [-122.42, 37.755] },
+      }),
+      permit({
+        permit_number: 'sunset-1',
+        existing_units: '0',
+        proposed_units: '20',
+        status: 'filed',
+        location: { type: 'Point', coordinates: [-122.485, 37.755] },
+      }),
+    ]
+    const stats = computeNeighborhoodStats(permits, geo, NOW)
+    const mission = stats.find((r) => r.nhood === 'Mission')
+    const sunset = stats.find((r) => r.nhood === 'Sunset')
+    expect(mission?.active).toBe(1)
+    expect(mission?.unitsInPipeline).toBe(50)
+    expect(sunset?.active).toBe(1)
+    expect(sunset?.unitsInPipeline).toBe(20)
+  })
+
+  test('sorts by unitsInPipeline descending', () => {
+    const permits: Permit[] = [
+      permit({
+        permit_number: 'sunset-big',
+        existing_units: '0',
+        proposed_units: '200',
+        status: 'issued',
+        location: { type: 'Point', coordinates: [-122.485, 37.755] },
+      }),
+      permit({
+        permit_number: 'mission-small',
+        existing_units: '0',
+        proposed_units: '5',
+        status: 'issued',
+        location: { type: 'Point', coordinates: [-122.42, 37.755] },
+      }),
+    ]
+    const stats = computeNeighborhoodStats(permits, geo, NOW)
+    expect(stats[0].nhood).toBe('Sunset')
+    expect(stats[1].nhood).toBe('Mission')
+  })
+
+  test('skips inactive permits', () => {
+    const permits: Permit[] = [
+      permit({
+        permit_number: 'cancelled',
+        existing_units: '0',
+        proposed_units: '50',
+        status: 'cancelled',
+        location: { type: 'Point', coordinates: [-122.42, 37.755] },
+      }),
+    ]
+    const stats = computeNeighborhoodStats(permits, geo, NOW)
+    expect(stats.find((r) => r.nhood === 'Mission')?.active).toBe(0)
+  })
 })
 
 test('counts under construction by Pipeline status', () => {

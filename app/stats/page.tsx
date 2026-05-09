@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
+import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
+import { promises as fs } from 'node:fs'
+import path from 'node:path'
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { fetchBuildingPermits } from '@/lib/datasf'
-import { computeStats } from '@/lib/stats'
+import { computeStats, computeNeighborhoodStats } from '@/lib/stats'
 import {
   STAGE_LABELS,
   STAGE_COLORS,
@@ -83,11 +86,29 @@ function YearBar({
   )
 }
 
+async function loadNhoodGeo() {
+  try {
+    const buf = await fs.readFile(
+      path.join(process.cwd(), 'public', 'sf-neighborhoods.geojson'),
+      'utf8',
+    )
+    return JSON.parse(buf) as FeatureCollection<MultiPolygon | Polygon, { nhood: string }>
+  } catch {
+    return null
+  }
+}
+
 export default async function StatsPage() {
   // Pull a wide window of permits so historical conversion / yearly stats
   // are accurate. completedYears=20 gives us essentially everything we have.
-  const permits = await fetchBuildingPermits(20, 0)
+  const [permits, nhoodGeo] = await Promise.all([
+    fetchBuildingPermits(20, 0),
+    loadNhoodGeo(),
+  ])
   const s = computeStats(permits)
+  const nhoodStats = nhoodGeo ? computeNeighborhoodStats(permits, nhoodGeo) : []
+  const topNhoods = nhoodStats.filter((r) => r.active > 0).slice(0, 12)
+  const nhoodMaxPipeline = Math.max(1, ...topNhoods.map((r) => r.unitsInPipeline))
 
   const conversionRate = (n: number) => (s.conversionFiledCount > 0 ? n / s.conversionFiledCount : 0)
   const filedToPermitted = conversionRate(s.conversionReachedPermitted)
@@ -291,6 +312,60 @@ export default async function StatsPage() {
                       </span>
                       <span className="font-serif text-ink tabular-nums text-sm whitespace-nowrap">
                         {fmt(row.daysInStage)} d
+                      </span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ol>
+          </section>
+        )}
+
+        {/* Neighborhood velocity */}
+        {topNhoods.length > 0 && (
+          <section id="neighborhoods" className="pt-8 border-t border-paper-edge">
+            <div className="civic-eyebrow mb-4">Where SF is actually building</div>
+            <p className="text-ink-soft mb-6 leading-relaxed">
+              Active permits and units in the pipeline by neighborhood.
+              Sorted by units-in-pipeline — the count of net new homes
+              currently making their way through filed → approved → permitted →
+              construction. Tap any row to see the projects on the map.
+            </p>
+            <ol className="space-y-2">
+              {topNhoods.map((row, i) => {
+                const widthPct = (row.unitsInPipeline / nhoodMaxPipeline) * 100
+                return (
+                  <li key={row.nhood}>
+                    <Link
+                      href={`/?nhood=${encodeURIComponent(row.nhood)}`}
+                      className="grid grid-cols-[2rem_1fr_auto] gap-3 items-center hover:bg-paper-deep rounded px-2 py-2 transition-colors"
+                    >
+                      <span className="font-serif text-ink-faint text-lg tabular-nums">
+                        {i + 1}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-serif text-ink text-base leading-tight truncate">
+                          {row.nhood}
+                        </span>
+                        <span className="relative h-2 mt-1.5 bg-paper-deep rounded">
+                          <span
+                            className="absolute inset-y-0 left-0 rounded"
+                            style={{
+                              width: `${widthPct}%`,
+                              backgroundColor: '#9a4a31',
+                              opacity: 0.85,
+                            }}
+                          />
+                        </span>
+                      </span>
+                      <span className="text-right text-xs whitespace-nowrap">
+                        <span className="font-serif text-ink text-lg tabular-nums">
+                          +{fmt(row.unitsInPipeline)}
+                        </span>
+                        <span className="block text-[10px] text-ink-faint uppercase tracking-wider mt-0.5">
+                          {fmt(row.active)} permits ·{' '}
+                          {fmt(row.underConstruction)} building
+                        </span>
                       </span>
                     </Link>
                   </li>
