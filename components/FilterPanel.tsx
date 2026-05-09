@@ -52,6 +52,8 @@ interface Props {
   onCompletedYearsChange: (n: CompletedYearsFilter) => void
   recentActivity: RecentActivityFilter
   onRecentActivityChange: (n: RecentActivityFilter) => void
+  zoningOn: boolean
+  onZoningToggle: () => void
   visibleCount: number
   totalCount: number
 }
@@ -189,6 +191,8 @@ export function FilterPanel({
   onCompletedYearsChange,
   recentActivity,
   onRecentActivityChange,
+  zoningOn,
+  onZoningToggle,
   visibleCount,
   totalCount,
 }: Props) {
@@ -537,6 +541,25 @@ export function FilterPanel({
               <p className="text-[10px] text-ink-faint mt-1.5 leading-snug">
                 Hide stalled permits — only show those with recent status updates.
               </p>
+            </section>
+
+            {/* MAP LAYERS */}
+            <section className="border-t border-paper-edge pt-4">
+              <div className="civic-eyebrow mb-2">Map layers</div>
+              <label className="flex items-center gap-2 text-xs text-ink-soft cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={zoningOn}
+                  onChange={onZoningToggle}
+                  className="accent-ink"
+                />
+                <span className="flex-1">
+                  <span className="text-ink">Zoning districts</span>
+                  <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
+                    RH-1, RM-2, NC-3 etc. Color by general category.
+                  </span>
+                </span>
+              </label>
             </section>
           </div>
         </div>

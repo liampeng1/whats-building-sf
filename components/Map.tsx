@@ -6,6 +6,7 @@ import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
+import { ZoningOverlay } from './ZoningOverlay'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
@@ -119,6 +120,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [openPermit, setOpenPermit] = useState<string | null>(null)
   const [selectedNhood, setSelectedNhood] = useState<string | null>(null)
   const [nhoodGeo, setNhoodGeo] = useState<FeatureCollection<MultiPolygon | Polygon, { nhood: string }> | null>(null)
+  const [zoningOn, setZoningOn] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
   // the user can see which lot the project sits on.
@@ -484,6 +486,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           maxZoom={19}
         />
         <MapEventHandler onBoundsChange={handleViewportChange} />
+        {/* Zoning layer sits below the choropleth + parcel + pins so it acts
+            as background context, not a competing data layer. */}
+        {zoningOn && <ZoningOverlay />}
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
             visualization; above, only the navy stroke remains so neighborhood
             outlines stay visible while inspecting pins. */}
@@ -529,6 +534,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onCompletedYearsChange={setCompletedYears}
         recentActivity={recentActivity}
         onRecentActivityChange={setRecentActivity}
+        zoningOn={zoningOn}
+        onZoningToggle={() => setZoningOn((v) => !v)}
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />
