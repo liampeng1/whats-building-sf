@@ -96,11 +96,65 @@ export default function AboutPage() {
             What&apos;s Building SF
           </h1>
           <p className="font-serif text-xl text-ink-soft leading-snug max-w-2xl">
-            A live, daily-refreshed map of every major new-construction permit
+            A live, nightly-refreshed map of every major new-construction permit
             in San Francisco — joined to SF Planning&apos;s Development Pipeline
             so you can tell which projects are actually being built, not just
             issued and sitting.
           </p>
+
+          {/* Three-up pitch — the differentiation, plain. */}
+          <ul className="mt-8 grid sm:grid-cols-3 gap-6">
+            <li className="border-t-2 border-ink pt-3">
+              <div className="civic-eyebrow mb-1.5">Refreshed nightly</div>
+              <p className="text-sm text-ink leading-snug">
+                SF Planning&apos;s official Pipeline report comes out{' '}
+                <a
+                  href="https://sfplanning.org/project/pipeline-report"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
+                >
+                  once a quarter
+                </a>
+                . We pull from the same data source every night.
+              </p>
+            </li>
+            <li className="border-t-2 border-ink pt-3">
+              <div className="civic-eyebrow mb-1.5">Open data, no key</div>
+              <p className="text-sm text-ink leading-snug">
+                Every permit on the map is also available as{' '}
+                <a
+                  href="/api/public/permits.json"
+                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
+                >
+                  JSON
+                </a>{' '}
+                or{' '}
+                <a
+                  href="/api/public/permits.csv"
+                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
+                >
+                  CSV
+                </a>
+                . No login, no API key, just data.
+              </p>
+            </li>
+            <li className="border-t-2 border-ink pt-3">
+              <div className="civic-eyebrow mb-1.5">Free + open source</div>
+              <p className="text-sm text-ink leading-snug">
+                Built as a civic-data side project. Source on{' '}
+                <a
+                  href="https://github.com/liampeng1/whats-building-sf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
+                >
+                  GitHub
+                </a>
+                ; suggestions and PRs welcome.
+              </p>
+            </li>
+          </ul>
         </header>
 
         {/* Lifecycle stages */}
