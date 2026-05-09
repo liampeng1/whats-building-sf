@@ -50,6 +50,11 @@ export const metadata: Metadata = {
     description:
       'Every major new-construction permit filed in San Francisco in the last 2 years, mapped.',
   },
+  alternates: {
+    types: {
+      'application/atom+xml': '/feed.xml',
+    },
+  },
 };
 
 export default function RootLayout({

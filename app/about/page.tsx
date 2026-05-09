@@ -128,15 +128,22 @@ export default function AboutPage() {
                   className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
                 >
                   JSON
-                </a>{' '}
-                or{' '}
+                </a>
+                ,{' '}
                 <a
                   href="/api/public/permits.csv"
                   className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
                 >
                   CSV
                 </a>
-                . No login, no API key, just data.
+                , or an{' '}
+                <a
+                  href="/feed.xml"
+                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
+                >
+                  Atom feed
+                </a>
+                . No login, no API key.
               </p>
             </li>
             <li className="border-t-2 border-ink pt-3">
