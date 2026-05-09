@@ -212,12 +212,71 @@ export function FilterPanel({
         ? 'none'
         : 'some'
 
-  // Header reads as a quiet civic-data tagline rather than a stat readout.
-  // When filters are reducing the visible set, append a small note so the
-  // user understands why the map looks like it does.
+  // Natural-language summary of the active filter state — what's actually
+  // being shown on the map right now. Always visible, whether the panel is
+  // open or closed, so the user understands at a glance why the map looks
+  // the way it does. Built from individual chip-style clauses joined with
+  // " · " so it wraps cleanly in narrow widths.
+  const summaryParts: string[] = []
+
+  // Use-type subject phrase
+  const allCats = selectedCategories.size === CATEGORIES.length
+  if (allCats) {
+    summaryParts.push('All projects')
+  } else if (selectedCategories.size === 0) {
+    summaryParts.push('No use types selected')
+  } else if (selectedCategories.size === 1) {
+    const only = [...selectedCategories][0]
+    summaryParts.push(`${USE_CATEGORY_LABELS[only]} only`)
+  } else {
+    summaryParts.push(
+      [...selectedCategories].map((c) => USE_CATEGORY_LABELS[c]).join(' + '),
+    )
+  }
+
+  // Min-homes filter (only meaningful when housing is in the mix)
+  if (selectedCategories.has('housing') && minUnits > 0) {
+    summaryParts.push(`${minUnits}+ homes`)
+  }
+
+  // Lifecycle stages — only call out when narrowed
+  const lifecycleOn = LIFECYCLE.filter((s) => selectedStages.has(s))
+  if (lifecycleOn.length === 0) {
+    summaryParts.push('No stages selected')
+  } else if (lifecycleOn.length < LIFECYCLE.length) {
+    const stageLabels = lifecycleOn.map((s) =>
+      STAGE_LABELS[s].split(' / ')[0].split(' · ')[0],
+    )
+    summaryParts.push(stageLabels.join(' + '))
+  }
+  if (selectedStages.has('inactive')) summaryParts.push('+ cancelled')
+
+  // Completed window — only mention when the user changed it from the default
+  if (
+    selectedStages.has('complete') &&
+    completedYears !== 0 &&
+    completedYears !== 2
+  ) {
+    summaryParts.push(`completed ≤${completedYears}y`)
+  } else if (selectedStages.has('complete') && completedYears === 0) {
+    summaryParts.push('hide completed')
+  }
+
+  // Recent activity
+  if (recentActivity > 0) {
+    const label =
+      recentActivity === 6
+        ? '6mo'
+        : recentActivity === 12
+          ? '1y'
+          : recentActivity === 24
+            ? '2y'
+            : '5y'
+    summaryParts.push(`active ≤${label}`)
+  }
+
+  const filterSummary = summaryParts.join(' · ')
   const filtered = visibleCount !== totalCount
-  const subtitle =
-    'Every major new-construction project in San Francisco — from filing through completion.'
   const filterNote = filtered && totalCount
     ? `${visibleCount.toLocaleString()} of ${totalCount.toLocaleString()} visible`
     : null
@@ -245,7 +304,7 @@ export function FilterPanel({
           </span>
         </div>
         <p className="text-[13px] tracking-normal opacity-90 mt-1 leading-snug">
-          {subtitle}
+          {filterSummary}
         </p>
         {/* Lifecycle key — always visible. Glyphs in left-to-right order
             with arrow connectors so the progression filed → … → complete
