@@ -257,7 +257,8 @@ export function FilterPanel({
     completedYears !== 0 &&
     completedYears !== 2
   ) {
-    summaryParts.push(`completed ≤${completedYears}y`)
+    const noun = completedYears === 1 ? 'year' : 'years'
+    summaryParts.push(`completed within ${completedYears} ${noun}`)
   } else if (selectedStages.has('complete') && completedYears === 0) {
     summaryParts.push('hide completed')
   }
@@ -266,13 +267,13 @@ export function FilterPanel({
   if (recentActivity > 0) {
     const label =
       recentActivity === 6
-        ? '6mo'
+        ? '6 months'
         : recentActivity === 12
-          ? '1y'
+          ? '1 year'
           : recentActivity === 24
-            ? '2y'
-            : '5y'
-    summaryParts.push(`active ≤${label}`)
+            ? '2 years'
+            : '5 years'
+    summaryParts.push(`active in the last ${label}`)
   }
 
   const filterSummary = summaryParts.join(' · ')
