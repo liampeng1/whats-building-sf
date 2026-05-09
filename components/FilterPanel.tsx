@@ -212,74 +212,96 @@ export function FilterPanel({
         ? 'none'
         : 'some'
 
-  // Natural-language summary — emits only the clauses that differ from
-  // defaults so the line stays quiet at default settings (when there's
-  // nothing to "show off") and grows specific the moment something is
-  // narrowed. At full defaults, the tagline takes over instead.
-  const summaryParts: string[] = []
-
-  // Categories — only when narrowed from "all"
-  if (selectedCategories.size === 0) {
-    summaryParts.push('No use types selected')
-  } else if (selectedCategories.size < CATEGORIES.length) {
-    if (selectedCategories.size === 1) {
-      const only = [...selectedCategories][0]
-      summaryParts.push(`${USE_CATEGORY_LABELS[only]} only`)
-    } else {
-      summaryParts.push(
-        [...selectedCategories].map((c) => USE_CATEGORY_LABELS[c]).join(' + '),
-      )
-    }
-  }
-
-  // Min-homes — only when changed from the 2+ default (and only meaningful
-  // if housing is in the mix at all)
-  if (selectedCategories.has('housing')) {
-    if (minUnits === 0) summaryParts.push('any number of homes')
-    else if (minUnits !== 2) summaryParts.push(`${minUnits}+ homes`)
-  }
-
-  // Lifecycle stages — only when narrowed
+  // Natural-language one-liner describing the active view. Reads as a
+  // single sentence rather than a list of chip-style fragments. Each
+  // clause only appears when it carries information (i.e. differs from
+  // the default), so the line stays brief at common settings.
   const lifecycleOn = LIFECYCLE.filter((s) => selectedStages.has(s))
-  if (lifecycleOn.length === 0) {
-    summaryParts.push('No stages selected')
-  } else if (lifecycleOn.length < LIFECYCLE.length) {
-    summaryParts.push(
-      lifecycleOn
-        .map((s) => STAGE_LABELS[s].split(' / ')[0].split(' · ')[0])
-        .join(' + '),
-    )
-  }
-  if (selectedStages.has('inactive')) summaryParts.push('+ cancelled')
+  const allCats = selectedCategories.size === CATEGORIES.length
+  const allLifecycle = lifecycleOn.length === LIFECYCLE.length
 
-  // Completed window — only when changed from the 2-year default
-  if (selectedStages.has('complete')) {
-    if (completedYears === 0) summaryParts.push('hide completed')
-    else if (completedYears !== 2) {
-      const noun = completedYears === 1 ? 'year' : 'years'
-      summaryParts.push(`completed within ${completedYears} ${noun}`)
+  const filterSummary = ((): string => {
+    if (selectedCategories.size === 0) return 'No use types selected.'
+    if (lifecycleOn.length === 0) return 'No stages selected.'
+
+    // Subject — capitalized in final string. "Major projects" is neutral
+    // and doesn't collide with the "construction" stage word.
+    let subject: string
+    if (allCats) {
+      subject = 'major projects'
+    } else if (selectedCategories.size === 1) {
+      subject = USE_CATEGORY_LABELS[[...selectedCategories][0]].toLowerCase()
+    } else {
+      const labels = [...selectedCategories].map((c) =>
+        USE_CATEGORY_LABELS[c].toLowerCase(),
+      )
+      subject = labels.length === 2
+        ? `${labels[0]} & ${labels[1]}`
+        : `${labels.slice(0, -1).join(', ')} & ${labels[labels.length - 1]}`
     }
-  }
 
-  // Recent activity — only when changed from the 24-month default
-  if (recentActivity === 0) {
-    summaryParts.push('any activity window')
-  } else if (recentActivity !== 24) {
-    const label =
-      recentActivity === 6
-        ? '6 months'
-        : recentActivity === 12
-          ? '1 year'
-          : '5 years'
-    summaryParts.push(`active in the last ${label}`)
-  }
+    // Stage modifier
+    const stagePhrases: Record<PermitStage, string> = {
+      filed: 'in review',
+      approved: 'approved',
+      permitted: 'permitted',
+      construction: 'under construction',
+      complete: 'recently completed',
+      inactive: '',
+    }
+    let stagePhrase = ''
+    if (!allLifecycle) {
+      if (lifecycleOn.length === 1) {
+        stagePhrase = ` ${stagePhrases[lifecycleOn[0]]}`
+      } else {
+        const labels = lifecycleOn.map((s) =>
+          STAGE_LABELS[s].split(' / ')[0].split(' · ')[0].toLowerCase(),
+        )
+        const last = labels[labels.length - 1]
+        stagePhrase = ` in ${labels.slice(0, -1).join(', ')} or ${last} stages`
+      }
+    }
 
-  // At full defaults the parts list is empty — fall back to the tagline
-  // so the closed state still reads as a description of what the site is.
-  const filterSummary =
-    summaryParts.length > 0
-      ? summaryParts.join(' · ')
-      : 'Every major new-construction project in San Francisco — from filing through completion.'
+    // Size clause — only when changed from the 2+ default, and only
+    // meaningful when housing is in the selected categories.
+    let sizeClause = ''
+    if (selectedCategories.has('housing')) {
+      if (minUnits === 0) sizeClause = ', any size'
+      else if (minUnits !== 2) sizeClause = ` with ${minUnits}+ homes`
+    }
+
+    // Recent-activity window — implicit at the 24-month default.
+    let timeClause = ''
+    if (recentActivity === 0) {
+      timeClause = ', any time'
+    } else if (recentActivity !== 24) {
+      const label =
+        recentActivity === 6
+          ? 'last 6 months'
+          : recentActivity === 12
+            ? 'last year'
+            : 'last 5 years'
+      timeClause = `, ${label}`
+    } else {
+      timeClause = ', last 2 years'
+    }
+
+    // Completed-within window — only when changed from default, and only
+    // when the complete stage is part of the selection.
+    let completedClause = ''
+    if (selectedStages.has('complete')) {
+      if (completedYears === 0) completedClause = ', hiding completed'
+      else if (completedYears !== 2) {
+        const noun = completedYears === 1 ? 'year' : 'years'
+        completedClause = ` (completed within ${completedYears} ${noun})`
+      }
+    }
+
+    const inactiveSuffix = selectedStages.has('inactive') ? ', plus cancelled' : ''
+
+    const sentence = `${subject}${stagePhrase}${sizeClause}${timeClause}${completedClause}${inactiveSuffix}.`
+    return sentence.charAt(0).toUpperCase() + sentence.slice(1)
+  })()
   const filtered = visibleCount !== totalCount
   const filterNote = filtered && totalCount
     ? `${visibleCount.toLocaleString()} of ${totalCount.toLocaleString()} visible`
