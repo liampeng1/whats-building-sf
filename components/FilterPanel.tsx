@@ -212,71 +212,74 @@ export function FilterPanel({
         ? 'none'
         : 'some'
 
-  // Natural-language summary of the active filter state — what's actually
-  // being shown on the map right now. Always visible, whether the panel is
-  // open or closed, so the user understands at a glance why the map looks
-  // the way it does. Built from individual chip-style clauses joined with
-  // " · " so it wraps cleanly in narrow widths.
+  // Natural-language summary — emits only the clauses that differ from
+  // defaults so the line stays quiet at default settings (when there's
+  // nothing to "show off") and grows specific the moment something is
+  // narrowed. At full defaults, the tagline takes over instead.
   const summaryParts: string[] = []
 
-  // Use-type subject phrase
-  const allCats = selectedCategories.size === CATEGORIES.length
-  if (allCats) {
-    summaryParts.push('All projects')
-  } else if (selectedCategories.size === 0) {
+  // Categories — only when narrowed from "all"
+  if (selectedCategories.size === 0) {
     summaryParts.push('No use types selected')
-  } else if (selectedCategories.size === 1) {
-    const only = [...selectedCategories][0]
-    summaryParts.push(`${USE_CATEGORY_LABELS[only]} only`)
-  } else {
-    summaryParts.push(
-      [...selectedCategories].map((c) => USE_CATEGORY_LABELS[c]).join(' + '),
-    )
+  } else if (selectedCategories.size < CATEGORIES.length) {
+    if (selectedCategories.size === 1) {
+      const only = [...selectedCategories][0]
+      summaryParts.push(`${USE_CATEGORY_LABELS[only]} only`)
+    } else {
+      summaryParts.push(
+        [...selectedCategories].map((c) => USE_CATEGORY_LABELS[c]).join(' + '),
+      )
+    }
   }
 
-  // Min-homes filter (only meaningful when housing is in the mix)
-  if (selectedCategories.has('housing') && minUnits > 0) {
-    summaryParts.push(`${minUnits}+ homes`)
+  // Min-homes — only when changed from the 2+ default (and only meaningful
+  // if housing is in the mix at all)
+  if (selectedCategories.has('housing')) {
+    if (minUnits === 0) summaryParts.push('any number of homes')
+    else if (minUnits !== 2) summaryParts.push(`${minUnits}+ homes`)
   }
 
-  // Lifecycle stages — only call out when narrowed
+  // Lifecycle stages — only when narrowed
   const lifecycleOn = LIFECYCLE.filter((s) => selectedStages.has(s))
   if (lifecycleOn.length === 0) {
     summaryParts.push('No stages selected')
   } else if (lifecycleOn.length < LIFECYCLE.length) {
-    const stageLabels = lifecycleOn.map((s) =>
-      STAGE_LABELS[s].split(' / ')[0].split(' · ')[0],
+    summaryParts.push(
+      lifecycleOn
+        .map((s) => STAGE_LABELS[s].split(' / ')[0].split(' · ')[0])
+        .join(' + '),
     )
-    summaryParts.push(stageLabels.join(' + '))
   }
   if (selectedStages.has('inactive')) summaryParts.push('+ cancelled')
 
-  // Completed window — only mention when the user changed it from the default
-  if (
-    selectedStages.has('complete') &&
-    completedYears !== 0 &&
-    completedYears !== 2
-  ) {
-    const noun = completedYears === 1 ? 'year' : 'years'
-    summaryParts.push(`completed within ${completedYears} ${noun}`)
-  } else if (selectedStages.has('complete') && completedYears === 0) {
-    summaryParts.push('hide completed')
+  // Completed window — only when changed from the 2-year default
+  if (selectedStages.has('complete')) {
+    if (completedYears === 0) summaryParts.push('hide completed')
+    else if (completedYears !== 2) {
+      const noun = completedYears === 1 ? 'year' : 'years'
+      summaryParts.push(`completed within ${completedYears} ${noun}`)
+    }
   }
 
-  // Recent activity
-  if (recentActivity > 0) {
+  // Recent activity — only when changed from the 24-month default
+  if (recentActivity === 0) {
+    summaryParts.push('any activity window')
+  } else if (recentActivity !== 24) {
     const label =
       recentActivity === 6
         ? '6 months'
         : recentActivity === 12
           ? '1 year'
-          : recentActivity === 24
-            ? '2 years'
-            : '5 years'
+          : '5 years'
     summaryParts.push(`active in the last ${label}`)
   }
 
-  const filterSummary = summaryParts.join(' · ')
+  // At full defaults the parts list is empty — fall back to the tagline
+  // so the closed state still reads as a description of what the site is.
+  const filterSummary =
+    summaryParts.length > 0
+      ? summaryParts.join(' · ')
+      : 'Every major new-construction project in San Francisco — from filing through completion.'
   const filtered = visibleCount !== totalCount
   const filterNote = filtered && totalCount
     ? `${visibleCount.toLocaleString()} of ${totalCount.toLocaleString()} visible`
