@@ -1,0 +1,83 @@
+# What's Building SF — Roadmap
+
+Living plan for turning the site into more than a wrapper around DataSF.
+Reflects what's already shipped (`✓`) and what remains; effort tags are
+calibrated against the existing Next.js + Vercel + Upstash stack.
+
+Effort: ⚡ ≤1 day · 🔧 1–3 days · 🏗️ 3+ days · 🚧 weeks
+Impact: 🔥 = useful · 🔥🔥 = drives engagement · 🔥🔥🔥 = ships an HN/Reddit post
+
+## Positioning
+
+Three things that already differentiate us; we should *say* them louder:
+
+1. **Daily refresh** vs. SF Planning's quarterly Pipeline PDF.
+2. **Editorial design** that reads like a magazine, not a permit-tracker form.
+3. **Open + free**: nightly DataSF snapshot + Pipeline join, no API key, no login.
+
+The launch narrative leans on "the report the city doesn't publish."
+
+## Pre-launch (ship in this slice)
+
+| # | Task | Effort | Impact | Status |
+|---|---|---|---|---|
+| 1 | About-page pitch tightened — daily-vs-quarterly callout, "open data, no key" framing | ⚡ | 🔥🔥 | |
+| 2 | Public JSON + CSV API — `/api/public/permits.json`, `.csv`, daily-refreshed, no key | ⚡ | 🔥🔥🔥 | |
+| 3 | `/stats` page combining timing distributions + conversion rates + stalled list + RHNA progress | 🔧 | 🔥🔥🔥 | |
+| 4 | Per-stat permalinks + per-stat OG images so individual charts go viral on their own | 🔧 | 🔥🔥🔥 | |
+| 5 | Zoning overlay (DataSF `8br2-5xn8`) — toggleable map layer | 🔧 | 🔥🔥🔥 | |
+| 6 | MOHCD BMR inventory join — affordability badges on projects | 🔧 | 🔥🔥🔥 | |
+| 7 | Transit-adjacent filter chip (≤½ mi BART/Muni rail), pre-computed in nightly cron | ⚡ | 🔥🔥 | |
+| 8 | Embeddable neighborhood widget — `/embed/neighborhood/[name]` iframe | 🔧 | 🔥🔥🔥 | |
+
+## Week 1–2 after launch (capitalize)
+
+- Time-lapse year-slider mode (5.1)
+- Streetview / satellite embed per permit (5.2)
+- Weekly auto-generated digest + RSS (4.1)
+- Builder/developer leaderboards (2.6) + neighborhood velocity rankings (2.7)
+- Twitter/X bot for notable filings (6.6)
+- Per-neighborhood + per-category RSS feeds (6.4)
+
+## Month 1–2 (YIMBY moat)
+
+- Planning Commission calendar (scrape sfplanning.org/hearings) (3.1)
+- Discretionary Review tracker (3.2) — *no other site has this in queryable form*
+- Property Information Map (PIM) integration — planner names, hearing history (3.3)
+- Project narrative pages for marquee projects (4.4)
+- Census ACS demographic context per neighborhood (1.4)
+
+## Month 2+ (with traffic in hand)
+
+- Crowdsourced "I saw construction" geo-verified check-ins (8.1) — beats Pipeline's quarterly lag
+- Email + push subscriptions (6.5) — needs lightweight DB (Neon Postgres)
+- Peer-city comparisons (Oakland / SJ / Austin / Denver) (7.1, 7.2)
+- Project-level threading across multi-permit site-permit + addenda (5.5)
+- Eviction notices overlay (1.5) — sensitive, careful framing
+
+## Backlog / nice-to-haves
+
+- AI-generated per-permit summaries (4.2)
+- Comparable projects sidebar (4.3)
+- Architectural rendering scrape expansion (4.5)
+- Search autocomplete by address / permit # (5.3)
+- Historic preservation overlay (1.6)
+- Tree canopy / EJScreen overlay (1.7)
+- FEMA flood maps (1.8)
+- Property assessor sales data (1.9)
+- Methodology changelog page (9.2)
+- Structured data / JSON-LD per permit (9.3)
+- Accessibility audit (9.5)
+
+## Infrastructure dependencies
+
+- Pre-compute aggregations in nightly cron (10.1) — needed for `/stats`, leaderboards
+- Public API rate limiting via Upstash (10.3) — needed once (2) ships
+- Lightweight Postgres (Neon via Vercel) (10.2) — needed for subscriptions, crowdsourced features
+
+## Launch targets
+
+- **HN**: "I built a daily-refreshed map of every major construction permit in SF (sfplanning.org's only updates quarterly)"
+- **r/yimby**: filtered URL highlighting AB-2011 / density-bonus / SB-35 projects
+- **r/sanfrancisco**: deep-link with their neighborhood preselected, plus the `/stats` page
+- **SF urbanist Twitter**: weekly digest + per-stat OG images
