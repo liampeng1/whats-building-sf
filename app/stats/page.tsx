@@ -151,7 +151,7 @@ export default async function StatsPage() {
         </header>
 
         {/* Top-line cards */}
-        <section>
+        <section id="snapshot">
           <div className="civic-eyebrow mb-4">Right now</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-6">
             <StatCard
@@ -179,7 +179,7 @@ export default async function StatsPage() {
         </section>
 
         {/* Filed → issued time distribution */}
-        <section className="pt-8 border-t border-paper-edge">
+        <section id="timing" className="pt-8 border-t border-paper-edge">
           <div className="civic-eyebrow mb-4">How long does a permit take?</div>
           <p className="text-ink-soft mb-6 leading-relaxed">
             For permits that have made it from filing to issuance, this is the
@@ -213,7 +213,7 @@ export default async function StatsPage() {
         </section>
 
         {/* Pipeline conversion rates */}
-        <section className="pt-8 border-t border-paper-edge">
+        <section id="conversion" className="pt-8 border-t border-paper-edge">
           <div className="civic-eyebrow mb-4">Where do they end up?</div>
           <p className="text-ink-soft mb-6 leading-relaxed">
             Of every permit filed in {s.conversionCohortYears[0]}–{s.conversionCohortYears[1]} —
@@ -250,7 +250,7 @@ export default async function StatsPage() {
 
         {/* Stalled */}
         {s.stalled.length > 0 && (
-          <section className="pt-8 border-t border-paper-edge">
+          <section id="purgatory" className="pt-8 border-t border-paper-edge">
             <div className="civic-eyebrow mb-4">Permit purgatory</div>
             <p className="text-ink-soft mb-6 leading-relaxed">
               Approved or permitted projects with no recent change of state in
@@ -301,7 +301,7 @@ export default async function StatsPage() {
         )}
 
         {/* RHNA progress */}
-        <section className="pt-8 border-t border-paper-edge">
+        <section id="rhna" className="pt-8 border-t border-paper-edge">
           <div className="civic-eyebrow mb-4">RHNA progress · 2023 – 2031</div>
           <p className="text-ink-soft mb-6 leading-relaxed">
             San Francisco&apos;s Regional Housing Needs Allocation requires{' '}
@@ -349,7 +349,7 @@ export default async function StatsPage() {
 
         {/* Year-over-year filings */}
         {s.filingsByYear.length > 0 && (
-          <section className="pt-8 border-t border-paper-edge">
+          <section id="yoy" className="pt-8 border-t border-paper-edge">
             <div className="civic-eyebrow mb-4">Filings by year</div>
             <p className="text-ink-soft mb-6 leading-relaxed">
               New-construction permit applications filed each calendar year.
@@ -371,7 +371,7 @@ export default async function StatsPage() {
         )}
 
         {/* Pipeline mix */}
-        <section className="pt-8 border-t border-paper-edge">
+        <section id="mix" className="pt-8 border-t border-paper-edge">
           <div className="civic-eyebrow mb-4">Pipeline mix</div>
           <p className="text-ink-soft mb-6 leading-relaxed">
             Where every tracked permit sits today. Inactive (cancelled / expired

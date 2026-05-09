@@ -7,6 +7,7 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
+import { isTransitAdjacent } from '@/lib/transit'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
@@ -121,6 +122,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [selectedNhood, setSelectedNhood] = useState<string | null>(null)
   const [nhoodGeo, setNhoodGeo] = useState<FeatureCollection<MultiPolygon | Polygon, { nhood: string }> | null>(null)
   const [zoningOn, setZoningOn] = useState(false)
+  const [transitOnly, setTransitOnly] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
   // the user can see which lot the project sits on.
@@ -367,9 +369,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           const delta = netDelta(p.existing_units, p.proposed_units)
           if (delta == null || delta < minUnits) return false
         }
+        if (transitOnly && !isTransitAdjacent(p.location?.coordinates)) return false
         return true
       }),
-    [permits, selectedStages, selectedCategories, minUnits],
+    [permits, selectedStages, selectedCategories, minUnits, transitOnly],
   )
 
   // Permits grouped by neighborhood (point-in-polygon). Lifted up here so
@@ -536,6 +539,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onRecentActivityChange={setRecentActivity}
         zoningOn={zoningOn}
         onZoningToggle={() => setZoningOn((v) => !v)}
+        transitOnly={transitOnly}
+        onTransitToggle={() => setTransitOnly((v) => !v)}
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />

@@ -54,6 +54,8 @@ interface Props {
   onRecentActivityChange: (n: RecentActivityFilter) => void
   zoningOn: boolean
   onZoningToggle: () => void
+  transitOnly: boolean
+  onTransitToggle: () => void
   visibleCount: number
   totalCount: number
 }
@@ -193,6 +195,8 @@ export function FilterPanel({
   onRecentActivityChange,
   zoningOn,
   onZoningToggle,
+  transitOnly,
+  onTransitToggle,
   visibleCount,
   totalCount,
 }: Props) {
@@ -302,8 +306,9 @@ export function FilterPanel({
     }
 
     const inactiveSuffix = selectedStages.has('inactive') ? ', plus cancelled' : ''
+    const transitSuffix = transitOnly ? ', transit-adjacent only' : ''
 
-    const sentence = `${subject}${stagePhrase}${sizeClause}${timeClause}${completedClause}${inactiveSuffix}.`
+    const sentence = `${subject}${stagePhrase}${sizeClause}${timeClause}${completedClause}${transitSuffix}${inactiveSuffix}.`
     return sentence.charAt(0).toUpperCase() + sentence.slice(1)
   })()
   const filtered = visibleCount !== totalCount
@@ -543,20 +548,34 @@ export function FilterPanel({
               </p>
             </section>
 
-            {/* MAP LAYERS */}
-            <section className="border-t border-paper-edge pt-4">
-              <div className="civic-eyebrow mb-2">Map layers</div>
-              <label className="flex items-center gap-2 text-xs text-ink-soft cursor-pointer select-none">
+            {/* MAP LAYERS + LENSES */}
+            <section className="border-t border-paper-edge pt-4 space-y-3">
+              <div className="civic-eyebrow">Layers &amp; lenses</div>
+              <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={transitOnly}
+                  onChange={onTransitToggle}
+                  className="accent-ink mt-0.5"
+                />
+                <span className="flex-1">
+                  <span className="text-ink">Transit-adjacent only</span>
+                  <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
+                    Within ½ mi of BART or Muni Metro. Filters the visible map.
+                  </span>
+                </span>
+              </label>
+              <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={zoningOn}
                   onChange={onZoningToggle}
-                  className="accent-ink"
+                  className="accent-ink mt-0.5"
                 />
                 <span className="flex-1">
                   <span className="text-ink">Zoning districts</span>
                   <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
-                    RH-1, RM-2, NC-3 etc. Color by general category.
+                    RH-1, RM-2, NC-3 etc. Adds a colored overlay underneath.
                   </span>
                 </span>
               </label>
