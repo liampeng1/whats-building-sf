@@ -18,7 +18,7 @@ interface Props {
   permits: Permit[]
   /** Above this zoom, the fill fades out — outlines remain visible. */
   hideAtZoom?: number
-  onSelect?: (name: string, bounds: L.LatLngBounds) => void
+  onSelect?: (name: string) => void
   /** When set, that polygon gets the persistent selected treatment and
    *  every other polygon dims so the eye is anchored on the active region. */
   selectedNhood?: string | null
@@ -268,13 +268,11 @@ export function NeighborhoodChoropleth({
               })
             }
           },
-          click: (e) => {
+          click: () => {
             if (!onSelect) return
-            // Cast through unknown — react-leaflet's GeoJSON layer at this
-            // call site is a vector layer with getBounds(); the GeoJSON
-            // type doesn't expose it directly.
-            const target = e.target as unknown as { getBounds: () => L.LatLngBounds }
-            onSelect(name, target.getBounds())
+            // Bounds lookup happens in Map.tsx's selection useEffect — keep
+            // the click contract simple: just signal which polygon.
+            onSelect(name)
           },
         })
       }}

@@ -25,7 +25,6 @@ import {
 } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 
-const ALL_STAGES: PermitStage[] = STAGE_ORDER
 // Inactive (cancelled / denied / expired / etc.) is off-track noise — exclude
 // it from the default selection. Users can opt it back in via the filter panel.
 const DEFAULT_STAGES: PermitStage[] = STAGE_ORDER.filter((s) => s !== 'inactive')
@@ -140,13 +139,39 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   }, [])
   const [mapZoom, setMapZoom] = useState<number>(13)
 
-  // Sync the side-panel state with URL (?permit=<id> or ?nhood=<name>)
+  // Sync side-panel + filter state with URL on mount. Permit / nhood
+  // selection plus all five filter values can be encoded in the URL so a
+  // shared link reproduces the sender's exact view.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const ip = params.get('permit')
     if (ip) setOpenPermit(ip)
     const inh = params.get('nhood')
     if (inh) setSelectedNhood(inh)
+
+    const stagesParam = params.get('stages')
+    if (stagesParam) {
+      const next = new Set<PermitStage>()
+      for (const s of stagesParam.split(',')) {
+        if ((STAGE_ORDER as readonly string[]).includes(s)) next.add(s as PermitStage)
+      }
+      if (next.size > 0) setSelectedStages(next)
+    }
+    const catsParam = params.get('cats')
+    if (catsParam) {
+      const next = new Set<UseCategory>()
+      for (const c of catsParam.split(',')) {
+        if ((CATEGORIES as readonly string[]).includes(c)) next.add(c as UseCategory)
+      }
+      if (next.size > 0) setSelectedCategories(next)
+    }
+    const muParam = Number(params.get('minUnits'))
+    if ([0, 2, 5, 25, 100].includes(muParam)) setMinUnits(muParam as MinUnitsFilter)
+    const cyParam = Number(params.get('completedYears'))
+    if ([0, 1, 2, 5].includes(cyParam)) setCompletedYears(cyParam as CompletedYearsFilter)
+    const raParam = Number(params.get('recentActivity'))
+    if ([0, 6, 12, 24, 60].includes(raParam)) setRecentActivity(raParam as RecentActivityFilter)
+
     const onPop = () => {
       const sp = new URLSearchParams(window.location.search)
       setOpenPermit(sp.get('permit'))
@@ -156,33 +181,66 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
+  // Skip the first run so we don't immediately overwrite URL params we
+  // just *parsed* on mount with our default state. After that, mirror
+  // every filter change into the URL via replaceState so a copy-paste of
+  // the location bar (and ShareButton) carries the current view.
+  const filterUrlSyncReady = useRef(false)
+  useEffect(() => {
+    if (!filterUrlSyncReady.current) {
+      filterUrlSyncReady.current = true
+      return
+    }
+    const url = new URL(window.location.href)
+    const setOrDelete = (key: string, value: string, defaultVal: string) => {
+      if (value === defaultVal) url.searchParams.delete(key)
+      else url.searchParams.set(key, value)
+    }
+    setOrDelete('stages', [...selectedStages].sort().join(','), [...DEFAULT_STAGES].sort().join(','))
+    setOrDelete('cats', [...selectedCategories].sort().join(','), [...ALL_CATEGORIES].sort().join(','))
+    setOrDelete('minUnits', String(minUnits), '2')
+    setOrDelete('completedYears', String(completedYears), '2')
+    setOrDelete('recentActivity', String(recentActivity), '24')
+    window.history.replaceState({}, '', url.toString())
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity])
+
+  // Centralized "pan + zoom into a permit" used by both pin clicks and
+  // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
+  // the centering happens once data is available regardless of *how* the
+  // permit became active. lastCenteredPermitRef gates re-centering on
+  // unrelated re-renders (filter refetches, viewport pans).
+  const lastCenteredPermitRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!openPermit) {
+      lastCenteredPermitRef.current = null
+      return
+    }
+    if (lastCenteredPermitRef.current === openPermit) return
+    if (!permits.length) return
+    const map = mapRef.current
+    if (!map) return
+    const p = permits.find((x) => x.permit_number === openPermit)
+    if (!p?.location) return
+    lastCenteredPermitRef.current = openPermit
+
+    const [lng, lat] = p.location.coordinates
+    const targetZoom = Math.max(map.getZoom(), 18)
+    const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
+    const px = map.project([lat, lng], targetZoom)
+    const shifted = isWide
+      ? px.add(L.point(260, 0))
+      : px.add(L.point(0, (typeof window !== 'undefined' ? window.innerHeight : 800) * 0.275))
+    map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
+  }, [openPermit, permits])
+
   const openPermitPanel = useCallback(
     (id: string) => {
       setOpenPermit(id)
       const url = new URL(window.location.href)
       url.searchParams.set('permit', id)
       window.history.pushState({}, '', url)
-
-      const map = mapRef.current
-      const p = permits.find((x) => x.permit_number === id)
-      if (!map || !p?.location) return
-
-      // Zoom in far enough that the parcel polygon is clearly larger than
-      // the marker pin — at z18 a typical SF parcel is ~80–120px while the
-      // pin is ~20–30px. Don't zoom *out* if the user's already deeper.
-      const [lng, lat] = p.location.coordinates
-      const targetZoom = Math.max(map.getZoom(), 18)
-      const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
-      const px = map.project([lat, lng], targetZoom)
-      // Shift the map's geographic center away from the panel so the pin
-      // lands in the still-visible portion: ~half the panel width on
-      // desktop (right drawer); ~half the bottom-sheet height on mobile.
-      const shifted = isWide
-        ? px.add(L.point(260, 0))
-        : px.add(L.point(0, (typeof window !== 'undefined' ? window.innerHeight : 800) * 0.275))
-      map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
     },
-    [permits],
+    [],
   )
 
   const closePermitPanel = useCallback(() => {
@@ -219,18 +277,37 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     return () => ctrl.abort()
   }, [openPermit, permits])
 
-  const openNhoodPanel = useCallback((name: string, bounds: L.LatLngBounds) => {
+  const openNhoodPanel = useCallback((name: string) => {
     setSelectedNhood(name)
     const url = new URL(window.location.href)
     url.searchParams.set('nhood', name)
     window.history.pushState({}, '', url)
+    // The useEffect below handles the fitBounds — same path whether the
+    // selection came from a click or from a URL load.
+  }, [])
+
+  // Fit the map to the selected neighborhood's polygon. Looks the geometry
+  // up from nhoodGeo so click + URL-load paths share one code path.
+  // lastFitNhoodRef gates re-fitting on unrelated re-renders.
+  const lastFitNhoodRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!selectedNhood) {
+      lastFitNhoodRef.current = null
+      return
+    }
+    if (lastFitNhoodRef.current === selectedNhood) return
+    if (!nhoodGeo) return
+    const feature = nhoodGeo.features.find(
+      (f) => f.properties?.nhood === selectedNhood,
+    )
+    if (!feature) return
     const map = mapRef.current
     if (!map) return
+    lastFitNhoodRef.current = selectedNhood
 
+    const bounds = L.geoJSON(feature).getBounds()
     const isWide = typeof window !== 'undefined' && window.innerWidth >= 768
     const winH = typeof window !== 'undefined' ? window.innerHeight : 800
-    // Reserve the panel's footprint so the polygon doesn't land behind it:
-    //   desktop = 520px to the right; mobile = ~55dvh at the bottom.
     const sheetHeight = isWide ? 0 : Math.round(winH * 0.55)
     const panelWidth = isWide ? 520 : 0
     const paddingTopLeft: [number, number] = [40, 40]
@@ -245,16 +322,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       map.fitBounds(bounds, { paddingTopLeft, paddingBottomRight, maxZoom: 15 })
       return
     }
-    // Polygon is too big to fit at pin-visible zoom — re-center it at the
-    // threshold zoom, shifting the visible center to account for the side
-    // panel (desktop) or the bottom sheet (mobile).
     const targetZoom = Math.min(15, minTargetZoom)
     const centerPx = map.project(bounds.getCenter(), targetZoom)
-    const shifted = centerPx.add(
-      L.point(panelWidth / 2, sheetHeight / 2),
-    )
+    const shifted = centerPx.add(L.point(panelWidth / 2, sheetHeight / 2))
     map.setView(map.unproject(shifted, targetZoom), targetZoom, { animate: true })
-  }, [])
+  }, [selectedNhood, nhoodGeo])
 
   const closeNhoodPanel = useCallback(() => {
     setSelectedNhood(null)
