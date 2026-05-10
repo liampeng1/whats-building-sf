@@ -27,10 +27,13 @@ file changes it requires.
 
 ## Data sources
 
-Pull from real datasets wherever a dataset exists. Hand-curate only the
-fields no dataset publishes. Each source is fetched once per night by a
-new build step in `scripts/build-cross-stats.ts`; outputs land in
-`/public/*.json` as static assets.
+Pull from real datasets wherever a dataset exists. The two exceptions
+are zoning rule values (transcribed by the implementing agent from the
+SF Planning Code with per-field citations) and family-zoning eligibility
+(encoded as TS logic, not transcribed values). Each dataset source is
+fetched once per night by a new build step in
+`scripts/build-cross-stats.ts`; outputs land in `/public/*.json` as
+static assets.
 
 | Concern | Source | Form | Refresh |
 |---|---|---|---|
@@ -39,8 +42,8 @@ new build step in `scripts/build-cross-stats.ts`; outputs land in
 | Muni rail + bus stops | DataSF `i28k-bkz6` (Muni Stops) joined with `9exe-acju` (Muni Routes) | Socrata REST | nightly (new) |
 | BART stations | BART GTFS `stops.txt` from `bart.gov/schedules/developers/gtfs` | GTFS zip, no key | nightly (new) |
 | Caltrain stations (SF only) | Caltrain GTFS via 511 regional feed, hand-filtered to 3 SF stops | GTFS zip + key | nightly (new) |
-| Zoning rules table (FAR, density, uses, parking, setbacks, lot coverage) | **No SF dataset exists.** Hand-curated `lib/zoning-rules.ts` keyed by `zoning_sim`. Source-of-truth: SF Planning Code Articles 2/7. | TS literal | manual (twice/year cadence) |
-| State-law eligibility (SB-9 / AB-2011 / SB-35 / density bonus / ADU) | **No parcel-level dataset exists.** Derived from `zoning_sim` + heuristics. | derived | per build |
+| Zoning rules table (FAR, density, uses, parking, setbacks, lot coverage) | **No SF dataset exists.** Transcribed once by the implementing agent from the SF Planning Code (Articles 2 / 7 / 8) into `lib/zoning-rules.ts`. **Every record carries a `source` field citing the exact code section the values came from.** | TS literal w/ per-record citations | manual re-transcription on Code amendment |
+| State-law eligibility (SB-9 / AB-2011 / SB-35 / density bonus / ADU) | **No parcel-level dataset exists.** Encoded as TS logic in `lib/family-zoning.ts` (e.g. `SB-9: gen='Residential' AND code='RH-1'`). Citations to CA Government Code in source comments. | derived | per build |
 
 Things explicitly checked and ruled out:
 - `srq6-hmpv` does not exist (404). No DataSF zoning-controls table.
@@ -58,8 +61,9 @@ Things explicitly checked and ruled out:
 
 ### 1a. Data model
 
-Two layers: dataset-pulled fields and hand-curated fields. The merge
-happens at build time in `scripts/build-cross-stats.ts`.
+Two layers: dataset-pulled fields (auto, nightly) and agent-transcribed
+fields (one-time, sourced per record). The merge happens at build time
+in `scripts/build-cross-stats.ts`.
 
 **Dataset-pulled (auto-refreshed nightly):**
 
@@ -74,7 +78,8 @@ happens at build time in `scripts/build-cross-stats.ts`.
   taking the dominant intersect). The result is height per zoning
   district, persisted into `/public/zoning-heights.json`.
 
-**Hand-curated** (no dataset publishes these):
+**Transcribed by the implementing agent (one-time task, with per-record
+citations):**
 
 - FAR cap
 - Density (units/lot for RH-* codes; DU/acre for RM/RC codes)
@@ -84,38 +89,82 @@ happens at build time in `scripts/build-cross-stats.ts`.
 - Lot coverage max %
 - State-law eligibility flags
 
-Source for hand-curated fields: SF Planning Code Articles 2 (residential),
-7 (NCD), and the per-district Sec. 209 (RH/RM), 712 (NC), 803 (Mixed
-Use), etc. Spot-check by sampling 5 codes against the published Code.
+Sources, in order of preference per field:
 
-The `codesection` returned by DataSF gives the correct article/section
-for each district, so the lookup workflow is: open `codesection` URL →
-transcribe rule values into `lib/zoning-rules.ts`.
+| Field | Primary source | Backup |
+|---|---|---|
+| Density | SF Planning Code §209 (RH/RM), §712 (NC), §803 (Mixed Use) — the per-district tables | `codesection` URL from DataSF |
+| FAR | SF Planning Code §123 (FAR controls) | per-district section |
+| Principal uses | SF Planning Code §209/§712/§803 use tables (P/C/NP per use) | district section |
+| Parking minimums | SF Planning Code §151 / §151.1 | also note AB-2097 override (state law removes mins near transit) |
+| Setbacks | SF Planning Code §132 / §134 | district section |
+| Lot coverage | SF Planning Code per-district section (§209 etc.) | — |
 
-**Combined record** (built at runtime by merging dataset fetch with
-hand-curated module):
+**Sourcing requirement:** every record in `lib/zoning-rules.ts` carries
+a `source` object citing the exact code section each value came from.
+Format:
 
 ```ts
+source: {
+  density: { article: 'Article 2', section: '§209', url: 'https://...' },
+  far: { article: 'Article 1.2', section: '§123', url: 'https://...' },
+  principal_uses: { article: 'Article 2', section: '§209', url: 'https://...' },
+  parking_min: { article: 'Article 1.5', section: '§151.1', url: 'https://...' },
+  setbacks: { article: 'Article 1.5', section: '§132', url: 'https://...' },
+  lot_coverage_max_pct: { article: 'Article 2', section: '§209', url: 'https://...' },
+  retrieved_at: '2026-05-10',
+}
+```
+
+The district panel renders these citations as small "Source: §209 ↗"
+links next to each rule field, so users can verify any value against
+the Code.
+
+The implementing agent transcribes by:
+1. Pulling the list of `zoning_sim` codes from `/api/zoning`.
+2. For each code, opening the `codesection` URL it returns (links to
+   `codelibrary.amlegal.com/codes/san_francisco/...`).
+3. Transcribing values + section citation into `lib/zoning-rules.ts`.
+4. Cross-checking 5 sampled districts against the published Code before
+   marking the transcription complete.
+
+**Combined record** (built at runtime by merging dataset fetch with
+the agent-transcribed module):
+
+```ts
+interface CodeCitation {
+  article: string                  // 'Article 2'
+  section: string                  // '§209'
+  url: string                      // amlegal codelibrary URL
+}
+
 interface ZoningRecord {
-  // Dataset-derived
+  // Dataset-derived (auto)
   code: string                     // 'RH-1' (from 3i4a-hu95)
   gen: ZoningCategory              // 'Residential' (from 3i4a-hu95)
   name: string                     // 'Residential, House — One Family'
   codesection: string              // (from 3i4a-hu95)
   height_ft: { min?: number; max: number; bulk?: string }  // from h9wh-cg3m
 
-  // Hand-curated (lib/zoning-rules.ts)
-  density: {
-    units_per_lot?: number
-    du_per_acre?: number
-    note?: string
-  }
+  // Agent-transcribed (lib/zoning-rules.ts)
+  density: { units_per_lot?: number; du_per_acre?: number; note?: string }
   far?: { max: number; note?: string }
   principal_uses: string[]
   parking_min: { residential?: string; commercial?: string }
   setbacks?: { front_ft?: number; rear_ft?: number; side_ft?: number }
   lot_coverage_max_pct?: number
   family_laws: FamilyLawEligibility[]
+
+  // Per-field source citations (mandatory)
+  source: {
+    density: CodeCitation
+    far?: CodeCitation
+    principal_uses: CodeCitation
+    parking_min: CodeCitation
+    setbacks?: CodeCitation
+    lot_coverage_max_pct?: CodeCitation
+    retrieved_at: string           // ISO date the agent transcribed this
+  }
 }
 ```
 
@@ -124,8 +173,9 @@ Coverage target: every `zoning_sim` value present in the DataSF response
 zeroed.
 
 Build-time validation in `scripts/build-cross-stats.ts`: every
-`zoning_sim` from DataSF must have a matching hand-curated record, or
-the build fails. Prevents new districts (post-Planning-Code amendment)
+`zoning_sim` from DataSF must have a matching transcribed record with
+a populated `source.retrieved_at`, or the build fails. Prevents new
+districts (post-Planning-Code amendment)
 from silently rendering as blank panels.
 
 ### 1b. Family-zoning law module
@@ -340,22 +390,19 @@ de-duplicated by proximity (<50m collapse to one station with merged
    (`70011`, `70012`, `70021` — 4th & King / 22nd St / Bayshore).
 
 **Rapid bus stops** — definition shifted from "strict BRT" to
-*SFMTA's Rapid Network*, since strict BRT is not derivable from any
-dataset. Pulled from DataSF `i28k-bkz6` joined to `9exe-acju`:
+*SFMTA Rapid (R-suffix) routes*, since strict BRT is not derivable from
+any dataset. Pulled from DataSF `i28k-bkz6` joined to `9exe-acju`:
 
-> Routes whose `lineabbr` ends in `R` (e.g. 5R, 9R, 14R, 38R), plus the
-> 47 and 49 lines along the Van Ness BRT corridor.
+> Routes whose `lineabbr` ends in `R` (e.g. 5R, 9R, 14R, 38R).
 
-This captures the SFMTA-defined "frequent rapid" network. Trade-off
-acknowledged: it includes more lines than dictionary-strict BRT would,
-but every stop in the set has a dataset row, so the list updates itself
-when SFMTA modifies routes.
-
-The 47 / 49 *along Van Ness BRT* are the only line-segments where we
-add a hand-listed corridor filter — only stops between Mission and
-Lombard count for the rapid-bus shed (rest of the line is regular bus
-in mixed traffic). The corridor bounding box is in
-`lib/transit-stations.ts` as a constant.
+This captures the SFMTA "Rapid Network" subset. Every stop in the set
+has a dataset row, so the list updates itself when SFMTA modifies
+routes — zero hand-curation. Trade-off: Van Ness BRT (47/49 along the
+dedicated-lane segment) is excluded, because the GTFS stop schema does
+not distinguish the dedicated-lane segment from the rest of those
+mixed-traffic lines. We accept losing Van Ness coverage in exchange
+for a 100% dataset-derived definition. If SFMTA later publishes a BRT
+classification field, we revisit.
 
 511 API key is provisioned via `process.env.FIVE_ELEVEN_API_KEY` (added
 to `.env.local` and Vercel env). Rate limit is 60 req/hour; the build
@@ -529,7 +576,8 @@ and non-breaking from the user's perspective. Suggested merge order:
    Caltrain GTFS. Add `FIVE_ELEVEN_API_KEY` to `.env.local` and Vercel
    env. Emit the new JSON/GeoJSON outputs into `/public`. No UI yet.
 2. Transit data + dual-shed (consumes #1).
-3. Zoning rules (hand-curated module + `h9wh-cg3m` heights merge) +
+3. Zoning rules (transcribed module with per-field citations +
+   `h9wh-cg3m` heights merge) +
    family-zoning module + new district panel.
 4. Filter popovers + browse panel.
 5. Clustering wiring.
