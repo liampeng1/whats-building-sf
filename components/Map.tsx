@@ -7,6 +7,7 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
+import { TransitRings } from './TransitRings'
 import { isTransitAdjacent } from '@/lib/transit'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
@@ -121,7 +122,15 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [openPermit, setOpenPermit] = useState<string | null>(null)
   const [selectedNhood, setSelectedNhood] = useState<string | null>(null)
   const [nhoodGeo, setNhoodGeo] = useState<FeatureCollection<MultiPolygon | Polygon, { nhood: string }> | null>(null)
-  const [zoningOn, setZoningOn] = useState(false)
+  // Pre-computed cross-tabs (neighborhood × zoning × transit). Loaded once
+  // on mount; static asset so cached after first request.
+  const [crossStats, setCrossStats] = useState<import('@/lib/cross-stats').CrossStats | null>(null)
+  // Three-way map lens. 'neighborhoods' is the existing choropleth +
+  // panel; 'zoning' swaps the choropleth for zoning districts; 'transit'
+  // shows distance-band rings. transitOnly is a permit *filter* and stays
+  // independent of the lens — you can have e.g. 'zoning' lens + transit-
+  // only permits.
+  const [mapMode, setMapMode] = useState<import('./MapModeSwitch').MapMode>('neighborhoods')
   const [transitOnly, setTransitOnly] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
@@ -134,6 +143,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error('failed'))))
       .then(setNhoodGeo)
       .catch(() => setNhoodGeo(null))
+    fetch('/cross-stats.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setCrossStats(data))
+      .catch(() => setCrossStats(null))
   }, [])
   // Client-side viewport bounds — used to cull off-screen markers from the
   // DOM. We don't refetch on pan; just narrow what's rendered.
@@ -489,18 +502,22 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           maxZoom={19}
         />
         <MapEventHandler onBoundsChange={handleViewportChange} />
-        {/* Zoning layer sits below the choropleth + parcel + pins so it acts
-            as background context, not a competing data layer. */}
-        {zoningOn && <ZoningOverlay />}
+        {/* Lens layers — at most one of these renders depending on mapMode.
+            Sits below the choropleth + parcel + pins so it's background
+            context, not a competing data layer. */}
+        {mapMode === 'zoning' && <ZoningOverlay />}
+        {mapMode === 'transit' && <TransitRings />}
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
             visualization; above, only the navy stroke remains so neighborhood
             outlines stay visible while inspecting pins. */}
-        <NeighborhoodChoropleth
-          permits={filteredPermits}
-          hideAtZoom={PIN_FADE_MIN}
-          onSelect={openNhoodPanel}
-          selectedNhood={selectedNhood}
-        />
+        {mapMode === 'neighborhoods' && (
+          <NeighborhoodChoropleth
+            permits={filteredPermits}
+            hideAtZoom={PIN_FADE_MIN}
+            onSelect={openNhoodPanel}
+            selectedNhood={selectedNhood}
+          />
+        )}
         {parcelShape && (
           <GeoJSON
             // Re-mount when the parcel changes so Leaflet picks up the new geometry.
@@ -537,10 +554,13 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onCompletedYearsChange={setCompletedYears}
         recentActivity={recentActivity}
         onRecentActivityChange={setRecentActivity}
-        zoningOn={zoningOn}
-        onZoningToggle={() => setZoningOn((v) => !v)}
+        mapMode={mapMode}
+        onModeChange={setMapMode}
         transitOnly={transitOnly}
         onTransitToggle={() => setTransitOnly((v) => !v)}
+        crossStats={crossStats}
+        permitsByNhood={permitsByNhood}
+        onSelectNhood={openNhoodPanel}
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
       />
@@ -550,6 +570,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       <NeighborhoodPanel
         neighborhood={selectedNhood}
         permits={selectedNhood ? (permitsByNhood[selectedNhood] ?? []) : []}
+        crossStats={crossStats}
         onClose={closeNhoodPanel}
         onOpenPermit={(id) => {
           closeNhoodPanel()

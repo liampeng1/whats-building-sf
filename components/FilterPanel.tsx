@@ -1,6 +1,7 @@
 'use client'
 import { Fragment, useState } from 'react'
 import { Logo } from './Logo'
+import { MapModeSwitch, type MapMode } from './MapModeSwitch'
 import {
   stageIconSvg,
   STAGE_LABELS,
@@ -52,10 +53,13 @@ interface Props {
   onCompletedYearsChange: (n: CompletedYearsFilter) => void
   recentActivity: RecentActivityFilter
   onRecentActivityChange: (n: RecentActivityFilter) => void
-  zoningOn: boolean
-  onZoningToggle: () => void
+  mapMode: MapMode
+  onModeChange: (m: MapMode) => void
   transitOnly: boolean
   onTransitToggle: () => void
+  crossStats?: import('@/lib/cross-stats').CrossStats | null
+  permitsByNhood?: Record<string, import('@/lib/types').Permit[]>
+  onSelectNhood?: (name: string) => void
   visibleCount: number
   totalCount: number
 }
@@ -180,6 +184,157 @@ function MasterButton({
   )
 }
 
+/**
+ * Always-visible list of every "section" in the current map mode:
+ *   • neighborhoods → 41 areas, each with permit count + transit-coverage chip
+ *   • zoning        → 5 land-use categories with land share + transit chip
+ *   • transit       → 3 distance bands with land share + zoning sample
+ * Lets users scan without clicking on the map.
+ */
+function SectionList({
+  mode,
+  crossStats,
+  permitsByNhood,
+  onSelectNhood,
+}: {
+  mode: MapMode
+  crossStats?: import('@/lib/cross-stats').CrossStats | null
+  permitsByNhood?: Record<string, import('@/lib/types').Permit[]>
+  onSelectNhood?: (name: string) => void
+}) {
+  if (!crossStats) return null
+
+  if (mode === 'neighborhoods') {
+    const rows = crossStats.neighborhoods.map((row) => ({
+      ...row,
+      permitCount: permitsByNhood?.[row.nhood]?.length ?? 0,
+    }))
+    rows.sort((a, b) => b.permitCount - a.permitCount || b.area_sqm - a.area_sqm)
+    const topPermitCount = Math.max(1, ...rows.map((r) => r.permitCount))
+    return (
+      <section className="border-t border-paper-edge pt-4">
+        <div className="civic-eyebrow mb-2">All neighborhoods · {rows.length}</div>
+        <ul className="space-y-1 max-h-72 overflow-y-auto -mx-1 px-1">
+          {rows.map((row) => {
+            const transitPct = Math.round((row.transit_coverage['0.5mi'] ?? 0) * 100)
+            const widthPct = (row.permitCount / topPermitCount) * 100
+            return (
+              <li key={row.nhood}>
+                <button
+                  type="button"
+                  onClick={() => onSelectNhood?.(row.nhood)}
+                  disabled={!onSelectNhood}
+                  className="w-full text-left grid grid-cols-[1fr_auto_auto] items-center gap-2 hover:bg-paper-deep rounded px-1.5 py-1 transition-colors"
+                >
+                  <span className="font-serif text-ink text-[13px] truncate leading-tight">
+                    {row.nhood}
+                  </span>
+                  <span className="text-[10px] text-ink-faint uppercase tracking-wider tabular-nums">
+                    {transitPct}% rail
+                  </span>
+                  <span className="text-[11px] tabular-nums w-14 text-right text-ink">
+                    {row.permitCount} permits
+                  </span>
+                  {row.permitCount > 0 && (
+                    <span
+                      className="col-span-3 h-[3px] rounded -mt-0.5"
+                      style={{
+                        width: `${widthPct}%`,
+                        backgroundColor: '#9a4a31',
+                        opacity: 0.6,
+                      }}
+                    />
+                  )}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+    )
+  }
+
+  if (mode === 'zoning') {
+    const rows = crossStats.zoning
+    return (
+      <section className="border-t border-paper-edge pt-4">
+        <div className="civic-eyebrow mb-2">Zoning categories · {rows.length}</div>
+        <ul className="space-y-2">
+          {rows.map((row) => {
+            const sharePct = Math.round(row.share_of_sf * 100)
+            const transitPct = Math.round((row.transit_coverage['0.5mi'] ?? 0) * 100)
+            return (
+              <li key={row.category} className="px-1">
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="font-serif text-ink">{row.category}</span>
+                  <span className="text-[11px] text-ink-soft tabular-nums">
+                    {sharePct}% of SF · {transitPct}% near rail
+                  </span>
+                </div>
+                <span className="block h-1.5 mt-1 rounded bg-paper-deep">
+                  <span
+                    className="block h-full rounded"
+                    style={{
+                      width: `${sharePct}%`,
+                      backgroundColor: '#b08968',
+                      opacity: 0.85,
+                    }}
+                  />
+                </span>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+    )
+  }
+
+  if (mode === 'transit') {
+    const rows = crossStats.transit_bands
+    return (
+      <section className="border-t border-paper-edge pt-4">
+        <div className="civic-eyebrow mb-2">Distance bands · {rows.length}</div>
+        <ul className="space-y-2">
+          {rows.map((row) => {
+            const sharePct = Math.round(row.share_of_sf * 100)
+            const dominantZoning = Object.entries(row.zoning_share)
+              .sort((a, b) => (b[1] as number) - (a[1] as number))[0]
+            return (
+              <li key={row.band} className="px-1">
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="font-serif text-ink">≤ {row.band} of rail</span>
+                  <span className="text-[11px] text-ink-soft tabular-nums">
+                    {sharePct}% of SF
+                  </span>
+                </div>
+                <span className="block h-1.5 mt-1 rounded bg-paper-deep">
+                  <span
+                    className="block h-full rounded"
+                    style={{
+                      width: `${sharePct}%`,
+                      backgroundColor: '#9a4a31',
+                      opacity: 0.85,
+                    }}
+                  />
+                </span>
+                {dominantZoning && (
+                  <div className="text-[10px] text-ink-faint mt-1">
+                    Mostly{' '}
+                    <span className="text-ink-soft">{dominantZoning[0]}</span>{' '}
+                    ({Math.round((dominantZoning[1] as number) * 100)}%)
+                  </div>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+    )
+  }
+
+  return null
+}
+
 export function FilterPanel({
   selectedStages,
   onToggleStage,
@@ -193,10 +348,13 @@ export function FilterPanel({
   onCompletedYearsChange,
   recentActivity,
   onRecentActivityChange,
-  zoningOn,
-  onZoningToggle,
+  mapMode,
+  onModeChange,
   transitOnly,
   onTransitToggle,
+  crossStats = null,
+  permitsByNhood,
+  onSelectNhood,
   visibleCount,
   totalCount,
 }: Props) {
@@ -318,10 +476,11 @@ export function FilterPanel({
 
   return (
     <div className="absolute top-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[calc(100vw-2rem)] max-w-[340px] overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]">
+      <div className="bg-ink text-paper shrink-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="bg-ink text-paper px-4 py-3 shrink-0 text-left w-full focus:outline-none focus:ring-2 focus:ring-paper/50"
+        className="px-4 pt-3 pb-2 text-left w-full focus:outline-none focus:ring-2 focus:ring-paper/50"
         aria-expanded={open}
       >
         <div className="flex items-center justify-between gap-2">
@@ -368,6 +527,13 @@ export function FilterPanel({
           )}
         </div>
       </button>
+
+        {/* Map-mode segmented control. Always visible (open or closed) so
+            you can switch lens without expanding the panel. */}
+        <div className="px-4 pb-3">
+          <MapModeSwitch mode={mapMode} onChange={onModeChange} />
+        </div>
+      </div>
 
       <div
         className={`grid transition-[grid-template-rows] duration-300 ease-out ${
@@ -548,9 +714,10 @@ export function FilterPanel({
               </p>
             </section>
 
-            {/* MAP LAYERS + LENSES */}
-            <section className="border-t border-paper-edge pt-4 space-y-3">
-              <div className="civic-eyebrow">Layers &amp; lenses</div>
+            {/* PERMIT FILTER — transit-adjacency narrows visible permits.
+                The map's *lens* (neighborhoods / zoning / transit-shed) is
+                up in the panel header via MapModeSwitch. */}
+            <section className="border-t border-paper-edge pt-4">
               <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none">
                 <input
                   type="checkbox"
@@ -559,27 +726,22 @@ export function FilterPanel({
                   className="accent-ink mt-0.5"
                 />
                 <span className="flex-1">
-                  <span className="text-ink">Transit-adjacent only</span>
+                  <span className="text-ink font-medium">Transit-adjacent only</span>
                   <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
-                    Within ½ mi of BART or Muni Metro. Filters the visible map.
-                  </span>
-                </span>
-              </label>
-              <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={zoningOn}
-                  onChange={onZoningToggle}
-                  className="accent-ink mt-0.5"
-                />
-                <span className="flex-1">
-                  <span className="text-ink">Zoning districts</span>
-                  <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
-                    RH-1, RM-2, NC-3 etc. Adds a colored overlay underneath.
+                    Within ½ mi of BART or Muni Metro. Filters which permits show.
                   </span>
                 </span>
               </label>
             </section>
+
+            {/* MODE SECTION LIST — every section in the active mode, with
+                inline cross-ref so you can scan without clicking. */}
+            <SectionList
+              mode={mapMode}
+              crossStats={crossStats}
+              permitsByNhood={permitsByNhood}
+              onSelectNhood={onSelectNhood}
+            />
           </div>
         </div>
       </div>

@@ -26,6 +26,8 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@turf/turf": "^7.3.5",
+    "@types/geojson": "^7946.0.16",
     "@types/jest": "^30.0.0",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
@@ -37,6 +39,7 @@
     "jest-environment-jsdom": "^30.3.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

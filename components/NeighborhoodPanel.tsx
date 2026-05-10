@@ -20,6 +20,7 @@ import {
 interface Props {
   neighborhood: string | null
   permits: Permit[]
+  crossStats?: import('@/lib/cross-stats').CrossStats | null
   onClose: () => void
   onOpenPermit: (id: string) => void
 }
@@ -34,7 +35,127 @@ function formatCost(n: number): string {
   return `$${Math.round(n)}`
 }
 
-export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit }: Props) {
+// Land-share zoning breakdown for the neighborhood. Hidden when the
+// cross-stats bundle isn't loaded yet, so the panel doesn't flash empty
+// rows on first render.
+function ZoningMixBlock({
+  crossStats,
+  neighborhood,
+}: {
+  crossStats?: import('@/lib/cross-stats').CrossStats | null
+  neighborhood: string | null
+}) {
+  if (!crossStats || !neighborhood) return null
+  const row = crossStats.neighborhoods.find((r) => r.nhood === neighborhood)
+  if (!row) return null
+  const entries = Object.entries(row.zoning_share)
+    .filter(([, v]) => typeof v === 'number' && v > 0.005)
+    .sort((a, b) => (b[1] as number) - (a[1] as number))
+  if (entries.length === 0) return null
+  // Reuse the category palette so the chart speaks the same language as
+  // FilterPanel's category dots.
+  const PALETTE: Record<string, string> = {
+    Residential: '#7d9b76',
+    'Mixed Use': '#b08968',
+    Commercial: '#5d7a99',
+    Industrial: '#67615a',
+    Public: '#8a6c87',
+    Other: '#a8a29e',
+  }
+  return (
+    <div>
+      <div className="civic-eyebrow mb-2">Zoning · land share</div>
+      <ul className="space-y-1.5">
+        {entries.map(([cat, share]) => {
+          const pct = Math.round((share as number) * 100)
+          return (
+            <li
+              key={cat}
+              className="grid grid-cols-[5.5rem_3rem_1fr] items-center gap-2 text-xs"
+            >
+              <span className="text-ink-soft uppercase tracking-wide truncate">
+                {cat}
+              </span>
+              <span
+                className="font-semibold tabular-nums text-right"
+                style={{ color: PALETTE[cat] ?? '#1c2438' }}
+              >
+                {pct}%
+              </span>
+              <span
+                className="h-2 rounded"
+                style={{
+                  width: `${pct}%`,
+                  backgroundColor: PALETTE[cat] ?? '#1c2438',
+                  opacity: 0.7,
+                }}
+              />
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
+function TransitAccessBlock({
+  crossStats,
+  neighborhood,
+}: {
+  crossStats?: import('@/lib/cross-stats').CrossStats | null
+  neighborhood: string | null
+}) {
+  if (!crossStats || !neighborhood) return null
+  const row = crossStats.neighborhoods.find((r) => r.nhood === neighborhood)
+  if (!row) return null
+  const bands: { band: string; label: string; share: number }[] = [
+    { band: '0.25mi', label: 'within ¼ mi', share: row.transit_coverage['0.25mi'] ?? 0 },
+    { band: '0.5mi', label: 'within ½ mi', share: row.transit_coverage['0.5mi'] ?? 0 },
+    { band: '1mi', label: 'within 1 mi', share: row.transit_coverage['1mi'] ?? 0 },
+  ]
+  return (
+    <div>
+      <div className="civic-eyebrow mb-2">Transit access · land share</div>
+      <ul className="space-y-1.5">
+        {bands.map((b) => {
+          const pct = Math.round(b.share * 100)
+          return (
+            <li
+              key={b.band}
+              className="grid grid-cols-[5.5rem_3rem_1fr] items-center gap-2 text-xs"
+            >
+              <span className="text-ink-soft uppercase tracking-wide truncate">
+                {b.label}
+              </span>
+              <span className="font-semibold tabular-nums text-right text-construction">
+                {pct}%
+              </span>
+              <span
+                className="h-2 rounded"
+                style={{
+                  width: `${pct}%`,
+                  backgroundColor: '#9a4a31',
+                  opacity: 0.7,
+                }}
+              />
+            </li>
+          )
+        })}
+      </ul>
+      <p className="text-[10px] text-ink-faint italic mt-2 leading-snug">
+        Walking shed of any BART or Muni Metro station.
+      </p>
+    </div>
+  )
+}
+
+export function NeighborhoodPanel({
+  neighborhood,
+  permits,
+  crossStats = null,
+  onClose,
+  onOpenPermit,
+}: Props) {
   const open = !!neighborhood
 
   // Bottom-sheet expansion on mobile (mirrors PermitPanel): start at ~55dvh
@@ -290,6 +411,14 @@ export function NeighborhoodPanel({ neighborhood, permits, onClose, onOpenPermit
               </div>
             </div>
           )}
+
+          {/* Zoning mix — pulled from pre-computed cross-stats. Land-area
+              percentages, not parcel counts. */}
+          <ZoningMixBlock crossStats={crossStats} neighborhood={neighborhood} />
+
+          {/* Transit access — % of the neighborhood's land within
+              walking distance of BART or Muni Metro. */}
+          <TransitAccessBlock crossStats={crossStats} neighborhood={neighborhood} />
 
           {/* Combined estimated cost — only when housing has displaced it as the
               headline; otherwise it'd duplicate the top-line "Estimated cost". */}

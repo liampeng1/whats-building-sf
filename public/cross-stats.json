@@ -1,0 +1,937 @@
+{
+  "generated_at": "2026-05-10T01:07:09.057Z",
+  "source_versions": {
+    "neighborhoods": "public/sf-neighborhoods.geojson",
+    "zoning_dataset": "3i4a-hu95",
+    "transit_stops_count": 32
+  },
+  "neighborhoods": [
+    {
+      "nhood": "Bayview Hunters Point",
+      "area_sqm": 13392972.06810234,
+      "zoning_share": {
+        "Residential": 0.01881049871487031,
+        "Mixed Use": 0.17200511850495787,
+        "Commercial": 0.015572947620996648,
+        "Industrial": 0.2941408828631733,
+        "Public": 0.12614630846199154
+      },
+      "transit_coverage": {
+        "0.25mi": 0.022020779001839477,
+        "0.5mi": 0.050770844248416776,
+        "1mi": 0.17708629956269648
+      }
+    },
+    {
+      "nhood": "Sunset/Parkside",
+      "area_sqm": 10947277.96832023,
+      "zoning_share": {
+        "Residential": 0.000021059685513148775,
+        "Mixed Use": 0.027608728444615864,
+        "Commercial": 0.05244557212944853,
+        "Public": 0.09233674499103722
+      },
+      "transit_coverage": {
+        "0.25mi": 0.1514513114401118,
+        "0.5mi": 0.4651744139873538,
+        "1mi": 0.9919582197516702
+      }
+    },
+    {
+      "nhood": "West of Twin Peaks",
+      "area_sqm": 7918137.151237292,
+      "zoning_share": {
+        "Residential": 0.0000674376331782614,
+        "Mixed Use": 0.031317319562991955,
+        "Commercial": 0.03284780936465873,
+        "Public": 0.09502673598146837
+      },
+      "transit_coverage": {
+        "0.25mi": 0.202335258375162,
+        "0.5mi": 0.6861499029219164,
+        "1mi": 0.9999999999977993
+      }
+    },
+    {
+      "nhood": "Lakeshore",
+      "area_sqm": 7458014.116516765,
+      "zoning_share": {
+        "Residential": 0.05110013892036232,
+        "Mixed Use": 0.007082135235138303,
+        "Commercial": 0.024304045848058148,
+        "Public": 0.6200900113398492
+      },
+      "transit_coverage": {
+        "0.25mi": 0.035253812509534035,
+        "0.5mi": 0.14202937729676576,
+        "1mi": 0.5293257336194664
+      }
+    },
+    {
+      "nhood": "Presidio",
+      "area_sqm": 6120151.826230886,
+      "zoning_share": {
+        "Public": 0.9941562672352952
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0
+      }
+    },
+    {
+      "nhood": "Mission",
+      "area_sqm": 4876489.478415337,
+      "zoning_share": {
+        "Residential": 0.003311413335587692,
+        "Mixed Use": 0.12640061411176087,
+        "Commercial": 0.010167594190340247,
+        "Industrial": 0.07465433983049065,
+        "Public": 0.085692967031916
+      },
+      "transit_coverage": {
+        "0.25mi": 0.25454459337885865,
+        "0.5mi": 0.7157698550624385,
+        "1mi": 0.9999999999988465
+      }
+    },
+    {
+      "nhood": "Outer Richmond",
+      "area_sqm": 4636095.490158109,
+      "zoning_share": {
+        "Mixed Use": 0.04359725469791888,
+        "Commercial": 0.0825541958924543,
+        "Public": 0.09613333607022392
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.21163769884669872
+      }
+    },
+    {
+      "nhood": "Golden Gate Park",
+      "area_sqm": 4464815.23337168,
+      "zoning_share": {
+        "Mixed Use": 0.00034917639124311465,
+        "Public": 0.9301746182159263
+      },
+      "transit_coverage": {
+        "0.25mi": 0.031066678141210377,
+        "0.5mi": 0.3799267022317718,
+        "1mi": 0.9804482362316582
+      }
+    },
+    {
+      "nhood": "Inner Sunset",
+      "area_sqm": 3685793.506281163,
+      "zoning_share": {
+        "Mixed Use": 0.02453508007071806,
+        "Commercial": 0.08626968553951551,
+        "Public": 0.1807370831892671
+      },
+      "transit_coverage": {
+        "0.25mi": 0.26571896838873094,
+        "0.5mi": 0.7224799704719975,
+        "1mi": 0.999999999998834
+      }
+    },
+    {
+      "nhood": "Excelsior",
+      "area_sqm": 3604306.6138159083,
+      "zoning_share": {
+        "Residential": 0.18806430748338407,
+        "Mixed Use": 0.03606120343234556,
+        "Public": 0.08689207147708018
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0.06387487161586043,
+        "1mi": 0.7717781464671842
+      }
+    },
+    {
+      "nhood": "Potrero Hill",
+      "area_sqm": 2944339.7593976255,
+      "zoning_share": {
+        "Mixed Use": 0.05945444118169893,
+        "Industrial": 0.15861432382368076,
+        "Public": 0.09228775577455921,
+        "Other": 0.08349588269199695
+      },
+      "transit_coverage": {
+        "0.25mi": 0.02549137114805476,
+        "0.5mi": 0.1690238251067361,
+        "1mi": 0.8514829705874575
+      }
+    },
+    {
+      "nhood": "Financial District/South Beach",
+      "area_sqm": 2909213.5036680503,
+      "zoning_share": {
+        "Mixed Use": 0.0857858779009393,
+        "Commercial": 0.3579594898188636,
+        "Industrial": 0.06796752983878175,
+        "Public": 0.046205455366136496
+      },
+      "transit_coverage": {
+        "0.25mi": 0.4440689915112382,
+        "0.5mi": 0.7749823145044845,
+        "1mi": 0.9999999999842816
+      }
+    },
+    {
+      "nhood": "Bernal Heights",
+      "area_sqm": 2790707.4149135337,
+      "zoning_share": {
+        "Mixed Use": 0.05480310985967646,
+        "Industrial": 0.010562998716200207,
+        "Public": 0.14601931650369152
+      },
+      "transit_coverage": {
+        "0.25mi": 0.011810816567477454,
+        "0.5mi": 0.30203179209550846,
+        "1mi": 0.9538771597387067
+      }
+    },
+    {
+      "nhood": "Oceanview/Merced/Ingleside",
+      "area_sqm": 2726945.8341061375,
+      "zoning_share": {
+        "Residential": 0.2565809161824662,
+        "Mixed Use": 0.035494486182445384,
+        "Commercial": 0.020986932507120762,
+        "Public": 0.06920614438050612
+      },
+      "transit_coverage": {
+        "0.25mi": 0.26450391285661184,
+        "0.5mi": 0.6614826980577891,
+        "1mi": 1.00000000000098
+      }
+    },
+    {
+      "nhood": "Marina",
+      "area_sqm": 2649029.824271147,
+      "zoning_share": {
+        "Mixed Use": 0.09559726572478387,
+        "Commercial": 0.051602864779017966,
+        "Public": 0.20664212395595666
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.006192605172784387
+      }
+    },
+    {
+      "nhood": "Outer Mission",
+      "area_sqm": 2599735.594993805,
+      "zoning_share": {
+        "Residential": 0.16866061996006756,
+        "Mixed Use": 0.07522204636583028,
+        "Commercial": 0.01096760341778155,
+        "Public": 0.18133790077384163
+      },
+      "transit_coverage": {
+        "0.25mi": 0.2014678933364879,
+        "0.5mi": 0.6872282127821038,
+        "1mi": 1.0000000000065001
+      }
+    },
+    {
+      "nhood": "Noe Valley",
+      "area_sqm": 2527183.500173054,
+      "zoning_share": {
+        "Mixed Use": 0.02861797935829026,
+        "Commercial": 0.0229127958740892,
+        "Public": 0.03708983785095901
+      },
+      "transit_coverage": {
+        "0.25mi": 0.10722040314715409,
+        "0.5mi": 0.4097363632051475,
+        "1mi": 1.0000000000003673
+      }
+    },
+    {
+      "nhood": "Treasure Island",
+      "area_sqm": 2301205.360343745,
+      "zoning_share": {
+        "Public": 0.18204034982913728
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0
+      }
+    },
+    {
+      "nhood": "South of Market",
+      "area_sqm": 2291157.9656962715,
+      "zoning_share": {
+        "Residential": 0.028725672596056406,
+        "Mixed Use": 0.282237195089732,
+        "Commercial": 0.1672704245566142,
+        "Industrial": 0.008298012179056345,
+        "Public": 0.09355566990419355
+      },
+      "transit_coverage": {
+        "0.25mi": 0.3788834226039928,
+        "0.5mi": 0.8177002125871157,
+        "1mi": 0.9999999999974191
+      }
+    },
+    {
+      "nhood": "Castro/Upper Market",
+      "area_sqm": 2219195.1894956273,
+      "zoning_share": {
+        "Residential": 0.0001902691037322278,
+        "Mixed Use": 0.05170269549321208,
+        "Commercial": 0.03818963092167134,
+        "Public": 0.08904664398398153
+      },
+      "transit_coverage": {
+        "0.25mi": 0.3983881311325131,
+        "0.5mi": 0.9666730887081177,
+        "1mi": 0.9999999999997473
+      }
+    },
+    {
+      "nhood": "Portola",
+      "area_sqm": 2137847.6233873167,
+      "zoning_share": {
+        "Mixed Use": 0.025538290151631386,
+        "Industrial": 0.0002933657946466096,
+        "Public": 0.2031119913113573
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0.004168696455156496,
+        "1mi": 0.3616084279027695
+      }
+    },
+    {
+      "nhood": "Mission Bay",
+      "area_sqm": 2104943.9085517405,
+      "zoning_share": {
+        "Mixed Use": 0.5044845489225751,
+        "Commercial": 0.021641950937414705,
+        "Industrial": 0.17470965096159116,
+        "Public": 0.011772201149195673
+      },
+      "transit_coverage": {
+        "0.25mi": 0.375054995355412,
+        "0.5mi": 0.8501023704392232,
+        "1mi": 1.0000000000015095
+      }
+    },
+    {
+      "nhood": "Pacific Heights",
+      "area_sqm": 2058769.611275018,
+      "zoning_share": {
+        "Mixed Use": 0.06949839362128657,
+        "Commercial": 0.11571786852778218,
+        "Public": 0.05239501247189148
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.10666549502808931
+      }
+    },
+    {
+      "nhood": "Inner Richmond",
+      "area_sqm": 1926320.0297648108,
+      "zoning_share": {
+        "Mixed Use": 0.08354416444268062,
+        "Commercial": 0.05692724637634844,
+        "Public": 0.05479185616380901
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.320208706079316
+      }
+    },
+    {
+      "nhood": "Glen Park",
+      "area_sqm": 1730559.6497804504,
+      "zoning_share": {
+        "Residential": 0.0022755577936295576,
+        "Mixed Use": 0.01814182955817503,
+        "Commercial": 0.00565567792060968,
+        "Public": 0.29279989478168783
+      },
+      "transit_coverage": {
+        "0.25mi": 0.2257813424989114,
+        "0.5mi": 0.6339667125888928,
+        "1mi": 1.000000000000007
+      }
+    },
+    {
+      "nhood": "Twin Peaks",
+      "area_sqm": 1715586.5806243976,
+      "zoning_share": {
+        "Commercial": 0.00249570299466221,
+        "Public": 0.3899817735977794
+      },
+      "transit_coverage": {
+        "0.25mi": 0.10679638288010544,
+        "0.5mi": 0.5243714611444491,
+        "1mi": 0.9999999999992936
+      }
+    },
+    {
+      "nhood": "McLaren Park",
+      "area_sqm": 1593990.8257135146,
+      "zoning_share": {
+        "Residential": 0.01615247289192461,
+        "Public": 0.917828413200102
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.4166137771912211
+      }
+    },
+    {
+      "nhood": "Visitacion Valley",
+      "area_sqm": 1583950.4694747983,
+      "zoning_share": {
+        "Residential": 0.48660165740327255,
+        "Mixed Use": 0.022979549093443272,
+        "Industrial": 0.014613172374282966,
+        "Public": 0.03893517500295329
+      },
+      "transit_coverage": {
+        "0.25mi": 0.10396389608645895,
+        "0.5mi": 0.48481763008069756,
+        "1mi": 0.9119711316438333
+      }
+    },
+    {
+      "nhood": "Western Addition",
+      "area_sqm": 1510403.0615284115,
+      "zoning_share": {
+        "Mixed Use": 0.173192026669517,
+        "Commercial": 0.02931879876410577,
+        "Public": 0.06881066386359591
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0.08872444807875023,
+        "1mi": 0.7697047874307823
+      }
+    },
+    {
+      "nhood": "Lone Mountain/USF",
+      "area_sqm": 1499676.2846626255,
+      "zoning_share": {
+        "Residential": 0.00035621181693676286,
+        "Mixed Use": 0.04138684603328628,
+        "Commercial": 0.17003884767162045,
+        "Public": 0.0362778319068985
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0.01759877389229856,
+        "1mi": 0.7127302968392224
+      }
+    },
+    {
+      "nhood": "Haight Ashbury",
+      "area_sqm": 1441346.7172984183,
+      "zoning_share": {
+        "Mixed Use": 0.05715080591429905,
+        "Commercial": 0.06496327526460226,
+        "Public": 0.13027690217834217
+      },
+      "transit_coverage": {
+        "0.25mi": 0.29349371539509345,
+        "0.5mi": 0.7039893150190782,
+        "1mi": 0.9999999999996422
+      }
+    },
+    {
+      "nhood": "Presidio Heights",
+      "area_sqm": 1300449.7020226978,
+      "zoning_share": {
+        "Mixed Use": 0.08365977150496728,
+        "Commercial": 0.06733704295527251,
+        "Public": 0.028845759601680645
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0
+      }
+    },
+    {
+      "nhood": "North Beach",
+      "area_sqm": 1292665.6406877136,
+      "zoning_share": {
+        "Mixed Use": 0.06385194887359177,
+        "Commercial": 0.2707798736383144,
+        "Industrial": 0.06968479808320747,
+        "Public": 0.06708644683329687
+      },
+      "transit_coverage": {
+        "0.25mi": 0.006266225241136031,
+        "0.5mi": 0.18749465210864422,
+        "1mi": 0.8067378217061765
+      }
+    },
+    {
+      "nhood": "Russian Hill",
+      "area_sqm": 1278915.5937724728,
+      "zoning_share": {
+        "Residential": 0.00017090397693790584,
+        "Mixed Use": 0.10524386424203531,
+        "Commercial": 0.0642783505560452,
+        "Public": 0.08592886361672654
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0.006570672769929714,
+        "1mi": 0.7372353902862492
+      }
+    },
+    {
+      "nhood": "Hayes Valley",
+      "area_sqm": 1269595.4978590067,
+      "zoning_share": {
+        "Mixed Use": 0.16926511418889667,
+        "Commercial": 0.016755838874659954,
+        "Public": 0.10239876436354856
+      },
+      "transit_coverage": {
+        "0.25mi": 0.1253097778359307,
+        "0.5mi": 0.5603067386829692,
+        "1mi": 1.000000000003236
+      }
+    },
+    {
+      "nhood": "Nob Hill",
+      "area_sqm": 1053276.3300524745,
+      "zoning_share": {
+        "Mixed Use": 0.22991872114686918,
+        "Commercial": 0.06352638309277642,
+        "Public": 0.015068640553975474
+      },
+      "transit_coverage": {
+        "0.25mi": 0.115124633593074,
+        "0.5mi": 0.6106023503637376,
+        "1mi": 1.0000000000017606
+      }
+    },
+    {
+      "nhood": "Lincoln Park",
+      "area_sqm": 1021988.5474105973,
+      "zoning_share": {
+        "Mixed Use": 0.0012112531355477222,
+        "Public": 0.9336875671735768
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0
+      }
+    },
+    {
+      "nhood": "Tenderloin",
+      "area_sqm": 1016949.0879808232,
+      "zoning_share": {
+        "Mixed Use": 0.35008668103778984,
+        "Commercial": 0.15664414315532255,
+        "Public": 0.11558231353858568
+      },
+      "transit_coverage": {
+        "0.25mi": 0.5208515275212627,
+        "0.5mi": 0.9279243839137051,
+        "1mi": 1.0000000000006086
+      }
+    },
+    {
+      "nhood": "Chinatown",
+      "area_sqm": 581574.0141702343,
+      "zoning_share": {
+        "Mixed Use": 0.21741773035940712,
+        "Commercial": 0.2620737128995328,
+        "Public": 0.03290714068433291
+      },
+      "transit_coverage": {
+        "0.25mi": 0.6046340585613741,
+        "0.5mi": 0.9691575938351739,
+        "1mi": 0.9999999999998375
+      }
+    },
+    {
+      "nhood": "Seacliff",
+      "area_sqm": 551213.2731609488,
+      "zoning_share": {
+        "Public": 0.06220679706178101
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0
+      }
+    },
+    {
+      "nhood": "Japantown",
+      "area_sqm": 312451.2238284285,
+      "zoning_share": {
+        "Mixed Use": 0.2848520756959127,
+        "Commercial": 0.0641794439058488,
+        "Public": 0.05142645708903763
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.3662367429480089
+      }
+    }
+  ],
+  "zoning": [
+    {
+      "category": "Public",
+      "area_sqm": 28355414.23452937,
+      "share_of_sf": 0.2323352716201481,
+      "neighborhood_share": {
+        "Bayview Hunters Point": 0.05958205977002951,
+        "Sunset/Parkside": 0.03564878318285526,
+        "Outer Mission": 0.01662577000159403,
+        "Noe Valley": 0.003305641224838674,
+        "Outer Richmond": 0.015717750484007916,
+        "Hayes Valley": 0.004584839041567411,
+        "South of Market": 0.007559431739001773,
+        "Tenderloin": 0.004145286941237633,
+        "Inner Richmond": 0.003722275016804727,
+        "Treasure Island": 0.01477362401976612,
+        "Western Addition": 0.0036653260116657474,
+        "Bernal Heights": 0.014371054004608214,
+        "Potrero Hill": 0.009582879177329093,
+        "Portola": 0.015313565314721545,
+        "Glen Park": 0.0178698741333186,
+        "Mission": 0.014737250835026167,
+        "West of Twin Peaks": 0.02653583976281385,
+        "Inner Sunset": 0.023493205285359343,
+        "Oceanview/Merced/Ingleside": 0.006655568687942371,
+        "Visitacion Valley": 0.002174942260230214,
+        "Excelsior": 0.011045004150622767,
+        "Lakeshore": 0.163095485745084,
+        "McLaren Park": 0.05159543987329931,
+        "Castro/Upper Market": 0.006969105876412932,
+        "Twin Peaks": 0.023595052850884826,
+        "Haight Ashbury": 0.00662216336328113,
+        "Mission Bay": 0.0008739009380815175,
+        "Golden Gate Park": 0.14646436728999823,
+        "Lone Mountain/USF": 0.001918681339647013,
+        "Financial District/South Beach": 0.004740594991224143,
+        "Presidio Heights": 0.0013229381580659029,
+        "Chinatown": 0.0006749306409125632,
+        "Nob Hill": 0.0005597323421304129,
+        "Japantown": 0.0005666734162910974,
+        "Marina": 0.019304995680277357,
+        "Pacific Heights": 0.003804185633378955,
+        "Lincoln Park": 0.03365205645097133,
+        "Seacliff": 0.00120926507853756,
+        "Russian Hill": 0.0038756536132967434,
+        "North Beach": 0.0030583346115121667,
+        "Presidio": 0.21457585645389032
+      },
+      "transit_coverage": {
+        "0.25mi": 0.04397984389626219,
+        "0.5mi": 0.2053182055395155,
+        "1mi": 0.5031597937228491
+      }
+    },
+    {
+      "category": "Mixed Use",
+      "area_sqm": 9154136.638925262,
+      "share_of_sf": 0.07500609248242747,
+      "neighborhood_share": {
+        "Mission": 0.06733472408093816,
+        "West of Twin Peaks": 0.027088827847997956,
+        "South of Market": 0.07064019505629007,
+        "Financial District/South Beach": 0.02726302263746107,
+        "Mission Bay": 0.11600347690874321,
+        "Chinatown": 0.013812826614279945,
+        "Bayview Hunters Point": 0.25165232272281157,
+        "Sunset/Parkside": 0.03301681377027858,
+        "Potrero Hill": 0.019122947575381164,
+        "Oceanview/Merced/Ingleside": 0.010573530311682247,
+        "Outer Richmond": 0.02207974862739498,
+        "Visitacion Valley": 0.003976177001783534,
+        "Outer Mission": 0.021362738964805613,
+        "Excelsior": 0.014198568271384661,
+        "Portola": 0.0059641859259434,
+        "Bernal Heights": 0.01670714028840145,
+        "Noe Valley": 0.007900568682253714,
+        "Inner Sunset": 0.009878729405917852,
+        "Castro/Upper Market": 0.012534046371407924,
+        "Haight Ashbury": 0.00899856859742101,
+        "Golden Gate Park": 0.00017030640160283238,
+        "Hayes Valley": 0.023475531925645797,
+        "Lone Mountain/USF": 0.00678019937229054,
+        "Inner Richmond": 0.01758033593813551,
+        "Western Addition": 0.02857612657884257,
+        "Pacific Heights": 0.015630221228239472,
+        "Russian Hill": 0.014703518686368938,
+        "Marina": 0.0276639969461345,
+        "Japantown": 0.009722640503616665,
+        "Presidio Heights": 0.011884826414137377,
+        "Lakeshore": 0.005769923111497645,
+        "Glen Park": 0.0034296536576777577,
+        "Lincoln Park": 0.00013522704339819443,
+        "North Beach": 0.009016603493645374,
+        "Tenderloin": 0.03889174315814148,
+        "Nob Hill": 0.026454482423845956
+      },
+      "transit_coverage": {
+        "0.25mi": 0.21752092454594307,
+        "0.5mi": 0.4998179743844848,
+        "1mi": 0.6531647573714826
+      }
+    },
+    {
+      "category": "Commercial",
+      "area_sqm": 5504257.063086674,
+      "share_of_sf": 0.045100136758435425,
+      "neighborhood_share": {
+        "Sunset/Parkside": 0.1043076749011242,
+        "Lakeshore": 0.03293085968656441,
+        "Oceanview/Merced/Ingleside": 0.010397448286847655,
+        "Outer Mission": 0.005180148505090527,
+        "West of Twin Peaks": 0.04725314546287006,
+        "Lone Mountain/USF": 0.04632836446441136,
+        "Presidio Heights": 0.0159092201622515,
+        "North Beach": 0.06359220414856886,
+        "Glen Park": 0.0017781669513946526,
+        "Bayview Hunters Point": 0.03789213514476888,
+        "Noe Valley": 0.01052001005987893,
+        "Twin Peaks": 0.000777869659391522,
+        "Inner Sunset": 0.0577684223512904,
+        "Castro/Upper Market": 0.015397217873116615,
+        "Haight Ashbury": 0.01701130642599015,
+        "Tenderloin": 0.028941075370126537,
+        "Chinatown": 0.0276904329635374,
+        "Hayes Valley": 0.003864851760064721,
+        "Outer Richmond": 0.06953329593513023,
+        "Western Addition": 0.00804526440282345,
+        "Inner Richmond": 0.0199227786197582,
+        "Financial District/South Beach": 0.18919548444257786,
+        "Japantown": 0.003643170288592073,
+        "Pacific Heights": 0.04328221383485271,
+        "Nob Hill": 0.012156197444736512,
+        "Marina": 0.024834873489864333,
+        "Russian Hill": 0.014935091861788872,
+        "Mission": 0.009007967019292242,
+        "South of Market": 0.06962664738506401,
+        "Mission Bay": 0.008276338163853916
+      },
+      "transit_coverage": {
+        "0.25mi": 0.3795689464305417,
+        "0.5mi": 0.5675322651452493,
+        "1mi": 0.8001595968084583
+      }
+    },
+    {
+      "category": "Industrial",
+      "area_sqm": 5498603.245781599,
+      "share_of_sf": 0.045053811172485574,
+      "neighborhood_share": {
+        "Financial District/South Beach": 0.03596041517809827,
+        "Bayview Hunters Point": 0.7164402398546712,
+        "North Beach": 0.016382186554290853,
+        "Potrero Hill": 0.08493328926801837,
+        "Mission Bay": 0.06688135133934867,
+        "Portola": 0.00011406012378680664,
+        "Mission": 0.06620792343596027,
+        "Visitacion Valley": 0.0042095310769183335,
+        "Bernal Heights": 0.005361041254183429,
+        "South of Market": 0.0034576156623184677
+      },
+      "transit_coverage": {
+        "0.25mi": 0.017591086751287857,
+        "0.5mi": 0.1027926869222025,
+        "1mi": 0.32126551050513913
+      }
+    },
+    {
+      "category": "Residential",
+      "area_sqm": 3336354.949655377,
+      "share_of_sf": 0.02733703436804238,
+      "neighborhood_share": {
+        "Bayview Hunters Point": 0.0755100964006709,
+        "South of Market": 0.01972663418058561,
+        "Lakeshore": 0.1142281211606084,
+        "Mission": 0.004840034268939403,
+        "Russian Hill": 0.0000655121425752964,
+        "Visitacion Valley": 0.23101646417169797,
+        "Outer Mission": 0.13142277239692426,
+        "Excelsior": 0.20316825922706044,
+        "Oceanview/Merced/Ingleside": 0.20971457505358798,
+        "Sunset/Parkside": 0.00006910123014988563,
+        "Lone Mountain/USF": 0.00016011558189629296,
+        "McLaren Park": 0.00771707267087201,
+        "Castro/Upper Market": 0.00012655856049004002,
+        "West of Twin Peaks": 0.00016004904655467212,
+        "Glen Park": 0.0011803266012824893
+      },
+      "transit_coverage": {
+        "0.25mi": 0.06652897531800497,
+        "0.5mi": 0.34634414237497774,
+        "1mi": 0.9351639653557534
+      }
+    },
+    {
+      "category": "Other",
+      "area_sqm": 246019.3655240543,
+      "share_of_sf": 0.0020158046586828977,
+      "neighborhood_share": {
+        "Potrero Hill": 0.9992719338673762
+      },
+      "transit_coverage": {
+        "0.25mi": 0,
+        "0.5mi": 0,
+        "1mi": 0.9202538808223969
+      }
+    }
+  ],
+  "transit_bands": [
+    {
+      "band": "0.25mi",
+      "area_sqm": 14476191.516405363,
+      "share_of_sf": 0.118613322315485,
+      "neighborhood_share": {
+        "West of Twin Peaks": 0.11067263959100997,
+        "Visitacion Valley": 0.011375482413862574,
+        "Twin Peaks": 0.01265653615598405,
+        "South of Market": 0.05996617071455833,
+        "Potrero Hill": 0.005184737816415432,
+        "Outer Mission": 0.03618101162600123,
+        "Sunset/Parkside": 0.11453147764193444,
+        "Oceanview/Merced/Ingleside": 0.049825801382338726,
+        "North Beach": 0.0005595486946167457,
+        "Noe Valley": 0.018718019405056567,
+        "Nob Hill": 0.00837637796046918,
+        "Mission Bay": 0.05453573386001403,
+        "Mission": 0.08574658811282032,
+        "Lakeshore": 0.01816247257154468,
+        "Tenderloin": 0.036589698698438713,
+        "Inner Sunset": 0.067654897151161,
+        "Hayes Valley": 0.010989957517342578,
+        "Haight Ashbury": 0.029222202728737965,
+        "Golden Gate Park": 0.009581731331610202,
+        "Glen Park": 0.026991082603395895,
+        "Financial District/South Beach": 0.0892424989819105,
+        "Chinatown": 0.024290881765627246,
+        "Castro/Upper Market": 0.061072763727911816,
+        "Bernal Heights": 0.0022768787863637974,
+        "Bayview Hunters Point": 0.020373015772502313
+      },
+      "zoning_share": {
+        "Residential": 0.01533305744443778,
+        "Mixed Use": 0.13755111369329004,
+        "Commercial": 0.14432283877641489,
+        "Industrial": 0.0066817578779501795,
+        "Public": 0.08614604816710218
+      }
+    },
+    {
+      "band": "0.5mi",
+      "area_sqm": 44498951.36492057,
+      "share_of_sf": 0.364610295115732,
+      "neighborhood_share": {
+        "Western Addition": 0.003011524404510024,
+        "West of Twin Peaks": 0.1220934172827914,
+        "Visitacion Valley": 0.01725719571408491,
+        "Twin Peaks": 0.02021631104572503,
+        "South of Market": 0.04210167426770886,
+        "Potrero Hill": 0.011183714520957275,
+        "Portola": 0.00020027523202052324,
+        "Outer Mission": 0.04014952244609598,
+        "Sunset/Parkside": 0.114438508267511,
+        "Oceanview/Merced/Ingleside": 0.04053640439769936,
+        "North Beach": 0.0054465978895989016,
+        "Noe Valley": 0.02326973883095258,
+        "Lone Mountain/USF": 0.0005931030515524829,
+        "Nob Hill": 0.014452767604306459,
+        "Mission Bay": 0.04021258369949078,
+        "Mission": 0.07843879597419998,
+        "Russian Hill": 0.00018884345831267834,
+        "Lakeshore": 0.02380409129538272,
+        "Tenderloin": 0.02120615940356989,
+        "Inner Sunset": 0.059842128902010995,
+        "Hayes Valley": 0.015986060143717062,
+        "Haight Ashbury": 0.02280262022119949,
+        "Golden Gate Park": 0.038120056218365415,
+        "Glen Park": 0.02465490036188083,
+        "Financial District/South Beach": 0.05066611561183225,
+        "Excelsior": 0.005173708933805989,
+        "Chinatown": 0.012666295607464899,
+        "Castro/Upper Market": 0.048208692620273025,
+        "Bernal Heights": 0.018941623024515127,
+        "Bayview Hunters Point": 0.015280640959756557
+      },
+      "zoning_share": {
+        "Residential": 0.025967510654820263,
+        "Mixed Use": 0.10282044614007023,
+        "Commercial": 0.07020038412451012,
+        "Industrial": 0.012701786999830423,
+        "Public": 0.1308319092784895
+      }
+    },
+    {
+      "band": "1mi",
+      "area_sqm": 97400518.13165604,
+      "share_of_sf": 0.7980689560339643,
+      "neighborhood_share": {
+        "Western Addition": 0.011935916663575581,
+        "West of Twin Peaks": 0.08129461016333549,
+        "Visitacion Valley": 0.014830692175191128,
+        "Twin Peaks": 0.01761373156459221,
+        "South of Market": 0.023523057265397763,
+        "Potrero Hill": 0.02573964916040662,
+        "Portola": 0.007936956938399561,
+        "Pacific Heights": 0.002254604841409616,
+        "Outer Richmond": 0.010073586876040756,
+        "Outer Mission": 0.0266911885570942,
+        "Sunset/Parkside": 0.11149060161983128,
+        "Oceanview/Merced/Ingleside": 0.027997241559052127,
+        "North Beach": 0.010706742460581347,
+        "Noe Valley": 0.02594630448226153,
+        "Lone Mountain/USF": 0.010973912090339741,
+        "Nob Hill": 0.010813867834158932,
+        "Mission Bay": 0.021611218799777537,
+        "Mission": 0.05006636075403802,
+        "Russian Hill": 0.009680254838516929,
+        "Marina": 0.00016842205880740637,
+        "Lakeshore": 0.040530778165198796,
+        "Tenderloin": 0.010440900187069176,
+        "McLaren Park": 0.006818018542889346,
+        "Japantown": 0.0011748512301584136,
+        "Inner Sunset": 0.03784162114307018,
+        "Hayes Valley": 0.01303479203413483,
+        "Haight Ashbury": 0.014798142196221562,
+        "Golden Gate Park": 0.04494350034917083,
+        "Inner Richmond": 0.006332866149560925,
+        "Glen Park": 0.01776745835624067,
+        "Financial District/South Beach": 0.029868562913494417,
+        "Excelsior": 0.028559653799276552,
+        "Chinatown": 0.005970954008520033,
+        "Castro/Upper Market": 0.02278422365777753,
+        "Bernal Heights": 0.027330368602364742,
+        "Bayview Hunters Point": 0.02435009493975135
+      },
+      "zoning_share": {
+        "Residential": 0.03203308344147275,
+        "Mixed Use": 0.06138734733040129,
+        "Commercial": 0.045218282169467335,
+        "Industrial": 0.01813657270727709,
+        "Public": 0.14648078522422905,
+        "Other": 0.0023244257856508536
+      }
+    }
+  ]
+}
