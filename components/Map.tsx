@@ -8,6 +8,7 @@ import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { TransitRings } from './TransitRings'
+import { LensInfoPanel } from './LensInfoPanel'
 import { isTransitAdjacent } from '@/lib/transit'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
@@ -132,6 +133,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   // only permits.
   const [mapMode, setMapMode] = useState<import('./MapModeSwitch').MapMode>('neighborhoods')
   const [transitOnly, setTransitOnly] = useState(false)
+  const [selectedZoning, setSelectedZoning] = useState<import('@/lib/cross-stats').ZoningCategory | null>(null)
+  const [selectedTransitBand, setSelectedTransitBand] = useState<import('@/lib/cross-stats').TransitBand | null>(null)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
   // the user can see which lot the project sits on.
@@ -505,8 +508,18 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         {/* Lens layers — at most one of these renders depending on mapMode.
             Sits below the choropleth + parcel + pins so it's background
             context, not a competing data layer. */}
-        {mapMode === 'zoning' && <ZoningOverlay />}
-        {mapMode === 'transit' && <TransitRings />}
+        {mapMode === 'zoning' && (
+          <ZoningOverlay
+            selectedCategory={selectedZoning}
+            onSelect={setSelectedZoning}
+          />
+        )}
+        {mapMode === 'transit' && (
+          <TransitRings
+            selectedBand={selectedTransitBand}
+            onSelect={setSelectedTransitBand}
+          />
+        )}
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
             visualization; above, only the navy stroke remains so neighborhood
             outlines stay visible while inspecting pins. */}
@@ -577,6 +590,158 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           openPermitPanel(id)
         }}
       />
+
+      {/* Lens info panels — opened by clicking a polygon in zoning or
+          transit mode. Both share LensInfoPanel chrome. */}
+      <ZoningCategoryPanel
+        category={selectedZoning}
+        crossStats={crossStats}
+        onClose={() => setSelectedZoning(null)}
+      />
+      <TransitBandPanel
+        band={selectedTransitBand}
+        crossStats={crossStats}
+        onClose={() => setSelectedTransitBand(null)}
+      />
     </div>
+  )
+}
+
+const ZONING_PALETTE: Record<string, string> = {
+  Residential: '#7d9b76',
+  'Mixed Use': '#b08968',
+  Commercial: '#5d7a99',
+  Industrial: '#67615a',
+  Public: '#8a6c87',
+  Other: '#a8a29e',
+}
+
+function fmtPct(n: number): string {
+  if (!Number.isFinite(n)) return '—'
+  if (n < 0.005) return '<1%'
+  return `${Math.round(n * 100)}%`
+}
+
+function ZoningCategoryPanel({
+  category,
+  crossStats,
+  onClose,
+}: {
+  category: import('@/lib/cross-stats').ZoningCategory | null
+  crossStats: import('@/lib/cross-stats').CrossStats | null
+  onClose: () => void
+}) {
+  const open = !!category
+  const row = category && crossStats
+    ? crossStats.zoning.find((r) => r.category === category)
+    : null
+  const topNhoods = row
+    ? Object.entries(row.neighborhood_share)
+        .filter(([, v]) => v > 0.005)
+        .sort((a, b) => (b[1] as number) - (a[1] as number))
+        .slice(0, 8)
+        .map(([nhood, share]) => ({
+          label: nhood,
+          value: fmtPct(share as number),
+          pct: share as number,
+          color: ZONING_PALETTE[category!] ?? '#9a4a31',
+        }))
+    : []
+  const transitRows = row
+    ? (
+        ['0.25mi', '0.5mi', '1mi'] as const
+      ).map((band) => ({
+        label: `Within ${band.replace('mi', ' mi')} of rail`,
+        value: fmtPct(row.transit_coverage[band] ?? 0),
+        pct: row.transit_coverage[band] ?? 0,
+        color: '#9a4a31',
+      }))
+    : []
+  return (
+    <LensInfoPanel
+      open={open}
+      eyebrow="Zoning category"
+      title={category ?? '—'}
+      subtitle={
+        row && row.share_of_sf > 0
+          ? `${fmtPct(row.share_of_sf)} of San Francisco's land area sits in ${category} zoning.`
+          : undefined
+      }
+      hero={
+        row
+          ? {
+              eyebrow: 'Share of SF',
+              value: fmtPct(row.share_of_sf),
+              detail: `${(row.area_sqm / 4046.8564224 / 1000).toFixed(1)}k acres`,
+            }
+          : undefined
+      }
+      primary={{ eyebrow: 'Top neighborhoods', rows: topNhoods }}
+      secondary={{ eyebrow: 'Transit reach', rows: transitRows }}
+      onClose={onClose}
+    />
+  )
+}
+
+function TransitBandPanel({
+  band,
+  crossStats,
+  onClose,
+}: {
+  band: import('@/lib/cross-stats').TransitBand | null
+  crossStats: import('@/lib/cross-stats').CrossStats | null
+  onClose: () => void
+}) {
+  const open = !!band
+  const row = band && crossStats
+    ? crossStats.transit_bands.find((r) => r.band === band)
+    : null
+  const topNhoods = row
+    ? Object.entries(row.neighborhood_share)
+        .filter(([, v]) => v > 0.005)
+        .sort((a, b) => (b[1] as number) - (a[1] as number))
+        .slice(0, 8)
+        .map(([nhood, share]) => ({
+          label: nhood,
+          value: fmtPct(share as number),
+          pct: share as number,
+          color: '#9a4a31',
+        }))
+    : []
+  const zoningRows = row
+    ? Object.entries(row.zoning_share)
+        .filter(([, v]) => typeof v === 'number' && v > 0.005)
+        .sort((a, b) => (b[1] as number) - (a[1] as number))
+        .map(([cat, share]) => ({
+          label: cat,
+          value: fmtPct(share as number),
+          pct: share as number,
+          color: ZONING_PALETTE[cat] ?? '#1c2438',
+        }))
+    : []
+  const bandLabel = band ? band.replace('mi', ' mile').replace('0.25', '¼').replace('0.5', '½') : '—'
+  return (
+    <LensInfoPanel
+      open={open}
+      eyebrow="Transit shed"
+      title={band ? `≤ ${bandLabel} of rail` : '—'}
+      subtitle={
+        row
+          ? `${fmtPct(row.share_of_sf)} of SF's land area is within walking distance of BART or Muni Metro at this radius.`
+          : undefined
+      }
+      hero={
+        row
+          ? {
+              eyebrow: 'Share of SF',
+              value: fmtPct(row.share_of_sf),
+              detail: `${(row.area_sqm / 4046.8564224 / 1000).toFixed(1)}k acres`,
+            }
+          : undefined
+      }
+      primary={{ eyebrow: 'Top neighborhoods', rows: topNhoods }}
+      secondary={{ eyebrow: 'Zoning mix in this band', rows: zoningRows }}
+      onClose={onClose}
+    />
   )
 }

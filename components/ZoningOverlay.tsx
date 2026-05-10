@@ -2,6 +2,7 @@
 import { GeoJSON } from 'react-leaflet'
 import { useEffect, useState } from 'react'
 import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
+import type { ZoningCategory } from '@/lib/cross-stats'
 
 /**
  * Toggleable zoning-districts layer. Fetches once on mount (cached for
@@ -54,7 +55,12 @@ function tooltipHtml(props: ZoningProperties): string {
   `
 }
 
-export function ZoningOverlay() {
+interface Props {
+  selectedCategory?: ZoningCategory | null
+  onSelect?: (cat: ZoningCategory) => void
+}
+
+export function ZoningOverlay({ selectedCategory = null, onSelect }: Props = {}) {
   const [geo, setGeo] = useState<ZoningGeo | null>(null)
 
   useEffect(() => {
@@ -72,18 +78,22 @@ export function ZoningOverlay() {
 
   return (
     <GeoJSON
-      key="zoning-overlay"
+      // Re-mount when selection changes so styles re-apply (highlight the
+      // selected category with bumped opacity + heavier stroke).
+      key={`zoning-overlay-${selectedCategory ?? 'none'}`}
       data={geo}
       pathOptions={{ className: 'zoning-poly' }}
       style={(feature) => {
         const gen = (feature?.properties as ZoningProperties | undefined)?.gen ?? 'Other'
         const fill = genColor(gen)
+        const isSel = selectedCategory != null && gen === selectedCategory
+        const isDimmed = selectedCategory != null && !isSel
         return {
           fillColor: fill,
-          fillOpacity: 0.18,
+          fillOpacity: isSel ? 0.42 : isDimmed ? 0.06 : 0.18,
           color: fill,
-          weight: 0.5,
-          opacity: 0.6,
+          weight: isSel ? 1.6 : 0.5,
+          opacity: isSel ? 1 : isDimmed ? 0.25 : 0.6,
           interactive: true,
         }
       }}
@@ -95,6 +105,14 @@ export function ZoningOverlay() {
           className: 'nhood-tooltip',
           opacity: 1,
         })
+        if (onSelect) {
+          layer.on({
+            click: () => {
+              const gen = (props.gen || 'Other') as ZoningCategory
+              onSelect(gen)
+            },
+          })
+        }
       }}
     />
   )
