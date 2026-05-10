@@ -20,11 +20,37 @@ file changes it requires.
 
 - Per-parcel zoning compliance calculations (height/setback math against a
   specific lot's geometry). District-level rules only.
-- Live GTFS pipelines. Stop lists stay hand-curated.
 - New backend services. All work fits in the existing Next.js + Vercel +
   Upstash + nightly-cron stack.
 - Property Information Map (PIM) parity. We surface a subset of zoning
   fields, not the full code section per district.
+
+## Data sources
+
+Pull from real datasets wherever a dataset exists. Hand-curate only the
+fields no dataset publishes. Each source is fetched once per night by a
+new build step in `scripts/build-cross-stats.ts`; outputs land in
+`/public/*.json` as static assets.
+
+| Concern | Source | Form | Refresh |
+|---|---|---|---|
+| Zoning polygons + `zoning_sim` + `gen` + `codesection` | DataSF `3i4a-hu95` | Socrata REST | nightly (already wired) |
+| Height & bulk per district | DataSF `h9wh-cg3m` (`gen_hght`, `height` strings like "240-S") | Socrata REST | nightly (new) |
+| Muni rail + bus stops | DataSF `i28k-bkz6` (Muni Stops) joined with `9exe-acju` (Muni Routes) | Socrata REST | nightly (new) |
+| BART stations | BART GTFS `stops.txt` from `bart.gov/schedules/developers/gtfs` | GTFS zip, no key | nightly (new) |
+| Caltrain stations (SF only) | Caltrain GTFS via 511 regional feed, hand-filtered to 3 SF stops | GTFS zip + key | nightly (new) |
+| Zoning rules table (FAR, density, uses, parking, setbacks, lot coverage) | **No SF dataset exists.** Hand-curated `lib/zoning-rules.ts` keyed by `zoning_sim`. Source-of-truth: SF Planning Code Articles 2/7. | TS literal | manual (twice/year cadence) |
+| State-law eligibility (SB-9 / AB-2011 / SB-35 / density bonus / ADU) | **No parcel-level dataset exists.** Derived from `zoning_sim` + heuristics. | derived | per build |
+
+Things explicitly checked and ruled out:
+- `srq6-hmpv` does not exist (404). No DataSF zoning-controls table.
+- California's `data.ca.gov` SB-35 dataset is per-jurisdiction (one row
+  for SF), refreshed annually — useless for parcel-level work.
+- GTFS `route_type` does not distinguish strict BRT from regular bus
+  (Van Ness BRT runs as routes 47/49 with `route_type=3` "Bus"; Geary
+  Rapid runs as 38R, also `route_type=3`). Strict BRT classification is
+  not derivable from GTFS — see §3a for the rapid-bus alternative we
+  use instead.
 
 ---
 
@@ -32,28 +58,64 @@ file changes it requires.
 
 ### 1a. Data model
 
-New module `lib/zoning-rules.ts` — a hand-curated lookup keyed by
-`zoning_sim` (the per-district code returned by DataSF `3i4a-hu95`, e.g.
-`RH-1`, `RM-2`, `NCT-3`, `C-3-O`, `PDR-1-G`). Each record:
+Two layers: dataset-pulled fields and hand-curated fields. The merge
+happens at build time in `scripts/build-cross-stats.ts`.
+
+**Dataset-pulled (auto-refreshed nightly):**
+
+- `zoning_sim`, `gen`, `name`, `codesection` — DataSF `3i4a-hu95`
+  (already pulled today via `/api/zoning`).
+- `height_ft`, `bulk_letter` — DataSF `h9wh-cg3m` (Height & Bulk
+  Districts). The dataset's `height` field is a string like `"40-X"` or
+  `"240-S"`; we split it into a numeric height (`gen_hght` is also
+  available) and a bulk-control letter. Note this is keyed by
+  height-and-bulk *polygon*, not by `zoning_sim` — we resolve via
+  spatial join (centroid of each zoning polygon vs. height polygons,
+  taking the dominant intersect). The result is height per zoning
+  district, persisted into `/public/zoning-heights.json`.
+
+**Hand-curated** (no dataset publishes these):
+
+- FAR cap
+- Density (units/lot for RH-* codes; DU/acre for RM/RC codes)
+- Principal permitted uses
+- Parking minimums
+- Setbacks (front / rear / side)
+- Lot coverage max %
+- State-law eligibility flags
+
+Source for hand-curated fields: SF Planning Code Articles 2 (residential),
+7 (NCD), and the per-district Sec. 209 (RH/RM), 712 (NC), 803 (Mixed
+Use), etc. Spot-check by sampling 5 codes against the published Code.
+
+The `codesection` returned by DataSF gives the correct article/section
+for each district, so the lookup workflow is: open `codesection` URL →
+transcribe rule values into `lib/zoning-rules.ts`.
+
+**Combined record** (built at runtime by merging dataset fetch with
+hand-curated module):
 
 ```ts
-interface ZoningRules {
-  code: string                     // 'RH-1'
-  gen: ZoningCategory              // 'Residential'
+interface ZoningRecord {
+  // Dataset-derived
+  code: string                     // 'RH-1' (from 3i4a-hu95)
+  gen: ZoningCategory              // 'Residential' (from 3i4a-hu95)
   name: string                     // 'Residential, House — One Family'
-  height_ft: { min?: number; max: number }
+  codesection: string              // (from 3i4a-hu95)
+  height_ft: { min?: number; max: number; bulk?: string }  // from h9wh-cg3m
+
+  // Hand-curated (lib/zoning-rules.ts)
   density: {
-    units_per_lot?: number         // RH-1 = 1, RH-2 = 2, RH-3 = 3
-    du_per_acre?: number           // for RM/RC codes
-    note?: string                  // free-form when neither applies
+    units_per_lot?: number
+    du_per_acre?: number
+    note?: string
   }
   far?: { max: number; note?: string }
-  principal_uses: string[]         // ['single-family dwelling', 'ADU', ...]
-  parking_min: { residential?: string; commercial?: string }  // narrative
+  principal_uses: string[]
+  parking_min: { residential?: string; commercial?: string }
   setbacks?: { front_ft?: number; rear_ft?: number; side_ft?: number }
   lot_coverage_max_pct?: number
   family_laws: FamilyLawEligibility[]
-  source: { article: string; section: string }   // e.g. 'Article 2 §209'
 }
 ```
 
@@ -61,9 +123,10 @@ Coverage target: every `zoning_sim` value present in the DataSF response
 (~70–90 codes). Fields not applicable to a code are omitted rather than
 zeroed.
 
-Spot-check by sampling 10 codes against the SF Planning Code in
-`Article 2`. The `codesectio` field already returned by the DataSF
-response gives us the correct article / section to verify against.
+Build-time validation in `scripts/build-cross-stats.ts`: every
+`zoning_sim` from DataSF must have a matching hand-curated record, or
+the build fails. Prevents new districts (post-Planning-Code amendment)
+from silently rendering as blank panels.
 
 ### 1b. Family-zoning law module
 
@@ -171,7 +234,7 @@ current value. Click → popover with the option chips that exist today.
 | `Min: 5+ homes`             | MIN_UNITS_OPTIONS buttons               |
 | `Recent: last 2 years`      | RECENT_ACTIVITY_OPTIONS buttons         |
 | `Completed: within 2y`      | COMPLETED_YEARS_OPTIONS buttons         |
-| `Transit-adjacent: off`     | rail-only checkbox + BRT-only checkbox  |
+| `Transit-adjacent: off`     | rail-only checkbox + rapid-bus-only checkbox |
 
 A new component `components/FilterPopover.tsx` handles positioning
 (absolute, anchored to the trigger via a ref) and keyboard dismissal
@@ -203,9 +266,9 @@ space:
 - `zoning` mode: all `gen` categories, with land share + transit
   coverage. Clicking a row opens the same `ZoningCategoryPanel` that a
   polygon click opens today (behavior parity, just a second entry point).
-- `transit` mode: the three rail bands plus the two new BRT bands (see
-  §3). Clicking a row selects the corresponding ring, same as clicking
-  the ring on the map.
+- `transit` mode: the three rail bands plus the two new rapid-bus bands
+  (see §3). Clicking a row selects the corresponding ring, same as
+  clicking the ring on the map.
 
 State: `browseOpen: boolean` hoisted into `Map.tsx`. Persisted in URL
 as `?browse=1` so a deep link can include it.
@@ -217,10 +280,10 @@ Existing keys stay (`stages`, `cats`, `minUnits`, `completedYears`,
 
 - `mode` — `neighborhoods` | `zoning` | `transit` (default
   `neighborhoods`, omitted when default).
-- `transit` — `rail` | `brt` | `both` | omitted when off.
+- `transit` — `rail` | `rapid-bus` | `both` | omitted when off.
 - `station` — selected station id (slug) when present.
 - `radius` — meters around the selected station (default 400m for rail,
-  160m for BRT).
+  160m for rapid bus).
 - `district` — selected `zoning_sim` (for `ZoningDistrictPanel` deep
   links).
 - `browse` — `1` when the browse panel is open.
@@ -231,109 +294,140 @@ Encoding rules unchanged from today: omit if equal to default.
 
 ## 3. Transit expansion
 
-### 3a. Stop list
+### 3a. Stop list — built from datasets
 
-`lib/transit.ts` is replaced by `lib/transit-stations.ts` with two
-exported arrays:
+`lib/transit.ts` is replaced by `lib/transit-stations.ts` exporting two
+arrays loaded from JSON files emitted at build time:
 
 ```ts
-interface TransitStation {
+interface RailStation {
   id: string                       // slug, e.g. 'bart-24th-mission'
   name: string
   lat: number
   lng: number
-  modes: ('bart' | 'muni-metro' | 'caltrain')[]   // for RAIL_STOPS
+  modes: ('bart' | 'muni-metro' | 'caltrain')[]
 }
 
-interface BrtStation {
+interface RapidBusStop {
   id: string
   name: string
   lat: number
   lng: number
-  corridor: 'van-ness' | 'geary'
+  routes: string[]                 // ['38R', '14R'] etc.
 }
 
-export const RAIL_STATIONS: TransitStation[]
-export const BRT_STATIONS: BrtStation[]
+export const RAIL_STATIONS: RailStation[]   // from /public/rail-stations.json
+export const RAPID_BUS_STOPS: RapidBusStop[] // from /public/rapid-bus-stops.json
 ```
 
-`RAIL_STATIONS` includes:
+Build-time fetch in `scripts/build-cross-stats.ts`:
 
-- All 9 SF + Daly City BART stations (already present).
-- Every Muni Metro station + surface stop on K, L, M, N, T, J — sourced
-  from SFMTA's published stop lists. Deduplicated where modes share a
-  platform (e.g. Castro = K/L/M).
-- Three SF Caltrain stations: 4th & King, 22nd Street, Bayshore.
+**Rail stations** — `RAIL_STATIONS` is the union of three sources,
+de-duplicated by proximity (<50m collapse to one station with merged
+`modes`):
 
-`BRT_STATIONS` includes:
+1. **BART** — fetch `https://www.bart.gov/dev/schedules/google_transit.zip`,
+   parse `stops.txt`. Filter to stops within the SF Bay County polygon
+   plus Daly City (since it serves SF's southern edge).
+2. **Muni Metro** — DataSF Socrata query against `i28k-bkz6` (Muni
+   Stops), joined to `9exe-acju` (Muni Routes) to filter `lineabbr` ∈
+   {K, L, M, N, T, J}. The join key is `route_id` (Muni stops carry the
+   routes they serve in `serviceplanningstoptype` or via the related
+   stops-routes table).
+3. **Caltrain** — fetch Caltrain GTFS via 511 regional feed
+   (`api.511.org/transit/datafeeds?operator_id=CT&api_key={KEY}`), parse
+   `stops.txt`, filter to the 3 SF stops by stop_id whitelist
+   (`70011`, `70012`, `70021` — 4th & King / 22nd St / Bayshore).
 
-- Van Ness BRT: every dedicated-lane station along Van Ness Ave between
-  Mission and Lombard.
-- Geary Rapid: limited-stop platforms along Geary between Market and
-  33rd Ave (treating as BRT-equivalent for shed purposes).
+**Rapid bus stops** — definition shifted from "strict BRT" to
+*SFMTA's Rapid Network*, since strict BRT is not derivable from any
+dataset. Pulled from DataSF `i28k-bkz6` joined to `9exe-acju`:
 
-Approximate coordinates (within ~50m) are adequate — we are computing
-walk-shed membership, not routing.
+> Routes whose `lineabbr` ends in `R` (e.g. 5R, 9R, 14R, 38R), plus the
+> 47 and 49 lines along the Van Ness BRT corridor.
+
+This captures the SFMTA-defined "frequent rapid" network. Trade-off
+acknowledged: it includes more lines than dictionary-strict BRT would,
+but every stop in the set has a dataset row, so the list updates itself
+when SFMTA modifies routes.
+
+The 47 / 49 *along Van Ness BRT* are the only line-segments where we
+add a hand-listed corridor filter — only stops between Mission and
+Lombard count for the rapid-bus shed (rest of the line is regular bus
+in mixed traffic). The corridor bounding box is in
+`lib/transit-stations.ts` as a constant.
+
+511 API key is provisioned via `process.env.FIVE_ELEVEN_API_KEY` (added
+to `.env.local` and Vercel env). Rate limit is 60 req/hour; the build
+fetches once per nightly run, well under the limit.
+
+Build outputs cached files at:
+- `/public/rail-stations.json`
+- `/public/rapid-bus-stops.json`
+- `/public/rail-rings.geojson`  (existing, regenerated)
+- `/public/rapid-bus-rings.geojson`  (new)
 
 ### 3b. Distance bands
 
 Two independent dimensions, computed by `scripts/build-cross-stats.ts`:
 
 - **Rail shed**: ¼ mi (400m), ½ mi (800m), 1 mi (1600m). Existing.
-- **BRT shed**: ⅛ mi (~160m, 0.1 mi), ¼ mi (400m). New.
+- **Rapid-bus shed**: 0.1 mi (~160m), ¼ mi (400m). New.
 
-Rationale: BRT walk-sheds are conventionally tighter than rail because
-the level-of-service gap to walking alternatives is smaller. Keeping
-the dimensions separate prevents the false equivalence of "transit-
-adjacent" lumping a frequent-bus parcel with a BART-platform parcel.
+Rationale: rapid-bus walk-sheds are conventionally tighter than rail —
+the service is good but not as schedule-defining as BART/Caltrain.
+Keeping the dimensions separate prevents the false equivalence of
+"transit-adjacent" lumping a frequent-bus parcel with a BART-platform
+parcel.
 
 The build script emits `public/transit-rings.geojson` (existing) plus a
-new `public/brt-rings.geojson`. The choropleth/transit lens renders both
-sets, with BRT rings drawn in a distinct hue (sage / gold differentiated
-from the existing burnt-sienna rail rings).
+new `public/rapid-bus-rings.geojson`. The transit lens renders both
+sets, with rapid-bus rings drawn in a distinct hue (sage / dusty gold)
+differentiated from the existing burnt-sienna rail rings.
 
 `isTransitAdjacent` becomes:
 
 ```ts
 export function railShed(coords, threshold = 800): boolean
-export function brtShed(coords, threshold = 160): boolean
+export function rapidBusShed(coords, threshold = 160): boolean
 export function transitAdjacent(coords, opts: {
   rail?: boolean       // default true
-  brt?: boolean        // default false
+  rapidBus?: boolean   // default false
   railThresholdM?: number
-  brtThresholdM?: number
+  rapidBusThresholdM?: number
 }): boolean
 ```
 
 The existing single `transitOnly` filter is replaced by two booleans in
-`Map.tsx` state — `railOnly` and `brtOnly` — both surfaced inside the
-"Transit-adjacent" popover.
+`Map.tsx` state — `railOnly` and `rapidBusOnly` — both surfaced inside
+the "Transit-adjacent" popover.
 
 ### 3c. Per-station filter via map click
 
 Render station markers on the map when `mapMode === 'transit'`:
 
 - Rail stations as small filled navy circles.
-- BRT stations as small open navy squares.
-- Tooltip on hover: station name + modes.
+- Rapid-bus stops as small open navy squares.
+- Tooltip on hover: station name + modes/routes.
 
 New component `components/StationMarkers.tsx`. State lifts to `Map.tsx`:
-`selectedStation: { kind: 'rail' | 'brt'; id: string } | null` and
+`selectedStation: { kind: 'rail' | 'rapid-bus'; id: string } | null` and
 `stationRadiusM: number`.
 
 Clicking a station:
 
 1. Sets `selectedStation`.
 2. Renders a single circle ring around it at `stationRadiusM` (default
-   400 for rail, 160 for BRT) using a new variant of `TransitRings`.
+   400 for rail, 160 for rapid bus) using a new variant of
+   `TransitRings`.
 3. Filters visible permits to those within the radius (in addition to
    any other active filters).
 4. Opens a small `LensInfoPanel` (reusing the existing component) with:
-   - Station name + modes
+   - Station name + modes/routes
    - Permit count in the radius
    - Top zoning categories in the radius
    - A radius slider matching the global bands: 400 / 800 / 1600m for
-     rail; 160 / 400m for BRT.
+     rail; 160 / 400m for rapid bus.
 
 Click anywhere off the station, or the panel close button, clears the
 selection.
@@ -342,7 +436,8 @@ selection.
 
 `scripts/build-cross-stats.ts` extension:
 
-- Emit `transit_bands_brt` alongside the existing `transit_bands`.
+- Emit `transit_bands_rapid_bus` alongside the existing `transit_bands`
+  (rail).
 - Add `family_law_eligibility` per zoning category — a count of permits
   in eligible districts grouped by law, used for editorial copy.
 
@@ -412,9 +507,10 @@ New unit-test files:
   height/density values.
 - `__tests__/family-zoning.test.ts` — `permitLawHeuristic` fixtures
   covering each `FamilyLaw` enum and a "no laws apply" case.
-- `__tests__/transit-stations.test.ts` — `railShed` and `brtShed`
-  boundary tests at the threshold; verify Caltrain and Van Ness BRT
-  stops are matched.
+- `__tests__/transit-stations.test.ts` — `railShed` and
+  `rapidBusShed` boundary tests at the threshold; verify Caltrain
+  stations and Rapid Network stops are matched. Mock the build-time
+  fetches with fixture JSON so tests don't hit DataSF or 511.
 - `__tests__/clustering.test.ts` — render `Map` at z 13 with mock permits;
   assert cluster bubbles appear and individual pins do not.
 
@@ -428,10 +524,15 @@ new dual-shed API.
 Each item ships independently behind no feature flag — they're additive
 and non-breaking from the user's perspective. Suggested merge order:
 
-1. Transit data + dual-shed (foundation; `cross-stats` rebuild).
-2. Zoning rules + family-zoning module + new district panel.
-3. Filter popovers + browse panel.
-4. Clustering wiring.
+1. **Build-pipeline plumbing** — extend `scripts/build-cross-stats.ts`
+   to fetch from `h9wh-cg3m`, `i28k-bkz6`, `9exe-acju`, BART GTFS, and
+   Caltrain GTFS. Add `FIVE_ELEVEN_API_KEY` to `.env.local` and Vercel
+   env. Emit the new JSON/GeoJSON outputs into `/public`. No UI yet.
+2. Transit data + dual-shed (consumes #1).
+3. Zoning rules (hand-curated module + `h9wh-cg3m` heights merge) +
+   family-zoning module + new district panel.
+4. Filter popovers + browse panel.
+5. Clustering wiring.
 
 Order minimizes merge conflicts: each later slice touches `Map.tsx`
 state and `FilterPanel` props, so doing the most invasive (filter UI)
