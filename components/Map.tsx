@@ -8,7 +8,7 @@ import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { ZoningDistrictPanel } from './ZoningDistrictPanel'
-import { TransitRings } from './TransitRings'
+import { TransitCorridors } from './TransitCorridors'
 import { LensInfoPanel } from './LensInfoPanel'
 import { StationMarkers, type SelectedStation } from './StationMarkers'
 import { RAIL_STATIONS, RAPID_BUS_STOPS, withinStationRadius, RAIL_THRESHOLD_M, RAPID_BUS_THRESHOLD_M, transitAdjacent, loadStations } from '@/lib/transit-stations'
@@ -127,7 +127,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     zoningSim: string; gen: string
   } | null>(null)
   const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
-  const [selectedTransitBand, setSelectedTransitBand] = useState<import('@/lib/cross-stats').TransitBand | null>(null)
   const [browseOpen, setBrowseOpen] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
@@ -580,10 +579,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         )}
         {mapMode === 'transit' && (
           <>
-            <TransitRings selectedBand={selectedTransitBand} onSelect={setSelectedTransitBand} />
+            <TransitCorridors />
             <StationMarkers show onSelect={(s) => {
               setSelectedStation(s)
-              // Default radius depends on station kind
               setStationRadiusM(s.kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
             }} />
           </>
@@ -670,7 +668,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           setBrowseOpen(false)
           void cat
         }}
-        onSelectTransitBand={(b) => { setSelectedTransitBand(b); setBrowseOpen(false) }}
+        onSelectTransitBand={(b) => { void b; setBrowseOpen(false) }}
       />
       <AboutLink />
       <CoffeeButton />
@@ -695,11 +693,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         bulk={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.bulk : undefined}
         onClose={() => setSelectedZoningDistrict(null)}
       />
-      <TransitBandPanel
-        band={selectedTransitBand}
-        crossStats={crossStats}
-        onClose={() => setSelectedTransitBand(null)}
-      />
       <StationPanel
         selected={selectedStation}
         radiusM={stationRadiusM}
@@ -708,84 +701,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         permits={filteredPermits}
       />
     </div>
-  )
-}
-
-const ZONING_PALETTE: Record<string, string> = {
-  Residential: '#7d9b76',
-  'Mixed Use': '#b08968',
-  Commercial: '#5d7a99',
-  Industrial: '#67615a',
-  Public: '#8a6c87',
-  Other: '#a8a29e',
-}
-
-function fmtPct(n: number): string {
-  if (!Number.isFinite(n)) return '—'
-  if (n < 0.005) return '<1%'
-  return `${Math.round(n * 100)}%`
-}
-
-function TransitBandPanel({
-  band,
-  crossStats,
-  onClose,
-}: {
-  band: import('@/lib/cross-stats').TransitBand | null
-  crossStats: import('@/lib/cross-stats').CrossStats | null
-  onClose: () => void
-}) {
-  const open = !!band
-  const row = band && crossStats
-    ? crossStats.transit_bands.find((r) => r.band === band)
-    : null
-  const topNhoods = row
-    ? Object.entries(row.neighborhood_share)
-        .filter(([, v]) => v > 0.005)
-        .sort((a, b) => (b[1] as number) - (a[1] as number))
-        .slice(0, 8)
-        .map(([nhood, share]) => ({
-          label: nhood,
-          value: fmtPct(share as number),
-          pct: share as number,
-          color: '#9a4a31',
-        }))
-    : []
-  const zoningRows = row
-    ? Object.entries(row.zoning_share)
-        .filter(([, v]) => typeof v === 'number' && v > 0.005)
-        .sort((a, b) => (b[1] as number) - (a[1] as number))
-        .map(([cat, share]) => ({
-          label: cat,
-          value: fmtPct(share as number),
-          pct: share as number,
-          color: ZONING_PALETTE[cat] ?? '#1c2438',
-        }))
-    : []
-  const bandLabel = band ? band.replace('mi', ' mile').replace('0.25', '¼').replace('0.5', '½') : '—'
-  return (
-    <LensInfoPanel
-      open={open}
-      eyebrow="Transit shed"
-      title={band ? `≤ ${bandLabel} of rail` : '—'}
-      subtitle={
-        row
-          ? `${fmtPct(row.share_of_sf)} of SF's land area is within walking distance of BART or Muni Metro at this radius.`
-          : undefined
-      }
-      hero={
-        row
-          ? {
-              eyebrow: 'Share of SF',
-              value: fmtPct(row.share_of_sf),
-              detail: `${(row.area_sqm / 4046.8564224 / 1000).toFixed(1)}k acres`,
-            }
-          : undefined
-      }
-      primary={{ eyebrow: 'Top neighborhoods', rows: topNhoods }}
-      secondary={{ eyebrow: 'Zoning mix in this band', rows: zoningRows }}
-      onClose={onClose}
-    />
   )
 }
 
