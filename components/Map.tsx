@@ -54,7 +54,7 @@ const URL_DEFAULTS = {
  * Drives the pin-opacity CSS variable directly on the wrapper element each
  * zoom frame, bypassing React so we don't re-render the whole map tree at
  * 60Hz during a pinch/scroll-zoom. React state only catches the settled
- * zoom on `zoomend` so gates like ZoomGatedPins update once per gesture.
+ * zoom on `zoomend` so the mapZoom state updates once per gesture.
  */
 function ZoomTracker({
   onSettled,
@@ -85,30 +85,6 @@ function ZoomTracker({
   return null
 }
 
-/**
- * Renders pins above PIN_FADE_MIN. Actual opacity ramp is applied via the
- * --pin-opacity CSS variable set on the outer wrapper, so Leaflet's
- * DivIcon DOM (attached to the marker-pane, not as React children) picks
- * it up through inheritance.
- */
-function ZoomGatedPins({
-  visiblePermits,
-  onSelect,
-  zoom,
-}: {
-  visiblePermits: Permit[]
-  onSelect: (id: string) => void
-  zoom: number
-}) {
-  if (pinOpacity(zoom) <= 0) return null
-  return (
-    <>
-      {visiblePermits.map((p) => (
-        <PermitMarker key={p.permit_number} permit={p} onSelect={onSelect} />
-      ))}
-    </>
-  )
-}
 
 export type MinUnitsFilter = 0 | 2 | 5 | 25 | 100
 export type CompletedYearsFilter = 0 | 1 | 2 | 5
@@ -647,11 +623,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           spiderfyOnMaxZoom={false}
           showCoverageOnHover={false}
         >
-          <ZoomGatedPins
-            visiblePermits={visiblePermits}
-            onSelect={openPermitPanel}
-            zoom={mapZoom}
-          />
+          {visiblePermits.map((p) => (
+            <PermitMarker key={p.permit_number} permit={p} onSelect={openPermitPanel} />
+          ))}
         </MarkerClusterGroup>
       </MapContainer>
       <FilterPanel
