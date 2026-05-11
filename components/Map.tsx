@@ -197,6 +197,19 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     const raParam = Number(params.get('recentActivity'))
     if ([0, 6, 12, 24, 60].includes(raParam)) setRecentActivity(raParam as RecentActivityFilter)
 
+    const transitParam = params.get('transit')
+    if (transitParam === 'rail' || transitParam === 'both') setRailOnly(true)
+    if (transitParam === 'rapid-bus' || transitParam === 'both') setRapidBusOnly(true)
+
+    const stationParam = params.get('station')
+    if (stationParam) {
+      const kind: SelectedStation['kind'] = stationParam.startsWith('bus-') ? 'rapid-bus' : 'rail'
+      setSelectedStation({ kind, id: stationParam })
+    }
+
+    const radiusParam = Number(params.get('radius'))
+    if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
+
     const onPop = () => {
       const sp = new URLSearchParams(window.location.search)
       setOpenPermit(sp.get('permit'))
@@ -226,8 +239,21 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     setOrDelete('minUnits', String(minUnits), '2')
     setOrDelete('completedYears', String(completedYears), '2')
     setOrDelete('recentActivity', String(recentActivity), '24')
+
+    let transitValue = ''
+    if (railOnly && rapidBusOnly) transitValue = 'both'
+    else if (railOnly) transitValue = 'rail'
+    else if (rapidBusOnly) transitValue = 'rapid-bus'
+    setOrDelete('transit', transitValue, '')
+
+    setOrDelete('station', selectedStation?.id ?? '', '')
+
+    // Default radius depends on station kind. Omit when at default.
+    const defaultRadius = selectedStation?.kind === 'rapid-bus' ? RAPID_BUS_THRESHOLD_M : RAIL_THRESHOLD_M
+    setOrDelete('radius', selectedStation ? String(stationRadiusM) : '', selectedStation ? String(defaultRadius) : '')
+
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, railOnly, rapidBusOnly, selectedStation, stationRadiusM])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
