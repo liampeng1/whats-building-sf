@@ -9,7 +9,7 @@ import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { TransitRings } from './TransitRings'
 import { LensInfoPanel } from './LensInfoPanel'
-import { isTransitAdjacent } from '@/lib/transit'
+import { transitAdjacent } from '@/lib/transit-stations'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
@@ -385,7 +385,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           const delta = netDelta(p.existing_units, p.proposed_units)
           if (delta == null || delta < minUnits) return false
         }
-        if (transitOnly && !isTransitAdjacent(p.location?.coordinates)) return false
+        if (transitOnly && !transitAdjacent(p.location?.coordinates)) return false
         return true
       }),
     [permits, selectedStages, selectedCategories, minUnits, transitOnly],
