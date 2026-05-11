@@ -526,13 +526,28 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         count: Math.round(row.share_of_sf * 100),
       }))
     }
-    // transit lens
-    return (crossStats?.transit_bands ?? []).map((row) => ({
-      id: row.band,
-      name: `≤ ${row.band} of rail`,
-      count: Math.round(row.share_of_sf * 100),
-    }))
-  }, [mapMode, crossStats, permitsByNhood])
+    // transit lens — rank stations by permit count within their shed
+    const ranked: SummaryCardItem[] = []
+    for (const s of RAIL_STATIONS) {
+      let count = 0
+      for (const p of filteredPermits) {
+        const c = p.location?.coordinates
+        if (!c) continue
+        if (withinStationRadius(c, s, RAIL_THRESHOLD_M)) count++
+      }
+      if (count > 0) ranked.push({ id: s.id, name: s.name, count })
+    }
+    for (const s of RAPID_BUS_STOPS) {
+      let count = 0
+      for (const p of filteredPermits) {
+        const c = p.location?.coordinates
+        if (!c) continue
+        if (withinStationRadius(c, s, RAPID_BUS_THRESHOLD_M)) count++
+      }
+      if (count > 0) ranked.push({ id: s.id, name: s.name, count })
+    }
+    return ranked.sort((a, b) => b.count - a.count)
+  }, [mapMode, crossStats, permitsByNhood, filteredPermits])
 
   const summarySentence = useMemo(() => {
     const cats =
@@ -732,7 +747,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onItemClick={(id) => {
           if (mapMode === 'neighborhoods') openNhoodPanel(id)
           else if (mapMode === 'zoning') setSelectedZoningDistrict({ zoningSim: id, gen: '' })
-          // transit lens: clicking a band currently does nothing; no-op
+          else if (mapMode === 'transit') {
+            const kind: SelectedStation['kind'] = id.startsWith('bus-') ? 'rapid-bus' : 'rail'
+            setSelectedStation({ kind, id })
+            setStationRadiusM(kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
+          }
         }}
       />
       <LensRail
