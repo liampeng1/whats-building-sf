@@ -60,10 +60,8 @@ interface Props {
   rapidBusOnly: boolean
   onToggleRail: () => void
   onToggleRapidBus: () => void
-  // TODO: Task 4.3 will repurpose these props when BrowsePanel is created
-  crossStats?: import('@/lib/cross-stats').CrossStats | null
-  permitsByNhood?: Record<string, import('@/lib/types').Permit[]>
-  onSelectNhood?: (name: string) => void
+  browseOpen: boolean
+  onToggleBrowse: () => void
   visibleCount: number
   totalCount: number
 }
@@ -237,6 +235,8 @@ export function FilterPanel({
   rapidBusOnly,
   onToggleRail,
   onToggleRapidBus,
+  browseOpen,
+  onToggleBrowse,
   visibleCount,
   totalCount,
 }: Props) {
@@ -432,10 +432,23 @@ export function FilterPanel({
           </div>
         </div>
 
-        {/* Map-mode segmented control. Always visible so you can switch
-            lens without interacting with the filter row. */}
-        <div className="px-4 pb-3">
+        {/* Map-mode segmented control + Browse-all trigger. Always visible
+            so you can switch lens or open the browse drawer without
+            expanding the filter row. */}
+        <div className="px-4 pb-3 flex items-center gap-2">
           <MapModeSwitch mode={mapMode} onChange={onModeChange} />
+          <button
+            type="button"
+            onClick={onToggleBrowse}
+            aria-pressed={browseOpen}
+            className={`text-[11px] uppercase tracking-wider px-2 py-1 rounded border transition ${
+              browseOpen
+                ? 'bg-paper text-ink border-paper'
+                : 'border-paper/30 text-paper hover:bg-paper/10'
+            }`}
+          >
+            Browse all
+          </button>
         </div>
       </div>
 

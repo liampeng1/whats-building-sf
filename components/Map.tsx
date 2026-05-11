@@ -17,6 +17,7 @@ import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { pointInGeometry } from '@/lib/point-in-polygon'
 import { FilterPanel } from './FilterPanel'
+import { BrowsePanel } from './BrowsePanel'
 import { PermitPanel } from './PermitPanel'
 import { CoffeeButton } from './CoffeeButton'
 import { AboutLink } from './AboutLink'
@@ -143,6 +144,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   } | null>(null)
   const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
   const [selectedTransitBand, setSelectedTransitBand] = useState<import('@/lib/cross-stats').TransitBand | null>(null)
+  const [browseOpen, setBrowseOpen] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
   // the user can see which lot the project sits on.
@@ -227,6 +229,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       setSelectedZoningDistrict({ zoningSim: districtParam, gen: '' })
     }
 
+    if (params.get('browse') === '1') setBrowseOpen(true)
+
     const onPop = () => {
       const sp = new URLSearchParams(window.location.search)
       setOpenPermit(sp.get('permit'))
@@ -271,8 +275,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
 
     setOrDelete('district', selectedZoningDistrict?.zoningSim ?? '', '')
 
+    setOrDelete('browse', browseOpen ? '1' : '', '')
+
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, railOnly, rapidBusOnly, selectedStation, stationRadiusM, selectedZoningDistrict])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, railOnly, rapidBusOnly, selectedStation, stationRadiusM, selectedZoningDistrict, browseOpen])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
@@ -638,11 +644,30 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         rapidBusOnly={rapidBusOnly}
         onToggleRail={() => setRailOnly((v) => !v)}
         onToggleRapidBus={() => setRapidBusOnly((v) => !v)}
-        crossStats={crossStats}
-        permitsByNhood={permitsByNhood}
-        onSelectNhood={openNhoodPanel}
+        browseOpen={browseOpen}
+        onToggleBrowse={() => setBrowseOpen((v) => !v)}
         visibleCount={visiblePermits.length}
         totalCount={permits.length}
+      />
+      <BrowsePanel
+        open={browseOpen}
+        onClose={() => setBrowseOpen(false)}
+        mode={mapMode}
+        crossStats={crossStats}
+        permitsByNhood={permitsByNhood}
+        onSelectNhood={(n) => { openNhoodPanel(n); setBrowseOpen(false) }}
+        onSelectZoning={(cat) => {
+          // crossStats has zoning by `gen` category — we need the user to be able
+          // to drill into a representative district. For now, just open the same
+          // category-level panel that clicking a polygon used to trigger. Since
+          // we replaced ZoningCategoryPanel with ZoningDistrictPanel keyed on
+          // zoning_sim, clicking a category row will be a no-op until a future
+          // task wires it through. Close the browse panel anyway so the user can
+          // pick a polygon directly.
+          setBrowseOpen(false)
+          void cat
+        }}
+        onSelectTransitBand={(b) => { setSelectedTransitBand(b); setBrowseOpen(false) }}
       />
       <AboutLink />
       <CoffeeButton />
