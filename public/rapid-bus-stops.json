@@ -1,1 +1,2213 @@
-[]
+[
+  {
+    "id": "bus-11th-st-harrison-st",
+    "name": "11th St & Harrison St",
+    "lat": 37.770691,
+    "lng": -122.412526,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-11th-st-harrison-st",
+    "name": "11th St & Harrison St",
+    "lat": 37.770557,
+    "lng": -122.412492,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-11th-st-market-st",
+    "name": "11th St & Market St",
+    "lat": 37.775368,
+    "lng": -122.418575,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-11th-st-market-st",
+    "name": "11th St & Market St",
+    "lat": 37.7755,
+    "lng": -122.41852,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-holloway-ave",
+    "name": "19th Ave & Holloway Ave",
+    "lat": 37.72111,
+    "lng": -122.475302,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-judah-st",
+    "name": "19th Ave & Judah St",
+    "lat": 37.7614,
+    "lng": -122.47711,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-judah-st",
+    "name": "19th Ave & Judah St",
+    "lat": 37.76177,
+    "lng": -122.476955,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-lincoln-way",
+    "name": "19th Ave & Lincoln Way",
+    "lat": 37.765375,
+    "lng": -122.477404,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-noriega-st",
+    "name": "19th Ave & Noriega St",
+    "lat": 37.75392,
+    "lng": -122.47653,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-noriega-st",
+    "name": "19th Ave & Noriega St",
+    "lat": 37.75432,
+    "lng": -122.476368,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-avenue-holloway-st",
+    "name": "19th Avenue & Holloway St",
+    "lat": 37.72119,
+    "lng": -122.475153,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-quintara-st",
+    "name": "19th Ave & Quintara St",
+    "lat": 37.74853,
+    "lng": -122.4759,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-quintara-st",
+    "name": "19th Ave & Quintara St",
+    "lat": 37.7483,
+    "lng": -122.47614,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-taraval-st",
+    "name": "19th Ave & Taraval St",
+    "lat": 37.74331,
+    "lng": -122.47554,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-taraval-st",
+    "name": "19th Ave & Taraval St",
+    "lat": 37.742586,
+    "lng": -122.475737,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-winston-dr",
+    "name": "19th Ave & Winston Dr",
+    "lat": 37.727258,
+    "lng": -122.475098,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-19th-ave-winston-dr",
+    "name": "19th Ave & Winston Dr",
+    "lat": 37.72719,
+    "lng": -122.47468,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-48th-ave-point-lobos-ave",
+    "name": "48th Ave & Point Lobos Ave",
+    "lat": 37.779023,
+    "lng": -122.509411,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-arleta-ave",
+    "name": "Bayshore Blvd & Arleta Ave",
+    "lat": 37.712125,
+    "lng": -122.403167,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-cortland-ave",
+    "name": "Bayshore Blvd & Cortland Ave",
+    "lat": 37.73946,
+    "lng": -122.407122,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-cortland-ave",
+    "name": "Bayshore Blvd & Cortland Ave",
+    "lat": 37.73986,
+    "lng": -122.40677,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-flower-st",
+    "name": "Bayshore Blvd & Flower St",
+    "lat": 37.742377,
+    "lng": -122.405609,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-leland-ave",
+    "name": "Bayshore Blvd & Leland Ave",
+    "lat": 37.710991,
+    "lng": -122.404041,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-oakdale-ave",
+    "name": "Bayshore Blvd & Oakdale Ave",
+    "lat": 37.743046,
+    "lng": -122.405402,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-bayshore-blvd-visitacion-ave",
+    "name": "Bayshore Blvd & Visitacion Ave",
+    "lat": 37.71062,
+    "lng": -122.40389,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-beale-st-mission-st",
+    "name": "Beale St & Mission St",
+    "lat": 37.791939,
+    "lng": -122.396879,
+    "routes": [
+      "38R",
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-brookdale-ave-blythdale-ave",
+    "name": "Brookdale Ave & Blythdale Ave",
+    "lat": 37.711331,
+    "lng": -122.422289,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-brookdale-ave-blythdale-ave",
+    "name": "Brookdale Ave & Blythdale Ave",
+    "lat": 37.711304,
+    "lng": -122.422231,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-cabrillo-st-la-playa-st",
+    "name": "Cabrillo St & La Playa St",
+    "lat": 37.773562,
+    "lng": -122.50998,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-california-st-12th-ave",
+    "name": "California St & 12th Ave",
+    "lat": 37.784454,
+    "lng": -122.471103,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-california-st-6th-ave",
+    "name": "California St & 6th Ave",
+    "lat": 37.785069,
+    "lng": -122.464641,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-california-st-7th-ave",
+    "name": "California St & 7th Ave",
+    "lat": 37.784819,
+    "lng": -122.465432,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-crossover-dr-lincoln-st",
+    "name": "Crossover Dr & Lincoln St",
+    "lat": 37.765544,
+    "lng": -122.477243,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-daly-city-bart-parking-lot-e",
+    "name": "Daly City BART Parking Lot E",
+    "lat": 37.705879,
+    "lng": -122.468763,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-daly-city-bart-station",
+    "name": "Daly City BART Station",
+    "lat": 37.705964,
+    "lng": -122.469023,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-daly-city-bart-station",
+    "name": "Daly City BART Station",
+    "lat": 37.706273,
+    "lng": -122.468632,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-fremont-st-market-st",
+    "name": "Fremont St & Market St",
+    "lat": 37.791645,
+    "lng": -122.398151,
+    "routes": [
+      "38R",
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-10th-ave",
+    "name": "Fulton St & 10th Ave",
+    "lat": 37.77325,
+    "lng": -122.46761,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-10th-ave",
+    "name": "Fulton St & 10th Ave",
+    "lat": 37.77335,
+    "lng": -122.46839,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-18th-ave",
+    "name": "Fulton St & 18th Ave",
+    "lat": 37.772959,
+    "lng": -122.476776,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-18th-ave",
+    "name": "Fulton St & 18th Ave",
+    "lat": 37.772834,
+    "lng": -122.476524,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-22nd-ave",
+    "name": "Fulton St & 22nd Ave",
+    "lat": 37.77276,
+    "lng": -122.48134,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-22nd-ave",
+    "name": "Fulton St & 22nd Ave",
+    "lat": 37.77266,
+    "lng": -122.48061,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-25th-ave",
+    "name": "Fulton St & 25th Ave",
+    "lat": 37.772591,
+    "lng": -122.484306,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-25th-ave",
+    "name": "Fulton St & 25th Ave",
+    "lat": 37.772547,
+    "lng": -122.4841,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-28th-ave",
+    "name": "Fulton St & 28th Ave",
+    "lat": 37.77235,
+    "lng": -122.48717,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-s-t-28th-ave",
+    "name": "Fulton S T& 28th Ave",
+    "lat": 37.772474,
+    "lng": -122.487504,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-30th-ave",
+    "name": "Fulton St & 30th Ave",
+    "lat": 37.77224,
+    "lng": -122.48919,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-s-t-30th-ave",
+    "name": "Fulton S T& 30th Ave",
+    "lat": 37.772375,
+    "lng": -122.489624,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-33rd-ave",
+    "name": "Fulton St & 33rd Ave",
+    "lat": 37.7721,
+    "lng": -122.49288,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-33rd-ave",
+    "name": "Fulton St & 33rd Ave",
+    "lat": 37.77223,
+    "lng": -122.49318,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-36th-ave",
+    "name": "Fulton St & 36th Ave",
+    "lat": 37.77208,
+    "lng": -122.49634,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-37th-ave",
+    "name": "Fulton St & 37th Ave",
+    "lat": 37.77192,
+    "lng": -122.49679,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-40th-ave",
+    "name": "Fulton St & 40th Ave",
+    "lat": 37.77179,
+    "lng": -122.49991,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-40th-ave",
+    "name": "Fulton St & 40th Ave",
+    "lat": 37.77188,
+    "lng": -122.50034,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-43rd-ave",
+    "name": "Fulton St & 43rd Ave",
+    "lat": 37.771736,
+    "lng": -122.503537,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-43rd-ave",
+    "name": "Fulton St & 43rd Ave",
+    "lat": 37.771612,
+    "lng": -122.503296,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-46th-ave",
+    "name": "Fulton St & 46th Ave",
+    "lat": 37.77148,
+    "lng": -122.50631,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-46th-ave",
+    "name": "Fulton St & 46th Ave",
+    "lat": 37.77159,
+    "lng": -122.50704,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-6th-ave",
+    "name": "Fulton St & 6th Ave",
+    "lat": 37.773639,
+    "lng": -122.463848,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-6th-ave",
+    "name": "Fulton St & 6th Ave",
+    "lat": 37.773532,
+    "lng": -122.463837,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-8th-ave",
+    "name": "Fulton St & 8th Ave",
+    "lat": 37.773318,
+    "lng": -122.465739,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-8th-ave",
+    "name": "Fulton St & 8th Ave",
+    "lat": 37.77347,
+    "lng": -122.466049,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-arguello-blvd",
+    "name": "Fulton St & Arguello Blvd",
+    "lat": 37.774354,
+    "lng": -122.458416,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-arguello-blvd",
+    "name": "Fulton St & Arguello Blvd",
+    "lat": 37.774282,
+    "lng": -122.458003,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-la-playa-st",
+    "name": "Fulton St & La Playa St",
+    "lat": 37.77134,
+    "lng": -122.50939,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-masonic-ave",
+    "name": "Fulton St & Masonic Ave",
+    "lat": 37.775773,
+    "lng": -122.446289,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-masonic-ave",
+    "name": "Fulton St & Masonic Ave",
+    "lat": 37.775844,
+    "lng": -122.446404,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-parker-ave",
+    "name": "Fulton St & Parker Ave",
+    "lat": 37.775014,
+    "lng": -122.452868,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-park-presidio-blvd",
+    "name": "Fulton St & Park Presidio Blvd",
+    "lat": 37.77319,
+    "lng": -122.47218,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-park-presidio-blvd",
+    "name": "Fulton St & Park Presidio Blvd",
+    "lat": 37.773067,
+    "lng": -122.471699,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-fulton-st-shrader-st",
+    "name": "Fulton St & Shrader St",
+    "lat": 37.77499,
+    "lng": -122.45238,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-20th-ave",
+    "name": "Geary Blvd & 20th Ave",
+    "lat": 37.780355,
+    "lng": -122.479599,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-20th-ave",
+    "name": "Geary Blvd & 20th Ave",
+    "lat": 37.780319,
+    "lng": -122.479232,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-25th-ave",
+    "name": "Geary Blvd & 25th Ave",
+    "lat": 37.780077,
+    "lng": -122.484562,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-25th-ave",
+    "name": "Geary Blvd & 25th Ave",
+    "lat": 37.78022,
+    "lng": -122.48461,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-33rd-ave",
+    "name": "Geary Blvd & 33rd Ave",
+    "lat": 37.779798,
+    "lng": -122.493445,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-33rd-ave",
+    "name": "Geary Blvd & 33rd Ave",
+    "lat": 37.779574,
+    "lng": -122.493399,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-36th-ave",
+    "name": "Geary Blvd & 36th Ave",
+    "lat": 37.779671,
+    "lng": -122.496402,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-36th-ave",
+    "name": "Geary Blvd & 36th Ave",
+    "lat": 37.779439,
+    "lng": -122.49662,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-39th-ave",
+    "name": "Geary Blvd & 39th Ave",
+    "lat": 37.779473,
+    "lng": -122.500677,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-39th-ave",
+    "name": "Geary Blvd & 39th Ave",
+    "lat": 37.779286,
+    "lng": -122.499829,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-42nd-ave",
+    "name": "Geary Blvd & 42nd Ave",
+    "lat": 37.779151,
+    "lng": -122.502775,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-45th-ave",
+    "name": "Geary Blvd & 45th Ave",
+    "lat": 37.779043,
+    "lng": -122.506259,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-6th-ave",
+    "name": "Geary Blvd & 6th Ave",
+    "lat": 37.781,
+    "lng": -122.464125,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-6th-ave",
+    "name": "Geary Blvd & 6th Ave",
+    "lat": 37.78109,
+    "lng": -122.464492,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-arguello-blvd",
+    "name": "Geary Blvd & Arguello Blvd",
+    "lat": 37.781313,
+    "lng": -122.458955,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-arguello-blvd",
+    "name": "Geary Blvd & Arguello Blvd",
+    "lat": 37.781153,
+    "lng": -122.458692,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-divisadero-st",
+    "name": "Geary Blvd & Divisadero St",
+    "lat": 37.783178,
+    "lng": -122.439572,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-divisadero-st",
+    "name": "Geary Blvd & Divisadero St",
+    "lat": 37.783428,
+    "lng": -122.439366,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-fillmore-st",
+    "name": "Geary Blvd & Fillmore St",
+    "lat": 37.784382,
+    "lng": -122.432052,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-fillmore-st",
+    "name": "Geary Blvd & Fillmore St",
+    "lat": 37.784391,
+    "lng": -122.43305,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-laguna-st",
+    "name": "Geary Blvd & Laguna St",
+    "lat": 37.785033,
+    "lng": -122.427811,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-laguna-st",
+    "name": "Geary Blvd & Laguna St",
+    "lat": 37.784854,
+    "lng": -122.428155,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-masonic-st",
+    "name": "Geary Blvd & Masonic St",
+    "lat": 37.782197,
+    "lng": -122.447034,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-park-presidio-blvd",
+    "name": "Geary Blvd & Park Presidio Blvd",
+    "lat": 37.780642,
+    "lng": -122.471827,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-park-presidio-blvd",
+    "name": "Geary Blvd & Park Presidio Blvd",
+    "lat": 37.780669,
+    "lng": -122.472802,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-presidio-ave",
+    "name": "Geary Blvd & Presidio Ave",
+    "lat": 37.782536,
+    "lng": -122.44669,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-blvd-van-ness-ave",
+    "name": "Geary Blvd & Van Ness Ave",
+    "lat": 37.785745,
+    "lng": -122.421575,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-st-kearny-st",
+    "name": "Geary St & Kearny St",
+    "lat": 37.787997,
+    "lng": -122.403656,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-st-leavenworth-st",
+    "name": "Geary St & Leavenworth St",
+    "lat": 37.786556,
+    "lng": -122.414971,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-st-powell-st",
+    "name": "Geary St & Powell St",
+    "lat": 37.787401,
+    "lng": -122.408391,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geary-st-stockton-st",
+    "name": "Geary St & Stockton St",
+    "lat": 37.787633,
+    "lng": -122.406568,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-geneva-ave-castillo-st",
+    "name": "Geneva Ave & Castillo St",
+    "lat": 37.707944,
+    "lng": -122.41827,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-geneva-ave-castillo-st",
+    "name": "Geneva Ave & Castillo St",
+    "lat": 37.7077,
+    "lng": -122.418409,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-geneva-ave-rio-verde-st",
+    "name": "Geneva Ave & Rio Verde St",
+    "lat": 37.707136,
+    "lng": -122.415706,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-geneva-ave-rio-verde-st",
+    "name": "Geneva Ave & Rio Verde St",
+    "lat": 37.706939,
+    "lng": -122.415534,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-geneva-ave-santos-st",
+    "name": "Geneva Ave & Santos St",
+    "lat": 37.708207,
+    "lng": -122.420022,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-geneva-ave-santos-st",
+    "name": "Geneva Ave & Santos St",
+    "lat": 37.708371,
+    "lng": -122.419887,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-la-playa-st-cabrillo-st",
+    "name": "La Playa St & Cabrillo St",
+    "lat": 37.773214,
+    "lng": -122.51006,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-la-playa-st-cabrillo-st",
+    "name": "La Playa St & Cabrillo St",
+    "lat": 37.773214,
+    "lng": -122.509991,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-la-playa-st-fulton-st",
+    "name": "La Playa St & Fulton St",
+    "lat": 37.77169,
+    "lng": -122.50984,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-main-st-market-st",
+    "name": "Main St & Market St",
+    "lat": 37.79253,
+    "lng": -122.39567,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-main-st-mission-st",
+    "name": "Main St & Mission St",
+    "lat": 37.791991,
+    "lng": -122.395033,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-1st-st",
+    "name": "Market St & 1st St",
+    "lat": 37.79094,
+    "lng": -122.399195,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-1st-st",
+    "name": "Market St & 1st St",
+    "lat": 37.790485,
+    "lng": -122.399723,
+    "routes": [
+      "38R",
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-2nd-st",
+    "name": "Market St & 2nd St",
+    "lat": 37.789353,
+    "lng": -122.401306,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-3rd-st",
+    "name": "Market St & 3rd St",
+    "lat": 37.787667,
+    "lng": -122.403359,
+    "routes": [
+      "38R",
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-3rd-st",
+    "name": "Market St & 3rd St",
+    "lat": 37.787525,
+    "lng": -122.403519,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-4th-st",
+    "name": "Market St & 4th St",
+    "lat": 37.785705,
+    "lng": -122.405847,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-5th-st",
+    "name": "Market St & 5th St",
+    "lat": 37.783395,
+    "lng": -122.408657,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-5th-st",
+    "name": "Market St & 5th St",
+    "lat": 37.783886,
+    "lng": -122.408141,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-5th-st",
+    "name": "Market St & 5th  St",
+    "lat": 37.784082,
+    "lng": -122.407992,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-6th-st",
+    "name": "Market St & 6th St",
+    "lat": 37.782102,
+    "lng": -122.4104,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-7th-st",
+    "name": "Market St & 7th St",
+    "lat": 37.780568,
+    "lng": -122.412441,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-7th-st",
+    "name": "Market St & 7th St",
+    "lat": 37.780363,
+    "lng": -122.412613,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-8th-st",
+    "name": "Market St & 8th St",
+    "lat": 37.778606,
+    "lng": -122.414826,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-9th-st",
+    "name": "Market St & 9th St",
+    "lat": 37.77741,
+    "lng": -122.41634,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-battery-st",
+    "name": "Market St & Battery St",
+    "lat": 37.79111,
+    "lng": -122.399069,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-beale-st",
+    "name": "Market St & Beale St",
+    "lat": 37.792572,
+    "lng": -122.397016,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-between-4th-3rd-st",
+    "name": "Market St Between 4th & 3rd St",
+    "lat": 37.786597,
+    "lng": -122.404586,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-between-5th-4th-st",
+    "name": "Market St Between 5th & 4th St",
+    "lat": 37.78484,
+    "lng": -122.406834,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-grant-ave",
+    "name": "Market St & Grant Ave",
+    "lat": 37.78639,
+    "lng": -122.40516,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-hyde-st",
+    "name": "Market St & Hyde St",
+    "lat": 37.779105,
+    "lng": -122.414379,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-kearny-st",
+    "name": "Market St & Kearny St",
+    "lat": 37.78773,
+    "lng": -122.40337,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-larkin-st",
+    "name": "Market St & Larkin St",
+    "lat": 37.777598,
+    "lng": -122.416236,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-mason-st",
+    "name": "Market St & Mason St",
+    "lat": 37.78285,
+    "lng": -122.40964,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-montgomery-st",
+    "name": "Market St & Montgomery St",
+    "lat": 37.78849,
+    "lng": -122.40248,
+    "routes": [
+      "38R",
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-new-montgomery-st",
+    "name": "Market St & New Montgomery St",
+    "lat": 37.788613,
+    "lng": -122.402163,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-powell-st",
+    "name": "Market St & Powell St",
+    "lat": 37.784474,
+    "lng": -122.407544,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-sansome-st",
+    "name": "Market St & Sansome St",
+    "lat": 37.790013,
+    "lng": -122.400491,
+    "routes": [
+      "38R",
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-market-st-steuart-st",
+    "name": "Market St & Steuart St",
+    "lat": 37.79426,
+    "lng": -122.39491,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-market-st-stockton-st",
+    "name": "Market St & Stockton St",
+    "lat": 37.785777,
+    "lng": -122.405859,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-market-st-taylor-st",
+    "name": "Market St & Taylor St",
+    "lat": 37.782316,
+    "lng": -122.410228,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-divisadero-st",
+    "name": "Mcallister St & Divisadero St",
+    "lat": 37.777825,
+    "lng": -122.438289,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-divisadero-st",
+    "name": "Mcallister St & Divisadero St",
+    "lat": 37.77773,
+    "lng": -122.43851,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-fillmore-st",
+    "name": "Mcallister St & Fillmore St",
+    "lat": 37.778618,
+    "lng": -122.431744,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-fillmore-st",
+    "name": "Mcallister St & Fillmore St",
+    "lat": 37.77864,
+    "lng": -122.43207,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-jones-st",
+    "name": "Mcallister St & Jones St",
+    "lat": 37.781166,
+    "lng": -122.412189,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-laguna-st",
+    "name": "Mcallister St & Laguna St",
+    "lat": 37.779304,
+    "lng": -122.42717,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-laguna-st",
+    "name": "Mcallister St & Laguna St",
+    "lat": 37.779206,
+    "lng": -122.42701,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-leavenworth-st",
+    "name": "Mcallister St & Leavenworth St",
+    "lat": 37.780889,
+    "lng": -122.413587,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-van-ness-ave",
+    "name": "Mcallister St & Van Ness Ave",
+    "lat": 37.780052,
+    "lng": -122.420178,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mcallister-st-van-ness-ave",
+    "name": "Mcallister St & Van Ness Ave",
+    "lat": 37.78009,
+    "lng": -122.42071,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-11th-st",
+    "name": "Mission St & 11th St",
+    "lat": 37.774912,
+    "lng": -122.416283,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-11th-st",
+    "name": "Mission St & 11th St",
+    "lat": 37.774306,
+    "lng": -122.417292,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-16th-st",
+    "name": "Mission St & 16th St",
+    "lat": 37.765125,
+    "lng": -122.419668,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-16th-st",
+    "name": "Mission St & 16th St",
+    "lat": 37.764804,
+    "lng": -122.419737,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-1st-st",
+    "name": "Mission St & 1st St",
+    "lat": 37.78992,
+    "lng": -122.39749,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-20th-st",
+    "name": "Mission St & 20th St",
+    "lat": 37.75911,
+    "lng": -122.41902,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-20th-st",
+    "name": "Mission St & 20th St",
+    "lat": 37.75817,
+    "lng": -122.41909,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-24th-st",
+    "name": "Mission St & 24th St",
+    "lat": 37.752356,
+    "lng": -122.418401,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-24th-st",
+    "name": "Mission St & 24th St",
+    "lat": 37.751964,
+    "lng": -122.418528,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-2nd-st",
+    "name": "Mission St & 2nd St",
+    "lat": 37.78775,
+    "lng": -122.40024,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-2nd-st",
+    "name": "Mission St & 2nd St",
+    "lat": 37.78787,
+    "lng": -122.39985,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-30th-st",
+    "name": "Mission St & 30th St",
+    "lat": 37.742417,
+    "lng": -122.421991,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-30th-st",
+    "name": "Mission St & 30th St",
+    "lat": 37.742408,
+    "lng": -122.421945,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-3rd-st",
+    "name": "Mission St & 3rd St",
+    "lat": 37.78597,
+    "lng": -122.40249,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-3rd-st",
+    "name": "Mission St & 3rd St",
+    "lat": 37.78651,
+    "lng": -122.40157,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-4th-st",
+    "name": "Mission St & 4th St",
+    "lat": 37.78436,
+    "lng": -122.40452,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-4th-st",
+    "name": "Mission St & 4th St",
+    "lat": 37.78464,
+    "lng": -122.40393,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-5th-st",
+    "name": "Mission St & 5th St",
+    "lat": 37.782725,
+    "lng": -122.40664,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-5th-st",
+    "name": "Mission St & 5th St",
+    "lat": 37.782716,
+    "lng": -122.406525,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-8th-st",
+    "name": "Mission St & 8th St",
+    "lat": 37.7777,
+    "lng": -122.41273,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-8th-st",
+    "name": "Mission St & 8th St",
+    "lat": 37.77723,
+    "lng": -122.41355,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-acton-st",
+    "name": "Mission St & Acton St",
+    "lat": 37.708808,
+    "lng": -122.452578,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-beale-st",
+    "name": "Mission St & Beale St",
+    "lat": 37.791144,
+    "lng": -122.395916,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-evergreen-st",
+    "name": "Mission St & Evergreen St",
+    "lat": 37.70741,
+    "lng": -122.45653,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-flournoy",
+    "name": "Mission St & Flournoy",
+    "lat": 37.706622,
+    "lng": -122.459265,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-flournoy-st",
+    "name": "Mission St & Flournoy St",
+    "lat": 37.70682,
+    "lng": -122.45906,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-fremont-st",
+    "name": "Mission St & Fremont St",
+    "lat": 37.790261,
+    "lng": -122.396788,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-geneva-ave",
+    "name": "Mission St & Geneva Ave",
+    "lat": 37.716455,
+    "lng": -122.441149,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-geneva-ave",
+    "name": "Mission St & Geneva Ave",
+    "lat": 37.716642,
+    "lng": -122.440782,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-goethe-st",
+    "name": "Mission St & Goethe St",
+    "lat": 37.70736,
+    "lng": -122.45708,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-lowell-st",
+    "name": "Mission St & Lowell St",
+    "lat": 37.711432,
+    "lng": -122.446486,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-lowell-st",
+    "name": "Mission St & Lowell St",
+    "lat": 37.711468,
+    "lng": -122.446291,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-main-st",
+    "name": "Mission St & Main St",
+    "lat": 37.791965,
+    "lng": -122.39493,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-persia-ave",
+    "name": "Mission St & Persia Ave",
+    "lat": 37.72338,
+    "lng": -122.43568,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-persia-st",
+    "name": "Mission St & Persia St",
+    "lat": 37.723263,
+    "lng": -122.435971,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-richland-ave",
+    "name": "Mission St & Richland Ave",
+    "lat": 37.73562,
+    "lng": -122.4247,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-richland-ave",
+    "name": "Mission St & Richland Ave",
+    "lat": 37.73591,
+    "lng": -122.42442,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-sickles-ave",
+    "name": "Mission St & Sickles Ave",
+    "lat": 37.70866,
+    "lng": -122.45332,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-silver-ave",
+    "name": "Mission St & Silver Ave",
+    "lat": 37.728723,
+    "lng": -122.431354,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-mission-st-silver-ave",
+    "name": "Mission St & Silver Ave",
+    "lat": 37.728723,
+    "lng": -122.43132,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-morse-st-lowell-st",
+    "name": "Morse St & Lowell St",
+    "lat": 37.711021,
+    "lng": -122.446211,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-o-farrell-st-grant-ave",
+    "name": "O'Farrell St & Grant Ave",
+    "lat": 37.786642,
+    "lng": -122.405629,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-o-farrell-st-powell-st",
+    "name": "O'Farrell St & Powell St",
+    "lat": 37.786322,
+    "lng": -122.40814,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-o-farrell-st-taylor-st",
+    "name": "O'Farrell St & Taylor St",
+    "lat": 37.78585,
+    "lng": -122.41198,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-o-farrell-st-van-ness-ave",
+    "name": "O'Farrell St & Van Ness Ave",
+    "lat": 37.784657,
+    "lng": -122.421415,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-park-presidio-blvd-fulton-st",
+    "name": "Park Presidio Blvd & Fulton St",
+    "lat": 37.77327,
+    "lng": -122.47191,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-park-presidio-blvd-fulton-st",
+    "name": "Park Presidio Blvd & Fulton St",
+    "lat": 37.773219,
+    "lng": -122.471653,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-park-presidio-blvd-geary-blvd",
+    "name": "Park Presidio Blvd & Geary Blvd",
+    "lat": 37.78027,
+    "lng": -122.47248,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-park-presidio-blvd-geary-blvd",
+    "name": "Park Presidio Blvd & Geary Blvd",
+    "lat": 37.780776,
+    "lng": -122.472217,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-park-presidio-california-street",
+    "name": "Park Presidio & California Street",
+    "lat": 37.7841,
+    "lng": -122.47274,
+    "routes": [
+      "28R"
+    ]
+  },
+  {
+    "id": "bus-point-lobos-ave-42nd-ave",
+    "name": "Point Lobos Ave & 42nd Ave",
+    "lat": 37.779651,
+    "lng": -122.502855,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-point-lobos-ave-44th-ave",
+    "name": "Point Lobos Ave & 44th Ave",
+    "lat": 37.779837,
+    "lng": -122.50501,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-point-lobos-ave-46th-ave",
+    "name": "Point Lobos Ave & 46th Ave",
+    "lat": 37.780041,
+    "lng": -122.50744,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-potrero-ave-16th-st",
+    "name": "Potrero Ave & 16th St",
+    "lat": 37.76549,
+    "lng": -122.40769,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-potrero-ave-16th-st",
+    "name": "Potrero Ave & 16th St",
+    "lat": 37.766031,
+    "lng": -122.407474,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-potrero-ave-23rd-st",
+    "name": "Potrero Ave & 23rd St",
+    "lat": 37.75506,
+    "lng": -122.4067,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-potrero-ave-24th-st",
+    "name": "Potrero Ave & 24th St",
+    "lat": 37.75267,
+    "lng": -122.40649,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-potrero-ave-24th-st",
+    "name": "Potrero Ave & 24th St",
+    "lat": 37.75342,
+    "lng": -122.40625,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-potrero-ave-at-sf-general-hospital",
+    "name": "Potrero Ave At Sf General Hospital",
+    "lat": 37.755413,
+    "lng": -122.406472,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-arleta-ave",
+    "name": "San Bruno Ave & Arleta Ave",
+    "lat": 37.71246,
+    "lng": -122.4023,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-bacon-st",
+    "name": "San Bruno Ave & Bacon St",
+    "lat": 37.72754,
+    "lng": -122.40368,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-bacon-st",
+    "name": "San Bruno Ave & Bacon St",
+    "lat": 37.72797,
+    "lng": -122.40367,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-dwight-st",
+    "name": "San Bruno Ave & Dwight St",
+    "lat": 37.7241,
+    "lng": -122.40226,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-harkness-ave",
+    "name": "San Bruno Ave & Harkness Ave",
+    "lat": 37.718043,
+    "lng": -122.400114,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-paul-ave",
+    "name": "San Bruno Ave & Paul Ave",
+    "lat": 37.72418,
+    "lng": -122.4021,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-silver-ave",
+    "name": "San Bruno Ave & Silver Ave",
+    "lat": 37.73202,
+    "lng": -122.40535,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-silver-ave",
+    "name": "San Bruno Ave & Silver Ave",
+    "lat": 37.73223,
+    "lng": -122.40563,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-san-bruno-ave-wilde-ave",
+    "name": "San Bruno Ave & Wilde Ave",
+    "lat": 37.71677,
+    "lng": -122.39995,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-garrison-ave",
+    "name": "Schwerin St & Garrison Ave",
+    "lat": 37.70916,
+    "lng": -122.41193,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-garrison-ave",
+    "name": "Schwerin St & Garrison Ave",
+    "lat": 37.70934,
+    "lng": -122.41204,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-geneva-ave",
+    "name": "Schwerin St & Geneva Ave",
+    "lat": 37.70657,
+    "lng": -122.41326,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-macdonald-ave",
+    "name": "Schwerin St & Macdonald Ave",
+    "lat": 37.7069,
+    "lng": -122.41294,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-sunnydale-ave",
+    "name": "Schwerin St & Sunnydale Ave",
+    "lat": 37.71049,
+    "lng": -122.41136,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-sunnydale-ave",
+    "name": "Schwerin St & Sunnydale Ave",
+    "lat": 37.71034,
+    "lng": -122.4116,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-velasco-ave",
+    "name": "Schwerin St & Velasco Ave",
+    "lat": 37.70826,
+    "lng": -122.41234,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-schwerin-st-velasco-ave",
+    "name": "Schwerin St & Velasco Ave",
+    "lat": 37.70815,
+    "lng": -122.41257,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-spear-st-market-st",
+    "name": "Spear St & Market St",
+    "lat": 37.7934,
+    "lng": -122.39528,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-steuart-st-mission-st",
+    "name": "Steuart St & Mission St",
+    "lat": 37.7933,
+    "lng": -122.39344,
+    "routes": [
+      "14R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-bay-shore-blvd",
+    "name": "Sunnydale Ave & Bay Shore Blvd",
+    "lat": 37.70901,
+    "lng": -122.40545,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-bay-shore-blvd",
+    "name": "Sunnydale Ave & Bay Shore Blvd",
+    "lat": 37.708801,
+    "lng": -122.40525,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-cora-st",
+    "name": "Sunnydale Ave & Cora St",
+    "lat": 37.70996,
+    "lng": -122.40937,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-cora-st",
+    "name": "Sunnydale Ave & Cora St",
+    "lat": 37.710203,
+    "lng": -122.409612,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-mclaren-school",
+    "name": "Sunnydale Ave / Mclaren School",
+    "lat": 37.714133,
+    "lng": -122.423673,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-mclaren-school",
+    "name": "Sunnydale Ave / Mclaren School",
+    "lat": 37.7141,
+    "lng": -122.4241,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-rutland-st",
+    "name": "Sunnydale Ave & Rutland St",
+    "lat": 37.70986,
+    "lng": -122.40851,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-talbert-st",
+    "name": "Sunnydale Ave & Talbert St",
+    "lat": 37.70935,
+    "lng": -122.40669,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnydale-ave-talbert-st",
+    "name": "Sunnydale Ave & Talbert St",
+    "lat": 37.70935,
+    "lng": -122.407,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-sunnyvale-ave-w-access-rd",
+    "name": "Sunnyvale Ave & W.Access Rd",
+    "lat": 37.713588,
+    "lng": -122.42215,
+    "routes": [
+      "9R"
+    ]
+  },
+  {
+    "id": "bus-transit-center-bay-b",
+    "name": "Transit Center Bay B",
+    "lat": 37.790091,
+    "lng": -122.395688,
+    "routes": [
+      "5R"
+    ]
+  },
+  {
+    "id": "bus-transit-center-bay-c",
+    "name": "Transit Center Bay C",
+    "lat": 37.789957,
+    "lng": -122.395493,
+    "routes": [
+      "38R"
+    ]
+  },
+  {
+    "id": "bus-western-access-road-sunnyvale-ave",
+    "name": "Western Access Road & Sunnyvale Ave",
+    "lat": 37.713461,
+    "lng": -122.421912,
+    "routes": [
+      "9R"
+    ]
+  }
+]

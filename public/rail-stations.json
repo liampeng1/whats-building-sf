@@ -5,7 +5,8 @@
     "lat": 37.792789,
     "lng": -122.39708,
     "modes": [
-      "bart"
+      "bart",
+      "muni-metro"
     ]
   },
   {
@@ -14,7 +15,8 @@
     "lat": 37.789213,
     "lng": -122.401642,
     "modes": [
-      "bart"
+      "bart",
+      "muni-metro"
     ]
   },
   {
@@ -23,7 +25,8 @@
     "lat": 37.784645,
     "lng": -122.407387,
     "modes": [
-      "bart"
+      "bart",
+      "muni-metro"
     ]
   },
   {
@@ -32,7 +35,8 @@
     "lat": 37.77945,
     "lng": -122.413879,
     "modes": [
-      "bart"
+      "bart",
+      "muni-metro"
     ]
   },
   {
@@ -68,7 +72,8 @@
     "lat": 37.721758,
     "lng": -122.44751,
     "modes": [
-      "bart"
+      "bart",
+      "muni-metro"
     ]
   },
   {
@@ -149,7 +154,8 @@
     "lat": 37.78892431,
     "lng": -122.4021896,
     "modes": [
-      "bart"
+      "bart",
+      "muni-metro"
     ]
   },
   {
@@ -213,6 +219,1194 @@
     "lng": -122.4082722,
     "modes": [
       "bart"
+    ]
+  },
+  {
+    "id": "muni-15th-ave-taraval-st",
+    "name": "15th Ave & Taraval St",
+    "lat": 37.743124,
+    "lng": -122.471297,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-19th-ave-holloway-ave",
+    "name": "19th Ave & Holloway Ave",
+    "lat": 37.721342,
+    "lng": -122.475176,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-19th-ave-junipero-serra-blvd",
+    "name": "19th Ave & Junipero Serra Blvd",
+    "lat": 37.716889,
+    "lng": -122.472275,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-19th-ave-randolph-st",
+    "name": "19th Ave & Randolph St",
+    "lat": 37.714856,
+    "lng": -122.470249,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-19th-ave-randolph-st",
+    "name": "19th Ave & Randolph St",
+    "lat": 37.714443,
+    "lng": -122.469998,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-19th-ave-randolph-st",
+    "name": "19th Ave & Randolph St",
+    "lat": 37.7162,
+    "lng": -122.47167,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-19th-ave-winston-dr",
+    "name": "19th Ave & Winston Dr",
+    "lat": 37.727195,
+    "lng": -122.474846,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-30th-st-dolores-st",
+    "name": "30th St & Dolores St",
+    "lat": 37.742304,
+    "lng": -122.424026,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-46th-ave-taraval-st",
+    "name": "46th Ave & Taraval St",
+    "lat": 37.741685,
+    "lng": -122.504534,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-46th-ave-ulloa-st",
+    "name": "46th Ave & Ulloa St",
+    "lat": 37.739829,
+    "lng": -122.504407,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-46th-ave-vicente-st",
+    "name": "46th Ave & Vicente St",
+    "lat": 37.738142,
+    "lng": -122.50444,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-47th-ave-cutler-ave",
+    "name": "47th Ave & Cutler Ave",
+    "lat": 37.736991,
+    "lng": -122.505413,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-4th-brannan-southbound",
+    "name": "4th & Brannan Southbound",
+    "lat": 37.778341,
+    "lng": -122.396613,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-4th-st-king-st",
+    "name": "4th St & King St",
+    "lat": 37.776135,
+    "lng": -122.393829,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-9th-ave-irving-st",
+    "name": "9th Ave & Irving St",
+    "lat": 37.763307,
+    "lng": -122.466344,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-bayshore-blvd-areta-ave",
+    "name": "Bayshore Blvd & Areta Ave",
+    "lat": 37.712226,
+    "lng": -122.402339,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-bayshore-blvd-sunnydale-ave",
+    "name": "Bayshore Blvd & Sunnydale Ave",
+    "lat": 37.70897,
+    "lng": -122.405113,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-broad-st-capitol-ave",
+    "name": "Broad St & Capitol Ave",
+    "lat": 37.713191,
+    "lng": -122.458921,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-broad-st-orizaba-ave",
+    "name": "Broad St & Orizaba Ave",
+    "lat": 37.713178,
+    "lng": -122.462331,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-broad-st-plymouth-ave",
+    "name": "Broad St & Plymouth Ave",
+    "lat": 37.713161,
+    "lng": -122.45618,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-carl-st-cole-st",
+    "name": "Carl St & Cole St",
+    "lat": 37.765745,
+    "lng": -122.450131,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-carl-st-hillway-ave",
+    "name": "Carl St & Hillway Ave",
+    "lat": 37.765003,
+    "lng": -122.456561,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-carl-st-stanyan-st",
+    "name": "Carl St & Stanyan St",
+    "lat": 37.765495,
+    "lng": -122.45259,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-chinatown-rose-pak-station",
+    "name": "Chinatown - Rose Pak Station",
+    "lat": 37.794807,
+    "lng": -122.408078,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-16th-st",
+    "name": "Church St & 16th St",
+    "lat": 37.764621,
+    "lng": -122.428722,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-18th-st",
+    "name": "Church St & 18th St",
+    "lat": 37.761467,
+    "lng": -122.428416,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-22nd-st",
+    "name": "Church St & 22nd St",
+    "lat": 37.754607,
+    "lng": -122.42775,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-24th-st",
+    "name": "Church St & 24th St",
+    "lat": 37.751591,
+    "lng": -122.42735,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-26th-st",
+    "name": "Church St & 26th St",
+    "lat": 37.748603,
+    "lng": -122.427261,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-28th-st",
+    "name": "Church St & 28th St",
+    "lat": 37.745225,
+    "lng": -122.426737,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-29th-st",
+    "name": "Church St & 29th St",
+    "lat": 37.743587,
+    "lng": -122.426585,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-30th-st",
+    "name": "Church St & 30th St",
+    "lat": 37.742222,
+    "lng": -122.426459,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-day-st",
+    "name": "Church St & Day St",
+    "lat": 37.742811,
+    "lng": -122.426654,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-duboce-ave",
+    "name": "Church St & Duboce Ave",
+    "lat": 37.769302,
+    "lng": -122.429087,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-church-st-market-st",
+    "name": "Church St & Market St",
+    "lat": 37.767286,
+    "lng": -122.429053,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-duboce-st-noe-st-duboce-park",
+    "name": "Duboce St/Noe St/Duboce Park",
+    "lat": 37.769357,
+    "lng": -122.433557,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-forest-hill-station-outbound",
+    "name": "Forest Hill Station Outbound",
+    "lat": 37.74817,
+    "lng": -122.459192,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-irving-st-2nd-ave",
+    "name": "Irving St & 2nd Ave",
+    "lat": 37.764441,
+    "lng": -122.458643,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-irving-st-5th-ave",
+    "name": "Irving St & 5th Ave",
+    "lat": 37.764182,
+    "lng": -122.462139,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-irving-st-6th-ave",
+    "name": "Irving St & 6th Ave",
+    "lat": 37.764244,
+    "lng": -122.462987,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-irving-st-8th-ave",
+    "name": "Irving St & 8th Ave",
+    "lat": 37.764038,
+    "lng": -122.465428,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-irving-st-arguello-blvd",
+    "name": "Irving St & Arguello Blvd",
+    "lat": 37.764366,
+    "lng": -122.458024,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-la-playa-ocean-beach",
+    "name": "Judah/La Playa/Ocean Beach",
+    "lat": 37.760304,
+    "lng": -122.508181,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-12th-ave",
+    "name": "Judah St & 12th Ave",
+    "lat": 37.762069,
+    "lng": -122.469324,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-15th-ave",
+    "name": "Judah St & 15th Ave",
+    "lat": 37.761848,
+    "lng": -122.472777,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-16th-ave",
+    "name": "Judah St & 16th Ave",
+    "lat": 37.76194,
+    "lng": -122.473632,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-19th-ave",
+    "name": "Judah St & 19th Ave",
+    "lat": 37.761655,
+    "lng": -122.477194,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-22nd-ave",
+    "name": "Judah St & 22nd Ave",
+    "lat": 37.761534,
+    "lng": -122.479855,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-23rd-ave",
+    "name": "Judah St & 23rd Ave",
+    "lat": 37.761547,
+    "lng": -122.481164,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-25th-ave",
+    "name": "Judah St & 25th Ave",
+    "lat": 37.761373,
+    "lng": -122.48356,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-28th-ave",
+    "name": "Judah St & 28th Ave",
+    "lat": 37.76131,
+    "lng": -122.48651,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-31st-ave",
+    "name": "Judah St & 31st Ave",
+    "lat": 37.761172,
+    "lng": -122.489719,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-34th-ave",
+    "name": "Judah St & 34th Ave",
+    "lat": 37.760955,
+    "lng": -122.493199,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-40th-ave",
+    "name": "Judah St & 40th Ave",
+    "lat": 37.760743,
+    "lng": -122.499359,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-43rd-ave",
+    "name": "Judah St & 43rd Ave",
+    "lat": 37.760518,
+    "lng": -122.502839,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-46th-ave",
+    "name": "Judah St & 46th Ave",
+    "lat": 37.760493,
+    "lng": -122.505832,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-9th-ave",
+    "name": "Judah St & 9th Ave",
+    "lat": 37.762227,
+    "lng": -122.466688,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-funston-ave",
+    "name": "Judah St & Funston Ave",
+    "lat": 37.76195,
+    "lng": -122.470572,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-judah-st-sunset-blvd",
+    "name": "Judah St & Sunset Blvd",
+    "lat": 37.760845,
+    "lng": -122.495805,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-junipero-serra-blvd-ocean-ave",
+    "name": "Junipero Serra Blvd & Ocean Ave",
+    "lat": 37.731271,
+    "lng": -122.471818,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-king-st-2nd-st",
+    "name": "King St & 2nd St",
+    "lat": 37.779621,
+    "lng": -122.389824,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-castro-station-downtown",
+    "name": "Metro Castro Station/Downtown",
+    "lat": 37.76262,
+    "lng": -122.435231,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-civic-center-station-downtn",
+    "name": "Metro Civic Center Station/Downtn",
+    "lat": 37.779712,
+    "lng": -122.413347,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-embarcadero-station",
+    "name": "Metro Embarcadero Station",
+    "lat": 37.793134,
+    "lng": -122.396431,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-forest-hill-station-downtown",
+    "name": "Metro Forest Hill Station/Downtown",
+    "lat": 37.748351,
+    "lng": -122.458623,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-powell-station-outbound",
+    "name": "Metro Powell Station/Outbound",
+    "lat": 37.7843,
+    "lng": -122.407822,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-van-ness-station",
+    "name": "Metro Van Ness Station",
+    "lat": 37.775127,
+    "lng": -122.419252,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-aptos-ave",
+    "name": "Ocean Ave & Aptos Ave",
+    "lat": 37.728285,
+    "lng": -122.467561,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-ccsf-pedestrian-bridge",
+    "name": "Ocean Ave/Ccsf Pedestrian Bridge",
+    "lat": 37.722947,
+    "lng": -122.450866,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-ccsf-pedestrian-bridge",
+    "name": "Ocean Ave/Ccsf Pedestrian Bridge",
+    "lat": 37.72304,
+    "lng": -122.451448,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-dorado-ter",
+    "name": "Ocean Ave & Dorado Ter",
+    "lat": 37.724957,
+    "lng": -122.461059,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-fairfield-way",
+    "name": "Ocean Ave & Fairfield Way",
+    "lat": 37.726008,
+    "lng": -122.464072,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-lee-st",
+    "name": "Ocean Ave & Lee St",
+    "lat": 37.723397,
+    "lng": -122.454423,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-miramar-ave",
+    "name": "Ocean Ave & Miramar Ave",
+    "lat": 37.724262,
+    "lng": -122.458306,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ocean-ave-san-leandro-way",
+    "name": "Ocean Ave & San Leandro Way",
+    "lat": 37.729945,
+    "lng": -122.469475,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-randolph-st-arch-st",
+    "name": "Randolph St & Arch St",
+    "lat": 37.714201,
+    "lng": -122.467218,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-randolph-st-bright-st",
+    "name": "Randolph St & Bright St",
+    "lat": 37.71425,
+    "lng": -122.463675,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-right-of-way-20th-st",
+    "name": "Right Of Way/20th St",
+    "lat": 37.758229,
+    "lng": -122.427795,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-right-of-way-21st-st",
+    "name": "Right Of Way/21st St",
+    "lat": 37.756436,
+    "lng": -122.426822,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-right-of-way-eucalyptus-dr",
+    "name": "Right Of Way/Eucalyptus Dr",
+    "lat": 37.73119,
+    "lng": -122.47435,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-right-of-way-liberty-st",
+    "name": "Right Of Way/Liberty St",
+    "lat": 37.757239,
+    "lng": -122.426867,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-right-of-way-ocean-ave",
+    "name": "Right Of Way/Ocean Ave",
+    "lat": 37.732022,
+    "lng": -122.473719,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-farallones-st",
+    "name": "San Jose Ave & Farallones St",
+    "lat": 37.713957,
+    "lng": -122.452281,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-geneva-ave",
+    "name": "San Jose Ave & Geneva Ave",
+    "lat": 37.720096,
+    "lng": -122.447196,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-geneva-ave",
+    "name": "San Jose Ave & Geneva Ave",
+    "lat": 37.721238,
+    "lng": -122.446222,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-geneva-ave",
+    "name": "San Jose Ave & Geneva Ave",
+    "lat": 37.720631,
+    "lng": -122.446554,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-glen-park-station",
+    "name": "San Jose Ave/Glen Park Station",
+    "lat": 37.732525,
+    "lng": -122.433416,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-lakeview-ave",
+    "name": "San Jose Ave & Lakeview Ave",
+    "lat": 37.716083,
+    "lng": -122.450435,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-niagra-ave",
+    "name": "San Jose Ave & Niagra Ave",
+    "lat": 37.719421,
+    "lng": -122.447654,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-ocean-ave",
+    "name": "San Jose Ave & Ocean Ave",
+    "lat": 37.723085,
+    "lng": -122.444699,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-randall-st",
+    "name": "San Jose Ave & Randall St",
+    "lat": 37.739741,
+    "lng": -122.424157,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-santa-rosa-ave",
+    "name": "San Jose Ave & Santa Rosa Ave",
+    "lat": 37.728996,
+    "lng": -122.440016,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-san-jose-ave-santa-ynez-ave",
+    "name": "San Jose Ave & Santa Ynez Ave",
+    "lat": 37.725681,
+    "lng": -122.442442,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-17th-ave",
+    "name": "Taraval St & 17th Ave",
+    "lat": 37.743131,
+    "lng": -122.473306,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-19th-ave",
+    "name": "Taraval St & 19th Ave",
+    "lat": 37.74311,
+    "lng": -122.475444,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-22nd-ave",
+    "name": "Taraval St & 22nd Ave",
+    "lat": 37.74289,
+    "lng": -122.478426,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-23rd-ave",
+    "name": "Taraval St & 23rd Ave",
+    "lat": 37.742872,
+    "lng": -122.48045,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-26th-ave",
+    "name": "Taraval St & 26th Ave",
+    "lat": 37.742683,
+    "lng": -122.483385,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-30th-ave",
+    "name": "Taraval St & 30th Ave",
+    "lat": 37.742494,
+    "lng": -122.487681,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-32nd-ave",
+    "name": "Taraval St & 32nd Ave",
+    "lat": 37.742491,
+    "lng": -122.489505,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-40th-ave",
+    "name": "Taraval St & 40th Ave",
+    "lat": 37.74199,
+    "lng": -122.498316,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-42nd-ave",
+    "name": "Taraval St & 42nd Ave",
+    "lat": 37.742021,
+    "lng": -122.500202,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-44th-ave",
+    "name": "Taraval St & 44th Ave",
+    "lat": 37.741924,
+    "lng": -122.502346,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-taraval-st-sunset-blvd",
+    "name": "Taraval St & Sunset Blvd",
+    "lat": 37.742287,
+    "lng": -122.494361,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-the-embarcadero-brannan-st",
+    "name": "The Embarcadero & Brannan St",
+    "lat": 37.784627,
+    "lng": -122.387977,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-the-embarcadero-folsom-st",
+    "name": "The Embarcadero & Folsom St",
+    "lat": 37.790749,
+    "lng": -122.389841,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-20th-st",
+    "name": "Third Street & 20th St",
+    "lat": 37.760367,
+    "lng": -122.388593,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-23rd-st",
+    "name": "Third Street & 23rd St",
+    "lat": 37.755414,
+    "lng": -122.388001,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-carroll-ave",
+    "name": "Third Street & Carroll Ave",
+    "lat": 37.725491,
+    "lng": -122.394222,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-evans-ave",
+    "name": "Third Street & Evans Ave",
+    "lat": 37.742726,
+    "lng": -122.38792,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-gilman-paul",
+    "name": "Third Street/Gilman/Paul",
+    "lat": 37.722199,
+    "lng": -122.395782,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-hudson-innes",
+    "name": "Third Street/Hudson/Innes",
+    "lat": 37.739916,
+    "lng": -122.388884,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-kirkwood-la-salle",
+    "name": "Third Street/Kirkwood/La Salle",
+    "lat": 37.73765,
+    "lng": -122.389734,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-le-conte-ave",
+    "name": "Third Street & Le Conte Ave",
+    "lat": 37.718809,
+    "lng": -122.397468,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-marin-st",
+    "name": "Third Street & Marin St",
+    "lat": 37.749097,
+    "lng": -122.387525,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-mission-rock-st",
+    "name": "Third Street & Mission Rock St",
+    "lat": 37.772832,
+    "lng": -122.389717,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-oakdale-palou",
+    "name": "Third Street/Oakdale/Palou",
+    "lat": 37.73435,
+    "lng": -122.390893,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-revere-shafter",
+    "name": "Third Street/Revere/Shafter",
+    "lat": 37.732262,
+    "lng": -122.391502,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-third-street-williams-ave",
+    "name": "Third Street & Williams Ave",
+    "lat": 37.729291,
+    "lng": -122.392604,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ucsf-chase-center-16th-st",
+    "name": "Ucsf / Chase Center (16th St)",
+    "lat": 37.768504,
+    "lng": -122.389182,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ucsf-medical-center-mariposa",
+    "name": "Ucsf Medical Center (Mariposa)",
+    "lat": 37.764239,
+    "lng": -122.388865,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ulloa-st-14th-ave",
+    "name": "Ulloa St & 14th Ave",
+    "lat": 37.7415,
+    "lng": -122.469969,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-ulloa-st-lenox-way",
+    "name": "Ulloa St & Lenox Way",
+    "lat": 37.741125,
+    "lng": -122.466155,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-union-square-market-st-station-northbound",
+    "name": "Union Square/Market St Station Northbound",
+    "lat": 37.787151,
+    "lng": -122.406477,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-wawona-46th-ave-sf-zoo",
+    "name": "Wawona/46th Ave /Sf Zoo",
+    "lat": 37.736125,
+    "lng": -122.504351,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-west-portal-ave-14th-ave",
+    "name": "West Portal Ave & 14th Ave",
+    "lat": 37.738064,
+    "lng": -122.468984,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-west-portal-sloat-st-francis-circle",
+    "name": "West Portal/Sloat/St Francis Circle",
+    "lat": 37.734807,
+    "lng": -122.471618,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-west-portal-station",
+    "name": "West Portal Station",
+    "lat": 37.741518,
+    "lng": -122.465216,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-yerba-buena-moscone-station-northbound",
+    "name": "Yerba Buena/Moscone Station Northbound",
+    "lat": 37.782358,
+    "lng": -122.401551,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "caltrain-22nd-street-caltrain-station-northbound",
+    "name": "22nd Street Caltrain Station Northbound",
+    "lat": 37.757599,
+    "lng": -122.39188,
+    "modes": [
+      "caltrain"
+    ]
+  },
+  {
+    "id": "caltrain-bayshore-caltrain-station-northbound",
+    "name": "Bayshore Caltrain Station Northbound",
+    "lat": 37.709537,
+    "lng": -122.401586,
+    "modes": [
+      "caltrain"
+    ]
+  },
+  {
+    "id": "caltrain-san-francisco-caltrain-station-northbound",
+    "name": "San Francisco Caltrain Station Northbound",
+    "lat": 37.77639,
+    "lng": -122.394992,
+    "modes": [
+      "caltrain"
     ]
   }
 ]
