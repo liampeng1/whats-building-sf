@@ -39,6 +39,17 @@ import { PIN_FADE_MIN, PIN_FADE_MAX, pinOpacity, clusterOpacity } from '@/lib/zo
 const DEFAULT_STAGES: PermitStage[] = STAGE_ORDER.filter((s) => s !== 'inactive')
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
 
+// Canonical URL-parameter defaults — must stay in sync with the useState
+// initial values below so that a fresh load never writes default-looking
+// params to the URL.
+const URL_DEFAULTS = {
+  stages: [...DEFAULT_STAGES].sort().join(','),
+  cats: [...ALL_CATEGORIES].sort().join(','),
+  minUnits: '2',         // matches useState<MinUnitsFilter>(2)
+  completedYears: '2',   // matches useState<CompletedYearsFilter>(2)
+  recentActivity: '24',  // matches useState<RecentActivityFilter>(24)
+}
+
 /**
  * Drives the pin-opacity CSS variable directly on the wrapper element each
  * zoom frame, bypassing React so we don't re-render the whole map tree at
@@ -226,12 +237,18 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       }
       if (next.size > 0) setSelectedCategories(next)
     }
-    const muParam = Number(params.get('minUnits'))
-    if ([0, 2, 5, 25, 100].includes(muParam)) setMinUnits(muParam as MinUnitsFilter)
-    const cyParam = Number(params.get('completedYears'))
-    if ([0, 1, 2, 5].includes(cyParam)) setCompletedYears(cyParam as CompletedYearsFilter)
-    const raParam = Number(params.get('recentActivity'))
-    if ([0, 6, 12, 24, 60].includes(raParam)) setRecentActivity(raParam as RecentActivityFilter)
+    if (params.has('minUnits')) {
+      const muParam = Number(params.get('minUnits'))
+      if ([0, 2, 5, 25, 100].includes(muParam)) setMinUnits(muParam as MinUnitsFilter)
+    }
+    if (params.has('completedYears')) {
+      const cyParam = Number(params.get('completedYears'))
+      if ([0, 1, 2, 5].includes(cyParam)) setCompletedYears(cyParam as CompletedYearsFilter)
+    }
+    if (params.has('recentActivity')) {
+      const raParam = Number(params.get('recentActivity'))
+      if ([0, 6, 12, 24, 60].includes(raParam)) setRecentActivity(raParam as RecentActivityFilter)
+    }
 
     const onPop = () => {
       applyUrlState(new URLSearchParams(window.location.search))
@@ -255,11 +272,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       if (value === defaultVal) url.searchParams.delete(key)
       else url.searchParams.set(key, value)
     }
-    setOrDelete('stages', [...selectedStages].sort().join(','), [...DEFAULT_STAGES].sort().join(','))
-    setOrDelete('cats', [...selectedCategories].sort().join(','), [...ALL_CATEGORIES].sort().join(','))
-    setOrDelete('minUnits', String(minUnits), '2')
-    setOrDelete('completedYears', String(completedYears), '2')
-    setOrDelete('recentActivity', String(recentActivity), '24')
+    setOrDelete('stages', [...selectedStages].sort().join(','), URL_DEFAULTS.stages)
+    setOrDelete('cats', [...selectedCategories].sort().join(','), URL_DEFAULTS.cats)
+    setOrDelete('minUnits', String(minUnits), URL_DEFAULTS.minUnits)
+    setOrDelete('completedYears', String(completedYears), URL_DEFAULTS.completedYears)
+    setOrDelete('recentActivity', String(recentActivity), URL_DEFAULTS.recentActivity)
 
     let transitValue = ''
     if (railOnly && rapidBusOnly) transitValue = 'both'
