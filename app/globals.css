@@ -118,3 +118,12 @@ h1, h2, h3 {
   transform: scale(1.25);
   transition: transform 100ms ease-out;
 }
+
+.special-area-poly {
+  fill: url(#diagonal-stripes);
+  fill-opacity: 0.20;
+  stroke: #67615a;
+  stroke-width: 1;
+  stroke-opacity: 0.6;
+  cursor: pointer;
+}

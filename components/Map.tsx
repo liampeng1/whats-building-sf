@@ -8,6 +8,8 @@ import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { ZoningDistrictPanel } from './ZoningDistrictPanel'
+import { SpecialAreasOverlay } from './SpecialAreasOverlay'
+import type { SpecialArea } from '@/lib/special-zoning-areas'
 import { TransitCorridors } from './TransitCorridors'
 import { LensInfoPanel } from './LensInfoPanel'
 import { StationMarkers, type SelectedStation } from './StationMarkers'
@@ -126,6 +128,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [selectedZoningDistrict, setSelectedZoningDistrict] = useState<{
     zoningSim: string; gen: string
   } | null>(null)
+  const [selectedSpecialArea, setSelectedSpecialArea] = useState<SpecialArea | null>(null)
   const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
   const [browseOpen, setBrowseOpen] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
@@ -153,6 +156,25 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       .catch(() => {})
     loadStations().catch(() => {})
   }, [])
+
+  // Inject SVG pattern defs for diagonal-stripe fill on special-area polygons.
+  // Done once on mount; no teardown needed — the element persists for the
+  // lifetime of the page.
+  useEffect(() => {
+    if (document.getElementById('special-area-pattern-defs')) return
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    svg.id = 'special-area-pattern-defs'
+    svg.setAttribute('style', 'position:absolute;width:0;height:0;')
+    svg.innerHTML = `
+      <defs>
+        <pattern id="diagonal-stripes" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#67615a" stroke-width="2" stroke-opacity="0.25"/>
+        </pattern>
+      </defs>
+    `
+    document.body.appendChild(svg)
+  }, [])
+
   // Client-side viewport bounds — used to cull off-screen markers from the
   // DOM. We don't refetch on pan; just narrow what's rendered.
   const [viewportBounds, setViewportBounds] = useState<MapBounds | null>(null)
@@ -572,10 +594,13 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
             Sits below the choropleth + parcel + pins so it's background
             context, not a competing data layer. */}
         {mapMode === 'zoning' && (
-          <ZoningOverlay
-            selectedDistrict={selectedZoningDistrict?.zoningSim ?? null}
-            onSelect={(zoningSim, gen) => setSelectedZoningDistrict({ zoningSim, gen })}
-          />
+          <>
+            <ZoningOverlay
+              selectedDistrict={selectedZoningDistrict?.zoningSim ?? null}
+              onSelect={(zoningSim, gen) => setSelectedZoningDistrict({ zoningSim, gen })}
+            />
+            <SpecialAreasOverlay onSelect={setSelectedSpecialArea} />
+          </>
         )}
         {mapMode === 'transit' && (
           <>
@@ -704,6 +729,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onRadiusChange={setStationRadiusM}
         permits={filteredPermits}
       />
+      <SpecialAreaPanel area={selectedSpecialArea} onClose={() => setSelectedSpecialArea(null)} />
     </div>
   )
 }
@@ -788,5 +814,34 @@ function StationPanel({
         </div>
       )}
     </>
+  )
+}
+
+function SpecialAreaPanel({
+  area,
+  onClose,
+}: {
+  area: SpecialArea | null
+  onClose: () => void
+}) {
+  return (
+    <LensInfoPanel
+      open={!!area}
+      eyebrow="Special area"
+      title={area?.name ?? '—'}
+      subtitle={area?.governor}
+      primary={
+        area
+          ? {
+              eyebrow: 'About',
+              rows: [
+                { label: area.note, value: '', pct: 1, color: '#67615a' },
+                { label: `Source: ${area.source.cite}`, value: '↗', pct: 0.6, color: '#9a4a31' },
+              ],
+            }
+          : { eyebrow: 'About', rows: [] }
+      }
+      onClose={onClose}
+    />
   )
 }
