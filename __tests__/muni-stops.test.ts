@@ -56,7 +56,7 @@ describe('buildRailStations', () => {
     const out = buildRailStations(stops, map, railIds)
     expect(out.map((s) => s.name)).toEqual(['Castro Station'])
     expect(out[0].modes).toEqual(['muni-metro'])
-    expect(out[0].id).toBe('muni-castro-station')
+    expect(out[0].id).toBe('muni-S-CASTRO-castro-station')
   })
 
   it('filters out entrance/exit rows (location_type=2)', async () => {
@@ -78,5 +78,46 @@ describe('buildRapidBusStops', () => {
     expect(names).toEqual(['Geary & Powell', 'Mission & 24th'])
     const mission = out.find((s) => s.name === 'Mission & 24th')!
     expect(mission.routes).toEqual(['5R'])  // 38 (non-rapid) excluded
+  })
+})
+
+describe('slug collision handling', () => {
+  it('buildRailStations produces unique ids even when stop names collide', async () => {
+    // Two stops with the same name (e.g. opposite sides of an intersection)
+    // must produce distinct ids so React keys don't collide.
+    const { stops } = await loadFixture()
+    const colliding = [
+      ...stops,
+      { stop_id: 'S-CASTRO-DUP', stop_name: 'Castro Station', stop_lat: '37.762', stop_lon: '-122.430', location_type: '0' } as typeof stops[number],
+    ]
+    // Use a stopMap that references both Castro stops for the same rail route
+    const stopMap = new Map<string, Set<string>>([
+      ['S-CASTRO', new Set(['R-K'])],
+      ['S-CASTRO-DUP', new Set(['R-K'])],
+    ])
+    const railIds = new Set(['R-K'])
+    const out = buildRailStations(colliding, stopMap, railIds)
+    const ids = new Set(out.map((s) => s.id))
+    expect(ids.size).toBe(out.length)  // all ids must be unique
+    expect(out.length).toBe(2)  // both stops should be in the output
+  })
+
+  it('buildRapidBusStops produces unique ids even when stop names collide', async () => {
+    // Two stops with the same name must produce distinct ids.
+    const { stops, routes } = await loadFixture()
+    const colliding = [
+      ...stops,
+      { stop_id: 'S-MISSION-24TH-DUP', stop_name: 'Mission & 24th', stop_lat: '37.750', stop_lon: '-122.420', location_type: '0' } as typeof stops[number],
+    ]
+    // Use a stopMap that references both Mission 24th stops for rapid routes
+    const stopMap = new Map<string, Set<string>>([
+      ['S-MISSION-24TH', new Set(['R-5R', 'R-38'])],
+      ['S-MISSION-24TH-DUP', new Set(['R-5R'])],
+    ])
+    const rapidIds = new Set(['R-5R', 'R-38R'])
+    const out = buildRapidBusStops(colliding, routes, stopMap, rapidIds)
+    const ids = new Set(out.map((s) => s.id))
+    expect(ids.size).toBe(out.length)  // all ids must be unique
+    expect(out.length).toBe(2)  // both stops should be in the output
   })
 })

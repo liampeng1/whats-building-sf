@@ -79,7 +79,7 @@ export function buildRailStations(
       return false
     })
     .map((s) => ({
-      id: `muni-${slugify(s.stop_name)}`,
+      id: `muni-${s.stop_id}-${slugify(s.stop_name)}`,
       name: s.stop_name,
       lat: Number(s.stop_lat),
       lng: Number(s.stop_lon),
@@ -113,7 +113,7 @@ export function buildRapidBusStops(
         }
       }
       return {
-        id: `bus-${slugify(s.stop_name)}`,
+        id: `bus-${s.stop_id}-${slugify(s.stop_name)}`,
         name: s.stop_name,
         lat: Number(s.stop_lat),
         lng: Number(s.stop_lon),
