@@ -18,8 +18,10 @@ import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { pointInGeometry } from '@/lib/point-in-polygon'
-import { FilterPanel } from './FilterPanel'
-import { BrowsePanel } from './BrowsePanel'
+import { SummaryCard, type SummaryCardState, type SummaryCardItem } from './SummaryCard'
+import { LensRail, type LensMode } from './LensRail'
+import { FilterFAB } from './FilterFAB'
+import { FilterSheet } from './FilterSheet'
 import { PermitPanel } from './PermitPanel'
 import { CoffeeButton } from './CoffeeButton'
 import { AboutLink } from './AboutLink'
@@ -120,9 +122,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   // shows distance-band rings. transitOnly is a permit *filter* and stays
   // independent of the lens — you can have e.g. 'zoning' lens + transit-
   // only permits.
-  const [mapMode, setMapMode] = useState<import('./MapModeSwitch').MapMode>('neighborhoods')
-  const [railOnly, setRailOnly] = useState(false)
-  const [rapidBusOnly, setRapidBusOnly] = useState(false)
+  const [mapMode, setMapMode] = useState<LensMode>('neighborhoods')
+  const [transit, setTransit] = useState<'off' | 'rail' | 'rapid-bus' | 'both'>('off')
+  const [summaryState, setSummaryState] = useState<SummaryCardState>('top5')
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  // Derived booleans for downstream filter logic
+  const railOnly = transit === 'rail' || transit === 'both'
+  const rapidBusOnly = transit === 'rapid-bus' || transit === 'both'
   const [selectedStation, setSelectedStation] = useState<SelectedStation | null>(null)
   const [stationRadiusM, setStationRadiusM] = useState<number>(800)  // default rail ½ mi
   const [selectedZoningDistrict, setSelectedZoningDistrict] = useState<{
@@ -130,7 +137,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   } | null>(null)
   const [selectedSpecialArea, setSelectedSpecialArea] = useState<SpecialArea | null>(null)
   const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
-  const [browseOpen, setBrowseOpen] = useState(false)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
   // the user can see which lot the project sits on.
@@ -199,8 +205,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       setOpenPermit(sp.get('permit'))
       setSelectedNhood(sp.get('nhood'))
       const transitParam = sp.get('transit')
-      setRailOnly(transitParam === 'rail' || transitParam === 'both')
-      setRapidBusOnly(transitParam === 'rapid-bus' || transitParam === 'both')
+      if (transitParam === 'rail' || transitParam === 'rapid-bus' || transitParam === 'both') {
+        setTransit(transitParam)
+      } else {
+        setTransit('off')
+      }
       const stationParam = sp.get('station')
       if (stationParam) {
         const kind: SelectedStation['kind'] = stationParam.startsWith('bus-') ? 'rapid-bus' : 'rail'
@@ -212,7 +221,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
       const districtParam = sp.get('district')
       setSelectedZoningDistrict(districtParam ? { zoningSim: districtParam, gen: '' } : null)
-      setBrowseOpen(sp.get('browse') === '1')
     }
 
     const params = new URLSearchParams(window.location.search)
@@ -275,10 +283,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     setOrDelete('completedYears', String(completedYears), URL_DEFAULTS.completedYears)
     setOrDelete('recentActivity', String(recentActivity), URL_DEFAULTS.recentActivity)
 
-    let transitValue = ''
-    if (railOnly && rapidBusOnly) transitValue = 'both'
-    else if (railOnly) transitValue = 'rail'
-    else if (rapidBusOnly) transitValue = 'rapid-bus'
+    const transitValue = transit === 'off' ? '' : transit
     setOrDelete('transit', transitValue, '')
 
     setOrDelete('station', selectedStation?.id ?? '', '')
@@ -289,10 +294,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
 
     setOrDelete('district', selectedZoningDistrict?.zoningSim ?? '', '')
 
-    setOrDelete('browse', browseOpen ? '1' : '', '')
-
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, railOnly, rapidBusOnly, selectedStation, stationRadiusM, selectedZoningDistrict, browseOpen])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
@@ -512,6 +515,51 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     })
   }, [filteredPermits, viewportBounds])
 
+  const summaryItems: SummaryCardItem[] = useMemo(() => {
+    if (mapMode === 'neighborhoods') {
+      return (crossStats?.neighborhoods ?? [])
+        .map((row) => ({
+          id: row.nhood,
+          name: row.nhood,
+          count: permitsByNhood?.[row.nhood]?.length ?? 0,
+        }))
+        .sort((a, b) => b.count - a.count)
+    }
+    if (mapMode === 'zoning') {
+      return (crossStats?.zoning ?? []).map((row) => ({
+        id: row.category,
+        name: row.category,
+        count: Math.round(row.share_of_sf * 100),
+      }))
+    }
+    // transit lens
+    return (crossStats?.transit_bands ?? []).map((row) => ({
+      id: row.band,
+      name: `≤ ${row.band} of rail`,
+      count: Math.round(row.share_of_sf * 100),
+    }))
+  }, [mapMode, crossStats, permitsByNhood])
+
+  const summarySentence = useMemo(() => {
+    const cats =
+      selectedCategories.size === CATEGORIES.length
+        ? 'any use'
+        : selectedCategories.size === 0
+          ? 'no use types'
+          : `${selectedCategories.size} use types`
+    const recent =
+      recentActivity === 0
+        ? 'any time'
+        : recentActivity === 6
+          ? 'last 6 months'
+          : recentActivity === 12
+            ? 'last year'
+            : recentActivity === 24
+              ? 'last 2 years'
+              : `last ${recentActivity / 12} years`
+    return `${visiblePermits.length} visible · ${cats}, ${recent}.`
+  }, [selectedCategories, recentActivity, visiblePermits.length])
+
   // Single fetch keyed only by filter values — no bounds, no per-pan refetch.
   // Vercel caches the result so all users hit the same warm entry.
   // Panning/zooming filters client-side from this cached list.
@@ -655,7 +703,31 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           ))}
         </MarkerClusterGroup>
       </MapContainer>
-      <FilterPanel
+      <SummaryCard
+        state={summaryState}
+        summary={summarySentence}
+        eyebrow="What's Building SF"
+        items={summaryItems}
+        onStateChange={setSummaryState}
+        onItemClick={(id) => {
+          if (mapMode === 'neighborhoods') openNhoodPanel(id)
+          else if (mapMode === 'zoning') setSelectedZoningDistrict({ zoningSim: id, gen: '' })
+          // transit lens: clicking a band currently does nothing; no-op
+        }}
+      />
+      <LensRail
+        mode={mapMode}
+        onChange={(m) => setMapMode(m)}
+      />
+      <FilterFAB
+        open={sheetOpen}
+        onToggle={() => setSheetOpen((v) => !v)}
+      />
+      <FilterSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        mode={mapMode}
+        onModeChange={(m) => setMapMode(m)}
         selectedStages={selectedStages}
         onToggleStage={toggleStage}
         onSetStages={setSelectedStages}
@@ -668,36 +740,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onCompletedYearsChange={setCompletedYears}
         recentActivity={recentActivity}
         onRecentActivityChange={setRecentActivity}
-        mapMode={mapMode}
-        onModeChange={setMapMode}
-        railOnly={railOnly}
-        rapidBusOnly={rapidBusOnly}
-        onToggleRail={() => setRailOnly((v) => !v)}
-        onToggleRapidBus={() => setRapidBusOnly((v) => !v)}
-        browseOpen={browseOpen}
-        onToggleBrowse={() => setBrowseOpen((v) => !v)}
-        visibleCount={visiblePermits.length}
-        totalCount={permits.length}
-      />
-      <BrowsePanel
-        open={browseOpen}
-        onClose={() => setBrowseOpen(false)}
-        mode={mapMode}
-        crossStats={crossStats}
-        permitsByNhood={permitsByNhood}
-        onSelectNhood={(n) => { openNhoodPanel(n); setBrowseOpen(false) }}
-        onSelectZoning={(cat) => {
-          // crossStats has zoning by `gen` category — we need the user to be able
-          // to drill into a representative district. For now, just open the same
-          // category-level panel that clicking a polygon used to trigger. Since
-          // we replaced ZoningCategoryPanel with ZoningDistrictPanel keyed on
-          // zoning_sim, clicking a category row will be a no-op until a future
-          // task wires it through. Close the browse panel anyway so the user can
-          // pick a polygon directly.
-          setBrowseOpen(false)
-          void cat
-        }}
-        onSelectTransitBand={(b) => { void b; setBrowseOpen(false) }}
+        transit={transit}
+        onTransitChange={setTransit}
       />
       <AboutLink />
       <CoffeeButton />
