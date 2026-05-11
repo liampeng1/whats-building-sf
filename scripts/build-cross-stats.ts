@@ -25,6 +25,12 @@ import { fetchCaltrainSfStations } from './sources/caltrain-stations'
 import { mergeRailStations } from './sources/merge-rail'
 import { fetchHeightPolygons, joinHeightsToZoning } from './sources/zoning-heights'
 import { ZONING_RULES } from '../lib/zoning-rules'
+import {
+  fetchBartCorridors,
+  fetchMuniCorridors,
+  fetchCaltrainCorridors,
+  type CorridorFeature,
+} from './sources/transit-corridors'
 
 const ROOT = process.cwd()
 const PUBLIC_DIR = path.join(ROOT, 'public')
@@ -239,6 +245,28 @@ async function main() {
     JSON.stringify(rapidBusRingsCollection),
   )
   console.log(`✓ wrote rapid-bus-rings.geojson`)
+
+  console.log('• fetching transit corridors (BART + Muni + Caltrain)…')
+  const [bartCorridors, muniCorridors, caltrainCorridors] = await Promise.all([
+    fetchBartCorridors().catch((e) => { console.warn('BART corridors failed:', e); return [] as CorridorFeature[] }),
+    fetchMuniCorridors().catch((e) => { console.warn('Muni corridors failed:', e); return [] as CorridorFeature[] }),
+    fetchCaltrainCorridors().catch((e) => { console.warn('Caltrain corridors failed:', e); return [] as CorridorFeature[] }),
+  ])
+  const allCorridors: CorridorFeature[] = [
+    ...bartCorridors,
+    ...muniCorridors,
+    ...caltrainCorridors,
+  ]
+  console.log(`  corridors: bart=${bartCorridors.length}, muni=${muniCorridors.length}, caltrain=${caltrainCorridors.length}`)
+  const corridorsCollection: FeatureCollection = {
+    type: 'FeatureCollection',
+    features: allCorridors,
+  }
+  await fs.writeFile(
+    path.join(PUBLIC_DIR, 'transit-corridors.geojson'),
+    JSON.stringify(corridorsCollection),
+  )
+  console.log(`✓ wrote transit-corridors.geojson (${allCorridors.length} features)`)
 
   // Per-neighborhood
   console.log('• per-neighborhood cross-tabs…')
