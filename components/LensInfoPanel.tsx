@@ -104,9 +104,10 @@ export function LensInfoPanel({
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {shareUrl && shareTitle && (
-              <ShareButton title={shareTitle} url={shareUrl} />
-            )}
+            <ShareButton
+              title={shareTitle ?? `${title} · What's Building SF`}
+              url={shareUrl ?? (typeof window !== 'undefined' ? window.location.href : undefined)}
+            />
             <button
               type="button"
               onClick={onClose}
