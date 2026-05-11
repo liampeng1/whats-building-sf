@@ -31,7 +31,7 @@ export function SummaryCard({ state, summary, eyebrow, items, onStateChange, onI
   }
 
   return (
-    <aside className="absolute top-4 right-4 z-[1000] bg-ink text-paper rounded-md shadow-lg w-[280px] max-h-[calc(100dvh-2rem)] overflow-hidden flex flex-col">
+    <aside className="absolute top-4 right-4 z-[1000] bg-ink text-paper rounded-md shadow-lg w-[280px] max-h-[calc(100dvh-8rem)] overflow-hidden flex flex-col">
       <button
         type="button"
         onClick={toggleState}
