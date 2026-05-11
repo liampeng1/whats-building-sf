@@ -9,6 +9,8 @@ import { getZoningBlurb } from '@/lib/zoning-blurbs'
 interface Props {
   zoningSim: string | null
   gen: string | null
+  districtName?: string
+  codeSection?: string
   heightFt?: number
   bulk?: string
   permitCountInDistrict?: number
@@ -17,7 +19,7 @@ interface Props {
 }
 
 export function ZoningDistrictPanel({
-  zoningSim, gen, heightFt, bulk,
+  zoningSim, gen, districtName, codeSection, heightFt, bulk,
   permitCountInDistrict = 0,
   onClose,
   onDrillToDistrict,
@@ -26,6 +28,10 @@ export function ZoningDistrictPanel({
   const rec = zoningSim ? getZoningRecord(zoningSim) : null
   const laws = zoningSim && gen ? eligibleLaws(zoningSim, gen) : []
   const blurb = gen ? getZoningBlurb(gen) : ''
+
+  const eyebrowLabel = districtName ?? 'Zoning district'
+  const subtitleParts = [gen ?? undefined, codeSection ? `§${codeSection}` : undefined].filter(Boolean)
+  const subtitleText = subtitleParts.length > 0 ? subtitleParts.join(' · ') : undefined
 
   if (!zoningSim) {
     return (
@@ -45,9 +51,9 @@ export function ZoningDistrictPanel({
     return (
       <LensInfoPanel
         open={open}
-        eyebrow="Zoning district"
+        eyebrow={eyebrowLabel}
         title={zoningSim}
-        subtitle={gen ?? undefined}
+        subtitle={subtitleText}
         hero={
           heightFt
             ? { eyebrow: 'Max height', value: `${heightFt} ft`, detail: bulk ? `bulk ${bulk}` : '' }
@@ -128,9 +134,9 @@ export function ZoningDistrictPanel({
   return (
     <LensInfoPanel
       open={open}
-      eyebrow="Zoning district"
+      eyebrow={eyebrowLabel}
       title={zoningSim}
-      subtitle={gen ?? undefined}
+      subtitle={subtitleText}
       hero={
         heightFt
           ? { eyebrow: 'Max height', value: `${heightFt} ft`, detail: bulk ? `bulk ${bulk}` : '' }

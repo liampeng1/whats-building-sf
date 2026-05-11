@@ -134,7 +134,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [selectedStation, setSelectedStation] = useState<SelectedStation | null>(null)
   const [stationRadiusM, setStationRadiusM] = useState<number>(800)  // default rail ½ mi
   const [selectedZoningDistrict, setSelectedZoningDistrict] = useState<{
-    zoningSim: string; gen: string
+    zoningSim: string
+    gen: string
+    districtna?: string
+    codesectio?: string
   } | null>(null)
   const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
   // Parcel polygon for the currently-open permit. Fetched lazily from
@@ -657,7 +660,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           <>
             <ZoningOverlay
               selectedDistrict={selectedZoningDistrict?.zoningSim ?? null}
-              onSelect={(zoningSim, gen) => setSelectedZoningDistrict({ zoningSim, gen })}
+              onSelect={(zoningSim, gen, districtna, codesectio) =>
+                setSelectedZoningDistrict({ zoningSim, gen, districtna, codesectio })
+              }
             />
           </>
         )}
@@ -804,6 +809,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       <ZoningDistrictPanel
         zoningSim={selectedZoningDistrict?.zoningSim ?? null}
         gen={selectedZoningDistrict?.gen ?? null}
+        districtName={selectedZoningDistrict?.districtna}
+        codeSection={selectedZoningDistrict?.codesectio}
         heightFt={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.height_ft : undefined}
         bulk={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.bulk : undefined}
         permitCountInDistrict={filteredPermits.length}
