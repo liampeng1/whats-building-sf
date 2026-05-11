@@ -74,19 +74,47 @@ h1, h2, h3 {
 }
 
 .station-icon { pointer-events: auto; }
+
 .station-icon .dot {
-  display: block;
-  width: 10px; height: 10px; border-radius: 50%;
-  background: #1c2438; border: 2px solid #fbf6ec;
-  box-shadow: 0 0 0 1px #1c2438;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fbf6ec;
+  font: 700 9px/1 "Helvetica Neue", Arial, sans-serif;
+  color: #fbf6ec;
 }
+.station-bart .dot { background: #1c2438; box-shadow: 0 0 0 1px #1c2438; }
+.station-muni .dot {
+  background: #7d9b76;
+  box-shadow: 0 0 0 1px #7d9b76;
+  width: 14px; height: 14px;
+}
+
 .station-icon .square {
-  display: block;
-  width: 9px; height: 9px;
-  background: #fbf6ec; border: 1.5px solid #1c2438;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px; height: 14px;
+  background: #b08968;
+  border: 2px solid #fbf6ec;
+  box-shadow: 0 0 0 1px #b08968;
+  color: #fbf6ec;
+  font: 700 9px/1 "Helvetica Neue", Arial, sans-serif;
 }
+
+.station-icon .bus-dot {
+  display: block;
+  width: 8px; height: 8px;
+  background: #fbf6ec;
+  border: 1.5px solid #9a4a31;
+  border-radius: 50%;
+}
+
 .station-icon:hover .dot,
-.station-icon:hover .square {
+.station-icon:hover .square,
+.station-icon:hover .bus-dot {
   transform: scale(1.25);
   transition: transform 100ms ease-out;
 }

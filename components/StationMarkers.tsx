@@ -1,21 +1,50 @@
+// components/StationMarkers.tsx
 'use client'
 import { Marker } from 'react-leaflet'
 import L from 'leaflet'
-import { RAIL_STATIONS, RAPID_BUS_STOPS, type RailStation, type RapidBusStop } from '@/lib/transit-stations'
+import {
+  RAIL_STATIONS, RAPID_BUS_STOPS,
+  type RailStation, type RapidBusStop,
+} from '@/lib/transit-stations'
 
-const RAIL_ICON = L.divIcon({
-  className: 'station-icon station-rail',
-  html: '<span class="dot"></span>',
+// BART — 16px navy filled circle with cream "B" centered
+const BART_ICON = L.divIcon({
+  className: 'station-icon station-bart',
+  html: '<span class="dot">B</span>',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+})
+
+// Muni Metro — 14px sage filled circle with cream "M" centered
+const MUNI_ICON = L.divIcon({
+  className: 'station-icon station-muni',
+  html: '<span class="dot">M</span>',
   iconSize: [14, 14],
   iconAnchor: [7, 7],
 })
 
+// Caltrain — 14px gold square with small white "▤" (rail) glyph
+const CALTRAIN_ICON = L.divIcon({
+  className: 'station-icon station-caltrain',
+  html: '<span class="square">▤</span>',
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+})
+
+// Rapid bus — 8px open sienna dot, no glyph
 const BUS_ICON = L.divIcon({
   className: 'station-icon station-bus',
-  html: '<span class="square"></span>',
-  iconSize: [12, 12],
-  iconAnchor: [6, 6],
+  html: '<span class="bus-dot"></span>',
+  iconSize: [8, 8],
+  iconAnchor: [4, 4],
 })
+
+function railIconForStation(s: RailStation): L.DivIcon {
+  // Merged stations may serve multiple modes; pick the most prominent for display.
+  if (s.modes.includes('bart')) return BART_ICON
+  if (s.modes.includes('caltrain')) return CALTRAIN_ICON
+  return MUNI_ICON
+}
 
 export interface SelectedStation {
   kind: 'rail' | 'rapid-bus'
@@ -24,27 +53,25 @@ export interface SelectedStation {
 
 interface Props {
   show: boolean
+  zoom: number
   onSelect: (s: SelectedStation) => void
 }
 
-/** Clickable station/stop markers rendered when the transit lens is active.
- *  RAIL_STATIONS and RAPID_BUS_STOPS are hydrated by loadStations() at mount
- *  (see Map.tsx). Below the hydration races, the arrays are empty and no
- *  markers render — the component re-evaluates on the parent re-render. */
-export function StationMarkers({ show, onSelect }: Props) {
+export function StationMarkers({ show, zoom, onSelect }: Props) {
   if (!show) return null
+  const showBus = zoom >= 14
   return (
     <>
       {RAIL_STATIONS.map((s: RailStation) => (
         <Marker
           key={s.id}
           position={[s.lat, s.lng]}
-          icon={RAIL_ICON}
+          icon={railIconForStation(s)}
           eventHandlers={{ click: () => onSelect({ kind: 'rail', id: s.id }) }}
           title={`${s.name} · ${s.modes.join(' / ')}`}
         />
       ))}
-      {RAPID_BUS_STOPS.map((s: RapidBusStop) => (
+      {showBus && RAPID_BUS_STOPS.map((s: RapidBusStop) => (
         <Marker
           key={s.id}
           position={[s.lat, s.lng]}

@@ -580,10 +580,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         {mapMode === 'transit' && (
           <>
             <TransitCorridors />
-            <StationMarkers show onSelect={(s) => {
-              setSelectedStation(s)
-              setStationRadiusM(s.kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
-            }} />
+            <StationMarkers
+              show
+              zoom={mapZoom}
+              onSelect={(s) => {
+                setSelectedStation(s)
+                setStationRadiusM(s.kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
+              }}
+            />
           </>
         )}
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
