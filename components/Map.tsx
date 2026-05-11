@@ -32,29 +32,12 @@ import {
 } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
 import MarkerClusterGroup from 'react-leaflet-cluster'
+import { PIN_FADE_MIN, PIN_FADE_MAX, pinOpacity, clusterOpacity } from '@/lib/zoom-fade'
 
 // Inactive (cancelled / denied / expired / etc.) is off-track noise — exclude
 // it from the default selection. Users can opt it back in via the filter panel.
 const DEFAULT_STAGES: PermitStage[] = STAGE_ORDER.filter((s) => s !== 'inactive')
 const ALL_CATEGORIES: UseCategory[] = CATEGORIES
-// Pins fade in across this band — choropleth is the visualization below
-// PIN_FADE_MIN, individual pins above PIN_FADE_MAX. Between, both render
-// with a smooth opacity ramp so there's no abrupt swap.
-const PIN_FADE_MIN = 13.5
-const PIN_FADE_MAX = 14.5
-
-function pinOpacity(zoom: number): number {
-  if (zoom <= PIN_FADE_MIN) return 0
-  if (zoom >= PIN_FADE_MAX) return 1
-  return (zoom - PIN_FADE_MIN) / (PIN_FADE_MAX - PIN_FADE_MIN)
-}
-
-/** Mirror of pinOpacity — fades clusters out as pins fade in across the band. */
-function clusterOpacity(zoom: number): number {
-  if (zoom <= PIN_FADE_MIN) return 1
-  if (zoom >= PIN_FADE_MAX) return 0
-  return 1 - (zoom - PIN_FADE_MIN) / (PIN_FADE_MAX - PIN_FADE_MIN)
-}
 
 /**
  * Drives the pin-opacity CSS variable directly on the wrapper element each
