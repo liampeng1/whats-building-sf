@@ -59,3 +59,25 @@ export async function fetchGtfsZip(
   }
   return out
 }
+
+/** Parse GTFS shapes.txt into a map of shape_id → [lng, lat][] sorted by sequence. */
+export function parseShapes(csv: string): Map<string, [number, number][]> {
+  const rows = parseCsv(csv)
+  const grouped = new Map<string, { seq: number; coord: [number, number] }[]>()
+  for (const r of rows) {
+    const id = r.shape_id
+    if (!id) continue
+    const lat = Number(r.shape_pt_lat)
+    const lng = Number(r.shape_pt_lon)
+    const seq = Number(r.shape_pt_sequence)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || !Number.isFinite(seq)) continue
+    if (!grouped.has(id)) grouped.set(id, [])
+    grouped.get(id)!.push({ seq, coord: [lng, lat] })
+  }
+  const out = new Map<string, [number, number][]>()
+  for (const [id, points] of grouped) {
+    points.sort((a, b) => a.seq - b.seq)
+    out.set(id, points.map((p) => p.coord))
+  }
+  return out
+}
