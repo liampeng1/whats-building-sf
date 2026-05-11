@@ -1,0 +1,6 @@
+route_id,route_short_name,route_type
+R-K,K,0
+R-T,T,0
+R-38R,38R,3
+R-5R,5R,3
+R-38,38,3

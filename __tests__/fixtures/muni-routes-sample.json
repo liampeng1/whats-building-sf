@@ -1,7 +1,0 @@
-[
-  { "route_id": "1001", "lineabbr": "K", "route_type": "0" },
-  { "route_id": "1002", "lineabbr": "T", "route_type": "0" },
-  { "route_id": "2001", "lineabbr": "38R", "route_type": "3" },
-  { "route_id": "2002", "lineabbr": "5R", "route_type": "3" },
-  { "route_id": "9001", "lineabbr": "38", "route_type": "3" }
-]

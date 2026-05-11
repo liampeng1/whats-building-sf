@@ -1,0 +1,6 @@
+route_id,trip_id
+R-K,T-K-1
+R-T,T-T-1
+R-38R,T-38R-1
+R-5R,T-5R-1
+R-38,T-38-1

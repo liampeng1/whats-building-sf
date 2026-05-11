@@ -1,6 +1,0 @@
-[
-  { "stopid": "13001", "stopname": "Castro Station", "latitude": "37.762", "longitude": "-122.43492", "routes": "1001,1002" },
-  { "stopid": "13002", "stopname": "Geary & Powell", "latitude": "37.787", "longitude": "-122.408", "routes": "2001" },
-  { "stopid": "13003", "stopname": "Mission & 24th", "latitude": "37.752", "longitude": "-122.418", "routes": "2002,9001" },
-  { "stopid": "13004", "stopname": "Geary & 33rd", "latitude": "37.781", "longitude": "-122.495", "routes": "9001" }
-]
