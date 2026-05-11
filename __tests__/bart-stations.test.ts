@@ -19,18 +19,18 @@ describe('bart-stations', () => {
   })
 
   it('emits station id as a slug', () => {
-    const csv = 'stop_id,stop_name,stop_lat,stop_lon\nEMBR,Embarcadero,37.79,-122.39\n'
+    const csv = 'stop_id,stop_name,stop_lat,stop_lon,location_type\nEMBR,Embarcadero,37.79,-122.39,0\n'
     const out = parseBartStops(csv)
     expect(out[0].id).toBe('bart-embarcadero')
   })
 
   it('attaches modes=["bart"] to every station', () => {
-    const csv = 'stop_id,stop_name,stop_lat,stop_lon\nEMBR,Embarcadero,37.79,-122.39\n'
+    const csv = 'stop_id,stop_name,stop_lat,stop_lon,location_type\nEMBR,Embarcadero,37.79,-122.39,0\n'
     expect(parseBartStops(csv)[0].modes).toEqual(['bart'])
   })
 
   it('filters out rows with empty stop_name', () => {
-    const csv = 'stop_id,stop_name,stop_lat,stop_lon\nGOOD,Embarcadero,37.79,-122.39\nBAD,,37.79,-122.39\n'
+    const csv = 'stop_id,stop_name,stop_lat,stop_lon,location_type\nGOOD,Embarcadero,37.79,-122.39,0\nBAD,,37.79,-122.39,0\n'
     expect(parseBartStops(csv)).toHaveLength(1)
   })
 
@@ -47,6 +47,12 @@ describe('bart-stations', () => {
     const out = parseBartStops(csv)
     expect(out.map((s) => s.name)).toEqual(['Embarcadero'])
     expect(out.find((s) => s.name === 'Embarcadero Entrance')).toBeUndefined()
+  })
+
+  it('rejects location_type=1 (parent stations)', async () => {
+    const csv = await fs.readFile(FIX, 'utf8')
+    const out = parseBartStops(csv)
+    expect(out.find((s) => s.name.includes('parent'))).toBeUndefined()
   })
 })
 

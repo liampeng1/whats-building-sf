@@ -59,6 +59,7 @@ export function buildStopRouteMap(
 
 function isValidStopRow(s: GtfsStop): boolean {
   if (!s.stop_name?.trim()) return false
+  if (s.location_type !== '0') return false
   const lat = Number(s.stop_lat)
   const lng = Number(s.stop_lon)
   return Number.isFinite(lat) && Number.isFinite(lng)
@@ -71,7 +72,6 @@ export function buildRailStations(
 ): RailStation[] {
   return stops
     .filter(isValidStopRow)
-    .filter((s) => (s.location_type ?? '') === '' || s.location_type === '0')
     .filter((s) => {
       const routes = stopToRoutes.get(s.stop_id)
       if (!routes) return false
@@ -96,7 +96,6 @@ export function buildRapidBusStops(
   const idToShort = new Map(routes.map((r) => [r.route_id, r.route_short_name]))
   return stops
     .filter(isValidStopRow)
-    .filter((s) => (s.location_type ?? '') === '' || s.location_type === '0')
     .filter((s) => {
       const r = stopToRoutes.get(s.stop_id)
       if (!r) return false

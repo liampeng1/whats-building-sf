@@ -66,6 +66,14 @@ describe('buildRailStations', () => {
     const out = buildRailStations(stops, map, railIds)
     expect(out.find((s) => s.name === 'Castro Station Entrance')).toBeUndefined()
   })
+
+  it('rejects stops with location_type != 0', async () => {
+    const { stops, routes, trips, stop_times } = await loadFixture()
+    const stopMap = buildStopRouteMap(stop_times, trips)
+    const railIds = new Set(selectRailRouteIds(routes))
+    const out = buildRailStations(stops, stopMap, railIds)
+    expect(out.find((s) => s.name.includes('Entrance'))).toBeUndefined()
+  })
 })
 
 describe('buildRapidBusStops', () => {
