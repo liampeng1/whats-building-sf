@@ -2,7 +2,7 @@ import { parseCsv, fetchGtfsZip } from './_gtfs'
 import { slugify } from './_utils'
 import type { RailStation, RapidBusStop } from '../../lib/transit-stations'
 
-interface GtfsStop { stop_id: string; stop_name: string; stop_lat: string; stop_lon: string }
+interface GtfsStop { stop_id: string; stop_name: string; stop_lat: string; stop_lon: string; location_type?: string }
 interface GtfsRoute { route_id: string; route_short_name: string }
 interface GtfsTrip { route_id: string; trip_id: string }
 interface GtfsStopTime { trip_id: string; stop_id: string }
@@ -71,6 +71,7 @@ export function buildRailStations(
 ): RailStation[] {
   return stops
     .filter(isValidStopRow)
+    .filter((s) => (s.location_type ?? '') === '' || s.location_type === '0')
     .filter((s) => {
       const routes = stopToRoutes.get(s.stop_id)
       if (!routes) return false
@@ -95,6 +96,7 @@ export function buildRapidBusStops(
   const idToShort = new Map(routes.map((r) => [r.route_id, r.route_short_name]))
   return stops
     .filter(isValidStopRow)
+    .filter((s) => (s.location_type ?? '') === '' || s.location_type === '0')
     .filter((s) => {
       const r = stopToRoutes.get(s.stop_id)
       if (!r) return false
@@ -137,7 +139,7 @@ export async function fetchMuni(): Promise<{ rail: RailStation[]; rapid: RapidBu
   }
 
   const gtfs = parseGtfsFiles({
-    stops: toCsv(entries['stops.txt'], ['stop_id', 'stop_name', 'stop_lat', 'stop_lon']),
+    stops: toCsv(entries['stops.txt'], ['stop_id', 'stop_name', 'stop_lat', 'stop_lon', 'location_type']),
     routes: toCsv(entries['routes.txt'], ['route_id', 'route_short_name', 'route_type']),
     trips: toCsv(entries['trips.txt'], ['route_id', 'trip_id']),
     stop_times: toCsv(entries['stop_times.txt'], ['trip_id', 'stop_id']),

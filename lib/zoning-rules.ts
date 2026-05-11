@@ -11,8 +11,6 @@
  * Schema reference: docs/superpowers/specs/2026-05-10-improvements-design.md §1a
  */
 
-import type { FamilyLawEligibility } from './family-zoning'
-
 export interface CodeCitation {
   article: string
   section: string
@@ -27,7 +25,6 @@ export interface ZoningRecord {
   parking_min: { residential?: string; commercial?: string }
   setbacks?: { front_ft?: number; rear_ft?: number; side_ft?: number }
   lot_coverage_max_pct?: number
-  family_laws: FamilyLawEligibility[]
   source: {
     density: CodeCitation
     far?: CodeCitation
@@ -66,7 +63,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
     setbacks: { front_ft: 15, rear_ft: 25, side_ft: 0 },
     lot_coverage_max_pct: 45,
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§209'),
       far: cite('Article 1.2', '§123'),
@@ -86,7 +83,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
     setbacks: { front_ft: 15, rear_ft: 25, side_ft: 0 },
     lot_coverage_max_pct: 45,
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§209'),
       principal_uses: cite('Article 2', '§209'),
@@ -105,7 +102,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
     setbacks: { front_ft: 15, rear_ft: 25, side_ft: 0 },
     lot_coverage_max_pct: 45,
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§209'),
       principal_uses: cite('Article 2', '§209'),
@@ -133,7 +130,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
     setbacks: { front_ft: 0, rear_ft: 25 },
     lot_coverage_max_pct: 75,
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§754'),
       far: cite('Article 1.2', '§124'),
@@ -156,7 +153,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Maximum (not minimum) — §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§210.2'),
       far: cite('Article 1.2', '§124'),
@@ -178,7 +175,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '1 space per dwelling (no min near transit per AB-2097)',
     },
     setbacks: { front_ft: 15, rear_ft: 25, side_ft: 0 },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§209.2'),
       principal_uses: cite('Article 2', '§209.2'),
@@ -203,7 +200,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       commercial: '0',
     },
     setbacks: { front_ft: 0, rear_ft: 25, side_ft: 0 },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§209.3'),
       principal_uses: cite('Article 2', '§209.3'),
@@ -228,7 +225,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       commercial: '0',
     },
     setbacks: { front_ft: 0, rear_ft: 25, side_ft: 0 },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§209.3'),
       principal_uses: cite('Article 2', '§209.3'),
@@ -253,7 +250,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '1 space per unit (near transit: 0 per AB-2097)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§710.1'),
       principal_uses: cite('Article 7', '§710.1'),
@@ -275,7 +272,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '1 space per unit (near transit: 0 per AB-2097)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§711.1'),
       principal_uses: cite('Article 7', '§711.1'),
@@ -298,7 +295,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '1 space per unit (near transit: 0 per AB-2097)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§712.1'),
       principal_uses: cite('Article 7', '§712.1'),
@@ -320,7 +317,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '1 space per unit (near transit: 0 per AB-2097)',
       commercial: 'Per §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§713.1'),
       principal_uses: cite('Article 7', '§713.1'),
@@ -342,7 +339,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '1 space per unit (near transit: 0 per AB-2097)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§729.1'),
       principal_uses: cite('Article 7', '§729.1'),
@@ -365,7 +362,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '0 (transit-oriented)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§726.1'),
       principal_uses: cite('Article 7', '§726.1'),
@@ -387,7 +384,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '0 (transit-oriented)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§750'),
       principal_uses: cite('Article 7', '§750'),
@@ -409,7 +406,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       residential: '0 (transit-oriented)',
       commercial: '0',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§751'),
       principal_uses: cite('Article 7', '§751'),
@@ -432,7 +429,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Maximum (not minimum) per §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.1'),
       far: cite('Article 1.2', '§124'),
@@ -455,7 +452,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Maximum (not minimum) — §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.2'),
       far: cite('Article 1.2', '§124'),
@@ -477,7 +474,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Maximum (not minimum) — §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.2'),
       far: cite('Article 1.2', '§124'),
@@ -500,7 +497,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Maximum (not minimum) — §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.2'),
       far: cite('Article 1.2', '§124'),
@@ -522,7 +519,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Maximum (not minimum) — §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.2'),
       far: cite('Article 1.2', '§124'),
@@ -546,7 +543,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §151.1 (vehicle and loading requirements)',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.4'),
       principal_uses: cite('Article 2', '§210.4'),
@@ -566,7 +563,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §151.1 (vehicle and loading requirements)',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.4'),
       principal_uses: cite('Article 2', '§210.4'),
@@ -585,7 +582,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.3'),
       principal_uses: cite('Article 2', '§210.3'),
@@ -604,7 +601,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.3'),
       principal_uses: cite('Article 2', '§210.3'),
@@ -623,7 +620,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.3'),
       principal_uses: cite('Article 2', '§210.3'),
@@ -642,7 +639,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §151.1',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§210.3'),
       principal_uses: cite('Article 2', '§210.3'),
@@ -664,7 +661,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     parking_min: {
       commercial: 'Per §211 and use-specific controls',
     },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§211'),
       principal_uses: cite('Article 2', '§211'),
@@ -680,7 +677,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Bayview/Hunters Point Redevelopment SUD; see codesection' },
     principal_uses: ['Mixed-use (per Special Use District controls)'],
     parking_min: { residential: 'See SUD controls' },
-    family_laws: [],
+
     source: {
       density: cite('Special Use District', '§263.35'),
       principal_uses: cite('Special Use District', '§263.35'),
@@ -694,7 +691,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Castro/Upper Market Commercial district; see §810.1 for full controls' },
     principal_uses: ['Mixed commercial and residential (per §810.1)'],
     parking_min: { residential: 'See §810.1' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§810.1'),
       principal_uses: cite('Article 8', '§810.1'),
@@ -708,7 +705,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Chinatown Mixed Use district; see Article 8 mixed-use controls' },
     principal_uses: ['Mixed commercial and residential (per Chinatown controls)'],
     parking_min: { residential: 'See codesection for full rules' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§842 et seq.'),
       principal_uses: cite('Article 8', '§842 et seq.'),
@@ -722,7 +719,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Commercial/Residential Neighborhood Commercial district; see §812.1' },
     principal_uses: ['Mixed commercial and residential (per §812.1)'],
     parking_min: { residential: 'See §812.1' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§812.1'),
       principal_uses: cite('Article 8', '§812.1'),
@@ -736,7 +733,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Castro Village Commercial district; see §811.1 for full controls' },
     principal_uses: ['Commercial and residential mixed use (per §811.1)'],
     parking_min: { residential: 'See §811.1' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§811.1'),
       principal_uses: cite('Article 8', '§811.1'),
@@ -750,7 +747,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Hunters Point Redevelopment Area; controls per Redevelopment Plan' },
     principal_uses: ['Mixed-use (per Hunters Point Redevelopment Plan)'],
     parking_min: { residential: 'See Redevelopment Plan controls' },
-    family_laws: [],
+
     source: {
       density: cite('Special Use District', '§249.52'),
       principal_uses: cite('Special Use District', '§249.52'),
@@ -764,7 +761,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Public/institutional use; Job Corps facility per §249.52' },
     principal_uses: ['Public institutional (Job Corps training facility)'],
     parking_min: { commercial: 'See §249.52' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.52'),
       principal_uses: cite('Article 2', '§249.52'),
@@ -778,7 +775,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Mission Bay Office district; see §912 for full controls' },
     principal_uses: ['Office and commercial (per Mission Bay controls §912)'],
     parking_min: { commercial: 'See §912' },
-    family_laws: [],
+
     source: {
       density: cite('Article 9', '§912'),
       principal_uses: cite('Article 9', '§912'),
@@ -792,7 +789,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Mission Bay Residential/Affordable district; see §902 for full controls' },
     principal_uses: ['Residential and affordable housing (per Mission Bay controls §902)'],
     parking_min: { residential: 'See §902' },
-    family_laws: [],
+
     source: {
       density: cite('Article 9', '§902'),
       principal_uses: cite('Article 9', '§902'),
@@ -806,7 +803,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Mixed-use Residential district; see §249.80 for full controls' },
     principal_uses: ['Mixed-use residential (per Special Use District §249.80)'],
     parking_min: { residential: 'See §249.80' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.80'),
       principal_uses: cite('Article 2', '§249.80'),
@@ -820,7 +817,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Mixed Use General district; see §840 for full controls' },
     principal_uses: ['Mixed use — ground-floor commercial, residential above (per §840)'],
     parking_min: { residential: 'See §840' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§840'),
       principal_uses: cite('Article 8', '§840'),
@@ -834,7 +831,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Mixed Use Office district; see §842 for full controls' },
     principal_uses: ['Mixed use office and residential (per §842)'],
     parking_min: { commercial: 'See §842' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§842'),
       principal_uses: cite('Article 8', '§842'),
@@ -848,7 +845,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Mixed Use Residential district; see §842 for full controls' },
     principal_uses: ['Mixed use residential and commercial (per §842)'],
     parking_min: { residential: 'See §842' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§842'),
       principal_uses: cite('Article 8', '§842'),
@@ -862,7 +859,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Public 70% Mixed Use district; see §249.79 for full controls' },
     principal_uses: ['Mixed use (per Special Use District §249.79)'],
     parking_min: { residential: 'See §249.79' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.79'),
       principal_uses: cite('Article 2', '§249.79'),
@@ -876,7 +873,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Parkmerced Community Facilities subdistrict; see §249.64' },
     principal_uses: ['Community facilities and public uses (per §249.64)'],
     parking_min: { commercial: 'See §249.64' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.64'),
       principal_uses: cite('Article 2', '§249.64'),
@@ -890,7 +887,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Parkmerced Mixed Use 1 subdistrict; see §249.64' },
     principal_uses: ['Mixed use residential and commercial (per §249.64)'],
     parking_min: { residential: 'See §249.64' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.64'),
       principal_uses: cite('Article 2', '§249.64'),
@@ -904,7 +901,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Parkmerced Mixed Use 2 subdistrict; see §249.64' },
     principal_uses: ['Mixed use residential and commercial (per §249.64)'],
     parking_min: { residential: 'See §249.64' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.64'),
       principal_uses: cite('Article 2', '§249.64'),
@@ -918,7 +915,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Parkmerced Open Space subdistrict; see §249.64' },
     principal_uses: ['Open space and parks (per §249.64)'],
     parking_min: { commercial: 'See §249.64' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.64'),
       principal_uses: cite('Article 2', '§249.64'),
@@ -932,7 +929,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Parkmerced Residential subdistrict; see §249.64' },
     principal_uses: ['Residential (per §249.64)'],
     parking_min: { residential: 'See §249.64' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.64'),
       principal_uses: cite('Article 2', '§249.64'),
@@ -946,7 +943,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Parkmerced Support/Service subdistrict; see §249.64' },
     principal_uses: ['Support services and civic uses (per §249.64)'],
     parking_min: { commercial: 'See §249.64' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.64'),
       principal_uses: cite('Article 2', '§249.64'),
@@ -960,7 +957,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Potrero/Showplace Square Mixed Use; see §249.87 for full controls' },
     principal_uses: ['Mixed use (per Special Use District §249.87)'],
     parking_min: { residential: 'See §249.87' },
-    family_laws: [],
+
     source: {
       density: cite('Article 2', '§249.87'),
       principal_uses: cite('Article 2', '§249.87'),
@@ -974,7 +971,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Residential/Commercial District (named); see §758 for full controls' },
     principal_uses: ['Residential and commercial mixed use (per §758)'],
     parking_min: { residential: 'See §758' },
-    family_laws: [],
+
     source: {
       density: cite('Article 7', '§758'),
       principal_uses: cite('Article 7', '§758'),
@@ -988,7 +985,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Residential Enclave District; see §813 for full controls' },
     principal_uses: ['Residential uses (per §813)'],
     parking_min: { residential: 'See §813' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§813'),
       principal_uses: cite('Article 8', '§813'),
@@ -1002,7 +999,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Residential Enclave District (Mixed); see §813 for full controls' },
     principal_uses: ['Residential with limited mixed use (per §813)'],
     parking_min: { residential: 'See §813' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§813'),
       principal_uses: cite('Article 8', '§813'),
@@ -1016,7 +1013,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Residential Transit-Oriented Commercial district; see Article 8 controls' },
     principal_uses: ['Residential and ground-floor commercial (transit-oriented)'],
     parking_min: { residential: '0 (transit-oriented)' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§842 et seq.'),
       principal_uses: cite('Article 8', '§842 et seq.'),
@@ -1030,7 +1027,7 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     density: { note: 'Western SoMa Mixed Use General district; see §844 for full controls' },
     principal_uses: ['Mixed use general (per §844)'],
     parking_min: { residential: 'See §844' },
-    family_laws: [],
+
     source: {
       density: cite('Article 8', '§844'),
       principal_uses: cite('Article 8', '§844'),

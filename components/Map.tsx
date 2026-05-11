@@ -179,11 +179,36 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   // selection plus all five filter values can be encoded in the URL so a
   // shared link reproduces the sender's exact view.
   useEffect(() => {
+    // Applies URL search params to the panel/transit/district/browse state.
+    // Called on mount AND inside onPop so browser back/forward restores all
+    // five new params (transit, station, radius, district, browse) plus
+    // permit and nhood.
+    // Stages, cats, minUnits, completedYears, recentActivity are intentionally
+    // mount-only — they're filter defaults whose round-trip through
+    // state→URL→state on popstate could cause feedback loops with the
+    // filter-sync effect.
+    const applyUrlState = (sp: URLSearchParams) => {
+      setOpenPermit(sp.get('permit'))
+      setSelectedNhood(sp.get('nhood'))
+      const transitParam = sp.get('transit')
+      setRailOnly(transitParam === 'rail' || transitParam === 'both')
+      setRapidBusOnly(transitParam === 'rapid-bus' || transitParam === 'both')
+      const stationParam = sp.get('station')
+      if (stationParam) {
+        const kind: SelectedStation['kind'] = stationParam.startsWith('bus-') ? 'rapid-bus' : 'rail'
+        setSelectedStation({ kind, id: stationParam })
+      } else {
+        setSelectedStation(null)
+      }
+      const radiusParam = Number(sp.get('radius'))
+      if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
+      const districtParam = sp.get('district')
+      setSelectedZoningDistrict(districtParam ? { zoningSim: districtParam, gen: '' } : null)
+      setBrowseOpen(sp.get('browse') === '1')
+    }
+
     const params = new URLSearchParams(window.location.search)
-    const ip = params.get('permit')
-    if (ip) setOpenPermit(ip)
-    const inh = params.get('nhood')
-    if (inh) setSelectedNhood(inh)
+    applyUrlState(params)
 
     const stagesParam = params.get('stages')
     if (stagesParam) {
@@ -208,30 +233,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     const raParam = Number(params.get('recentActivity'))
     if ([0, 6, 12, 24, 60].includes(raParam)) setRecentActivity(raParam as RecentActivityFilter)
 
-    const transitParam = params.get('transit')
-    if (transitParam === 'rail' || transitParam === 'both') setRailOnly(true)
-    if (transitParam === 'rapid-bus' || transitParam === 'both') setRapidBusOnly(true)
-
-    const stationParam = params.get('station')
-    if (stationParam) {
-      const kind: SelectedStation['kind'] = stationParam.startsWith('bus-') ? 'rapid-bus' : 'rail'
-      setSelectedStation({ kind, id: stationParam })
-    }
-
-    const radiusParam = Number(params.get('radius'))
-    if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
-
-    const districtParam = params.get('district')
-    if (districtParam) {
-      setSelectedZoningDistrict({ zoningSim: districtParam, gen: '' })
-    }
-
-    if (params.get('browse') === '1') setBrowseOpen(true)
-
     const onPop = () => {
-      const sp = new URLSearchParams(window.location.search)
-      setOpenPermit(sp.get('permit'))
-      setSelectedNhood(sp.get('nhood'))
+      applyUrlState(new URLSearchParams(window.location.search))
     }
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)

@@ -58,6 +58,14 @@ describe('buildRailStations', () => {
     expect(out[0].modes).toEqual(['muni-metro'])
     expect(out[0].id).toBe('muni-castro-station')
   })
+
+  it('filters out entrance/exit rows (location_type=2)', async () => {
+    const { stops, trips, stop_times } = await loadFixture()
+    const map = buildStopRouteMap(stop_times, trips)
+    const railIds = new Set(['R-K'])
+    const out = buildRailStations(stops, map, railIds)
+    expect(out.find((s) => s.name === 'Castro Station Entrance')).toBeUndefined()
+  })
 })
 
 describe('buildRapidBusStops', () => {

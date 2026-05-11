@@ -38,6 +38,16 @@ describe('bart-stations', () => {
     const csv = 'stop_id,stop_name,stop_lat,stop_lon\nBAD,Bad Lat,not-a-number,37.79\n'
     expect(parseBartStops(csv)).toHaveLength(0)
   })
+
+  it('filters out entrance/exit rows (location_type=2)', () => {
+    const csv =
+      'stop_id,stop_name,stop_lat,stop_lon,location_type\n' +
+      'EMBR,Embarcadero,37.79,-122.39,0\n' +
+      'EMBR_ENT,Embarcadero Entrance,37.792,-122.397,2\n'
+    const out = parseBartStops(csv)
+    expect(out.map((s) => s.name)).toEqual(['Embarcadero'])
+    expect(out.find((s) => s.name === 'Embarcadero Entrance')).toBeUndefined()
+  })
 })
 
 describe('BART_SF_BBOX', () => {

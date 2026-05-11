@@ -17,6 +17,7 @@ export function parseBartStops(csv: string): RailStation[] {
   const rows = parseCsv(csv)
   return rows
     .filter((r) => (r.stop_name ?? '').trim().length > 0)
+    .filter((r) => (r.location_type ?? '') === '' || r.location_type === '0')
     .map((r) => ({
       id: `bart-${slugify(r.stop_name)}`,
       name: r.stop_name,
@@ -40,7 +41,7 @@ export async function fetchBartStations(): Promise<RailStation[]> {
   // Re-serialize the parsed records to CSV-shaped text so parseBartStops
   // can be tested in isolation against fixtures.
   const rows = entries['stops.txt']
-  const header = ['stop_id', 'stop_name', 'stop_lat', 'stop_lon']
+  const header = ['stop_id', 'stop_name', 'stop_lat', 'stop_lon', 'location_type']
   const lines = [header.join(',')]
   for (const r of rows) lines.push(header.map((h) => r[h] ?? '').join(','))
   return parseBartStops(lines.join('\n'))

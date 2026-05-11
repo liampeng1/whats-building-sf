@@ -1,5 +1,6 @@
-stop_id,stop_name,stop_lat,stop_lon
-S-CASTRO,Castro Station,37.762,-122.43492
-S-GEARY-POWELL,Geary & Powell,37.787,-122.408
-S-MISSION-24TH,Mission & 24th,37.752,-122.418
-S-GEARY-33RD,Geary & 33rd,37.781,-122.495
+stop_id,stop_name,stop_lat,stop_lon,location_type
+S-CASTRO,Castro Station,37.762,-122.43492,0
+S-GEARY-POWELL,Geary & Powell,37.787,-122.408,0
+S-MISSION-24TH,Mission & 24th,37.752,-122.418,0
+S-GEARY-33RD,Geary & 33rd,37.781,-122.495,0
+S-CASTRO-ENT,Castro Station Entrance,37.762,-122.435,2
