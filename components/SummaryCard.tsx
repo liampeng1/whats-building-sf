@@ -1,5 +1,6 @@
 'use client'
 import { Logo } from './Logo'
+import { VolumeDonut } from './VolumeDonut'
 
 export type SummaryCardState = 'none' | 'top5' | 'all'
 
@@ -53,18 +54,11 @@ export function SummaryCard({ state, summary, eyebrow, items, onStateChange, onI
                 <button
                   type="button"
                   onClick={() => onItemClick(item.id)}
-                  className="w-full text-left grid grid-cols-[1fr_auto] gap-2 hover:bg-paper/5 rounded px-1 py-0.5 transition-colors"
+                  className="w-full text-left grid grid-cols-[auto_1fr_auto] items-center gap-2 hover:bg-paper/5 rounded px-1 py-0.5 transition-colors"
                 >
+                  <VolumeDonut count={item.count} maxCount={topCount} background="#1c2438" />
                   <span className="font-serif text-[13px] truncate leading-tight">{item.name}</span>
                   <span className="text-[11px] tabular-nums opacity-80">{item.count}</span>
-                  <span
-                    className="col-span-2 h-[2px] rounded mt-0.5"
-                    style={{
-                      width: `${(item.count / topCount) * 100}%`,
-                      background: '#9a4a31',
-                      opacity: 0.85,
-                    }}
-                  />
                 </button>
               </li>
             ))}
