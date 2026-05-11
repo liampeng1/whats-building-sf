@@ -86,142 +86,6 @@
     ]
   },
   {
-    "id": "bart-a-16th-mission-sw-entrance-exit",
-    "name": "A 16TH & Mission SW Entrance / Exit",
-    "lat": 37.76474212,
-    "lng": -122.4200446,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a-24th-mission-sw-entrance-exit",
-    "name": "A 24TH & Mission SW Entrance / Exit",
-    "lat": 37.75194137,
-    "lng": -122.4188268,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a1-geneva-ave-entrance-exit",
-    "name": "A1 Geneva Ave Entrance / Exit",
-    "lat": 37.72081894,
-    "lng": -122.4476262,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a4-market-street-7th-street-nw-entrance-exit",
-    "name": "A4 Market Street & 7th Street (NW) Entrance / Exit",
-    "lat": 37.78035552,
-    "lng": -122.4129008,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a2-market-street-hyde-street-sw-entrance-exit",
-    "name": "A2 Market Street & Hyde Street (SW) Entrance / Exit",
-    "lat": 37.77895821,
-    "lng": -122.4146697,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-b1-market-spear-street-se-entrance-exit",
-    "name": "B1 Market & Spear Street (SE) Entrance / Exit",
-    "lat": 37.79352792,
-    "lng": -122.3958486,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a3-market-street-front-street-nw-entrance-exit",
-    "name": "A3 Market Street & Front Street (NW) Entrance / Exit",
-    "lat": 37.79220331,
-    "lng": -122.3978967,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a1-market-post-street-nw-entrance-exit",
-    "name": "A1 Market & Post Street (NW) Entrance / Exit",
-    "lat": 37.78892431,
-    "lng": -122.4021896,
-    "modes": [
-      "bart",
-      "muni-metro"
-    ]
-  },
-  {
-    "id": "bart-b2-market-2nd-street-south-entrance-exit",
-    "name": "B2 Market & 2nd Street (South) Entrance / Exit",
-    "lat": 37.78941195,
-    "lng": -122.4010512,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a3-sutter-street-entrance-exit",
-    "name": "A3 Sutter Street Entrance / Exit",
-    "lat": 37.78995495,
-    "lng": -122.4007242,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a4-sansome-street-entrance-exit",
-    "name": "A4 Sansome Street Entrance / Exit",
-    "lat": 37.79050805,
-    "lng": -122.4007031,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a4-market-street-4th-street-ne-entrance-exit",
-    "name": "A4 Market Street & 4th Street (NE) Entrance / Exit",
-    "lat": 37.78603787,
-    "lng": -122.4056644,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-a3-stockton-street-entrance-exit",
-    "name": "A3 Stockton Street Entrance / Exit",
-    "lat": 37.78586895,
-    "lng": -122.4063542,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-b3-market-street-4th-street-south-entrance-exit",
-    "name": "B3 Market Street & 4th Street (South) Entrance / Exit",
-    "lat": 37.78526132,
-    "lng": -122.4063142,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
-    "id": "bart-b1-market-street-5th-street-entrance-exit",
-    "name": "B1 Market Street & 5th Street Entrance / Exit",
-    "lat": 37.78372018,
-    "lng": -122.4082722,
-    "modes": [
-      "bart"
-    ]
-  },
-  {
     "id": "muni-15th-ave-taraval-st",
     "name": "15th Ave & Taraval St",
     "lat": 37.743124,
@@ -802,6 +666,15 @@
     "name": "Metro Forest Hill Station/Downtown",
     "lat": 37.748351,
     "lng": -122.458623,
+    "modes": [
+      "muni-metro"
+    ]
+  },
+  {
+    "id": "muni-metro-montgomery-station-outbound",
+    "name": "Metro Montgomery Station/Outbound",
+    "lat": 37.788791,
+    "lng": -122.402127,
     "modes": [
       "muni-metro"
     ]

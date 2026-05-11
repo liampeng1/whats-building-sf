@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WBSF · Browse-all alternatives · 2026-05-11</title>
+  <style>
+    :root {
+      --paper: #fbf6ec;
+      --paper-deep: #f1ead9;
+      --paper-edge: #d6cfbe;
+      --ink: #1c2438;
+      --ink-soft: #475569;
+      --ink-faint: #78716c;
+      --sienna: #9a4a31;
+      --sage: #7d9b76;
+      --gold: #b08968;
+      --slate: #5d7a99;
+    }
+    body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, Helvetica, sans-serif; background: #efe9d8; color: var(--ink); margin: 0; padding: 24px; }
+    h1 { font: 600 22px/1.2 Georgia, serif; margin: 0 0 8px; }
+    .intro { max-width: 920px; margin: 0 0 24px; color: var(--ink-soft); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1400px; }
+    .card { background: white; border: 1px solid var(--paper-edge); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card h2 { margin: 0; padding: 12px 16px; font: 600 14px/1.2 Georgia, serif; background: var(--ink); color: var(--paper); }
+    .tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; margin-left: 8px; }
+    .mockup { position: relative; height: 380px; background: linear-gradient(180deg, #e8e0c8 0%, #e0d8be 100%); border-bottom: 1px solid var(--paper-edge); overflow: hidden; }
+    .map-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #e8e0c8 0%, #d8d0b8 50%, #e0d8be 100%); }
+    .map-bg::before { content: ''; position: absolute; inset: 0; background-image:
+      radial-gradient(circle at 30% 40%, rgba(125,155,118,0.10) 0%, transparent 30%),
+      radial-gradient(circle at 65% 60%, rgba(176,137,104,0.12) 0%, transparent 35%); }
+    .body { padding: 12px 16px 16px; }
+    .body p { margin: 0 0 8px; font-size: 13px; color: var(--ink-soft); }
+    .pros, .cons { margin: 8px 0 0; padding: 0 0 0 18px; font-size: 12px; }
+    .pros li { color: #2a6b3a; }
+    .cons li { color: #8a3a2a; }
+
+    /* Shared Direction-A chrome */
+    .a-fab { position: absolute; bottom: 14px; right: 14px; width: 36px; height: 36px; border-radius: 18px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .a-lens-rail { position: absolute; bottom: 14px; left: 14px; background: var(--paper); border: 1px solid var(--paper-edge); padding: 4px 6px; border-radius: 6px; display: flex; gap: 4px; font-size: 10px; }
+    .a-lens-rail .chip { padding: 2px 7px; border-radius: 999px; border: 1px solid var(--paper-edge); background: var(--paper); font-weight: 600; }
+    .a-lens-rail .chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    /* Common list-row */
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 3px 6px; font-size: 11px; line-height: 1.4; }
+    .row .num { font-variant-numeric: tabular-nums; color: var(--ink-faint); }
+    .row.first { padding-top: 6px; }
+    .row .bar { grid-column: 1 / -1; height: 2px; background: var(--sienna); opacity: 0.5; border-radius: 1px; }
+
+    /* === B1: Summary-card expands === */
+    .b1-card { position: absolute; top: 12px; right: 12px; width: 240px; background: var(--ink); color: var(--paper); padding: 10px 12px; border-radius: 6px; font-size: 11px; }
+    .b1-card .title { font: 600 13px/1.2 Georgia, serif; }
+    .b1-card .sentence { font-size: 10px; opacity: 0.85; margin-top: 3px; }
+    .b1-card .top3 { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.15); }
+    .b1-card .row { color: var(--paper); }
+    .b1-card .row .num { color: rgba(255,255,255,0.7); }
+    .b1-card .row .bar { background: var(--sienna); opacity: 0.85; }
+    .b1-card .see-all { display: inline-block; font-size: 10px; opacity: 0.8; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.15); text-decoration: underline; cursor: pointer; }
+
+    /* === B2: Lens rail expands upward === */
+    .b2-rail { position: absolute; bottom: 14px; left: 14px; background: var(--paper); border: 1px solid var(--paper-edge); border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 220px; max-height: 280px; overflow: hidden; }
+    .b2-rail .head { padding: 6px 10px; background: var(--ink); color: var(--paper); font-size: 10px; display: flex; justify-content: space-between; }
+    .b2-rail .pill-row { display: flex; gap: 3px; padding: 4px 4px 0; }
+    .b2-rail .pill-row .chip { padding: 1px 6px; font-size: 9px; border-radius: 999px; border: 1px solid var(--paper-edge); }
+    .b2-rail .pill-row .chip.on { background: var(--ink); color: var(--paper); }
+    .b2-rail .body-rows { padding: 4px 4px 6px; max-height: 220px; overflow-y: auto; }
+
+    /* === B3: Always-visible left strip === */
+    .b3-strip { position: absolute; top: 0; bottom: 0; left: 0; width: 200px; background: var(--paper); border-right: 1px solid var(--paper-edge); padding: 10px 8px; font-size: 11px; }
+    .b3-strip h3 { margin: 0 0 4px; font: 600 12px/1.2 Georgia, serif; padding: 0 4px; }
+    .b3-strip .modes { display: flex; gap: 2px; padding: 0 4px 6px; border-bottom: 1px solid var(--paper-edge); margin-bottom: 6px; }
+    .b3-strip .modes .chip { padding: 1px 5px; font-size: 9px; border-radius: 999px; border: 1px solid var(--paper-edge); background: var(--paper); }
+    .b3-strip .modes .chip.on { background: var(--ink); color: var(--paper); }
+    .b3-strip .rows { max-height: 320px; overflow-y: auto; }
+    .b3-strip .row .num { color: var(--ink-faint); }
+    .b3-strip .collapse-handle { position: absolute; right: -10px; top: 50%; width: 18px; height: 36px; background: var(--paper); border: 1px solid var(--paper-edge); border-left: none; border-radius: 0 4px 4px 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--ink-faint); }
+    .b3-map { position: absolute; left: 200px; right: 0; top: 0; bottom: 0; }
+
+    /* === B4: Hover tooltip === */
+    .b4-cursor { position: absolute; left: 45%; top: 45%; width: 14px; height: 14px; }
+    .b4-cursor::before { content: ''; position: absolute; left: 6px; top: 0; width: 1px; height: 14px; background: var(--ink); }
+    .b4-cursor::after { content: ''; position: absolute; left: 0; top: 6px; width: 14px; height: 1px; background: var(--ink); }
+    .b4-tip { position: absolute; left: 47%; top: 45%; background: var(--paper); border: 1px solid var(--paper-edge); padding: 8px 10px; font-size: 11px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); border-radius: 4px; min-width: 140px; }
+    .b4-tip .name { font: 600 12px/1.2 Georgia, serif; }
+    .b4-tip .stat { font-size: 10px; color: var(--ink-soft); margin-top: 2px; }
+    .b4-card { position: absolute; top: 12px; right: 12px; background: var(--ink); color: var(--paper); padding: 8px 12px; border-radius: 6px; font-size: 11px; max-width: 220px; }
+    .b4-card .title { font: 600 13px/1.2 Georgia, serif; }
+  </style>
+</head>
+<body>
+  <h1>What's Building SF — alternatives to "Browse all" popup</h1>
+  <p class="intro">
+    Four alternatives that keep the data discoverable without a separate popup. Each sits inside Direction A's chrome. The list shown is &quot;all 41 neighborhoods sorted by permit count&quot; in Neighborhoods lens; the same surface morphs to zoning cats / transit bands when the lens switches.
+  </p>
+
+  <div class="grid">
+
+    <!-- ============ B1: Summary card expands ============ -->
+    <div class="card">
+      <h2>B1 · Summary card expands <span class="tag">top-right teaser · click to grow</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- Expanded summary card with top 6 inline + "See all 41" -->
+        <div class="b1-card">
+          <div class="title">What's Building SF</div>
+          <div class="sentence">Major projects, any use, last 2 years · 1,824 visible</div>
+          <div class="top3">
+            <div class="row"><span>Mission</span><span class="num">183</span></div>
+            <div class="row"><span class="bar" style="width: 100%"></span></div>
+            <div class="row"><span>South of Market</span><span class="num">147</span></div>
+            <div class="row"><span class="bar" style="width: 80%"></span></div>
+            <div class="row"><span>Bayview · HP</span><span class="num">142</span></div>
+            <div class="row"><span class="bar" style="width: 77%"></span></div>
+            <div class="row"><span>Tenderloin</span><span class="num">98</span></div>
+            <div class="row"><span class="bar" style="width: 53%"></span></div>
+            <div class="row"><span>Outer Sunset</span><span class="num">88</span></div>
+            <div class="row"><span class="bar" style="width: 48%"></span></div>
+          </div>
+          <span class="see-all">See all 41 ↓</span>
+        </div>
+
+        <div class="a-lens-rail">
+          <span class="chip on">Neighborhoods</span>
+          <span class="chip">Zoning</span>
+          <span class="chip">Transit</span>
+        </div>
+        <div class="a-fab">≡</div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> the top-right summary card grows into a top-N list when you tap it. Default state shows top 5 inline as a quick-glance leaderboard. "See all 41" expands the card to scroll the full list. Click any row to drill in. No separate popup ever appears.</p>
+        <ul class="pros">
+          <li>Browse data is always visible — the top-N is part of the chrome.</li>
+          <li>Discoverable without a button hunt.</li>
+          <li>One surface owns "summary + list" — less UI to learn.</li>
+        </ul>
+        <ul class="cons">
+          <li>Card grows tall, can cover the upper-right corner of the map.</li>
+          <li>Always-on data means users can't fully clear the chrome.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ B2: Lens rail expands upward ============ -->
+    <div class="card">
+      <h2>B2 · Lens rail expands upward <span class="tag">tap active pill to reveal list above</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- Expanded list above the lens rail -->
+        <div class="b2-rail">
+          <div class="head">
+            <span>Neighborhoods · 41</span>
+            <span style="cursor: pointer; opacity: 0.7;">✕</span>
+          </div>
+          <div class="pill-row">
+            <span class="chip on">Neighborhoods</span>
+            <span class="chip">Zoning</span>
+            <span class="chip">Transit</span>
+          </div>
+          <div class="body-rows">
+            <div class="row first"><span>Mission</span><span class="num">183</span></div>
+            <div class="row"><span class="bar" style="width: 100%"></span></div>
+            <div class="row"><span>South of Market</span><span class="num">147</span></div>
+            <div class="row"><span class="bar" style="width: 80%"></span></div>
+            <div class="row"><span>Bayview · HP</span><span class="num">142</span></div>
+            <div class="row"><span class="bar" style="width: 77%"></span></div>
+            <div class="row"><span>Tenderloin</span><span class="num">98</span></div>
+            <div class="row"><span>Outer Sunset</span><span class="num">88</span></div>
+            <div class="row"><span>Excelsior</span><span class="num">76</span></div>
+            <div class="row"><span>North Beach</span><span class="num">52</span></div>
+          </div>
+        </div>
+
+        <div class="a-fab">≡</div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> the lens rail is the entry point for browsing. Tap the active pill again → the rail grows upward into a scrollable list of items in that lens. The mode switcher stays inline at the top. Closes with X or by tapping the active pill a third time.</p>
+        <ul class="pros">
+          <li>Discovery is in the place users already touch to change lens.</li>
+          <li>Compact — doesn't fight for top-right real estate.</li>
+          <li>Lens + browse share one container, conceptually correct.</li>
+        </ul>
+        <ul class="cons">
+          <li>"Tap-twice" interaction is unusual; needs a UI affordance hint.</li>
+          <li>Mobile thumb reach: bottom-left list pushes upward toward map content.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ B3: Always-visible left strip ============ -->
+    <div class="card">
+      <h2>B3 · Always-visible left strip <span class="tag">slim sidebar · collapsible</span></h2>
+      <div class="mockup">
+        <div class="b3-strip">
+          <h3>Browse</h3>
+          <div class="modes">
+            <span class="chip on">N’hoods</span>
+            <span class="chip">Zoning</span>
+            <span class="chip">Transit</span>
+          </div>
+          <div class="rows">
+            <div class="row"><span>Mission</span><span class="num">183</span></div>
+            <div class="row"><span class="bar" style="width: 100%"></span></div>
+            <div class="row"><span>South of Market</span><span class="num">147</span></div>
+            <div class="row"><span class="bar" style="width: 80%"></span></div>
+            <div class="row"><span>Bayview · HP</span><span class="num">142</span></div>
+            <div class="row"><span class="bar" style="width: 77%"></span></div>
+            <div class="row"><span>Tenderloin</span><span class="num">98</span></div>
+            <div class="row"><span>Outer Sunset</span><span class="num">88</span></div>
+            <div class="row"><span>Excelsior</span><span class="num">76</span></div>
+            <div class="row"><span>North Beach</span><span class="num">52</span></div>
+            <div class="row"><span>Castro</span><span class="num">48</span></div>
+            <div class="row"><span>Inner Sunset</span><span class="num">42</span></div>
+            <div class="row"><span>Marina</span><span class="num">38</span></div>
+            <div class="row"><span style="color: var(--ink-faint); font-size: 10px;">+ 27 more ↓</span></div>
+          </div>
+          <div class="collapse-handle">‹</div>
+        </div>
+
+        <div class="b3-map">
+          <div class="map-bg"></div>
+          <div class="a-lens-rail" style="left: 14px;">
+            <span class="chip on">Neighborhoods</span>
+            <span class="chip">Zoning</span>
+            <span class="chip">Transit</span>
+          </div>
+          <div class="a-fab">≡</div>
+        </div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> a slim 200px sidebar permanently anchored to the left edge. Shows the full list, scrolls naturally. Collapses to a thin handle for users who want pure-map view. The lens rail in the strip is the canonical mode switcher; the bottom-left rail still works as a secondary.</p>
+        <ul class="pros">
+          <li>No "popup" anywhere — most explicit, least hidden state.</li>
+          <li>Persistent list rewards scanning; great for repeat visitors.</li>
+          <li>Mobile collapses gracefully to bottom sheet on narrow viewport.</li>
+        </ul>
+        <ul class="cons">
+          <li>Map loses ~15% horizontal real estate by default.</li>
+          <li>Compromises Direction A's &quot;chrome recedes&quot; intent.</li>
+          <li>Two lens-pill rows visible (sidebar + bottom-left) until one is hidden.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ B4: Hover/click on map ============ -->
+    <div class="card">
+      <h2>B4 · Hover/click on map <span class="tag">no list · explore directly</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- Cursor + nearby tooltip -->
+        <div class="b4-cursor"></div>
+        <div class="b4-tip">
+          <div class="name">Mission</div>
+          <div class="stat">183 permits · #1 in SF</div>
+          <div class="stat" style="color: var(--ink-faint); margin-top: 4px;">click to drill in</div>
+        </div>
+
+        <div class="b4-card">
+          <div class="title">What's Building SF</div>
+          <div style="font-size: 10px; opacity: 0.85; margin-top: 2px;">Major projects, any use · 1,824 visible</div>
+        </div>
+
+        <div class="a-lens-rail">
+          <span class="chip on">Neighborhoods</span>
+          <span class="chip">Zoning</span>
+          <span class="chip">Transit</span>
+        </div>
+        <div class="a-fab">≡</div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> the data list is replaced entirely by direct map interaction. Hover any neighborhood/zoning polygon → floating tip with name + permit count + rank. Click → the panel for that thing. No leaderboard surface anywhere; the map IS the index.</p>
+        <ul class="pros">
+          <li>The cleanest map view of all four options.</li>
+          <li>Encourages spatial exploration (what's around X) over alphabetic.</li>
+          <li>No new chrome — reuses existing polygon click behavior.</li>
+        </ul>
+        <ul class="cons">
+          <li>Loses scannable "top-N by permit count" entirely.</li>
+          <li>Hover-only on desktop; mobile needs a long-press fallback.</li>
+          <li>Hard to discover the #1 neighborhood without already looking at the right area.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

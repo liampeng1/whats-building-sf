@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WBSF · Station treatments · 2026-05-11</title>
+  <style>
+    :root {
+      --paper: #fbf6ec;
+      --paper-deep: #f1ead9;
+      --paper-edge: #d6cfbe;
+      --ink: #1c2438;
+      --ink-soft: #475569;
+      --ink-faint: #78716c;
+      --sienna: #9a4a31;
+      --sage: #7d9b76;
+      --gold: #b08968;
+      --slate: #5d7a99;
+      --plum: #8a6c87;
+    }
+    body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, Helvetica, sans-serif; background: #efe9d8; color: var(--ink); margin: 0; padding: 24px; }
+    h1 { font: 600 22px/1.2 Georgia, serif; margin: 0 0 8px; }
+    .intro { max-width: 920px; margin: 0 0 24px; color: var(--ink-soft); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1400px; }
+    .card { background: white; border: 1px solid var(--paper-edge); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card h2 { margin: 0; padding: 12px 16px; font: 600 14px/1.2 Georgia, serif; background: var(--ink); color: var(--paper); }
+    .tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; margin-left: 8px; }
+    .mockup { position: relative; height: 360px; background: linear-gradient(180deg, #e8e0c8 0%, #e0d8be 100%); border-bottom: 1px solid var(--paper-edge); overflow: hidden; }
+    .map-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #e8e0c8 0%, #d8d0b8 50%, #e0d8be 100%); }
+    .map-bg::before { content: ''; position: absolute; inset: 0; background-image:
+      radial-gradient(circle at 30% 40%, rgba(125,155,118,0.10) 0%, transparent 30%),
+      radial-gradient(circle at 65% 60%, rgba(176,137,104,0.12) 0%, transparent 35%); }
+    .body { padding: 12px 16px 16px; }
+    .body p { margin: 0 0 8px; font-size: 13px; color: var(--ink-soft); }
+    .pros, .cons { margin: 8px 0 0; padding: 0 0 0 18px; font-size: 12px; }
+    .pros li { color: #2a6b3a; }
+    .cons li { color: #8a3a2a; }
+
+    /* Station marker styles */
+    .st-bart {
+      position: absolute; width: 14px; height: 14px;
+      background: var(--ink); border: 2px solid var(--paper);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px var(--ink), 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .st-bart::after {
+      content: ''; position: absolute; inset: 2px;
+      border: 1px solid var(--paper); border-radius: 50%;
+    }
+    .st-muni {
+      position: absolute; width: 10px; height: 10px;
+      background: var(--sage); border: 1.5px solid var(--paper);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px var(--sage);
+    }
+    .st-caltrain {
+      position: absolute; width: 12px; height: 12px;
+      background: var(--gold); border: 2px solid var(--paper);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+    .st-bus {
+      position: absolute; width: 5px; height: 5px;
+      background: var(--paper); border: 1px solid var(--sienna);
+      border-radius: 50%;
+    }
+    .st-bus-line {
+      position: absolute; height: 2px;
+      background: var(--sienna);
+      opacity: 0.6;
+    }
+    .st-rail-line {
+      position: absolute; height: 3px;
+      background: var(--ink);
+      border-radius: 1.5px;
+    }
+    .st-muni-line {
+      position: absolute; height: 2.5px;
+      background: var(--sage);
+    }
+    .st-shed {
+      position: absolute;
+      background: radial-gradient(ellipse at center, rgba(154,74,49,0.22), rgba(154,74,49,0.05) 60%, transparent 75%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .st-shed-rail {
+      background: radial-gradient(ellipse at center, rgba(28,36,56,0.20), rgba(28,36,56,0.04) 65%, transparent 78%);
+    }
+    .st-label {
+      position: absolute;
+      font: 600 9px/1 Georgia, serif;
+      color: var(--ink);
+      background: rgba(251,246,236,0.92);
+      padding: 1px 4px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    /* Top-right summary, bottom-right FAB, bottom-left lens rail (Direction A chrome) */
+    .a-summary {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--ink); color: var(--paper);
+      padding: 8px 12px; border-radius: 6px;
+      font-size: 11px;
+      max-width: 220px;
+    }
+    .a-summary .title { font: 600 13px/1.2 Georgia, serif; }
+    .a-fab {
+      position: absolute; bottom: 14px; right: 14px;
+      width: 36px; height: 36px; border-radius: 18px;
+      background: var(--ink); color: var(--paper);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .a-lens-rail {
+      position: absolute; bottom: 14px; left: 14px;
+      background: var(--paper); border: 1px solid var(--paper-edge);
+      padding: 4px 6px; border-radius: 6px;
+      display: flex; gap: 4px;
+      font-size: 10px;
+    }
+    .a-lens-rail .chip {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--paper-edge);
+      background: var(--paper);
+      font-weight: 600;
+    }
+    .a-lens-rail .chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    .legend {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      background: var(--paper); padding: 4px 10px; border: 1px solid var(--paper-edge);
+      border-radius: 6px; font-size: 9px;
+      display: flex; gap: 12px;
+    }
+    .legend .swatch { display: inline-block; vertical-align: middle; margin-right: 4px; }
+    .legend .sw-bart { width: 8px; height: 8px; background: var(--ink); border-radius: 50%; }
+    .legend .sw-muni { width: 7px; height: 7px; background: var(--sage); border-radius: 50%; }
+    .legend .sw-cal { width: 8px; height: 8px; background: var(--gold); }
+    .legend .sw-bus { width: 6px; height: 6px; background: var(--paper); border: 1px solid var(--sienna); border-radius: 50%; }
+  </style>
+</head>
+<body>
+  <h1>What's Building SF — Station / transit-marker redesign, four directions</h1>
+  <p class="intro">
+    All four sit inside Direction A's chrome (summary top-right, FAB bottom-right, lens rail bottom-left). Each shows the city-wide transit lens at zoom ~13. Goal: make &quot;where is transit&quot; visible without drowning the map.
+  </p>
+
+  <div class="grid">
+
+    <!-- ============ S1: Tiered prominence ============ -->
+    <div class="card">
+      <h2>S1 · Tiered prominence <span class="tag">major modes louder · bus stops zoomed-only</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- BART (8 SF stations) — big navy dots with center ring -->
+        <div class="st-bart" style="left: 73%; top: 28%;"></div>
+        <div class="st-bart" style="left: 70%; top: 32%;"></div>
+        <div class="st-bart" style="left: 67%; top: 35%;"></div>
+        <div class="st-bart" style="left: 63%; top: 38%;"></div>
+        <div class="st-bart" style="left: 56%; top: 50%;"></div>
+        <div class="st-bart" style="left: 53%; top: 60%;"></div>
+        <div class="st-bart" style="left: 45%; top: 72%;"></div>
+        <div class="st-bart" style="left: 38%; top: 82%;"></div>
+
+        <!-- Muni Metro stations — medium sage dots, only the named subway stations -->
+        <div class="st-muni" style="left: 55%; top: 42%;"></div>
+        <div class="st-muni" style="left: 48%; top: 48%;"></div>
+        <div class="st-muni" style="left: 42%; top: 52%;"></div>
+        <div class="st-muni" style="left: 35%; top: 58%;"></div>
+        <div class="st-muni" style="left: 28%; top: 62%;"></div>
+        <div class="st-muni" style="left: 68%; top: 30%;"></div>
+        <div class="st-muni" style="left: 75%; top: 42%;"></div>
+
+        <!-- Caltrain (3 SF stations) — gold squares -->
+        <div class="st-caltrain" style="left: 78%; top: 50%;"></div>
+        <div class="st-caltrain" style="left: 80%; top: 60%;"></div>
+        <div class="st-caltrain" style="left: 73%; top: 78%;"></div>
+
+        <!-- No rapid-bus stops at this zoom — gated to z ≥ 14 -->
+
+        <div class="legend">
+          <span><span class="swatch sw-bart"></span>BART</span>
+          <span><span class="swatch sw-muni"></span>Muni Metro</span>
+          <span><span class="swatch sw-cal"></span>Caltrain</span>
+          <span style="color: var(--ink-faint);">Rapid bus appears at z 14+</span>
+        </div>
+
+        <div class="a-summary">
+          <div class="title">What&apos;s Building SF</div>
+          <div style="font-size: 10px; opacity: 0.85; margin-top: 2px;">Transit lens · 1,824 visible</div>
+        </div>
+        <div class="a-fab">≡</div>
+        <div class="a-lens-rail">
+          <span class="chip">Neighborhoods</span>
+          <span class="chip">Zoning</span>
+          <span class="chip on">Transit</span>
+        </div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> rank modes by significance. BART = anchor, large filled circle with center ring. Muni Metro = medium sage dot. Caltrain = gold square. Rapid bus stops gated to zoom ≥ 14 (close-up only). Subway stations always visible; surface light-rail and bus appear progressively.</p>
+        <ul class="pros">
+          <li>Reads in a glance — BART backbone immediately obvious.</li>
+          <li>~18 markers at city zoom instead of 387.</li>
+          <li>Color-coded by mode without a separate legend lookup.</li>
+        </ul>
+        <ul class="cons">
+          <li>Bus shed advocacy lost at low zoom — users may not realize bus filter exists.</li>
+          <li>Three mode shapes &amp; colors to remember.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ S2: Lines, not points ============ -->
+    <div class="card">
+      <h2>S2 · Lines, not points <span class="tag">show corridors · stations are subordinate</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- BART Market St corridor (diagonal) -->
+        <div class="st-rail-line" style="left: 35%; top: 50%; width: 32%; transform: rotate(-32deg); transform-origin: left;"></div>
+        <!-- BART Mission corridor -->
+        <div class="st-rail-line" style="left: 53%; top: 60%; width: 12%; transform: rotate(70deg); transform-origin: left;"></div>
+
+        <!-- Muni N Judah -->
+        <div class="st-muni-line" style="left: 8%; top: 56%; width: 50%; transform: rotate(-2deg); transform-origin: left;"></div>
+        <!-- Muni T Third (east waterfront, going south) -->
+        <div class="st-muni-line" style="left: 70%; top: 38%; width: 16%; transform: rotate(70deg); transform-origin: left;"></div>
+        <!-- Muni K/L/M/J (west side) -->
+        <div class="st-muni-line" style="left: 12%; top: 65%; width: 45%; transform: rotate(8deg); transform-origin: left;"></div>
+
+        <!-- Caltrain (south of SoMa) -->
+        <div class="st-rail-line" style="left: 73%; top: 48%; width: 14%; transform: rotate(78deg); transform-origin: left; background: var(--gold);"></div>
+
+        <!-- 38R Geary rapid bus corridor (east-west across town) -->
+        <div class="st-bus-line" style="left: 6%; top: 35%; width: 70%; transform: rotate(-2deg); transform-origin: left;"></div>
+        <!-- 5R Fulton -->
+        <div class="st-bus-line" style="left: 8%; top: 45%; width: 60%; transform: rotate(-1deg); transform-origin: left;"></div>
+        <!-- 14R Mission -->
+        <div class="st-bus-line" style="left: 38%; top: 55%; width: 35%; transform: rotate(50deg); transform-origin: left;"></div>
+
+        <!-- 4 named BART labels at junction points (only) -->
+        <div class="st-label" style="left: 56%; top: 41%;">Embarcadero</div>
+        <div class="st-label" style="left: 51%; top: 55%;">16th St</div>
+        <div class="st-label" style="left: 36%; top: 78%;">Daly City</div>
+
+        <div class="legend">
+          <span><span style="display:inline-block;width:14px;height:3px;background:var(--ink);vertical-align:middle;margin-right:4px;"></span>BART</span>
+          <span><span style="display:inline-block;width:14px;height:2.5px;background:var(--sage);vertical-align:middle;margin-right:4px;"></span>Muni Metro</span>
+          <span><span style="display:inline-block;width:14px;height:3px;background:var(--gold);vertical-align:middle;margin-right:4px;"></span>Caltrain</span>
+          <span><span style="display:inline-block;width:14px;height:2px;background:var(--sienna);opacity:0.6;vertical-align:middle;margin-right:4px;"></span>Rapid bus</span>
+        </div>
+
+        <div class="a-summary">
+          <div class="title">What&apos;s Building SF</div>
+          <div style="font-size: 10px; opacity: 0.85; margin-top: 2px;">Transit lens · 1,824 visible</div>
+        </div>
+        <div class="a-fab">≡</div>
+        <div class="a-lens-rail">
+          <span class="chip">Neighborhoods</span>
+          <span class="chip">Zoning</span>
+          <span class="chip on">Transit</span>
+        </div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> render rail and rapid bus as <em>lines</em>, not points. A user looking at the map sees Market St corridor as a single line, not eight dots. Stations exist as faint tick marks on the lines, with only major BART/Caltrain station labels at city zoom. Click a line → list of permits along that corridor.</p>
+        <ul class="pros">
+          <li>&quot;Transit lens&quot; tells the actual story: the city has rails and rapid corridors.</li>
+          <li>Zero marker clutter — line geometries are cheap visually.</li>
+          <li>Naturally supports a new filter: &quot;permits along the 38R&quot;.</li>
+        </ul>
+        <ul class="cons">
+          <li>Per-station shed concept gets reframed as per-corridor.</li>
+          <li>Needs line geometries (GTFS shapes.txt) — we don&apos;t have them yet.</li>
+          <li>Visual style shifts: lines compete with road network on the basemap.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ S3: Shed-only ============ -->
+    <div class="card">
+      <h2>S3 · Shed-only at distance <span class="tag">no markers · soft tint shows reach</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- Rail shed: navy soft tint over central + downtown SF -->
+        <div class="st-shed st-shed-rail" style="left: 45%; top: 35%; width: 40%; height: 50%;"></div>
+        <div class="st-shed st-shed-rail" style="left: 25%; top: 50%; width: 32%; height: 36%;"></div>
+        <div class="st-shed st-shed-rail" style="left: 5%; top: 50%; width: 24%; height: 22%;"></div>
+
+        <!-- Rapid bus shed: sienna soft tint along corridors -->
+        <div class="st-shed" style="left: 5%; top: 30%; width: 75%; height: 18%;"></div>
+        <div class="st-shed" style="left: 30%; top: 50%; width: 45%; height: 28%;"></div>
+
+        <!-- Just one anchor label: Powell + Mission (the historic core BART hub) -->
+        <div class="st-label" style="left: 56%; top: 42%;">Downtown BART</div>
+
+        <div class="legend">
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(28,36,56,0.25);vertical-align:middle;margin-right:4px;border-radius:50%;"></span>Within ½ mi of rail</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(154,74,49,0.25);vertical-align:middle;margin-right:4px;border-radius:50%;"></span>Within 0.1 mi of rapid bus</span>
+        </div>
+
+        <div class="a-summary">
+          <div class="title">What&apos;s Building SF</div>
+          <div style="font-size: 10px; opacity: 0.85; margin-top: 2px;">Transit lens · 1,824 visible</div>
+        </div>
+        <div class="a-fab">≡</div>
+        <div class="a-lens-rail">
+          <span class="chip">Neighborhoods</span>
+          <span class="chip">Zoning</span>
+          <span class="chip on">Transit</span>
+        </div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> at city zoom, the transit lens is just two soft-tinted areas: navy = within ½ mi of rail, sienna = within 0.1 mi of rapid bus. No markers at all. Stations and stops appear as small dots only when zoomed past z 14. Answers the question &quot;is this parcel transit-rich?&quot; instantly, by color.</p>
+        <ul class="pros">
+          <li>Most editorial of the four — clean, readable, magazine-like.</li>
+          <li>Conveys shed coverage at a glance, which is the real point of the lens.</li>
+          <li>Per-station shed filter still works once zoomed in.</li>
+        </ul>
+        <ul class="cons">
+          <li>Stations are invisible at the level most users will spend time at.</li>
+          <li>Two overlapping tinted areas can mush together in the central core.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ S4: Heatmap of stations ============ -->
+    <div class="card">
+      <h2>S4 · Density heatmap <span class="tag">stops as warmth, not pins</span></h2>
+      <div class="mockup">
+        <div class="map-bg"></div>
+
+        <!-- Heatmap blobs - warmest at major hubs, cooling away -->
+        <div style="position:absolute;left:55%;top:38%;width:100px;height:100px;background:radial-gradient(circle, rgba(154,74,49,0.6), rgba(154,74,49,0.05) 60%, transparent 75%);border-radius:50%;"></div>
+        <div style="position:absolute;left:45%;top:54%;width:90px;height:90px;background:radial-gradient(circle, rgba(154,74,49,0.5), rgba(154,74,49,0.05) 60%, transparent 75%);border-radius:50%;"></div>
+        <div style="position:absolute;left:30%;top:60%;width:80px;height:80px;background:radial-gradient(circle, rgba(154,74,49,0.4), rgba(154,74,49,0.05) 60%, transparent 75%);border-radius:50%;"></div>
+        <div style="position:absolute;left:10%;top:50%;width:60px;height:60px;background:radial-gradient(circle, rgba(154,74,49,0.25), rgba(154,74,49,0.04) 60%, transparent 75%);border-radius:50%;"></div>
+        <div style="position:absolute;left:70%;top:55%;width:70px;height:70px;background:radial-gradient(circle, rgba(154,74,49,0.35), rgba(154,74,49,0.04) 60%, transparent 75%);border-radius:50%;"></div>
+        <div style="position:absolute;left:18%;top:30%;width:50px;height:50px;background:radial-gradient(circle, rgba(154,74,49,0.20), rgba(154,74,49,0.04) 60%, transparent 75%);border-radius:50%;"></div>
+        <div style="position:absolute;left:40%;top:75%;width:55px;height:55px;background:radial-gradient(circle, rgba(154,74,49,0.30), rgba(154,74,49,0.04) 60%, transparent 75%);border-radius:50%;"></div>
+
+        <!-- Just 4 anchor labels at hottest points -->
+        <div class="st-label" style="left: 57%; top: 42%;">Market St</div>
+        <div class="st-label" style="left: 48%; top: 56%;">Mission</div>
+        <div class="st-label" style="left: 30%; top: 60%;">Castro</div>
+
+        <div class="legend">
+          <span style="font-size:9px;color:var(--ink-faint);">Warmer = more rail + rapid-bus stops within walking distance</span>
+        </div>
+
+        <div class="a-summary">
+          <div class="title">What&apos;s Building SF</div>
+          <div style="font-size: 10px; opacity: 0.85; margin-top: 2px;">Transit lens · 1,824 visible</div>
+        </div>
+        <div class="a-fab">≡</div>
+        <div class="a-lens-rail">
+          <span class="chip">Neighborhoods</span>
+          <span class="chip">Zoning</span>
+          <span class="chip on">Transit</span>
+        </div>
+      </div>
+      <div class="body">
+        <p><strong>Idea:</strong> count rail + rapid-bus stops per ½-mile cell, render as a continuous heatmap. Warmest cells = most transit. Just a handful of labels at the hottest hubs. Stations appear only at zoom-in, like S3, but the heatmap replaces the binary shed tint with a quantitative gradient.</p>
+        <ul class="pros">
+          <li>Most information per pixel — shows transit *intensity* not just presence.</li>
+          <li>One color, one variable to read.</li>
+          <li>Pairs naturally with permit density (also a heatmap).</li>
+        </ul>
+        <ul class="cons">
+          <li>Heatmaps need careful tuning — bad bandwidth choice = blob soup.</li>
+          <li>&quot;Transit shed&quot; (½ mi binary) is what users learn — heatmap is a different vocabulary.</li>
+          <li>Per-station filter still requires a different interaction.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
