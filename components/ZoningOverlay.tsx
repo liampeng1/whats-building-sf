@@ -54,23 +54,59 @@ function tooltipHtml(props: ZoningProperties): string {
   `
 }
 
+const ZONING_CACHE_KEY = 'wbsf-zoning-v1'
+
 interface Props {
   selectedDistrict?: string | null
-  onSelect?: (zoningSim: string, gen: string) => void
+  onSelect?: (zoningSim: string, gen: string, districtna?: string, codesectio?: string) => void
 }
 
 export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {}) {
   const [geo, setGeo] = useState<ZoningGeo | null>(null)
 
   useEffect(() => {
+    // Seed from localStorage for instant paint on subsequent loads
+    try {
+      const cached = window.localStorage.getItem(ZONING_CACHE_KEY)
+      if (cached) {
+        const parsed = JSON.parse(cached) as ZoningGeo
+        if (parsed && parsed.features?.length > 0) setGeo(parsed)
+      }
+    } catch {}
+
     const ctrl = new AbortController()
-    fetch('/api/zoning', { signal: ctrl.signal })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data && data.type === 'FeatureCollection') setGeo(data as ZoningGeo)
-      })
-      .catch(() => {})
-    return () => ctrl.abort()
+    let cancelled = false
+    let attempts = 0
+
+    const load = () => {
+      fetch('/api/zoning', { signal: ctrl.signal })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data: ZoningGeo | null) => {
+          if (cancelled) return
+          if (data && data.type === 'FeatureCollection' && data.features?.length > 0) {
+            setGeo(data)
+            try {
+              window.localStorage.setItem(ZONING_CACHE_KEY, JSON.stringify(data))
+            } catch {}
+          } else if (attempts < 2) {
+            attempts++
+            setTimeout(load, 2000)
+          }
+        })
+        .catch((err: Error) => {
+          if (err.name === 'AbortError' || cancelled) return
+          if (attempts < 2) {
+            attempts++
+            setTimeout(load, 2000)
+          }
+        })
+    }
+    load()
+
+    return () => {
+      cancelled = true
+      ctrl.abort()
+    }
   }, [])
 
   if (!geo) return null
@@ -108,9 +144,11 @@ export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {})
         if (onSelect) {
           layer.on({
             click: () => {
-              const zoningSim = (props.zoning_sim || '')
-              const gen = (props.gen || 'Other')
-              onSelect(zoningSim, gen)
+              const zoningSim = props.zoning_sim || ''
+              const gen = props.gen || 'Other'
+              const districtna = props.districtna || undefined
+              const codesectio = props.codesectio || undefined
+              onSelect(zoningSim, gen, districtna, codesectio)
             },
           })
         }
