@@ -16,7 +16,7 @@ const MODES: { value: LensMode; label: string }[] = [
 export function LensRail({ mode, onChange }: Props) {
   return (
     <div
-      className="absolute bottom-16 left-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-md flex items-center gap-1 px-1.5 py-1"
+      className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-paper border border-paper-edge rounded-md shadow-md flex items-center gap-1 px-1.5 py-1"
       role="radiogroup"
       aria-label="Map lens"
     >
