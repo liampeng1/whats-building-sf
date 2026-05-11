@@ -1,3 +1,5 @@
+'use client'
+import { useEffect, useState } from 'react'
 import {
   permitStage,
   timeAgo,
@@ -12,6 +14,7 @@ import {
   type UseCategory,
 } from '@/lib/permit-style'
 import type { Permit } from '@/lib/types'
+import { permitLawHeuristic, type PermitLawFlag } from '@/lib/family-zoning'
 import { RelatedSources } from '@/components/RelatedSources'
 import { RelatedArticles } from '@/components/RelatedArticles'
 
@@ -176,6 +179,26 @@ export function PermitDetailContent({ permit, variant = 'page', bmr = null }: Pr
   const storiesDelta = netDelta(permit.existing_stories, permit.proposed_stories)
   const coords = permit.location?.coordinates
 
+  // Resolve zoning_sim via point-in-polygon server endpoint, then compute
+  // state-law eligibility flags for display as badges.
+  const [zoningSim, setZoningSim] = useState<string | null>(null)
+  useEffect(() => {
+    const c = permit.location?.coordinates
+    const ctrl = new AbortController()
+    if (!c) {
+      Promise.resolve().then(() => setZoningSim(null))
+      return
+    }
+    const [lng, lat] = c
+    fetch(`/api/zoning-for-point?lng=${lng}&lat=${lat}`, { signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { zoning_sim?: string | null } | null) => setZoningSim(d?.zoning_sim ?? null))
+      .catch(() => setZoningSim(null))
+    return () => ctrl.abort()
+  }, [permit.location?.coordinates])
+
+  const lawFlags: PermitLawFlag[] = zoningSim ? permitLawHeuristic(permit, zoningSim) : []
+
   // Compare two date strings by their day component only — DataSF often
   // stamps status_date with the same day as completed_date / issued_date,
   // and we don't want to show 'Last activity' as a separate timeline row
@@ -301,6 +324,31 @@ export function PermitDetailContent({ permit, variant = 'page', bmr = null }: Pr
         <UseTypePill category={category} />
         {bmr && <BmrBadge bmr={bmr} />}
       </div>
+
+      {/* State-law eligibility badges — shown when the permit's zoning district
+          triggers one or more California housing laws. Confidence drives styling;
+          tooltip surfaces the heuristic reason text. */}
+      {lawFlags.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5" aria-label="State-law context">
+          <span className="text-[10px] uppercase tracking-wider text-ink-faint self-center">
+            State-law context:
+          </span>
+          {lawFlags.map((f) => (
+            <span
+              key={f.law}
+              title={f.reason}
+              className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border"
+              style={
+                f.confidence === 'likely'
+                  ? { color: '#9a4a31', borderColor: '#9a4a31', backgroundColor: '#9a4a3110' }
+                  : { color: '#78716c', borderColor: '#d6cfbe', backgroundColor: 'transparent' }
+              }
+            >
+              {f.law} <span className="opacity-70">{f.confidence}</span>
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Quick narrative summary — only when there's something to summarize.
           Replaces the previous ChangeHeadline by leaning on the chip row +
