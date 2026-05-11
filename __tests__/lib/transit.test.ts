@@ -62,8 +62,8 @@ describe('transitAdjacent (was isTransitAdjacent)', () => {
     expect(m.transitAdjacent([-122.419698, 37.765222])).toBe(true)
   })
   test('flags a Mission lot two blocks from 24th St BART', () => {
-    // Roughly 24th & Bryant — well within the ½-mi shed
-    expect(m.transitAdjacent([-122.4106, 37.7517])).toBe(true)
+    // Roughly 24th & Valencia — ~220 m from 24th St BART, within the ¼-mi shed
+    expect(m.transitAdjacent([-122.416, 37.752])).toBe(true)
   })
   test('rejects a point in Sea Cliff (no rail nearby)', () => {
     // Sea Cliff is famously transit-poor.
@@ -78,7 +78,7 @@ describe('transitAdjacent (was isTransitAdjacent)', () => {
     // Move ~10m east → outside a 1m threshold
     expect(m.transitAdjacent([-122.41957, 37.765222], { railThresholdM: 1 })).toBe(false)
   })
-  test('default threshold matches the documented ½-mi value (800 m)', () => {
-    expect(RAIL_THRESHOLD_M).toBe(800)
+  test('default threshold matches the documented ¼-mi value (400 m)', () => {
+    expect(RAIL_THRESHOLD_M).toBe(400)
   })
 })

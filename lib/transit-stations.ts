@@ -62,7 +62,7 @@ export function distanceMeters(
   return 2 * R * Math.asin(Math.sqrt(h))
 }
 
-export const RAIL_THRESHOLD_M = 800       // ½ mi
+export const RAIL_THRESHOLD_M = 400        // ¼ mi
 export const RAPID_BUS_THRESHOLD_M = 160  // 0.1 mi
 
 export function railShed(

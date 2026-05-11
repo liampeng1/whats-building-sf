@@ -43,7 +43,7 @@ describe('railShed', () => {
     [{ id: 'bart-embarcadero', name: 'Embarcadero', lat: 37.792976, lng: -122.396957, modes: ['bart'] }],
     [],
   )
-  it('returns true within 800m of Embarcadero BART', () => {
+  it('returns true within 400m of Embarcadero BART', () => {
     expect(m.railShed([-122.397, 37.793])).toBe(true)
   })
   it('returns false 5km from any rail station', () => {
@@ -94,7 +94,7 @@ describe('withinStationRadius', () => {
 
 describe('thresholds', () => {
   it('exports the documented walk-shed defaults', () => {
-    expect(RAIL_THRESHOLD_M).toBe(800)
+    expect(RAIL_THRESHOLD_M).toBe(400)
     expect(RAPID_BUS_THRESHOLD_M).toBe(160)
   })
 })
