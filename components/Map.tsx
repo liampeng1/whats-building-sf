@@ -625,6 +625,13 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         crossStats={crossStats}
         onClose={() => setSelectedTransitBand(null)}
       />
+      <StationPanel
+        selected={selectedStation}
+        radiusM={stationRadiusM}
+        onClose={() => setSelectedStation(null)}
+        onRadiusChange={setStationRadiusM}
+        permits={filteredPermits}
+      />
     </div>
   )
 }
@@ -765,5 +772,88 @@ function TransitBandPanel({
       secondary={{ eyebrow: 'Zoning mix in this band', rows: zoningRows }}
       onClose={onClose}
     />
+  )
+}
+
+function StationPanel({
+  selected,
+  radiusM,
+  onClose,
+  onRadiusChange,
+  permits,
+}: {
+  selected: SelectedStation | null
+  radiusM: number
+  onClose: () => void
+  onRadiusChange: (m: number) => void
+  permits: Permit[]
+}) {
+  const open = !!selected
+  const station = selected
+    ? (selected.kind === 'rail'
+        ? RAIL_STATIONS.find((s) => s.id === selected.id)
+        : RAPID_BUS_STOPS.find((s) => s.id === selected.id))
+    : null
+
+  const isRail = selected?.kind === 'rail'
+  const radiusOptions = isRail ? [400, 800, 1600] : [160, 400]
+
+  const subtitle = (() => {
+    if (!station) return undefined
+    if ('modes' in station) return `Modes: ${station.modes.join(' / ')}`
+    if ('routes' in station) return `Routes: ${station.routes.join(', ')}`
+    return undefined
+  })()
+
+  // Build rows as plain summary text — radius rows show current selection.
+  const rows = radiusOptions.map((m) => ({
+    label: `${m} m${m === radiusM ? '  ✓' : ''}`,
+    value: '',
+    pct: m === radiusM ? 1 : 0.15,
+    color: '#9a4a31',
+  }))
+
+  return (
+    <>
+      <LensInfoPanel
+        open={open}
+        eyebrow={isRail ? 'Rail station' : 'Rapid bus stop'}
+        title={station?.name ?? '—'}
+        subtitle={subtitle}
+        hero={
+          station
+            ? { eyebrow: 'Permits in shed', value: String(permits.length), detail: `${radiusM} m radius` }
+            : undefined
+        }
+        primary={{ eyebrow: 'Radius', rows }}
+        onClose={onClose}
+      />
+      {/* Sibling control: clickable radius pills under the panel.
+          LensInfoPanel rows are display-only, so we layer the actual control
+          here, positioned to align with the panel chrome. */}
+      {open && (
+        <div
+          className="absolute z-[1101] left-4 bottom-4 bg-paper border border-paper-edge rounded-md shadow-md px-3 py-2 flex gap-1.5 items-center"
+          role="group"
+          aria-label="Radius selector"
+        >
+          <span className="text-[10px] uppercase tracking-wider text-ink-faint mr-1">Radius</span>
+          {radiusOptions.map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => onRadiusChange(m)}
+              className={`px-2 py-1 text-xs rounded border transition ${
+                m === radiusM
+                  ? 'bg-ink text-paper border-ink font-semibold'
+                  : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
+              }`}
+            >
+              {m} m
+            </button>
+          ))}
+        </div>
+      )}
+    </>
   )
 }
