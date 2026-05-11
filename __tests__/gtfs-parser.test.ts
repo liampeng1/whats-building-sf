@@ -16,4 +16,14 @@ describe('parseCsv', () => {
       { a: '4', b: '5', c: '6' },
     ])
   })
+
+  it('strips a UTF-8 BOM from the start', () => {
+    const csv = '﻿stop_id,stop_name\n70011,"San Francisco"\n'
+    expect(parseCsv(csv)).toEqual([{ stop_id: '70011', stop_name: 'San Francisco' }])
+  })
+
+  it('decodes RFC 4180 escaped quotes ("" inside quoted field)', () => {
+    const csv = 'col\n"She said ""Hi"""\n'
+    expect(parseCsv(csv)).toEqual([{ col: 'She said "Hi"' }])
+  })
 })

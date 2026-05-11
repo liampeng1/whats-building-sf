@@ -11,7 +11,10 @@ function splitLine(line: string): string[] {
   let inQuote = false
   for (let i = 0; i < line.length; i++) {
     const c = line[i]
-    if (c === '"') { inQuote = !inQuote; continue }
+    if (c === '"') {
+      if (inQuote && line[i + 1] === '"') { buf += '"'; i++; continue }
+      inQuote = !inQuote; continue
+    }
     if (c === ',' && !inQuote) { out.push(buf); buf = ''; continue }
     buf += c
   }
@@ -21,6 +24,7 @@ function splitLine(line: string): string[] {
 
 /** Parse a CSV string with a header row into an array of records. */
 export function parseCsv(csv: string): Record<string, string>[] {
+  if (csv.charCodeAt(0) === 0xfeff) csv = csv.slice(1)
   const lines = csv.split(/\r?\n/).filter((l) => l.length > 0)
   if (lines.length < 2) return []
   const header = splitLine(lines[0])
