@@ -1,0 +1,255 @@
+[
+  {
+    "code": "BR-MU",
+    "height_ft": 78,
+    "bulk": "X"
+  },
+  {
+    "code": "C-2",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "C-3-G",
+    "height_ft": 130,
+    "bulk": "X"
+  },
+  {
+    "code": "C-3-O",
+    "height_ft": 250,
+    "bulk": "S"
+  },
+  {
+    "code": "C-3-O(SD)",
+    "height_ft": 350,
+    "bulk": "S"
+  },
+  {
+    "code": "C-3-R",
+    "height_ft": 130,
+    "bulk": "I"
+  },
+  {
+    "code": "C-3-S",
+    "height_ft": 160,
+    "bulk": "F"
+  },
+  {
+    "code": "CCB",
+    "height_ft": 65,
+    "bulk": "N"
+  },
+  {
+    "code": "CMUO",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "CRNC",
+    "height_ft": 65,
+    "bulk": "N"
+  },
+  {
+    "code": "CVR",
+    "height_ft": 50,
+    "bulk": "N"
+  },
+  {
+    "code": "HP-RA",
+    "height_ft": 6666,
+    "bulk": "X"
+  },
+  {
+    "code": "Job Corps",
+    "height_ft": 3333
+  },
+  {
+    "code": "M-1",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "M-2",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "MB-O",
+    "height_ft": 110
+  },
+  {
+    "code": "MB-RA",
+    "height_ft": 8888
+  },
+  {
+    "code": "MR-MU",
+    "height_ft": 9999,
+    "bulk": "X"
+  },
+  {
+    "code": "MUG",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "MUO",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "MUR",
+    "height_ft": 45,
+    "bulk": "X"
+  },
+  {
+    "code": "NC-1",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "NC-2",
+    "height_ft": 50,
+    "bulk": "X"
+  },
+  {
+    "code": "NC-3",
+    "height_ft": 85,
+    "bulk": "X"
+  },
+  {
+    "code": "NC-S",
+    "height_ft": 50,
+    "bulk": "X"
+  },
+  {
+    "code": "NCD",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "NCT",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "NCT-1",
+    "height_ft": 85
+  },
+  {
+    "code": "NCT-2",
+    "height_ft": 45,
+    "bulk": "X"
+  },
+  {
+    "code": "NCT-3",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "P",
+    "height_ft": 50,
+    "bulk": "X"
+  },
+  {
+    "code": "P70-MU",
+    "height_ft": 90,
+    "bulk": "X"
+  },
+  {
+    "code": "PDR-1-B",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "PDR-1-D",
+    "height_ft": 58,
+    "bulk": "X"
+  },
+  {
+    "code": "PDR-1-G",
+    "height_ft": 58,
+    "bulk": "X"
+  },
+  {
+    "code": "PDR-2",
+    "height_ft": 65,
+    "bulk": "E"
+  },
+  {
+    "code": "PM-CF",
+    "height_ft": 40
+  },
+  {
+    "code": "PM-MU1",
+    "height_ft": 65
+  },
+  {
+    "code": "PM-MU2",
+    "height_ft": 85
+  },
+  {
+    "code": "PM-OS",
+    "height_ft": 40
+  },
+  {
+    "code": "PM-R",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "PM-S",
+    "height_ft": 85
+  },
+  {
+    "code": "PPS-MU",
+    "height_ft": 240
+  },
+  {
+    "code": "RC-3",
+    "height_ft": 65,
+    "bulk": "A"
+  },
+  {
+    "code": "RC-4",
+    "height_ft": 130,
+    "bulk": "X"
+  },
+  {
+    "code": "RCD",
+    "height_ft": 55,
+    "bulk": "X"
+  },
+  {
+    "code": "RED",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RED-MX",
+    "height_ft": 45,
+    "bulk": "X"
+  },
+  {
+    "code": "RH-1",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RH-2",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RM-1",
+    "height_ft": 5555
+  },
+  {
+    "code": "RTO-C",
+    "height_ft": 65
+  },
+  {
+    "code": "WMUG",
+    "height_ft": 55,
+    "bulk": "X"
+  }
+]

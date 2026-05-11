@@ -19,6 +19,11 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import * as turf from '@turf/turf'
 import type { Feature, FeatureCollection, Polygon, MultiPolygon } from 'geojson'
+import { fetchBartStations } from './sources/bart-stations'
+import { fetchMuni } from './sources/muni-stops'
+import { fetchCaltrainSfStations } from './sources/caltrain-stations'
+import { mergeRailStations } from './sources/merge-rail'
+import { fetchHeightPolygons, joinHeightsToZoning } from './sources/zoning-heights'
 
 const ROOT = process.cwd()
 const PUBLIC_DIR = path.join(ROOT, 'public')
@@ -28,6 +33,7 @@ const OUT_PATH = path.join(PUBLIC_DIR, 'cross-stats.json')
 const RINGS_PATH = path.join(PUBLIC_DIR, 'transit-rings.geojson')
 
 const TRANSIT_BANDS = [0.25, 0.5, 1] as const
+const RAPID_BUS_BANDS = [0.1, 0.25] as const
 
 const ZONING_CATEGORIES = [
   'Residential',
@@ -39,40 +45,6 @@ const ZONING_CATEGORIES = [
 ] as const
 type ZoningCategory = (typeof ZONING_CATEGORIES)[number]
 
-const TRANSIT_STOPS: { name: string; lat: number; lng: number }[] = [
-  { name: 'Embarcadero', lat: 37.792976, lng: -122.396957 },
-  { name: 'Montgomery St', lat: 37.789256, lng: -122.401407 },
-  { name: 'Powell St', lat: 37.784471, lng: -122.40798 },
-  { name: 'Civic Center', lat: 37.779528, lng: -122.413756 },
-  { name: '16th St / Mission', lat: 37.765222, lng: -122.419698 },
-  { name: '24th St / Mission', lat: 37.752254, lng: -122.418466 },
-  { name: 'Glen Park', lat: 37.733118, lng: -122.43399 },
-  { name: 'Balboa Park', lat: 37.721617, lng: -122.447506 },
-  { name: 'Daly City', lat: 37.706121, lng: -122.469081 },
-  { name: 'Van Ness Station', lat: 37.775059, lng: -122.41907 },
-  { name: 'Church Station', lat: 37.7654, lng: -122.4292 },
-  { name: 'Castro Station', lat: 37.762, lng: -122.43492 },
-  { name: 'Forest Hill Station', lat: 37.747234, lng: -122.45942 },
-  { name: 'West Portal Station', lat: 37.7405, lng: -122.466595 },
-  { name: 'J Church / 30th St', lat: 37.74236, lng: -122.42699 },
-  { name: 'J Church / Balboa Park', lat: 37.72184, lng: -122.44757 },
-  { name: 'K / Junipero Serra & Ocean', lat: 37.72325, lng: -122.45876 },
-  { name: 'T Third / Mission Bay', lat: 37.76859, lng: -122.39239 },
-  { name: 'T Third / 4th & King', lat: 37.77611, lng: -122.39444 },
-  { name: 'T Third / Bayshore', lat: 37.71093, lng: -122.40183 },
-  { name: 'Chinatown – Rose Pak', lat: 37.79428, lng: -122.40694 },
-  { name: 'Union Square / Market', lat: 37.78664, lng: -122.40771 },
-  { name: 'Yerba Buena / Moscone', lat: 37.78416, lng: -122.40124 },
-  { name: 'L / 19th & Taraval', lat: 37.7427, lng: -122.4775 },
-  { name: 'L / 30th & Taraval', lat: 37.7416, lng: -122.4904 },
-  { name: 'L / Sunset Tunnel', lat: 37.7615, lng: -122.4514 },
-  { name: 'M / Stonestown', lat: 37.7269, lng: -122.4748 },
-  { name: 'M / Broad & Plymouth', lat: 37.7211, lng: -122.4577 },
-  { name: 'N / Carl & Cole', lat: 37.7657, lng: -122.4509 },
-  { name: 'N / 9th & Irving', lat: 37.7641, lng: -122.466 },
-  { name: 'N / 19th & Judah', lat: 37.762, lng: -122.4778 },
-  { name: 'N / Ocean Beach', lat: 37.7607, lng: -122.5085 },
-]
 
 interface NhoodStats {
   nhood: string
@@ -157,19 +129,19 @@ async function loadZoning() {
     }))
 }
 
-function buildTransitRings(): Record<string, AnyPoly> {
+function buildTransitRings(
+  stops: { lat: number; lng: number }[],
+  bands: readonly number[],
+): Record<string, AnyPoly> {
   const out: Record<string, AnyPoly> = {}
-  for (const miles of TRANSIT_BANDS) {
-    // Build buffers around each stop, then merge with turf.union pairwise.
-    // Buffers per stop: ~1-2k ms total for 32 stops; union is the slow part.
-    // Since this only runs once with 32 features (not 450), it's fine.
-    const buffers = TRANSIT_STOPS.map((s) =>
-      turf.buffer(turf.point([s.lng, s.lat]), miles, { units: 'miles' }),
-    ).filter((f): f is AnyPoly => !!f)
+  for (const miles of bands) {
+    const buffers = stops
+      .map((s) => turf.buffer(turf.point([s.lng, s.lat]), miles, { units: 'miles' }))
+      .filter((f): f is AnyPoly => !!f)
+    if (buffers.length === 0) continue
     let acc: AnyPoly = buffers[0]
     for (let i = 1; i < buffers.length; i++) {
-      const fc = turf.featureCollection([acc, buffers[i]])
-      const u = turf.union(fc)
+      const u = turf.union(turf.featureCollection([acc, buffers[i]]))
       if (u) acc = u as AnyPoly
     }
     out[`${miles}mi`] = acc
@@ -186,8 +158,35 @@ async function main() {
   const zoningPolys = await loadZoning()
   console.log(`  ${zoningPolys.length} zoning polygons`)
 
+  console.log('• loading rail stations from BART + Muni + Caltrain…')
+  const [bart, muni, caltrain] = await Promise.all([
+    fetchBartStations(),
+    fetchMuni(),
+    fetchCaltrainSfStations(),
+  ])
+  const rail = mergeRailStations([...bart, ...muni.rail, ...caltrain])
+  const rapid = muni.rapid
+  console.log(`  rail: ${rail.length}, rapid bus: ${rapid.length}`)
+
+  await fs.writeFile(path.join(PUBLIC_DIR, 'rail-stations.json'), JSON.stringify(rail, null, 2))
+  await fs.writeFile(path.join(PUBLIC_DIR, 'rapid-bus-stops.json'), JSON.stringify(rapid, null, 2))
+
+  console.log('• loading height/bulk districts (h9wh-cg3m)…')
+  const heightPolys = await fetchHeightPolygons()
+  console.log(`  ${heightPolys.length} height polygons`)
+
+  const zoningWithSim = zoningPolys.map((z) => ({
+    type: 'Feature' as const,
+    geometry: z.geometry,
+    properties: { zoning_sim: (z.properties as { zoning_sim?: string }).zoning_sim ?? '' },
+  }))
+  const heights = joinHeightsToZoning(zoningWithSim, heightPolys)
+  await fs.writeFile(path.join(PUBLIC_DIR, 'zoning-heights.json'), JSON.stringify(heights, null, 2))
+  console.log(`✓ wrote zoning-heights.json (${heights.length} codes)`)
+
   console.log('• building transit buffer rings…')
-  const transitRings = buildTransitRings()
+  const transitRings = buildTransitRings(rail, TRANSIT_BANDS)
+  const rapidBusRings = buildTransitRings(rapid, RAPID_BUS_BANDS)
   console.log(`  bands: ${Object.keys(transitRings).join(', ')}`)
 
   // Persist transit rings as a GeoJSON file for client-side rendering.
@@ -204,6 +203,24 @@ async function main() {
   }
   await fs.writeFile(RINGS_PATH, JSON.stringify(ringsCollection))
   console.log(`✓ wrote ${RINGS_PATH}`)
+
+  const rapidBusRingsCollection: FeatureCollection = {
+    type: 'FeatureCollection',
+    features: RAPID_BUS_BANDS.flatMap((miles) => {
+      const ring = rapidBusRings[`${miles}mi`]
+      if (!ring) return []
+      return [{
+        type: 'Feature' as const,
+        geometry: ring.geometry,
+        properties: { band: `${miles}mi`, miles },
+      }]
+    }),
+  }
+  await fs.writeFile(
+    path.join(PUBLIC_DIR, 'rapid-bus-rings.geojson'),
+    JSON.stringify(rapidBusRingsCollection),
+  )
+  console.log(`✓ wrote rapid-bus-rings.geojson`)
 
   // Per-neighborhood
   console.log('• per-neighborhood cross-tabs…')
@@ -327,16 +344,58 @@ async function main() {
   }
   console.log(' ✓')
 
+  console.log('• per-rapid-bus-band cross-tabs…')
+  const rapidBusOut: TransitBandStats[] = []
+  for (const band of RAPID_BUS_BANDS) {
+    const ring = rapidBusRings[`${band}mi`]
+    if (!ring) continue
+    const area = safeArea(ring)
+    const neighborhood_share: Record<string, number> = {}
+    for (const f of nhoodGeo.features) {
+      const inter = safeIntersect(f as AnyPoly, ring)
+      const a = safeArea(inter)
+      if (a > 0 && area > 0) neighborhood_share[f.properties?.nhood ?? '—'] = a / area
+    }
+    const catArea: Partial<Record<ZoningCategory, number>> = {}
+    for (const z of zoningPolys) {
+      const inter = safeIntersect(z, ring)
+      if (!inter) continue
+      const a = safeArea(inter)
+      if (a <= 0) continue
+      const cat = z.properties.category as ZoningCategory
+      catArea[cat] = (catArea[cat] ?? 0) + a
+    }
+    const zoning_share: Partial<Record<ZoningCategory, number>> = {}
+    if (area > 0) {
+      for (const cat of ZONING_CATEGORIES) {
+        const a = catArea[cat] ?? 0
+        if (a > 0) zoning_share[cat] = a / area
+      }
+    }
+    rapidBusOut.push({
+      band: `${band}mi` as TransitBandStats['band'], // 0.1mi joins the union in Task 2.3
+      area_sqm: area,
+      share_of_sf: totalSfArea > 0 ? area / totalSfArea : 0,
+      neighborhood_share,
+      zoning_share,
+    })
+    process.stdout.write('.')
+  }
+  console.log(' ✓')
+
   const out = {
     generated_at: new Date().toISOString(),
     source_versions: {
       neighborhoods: 'public/sf-neighborhoods.geojson',
       zoning_dataset: '3i4a-hu95',
-      transit_stops_count: TRANSIT_STOPS.length,
+      height_dataset: 'h9wh-cg3m',
+      rail_stations_count: rail.length,
+      rapid_bus_stops_count: rapid.length,
     },
     neighborhoods: nhoodOut.sort((a, b) => b.area_sqm - a.area_sqm),
     zoning: zoningOut.sort((a, b) => b.area_sqm - a.area_sqm),
     transit_bands: transitOut,
+    transit_bands_rapid_bus: rapidBusOut,
   }
 
   await fs.writeFile(OUT_PATH, JSON.stringify(out, null, 2))

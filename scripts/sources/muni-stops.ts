@@ -26,6 +26,7 @@ export function selectRapidBusRouteIds(routes: MuniRoute[]): string[] {
 
 function isValidStopRow(s: MuniStop): boolean {
   if (!s.stopname?.trim()) return false
+  if (!s.routes) return false
   const lat = Number(s.latitude)
   const lng = Number(s.longitude)
   return Number.isFinite(lat) && Number.isFinite(lng)
