@@ -109,9 +109,8 @@ function TransitAccessBlock({
   const row = crossStats.neighborhoods.find((r) => r.nhood === neighborhood)
   if (!row) return null
   const bands: { band: string; label: string; share: number }[] = [
+    { band: '0.1mi', label: 'within 0.1 mi', share: row.transit_coverage['0.1mi'] ?? 0 },
     { band: '0.25mi', label: 'within ¼ mi', share: row.transit_coverage['0.25mi'] ?? 0 },
-    { band: '0.5mi', label: 'within ½ mi', share: row.transit_coverage['0.5mi'] ?? 0 },
-    { band: '1mi', label: 'within 1 mi', share: row.transit_coverage['1mi'] ?? 0 },
   ]
   return (
     <div>

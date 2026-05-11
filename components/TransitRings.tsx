@@ -5,29 +5,27 @@ import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
 import * as L from 'leaflet'
 
 interface RingProperties {
-  band: '0.25mi' | '0.5mi' | '1mi'
+  band: '0.1mi' | '0.25mi'
   miles: number
 }
 
 type RingsGeo = FeatureCollection<Polygon | MultiPolygon, RingProperties>
 
 interface Props {
-  selectedBand?: '0.25mi' | '0.5mi' | '1mi' | null
-  onSelect?: (band: '0.25mi' | '0.5mi' | '1mi') => void
+  selectedBand?: '0.1mi' | '0.25mi' | null
+  onSelect?: (band: '0.1mi' | '0.25mi') => void
 }
 
 // Outer to inner band — render order matters so smaller rings sit on top.
-// Coloured warmest at the densest (¼ mi) edge to read as a heatmap.
+// Coloured warmest at the densest (0.1 mi) edge to read as a heatmap.
 const BAND_STYLE: Record<string, { fill: string; stroke: string; fillOpacity: number }> = {
-  '1mi':    { fill: '#fbf6ec', stroke: '#9a4a31', fillOpacity: 0.10 },
-  '0.5mi':  { fill: '#b08968', stroke: '#9a4a31', fillOpacity: 0.18 },
-  '0.25mi': { fill: '#9a4a31', stroke: '#7c2d12', fillOpacity: 0.28 },
+  '0.25mi': { fill: '#b08968', stroke: '#9a4a31', fillOpacity: 0.18 },
+  '0.1mi':  { fill: '#9a4a31', stroke: '#7c2d12', fillOpacity: 0.28 },
 }
 
 const BAND_LABEL: Record<string, string> = {
   '0.25mi': 'within ¼ mi of rail',
-  '0.5mi':  'within ½ mi of rail',
-  '1mi':    'within 1 mi of rail',
+  '0.1mi':  'within 0.1 mi of rail',
 }
 
 function tooltipHtml(band: string): string {
@@ -63,7 +61,7 @@ export function TransitRings({ selectedBand = null, onSelect }: Props = {}) {
   // Render outer-to-inner so the inner (warmest) ring sits on top in z-order.
   const ordered = useMemo(() => {
     if (!geo) return null
-    const order = ['1mi', '0.5mi', '0.25mi']
+    const order = ['0.25mi', '0.1mi']
     return order
       .map((b) => geo.features.find((f) => f.properties?.band === b))
       .filter((f): f is RingsGeo['features'][number] => !!f)

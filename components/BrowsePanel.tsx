@@ -63,7 +63,7 @@ export function BrowsePanel({
               <div className="civic-eyebrow mb-2">All neighborhoods · {rows.length}</div>
               <ul className="space-y-1 -mx-1 px-1">
                 {rows.map((row) => {
-                  const transitPct = Math.round((row.transit_coverage['0.5mi'] ?? 0) * 100)
+                  const transitPct = Math.round((row.transit_coverage['0.25mi'] ?? 0) * 100)
                   const widthPct = (row.permitCount / topPermitCount) * 100
                   return (
                     <li key={row.nhood}>
@@ -104,7 +104,7 @@ export function BrowsePanel({
             <ul className="space-y-2">
               {crossStats.zoning.map((row) => {
                 const sharePct = Math.round(row.share_of_sf * 100)
-                const transitPct = Math.round((row.transit_coverage['0.5mi'] ?? 0) * 100)
+                const transitPct = Math.round((row.transit_coverage['0.25mi'] ?? 0) * 100)
                 return (
                   <li key={row.category} className="px-1">
                     <button

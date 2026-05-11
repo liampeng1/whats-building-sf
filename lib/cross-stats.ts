@@ -12,7 +12,7 @@ export type ZoningCategory =
   | 'Public'
   | 'Other'
 
-export type TransitBand = '0.25mi' | '0.5mi' | '1mi'
+export type TransitBand = '0.1mi' | '0.25mi'
 
 export type RapidBusBand = '0.1mi' | '0.25mi'
 
@@ -25,7 +25,7 @@ export const ZONING_CATEGORY_ORDER: ZoningCategory[] = [
   'Other',
 ]
 
-export const TRANSIT_BAND_ORDER: TransitBand[] = ['0.25mi', '0.5mi', '1mi']
+export const TRANSIT_BAND_ORDER: TransitBand[] = ['0.1mi', '0.25mi']
 
 export const RAPID_BUS_BAND_ORDER: RapidBusBand[] = ['0.1mi', '0.25mi']
 

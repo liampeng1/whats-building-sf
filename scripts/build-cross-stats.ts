@@ -33,7 +33,7 @@ const ZONING_DATASET = 'https://data.sfgov.org/resource/3i4a-hu95.json'
 const OUT_PATH = path.join(PUBLIC_DIR, 'cross-stats.json')
 const RINGS_PATH = path.join(PUBLIC_DIR, 'transit-rings.geojson')
 
-const TRANSIT_BANDS = [0.25, 0.5, 1] as const
+const TRANSIT_BANDS = [0.1, 0.25] as const
 const RAPID_BUS_BANDS = [0.1, 0.25] as const
 
 const ZONING_CATEGORIES = [
@@ -51,17 +51,17 @@ interface NhoodStats {
   nhood: string
   area_sqm: number
   zoning_share: Partial<Record<ZoningCategory, number>>
-  transit_coverage: { '0.25mi': number; '0.5mi': number; '1mi': number }
+  transit_coverage: { '0.1mi': number; '0.25mi': number }
 }
 interface ZoningStats {
   category: ZoningCategory
   area_sqm: number
   share_of_sf: number
   neighborhood_share: Record<string, number>
-  transit_coverage: { '0.25mi': number; '0.5mi': number; '1mi': number }
+  transit_coverage: { '0.1mi': number; '0.25mi': number }
 }
 interface TransitBandStats {
-  band: '0.25mi' | '0.5mi' | '1mi'
+  band: '0.1mi' | '0.25mi'
   area_sqm: number
   share_of_sf: number
   neighborhood_share: Record<string, number>
@@ -263,7 +263,7 @@ async function main() {
         if (a > 0) zoning_share[cat] = a / totalArea
       }
     }
-    const tc = { '0.25mi': 0, '0.5mi': 0, '1mi': 0 } as Record<'0.25mi' | '0.5mi' | '1mi', number>
+    const tc = { '0.1mi': 0, '0.25mi': 0 } as Record<'0.1mi' | '0.25mi', number>
     for (const band of TRANSIT_BANDS) {
       const ring = transitRings[`${band}mi`]
       const inter = safeIntersect(nhoodFeature, ring)
@@ -300,7 +300,7 @@ async function main() {
     for (const [n, a] of nhoodArea) neighborhood_share[n] = a / area
 
     // Transit coverage = sum across (cat polygons × ring) intersection
-    const tc = { '0.25mi': 0, '0.5mi': 0, '1mi': 0 } as Record<'0.25mi' | '0.5mi' | '1mi', number>
+    const tc = { '0.1mi': 0, '0.25mi': 0 } as Record<'0.1mi' | '0.25mi', number>
     for (const band of TRANSIT_BANDS) {
       const ring = transitRings[`${band}mi`]
       let inBand = 0
