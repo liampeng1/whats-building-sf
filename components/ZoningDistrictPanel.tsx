@@ -133,91 +133,87 @@ export function ZoningDistrictPanel({
   }))
 
   return (
-    <>
-      <LensInfoPanel
-        open={open}
-        eyebrow="Zoning district"
-        title={zoningSim}
-        subtitle={gen ?? undefined}
-        hero={
-          heightFt
-            ? { eyebrow: 'Max height', value: `${heightFt} ft`, detail: bulk ? `bulk ${bulk}` : '' }
-            : undefined
-        }
-        primary={{ eyebrow: 'Rules', rows: ruleRows }}
-        secondary={lawRows.length > 0 ? { eyebrow: 'State-law uplift', rows: lawRows } : undefined}
-        onClose={onClose}
-      />
-
-      {open && (
-        <div
-          className="fixed bottom-4 right-[540px] z-[1201] w-[360px] max-h-[80vh] overflow-y-auto bg-paper border border-paper-edge rounded p-3 text-[12px] hidden md:block"
-          role="complementary"
-        >
-          {blurb && (
-            <p className="text-ink-soft italic leading-relaxed mb-3">{blurb}</p>
-          )}
-
-          {heightFt && heightFt > 0 && (
-            <div className="mb-3">
-              <div className="civic-eyebrow mb-1">Height in context</div>
-              <HeightContext height_ft={heightFt} districtCode={zoningSim} />
-            </div>
-          )}
-
-          <div className="mb-3 text-ink-soft text-[11px] leading-snug">
-            Common terms:{' '}
-            <Glossary term="FAR" />,{' '}
-            <Glossary term="density" />,{' '}
-            <Glossary term="setback" />,{' '}
-            <Glossary term="lot coverage" />,{' '}
-            <Glossary term="principal use" />,{' '}
-            <Glossary term="ADU" />.
-          </div>
-
-          {permitCountInDistrict > 0 && onDrillToDistrict && (
-            <button
-              type="button"
-              onClick={() => onDrillToDistrict(zoningSim)}
-              className="block w-full mb-3 px-2 py-1.5 text-[11px] uppercase tracking-wider rounded border border-paper-edge hover:border-ink text-ink"
-            >
-              {permitCountInDistrict} permits in {zoningSim} currently visible →
-            </button>
-          )}
-
-          <div className="border-t border-paper-edge pt-3 text-[10px] text-ink-faint space-y-1">
-            <div className="uppercase tracking-wider mb-1">Sources</div>
-            {rec?.source && (
-              <a
-                href={rec.source.density.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block hover:text-ink"
-              >
-                SF Planning Code {rec.source.density.section} ↗
-              </a>
-            )}
-            {laws.find((l) => l.law === 'SB-9') && (
-              <a
-                href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65852.21"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block hover:text-ink"
-              >
-                CA Gov. Code §65852.21 (SB-9) ↗
-              </a>
-            )}
-            <a
-              href="https://sfplanninggis.org/pim/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block hover:text-ink"
-            >
-              View on SF Property Information Map ↗
-            </a>
-          </div>
+    <LensInfoPanel
+      open={open}
+      eyebrow="Zoning district"
+      title={zoningSim}
+      subtitle={gen ?? undefined}
+      hero={
+        heightFt
+          ? { eyebrow: 'Max height', value: `${heightFt} ft`, detail: bulk ? `bulk ${bulk}` : '' }
+          : undefined
+      }
+      primary={{ eyebrow: 'Rules', rows: ruleRows }}
+      secondary={lawRows.length > 0 ? { eyebrow: 'State-law uplift', rows: lawRows } : undefined}
+      onClose={onClose}
+    >
+      {/* Extended content — editorial context, height chart, glossary, sources */}
+      {blurb && (
+        <div className="pt-5 border-t border-paper-edge">
+          <p className="text-ink-soft italic leading-relaxed text-sm">{blurb}</p>
         </div>
       )}
-    </>
+
+      {heightFt && heightFt > 0 && (
+        <div className="pt-5 border-t border-paper-edge">
+          <div className="civic-eyebrow mb-3">Height in context</div>
+          <HeightContext height_ft={heightFt} districtCode={zoningSim} />
+        </div>
+      )}
+
+      <div className="pt-5 border-t border-paper-edge text-ink-soft text-[11px] leading-snug">
+        Common terms:{' '}
+        <Glossary term="FAR" />,{' '}
+        <Glossary term="density" />,{' '}
+        <Glossary term="setback" />,{' '}
+        <Glossary term="lot coverage" />,{' '}
+        <Glossary term="principal use" />,{' '}
+        <Glossary term="ADU" />.
+      </div>
+
+      {permitCountInDistrict > 0 && onDrillToDistrict && (
+        <div className="pt-3">
+          <button
+            type="button"
+            onClick={() => onDrillToDistrict(zoningSim)}
+            className="block w-full px-2 py-1.5 text-[11px] uppercase tracking-wider rounded border border-paper-edge hover:border-ink text-ink"
+          >
+            {permitCountInDistrict} permits in {zoningSim} currently visible →
+          </button>
+        </div>
+      )}
+
+      <div className="pt-5 border-t border-paper-edge text-[10px] text-ink-faint space-y-1">
+        <div className="uppercase tracking-wider mb-1">Sources</div>
+        {rec?.source && (
+          <a
+            href={rec.source.density.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block hover:text-ink"
+          >
+            SF Planning Code {rec.source.density.section} ↗
+          </a>
+        )}
+        {laws.find((l) => l.law === 'SB-9') && (
+          <a
+            href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65852.21"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block hover:text-ink"
+          >
+            CA Gov. Code §65852.21 (SB-9) ↗
+          </a>
+        )}
+        <a
+          href="https://sfplanninggis.org/pim/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block hover:text-ink"
+        >
+          View on SF Property Information Map ↗
+        </a>
+      </div>
+    </LensInfoPanel>
   )
 }
