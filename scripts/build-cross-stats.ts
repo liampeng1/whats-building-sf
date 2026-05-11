@@ -24,6 +24,7 @@ import { fetchMuni } from './sources/muni-stops'
 import { fetchCaltrainSfStations } from './sources/caltrain-stations'
 import { mergeRailStations } from './sources/merge-rail'
 import { fetchHeightPolygons, joinHeightsToZoning } from './sources/zoning-heights'
+import { ZONING_RULES } from '../lib/zoning-rules'
 
 const ROOT = process.cwd()
 const PUBLIC_DIR = path.join(ROOT, 'public')
@@ -157,6 +158,23 @@ async function main() {
   console.log('• loading zoning…')
   const zoningPolys = await loadZoning()
   console.log(`  ${zoningPolys.length} zoning polygons`)
+
+  // Fail-fast: every zoning_sim from DataSF must have a transcribed record.
+  // Prevents new districts (post-Planning-Code amendment) from rendering as blank.
+  const presentCodes = new Set(Object.keys(ZONING_RULES))
+  const datasetCodes = new Set(
+    zoningPolys
+      .map((z) => (z.properties as { zoning_sim?: string }).zoning_sim)
+      .filter((c): c is string => !!c),
+  )
+  const missing = [...datasetCodes].filter((c) => !presentCodes.has(c))
+  if (missing.length > 0) {
+    throw new Error(
+      `zoning-rules missing transcription for ${missing.length} codes:\n  ${missing.join('\n  ')}\n` +
+      `Add records to lib/zoning-rules.ts.`,
+    )
+  }
+  console.log(`✓ zoning-rules coverage: ${datasetCodes.size}/${datasetCodes.size}`)
 
   console.log('• loading rail stations from BART + Muni + Caltrain…')
   const [bart, muni, caltrain] = await Promise.all([
