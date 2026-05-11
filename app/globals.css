@@ -72,3 +72,21 @@ h1, h2, h3 {
   text-transform: uppercase;
   color: var(--ink-faint);
 }
+
+.station-icon { pointer-events: auto; }
+.station-icon .dot {
+  display: block;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #1c2438; border: 2px solid #fbf6ec;
+  box-shadow: 0 0 0 1px #1c2438;
+}
+.station-icon .square {
+  display: block;
+  width: 9px; height: 9px;
+  background: #fbf6ec; border: 1.5px solid #1c2438;
+}
+.station-icon:hover .dot,
+.station-icon:hover .square {
+  transform: scale(1.25);
+  transition: transform 100ms ease-out;
+}
