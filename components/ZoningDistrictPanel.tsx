@@ -213,6 +213,20 @@ export function ZoningDistrictPanel({
         >
           View on SF Property Information Map ↗
         </a>
+        <a
+          href="https://data.sfgov.org/Geographic-Locations-and-Boundaries/Zoning-Districts/3i4a-hu95"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block hover:text-ink"
+        >
+          DataSF: Zoning Districts dataset ↗
+        </a>
+        <div className="mt-2 leading-snug">
+          Gray/uncolored areas on the zoning map are streets (public rights-of-way),
+          SF Bay water, or federal/Port-jurisdiction land not covered by the SF Planning
+          Code — Presidio (National Park / Presidio Trust), Treasure Island (TIDA), and
+          Alcatraz (NPS). These areas are not in the DataSF zoning dataset.
+        </div>
       </div>
     </LensInfoPanel>
   )
