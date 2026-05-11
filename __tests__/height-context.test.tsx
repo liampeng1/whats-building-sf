@@ -11,11 +11,11 @@ describe('HeightContext', () => {
   })
   it('renders the district label when height_ft is set', () => {
     const { container } = render(<HeightContext height_ft={40} districtCode="RH-1" />)
-    expect(container.textContent).toMatch(/RH-1: 40 ft/)
+    expect(container.textContent).toMatch(/RH-1 \(40 ft\)/)
   })
-  it('includes all 10 references', () => {
+  it('includes key reference landmarks', () => {
     const { container } = render(<HeightContext height_ft={40} districtCode="RH-1" />)
     expect(container.textContent).toMatch(/Salesforce Tower/)
-    expect(container.textContent).toMatch(/Painted Ladies/)
+    expect(container.textContent).toMatch(/Coit Tower/)
   })
 })
