@@ -2,7 +2,6 @@
 import { GeoJSON } from 'react-leaflet'
 import { useEffect, useState } from 'react'
 import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
-import type { ZoningCategory } from '@/lib/cross-stats'
 
 /**
  * Toggleable zoning-districts layer. Fetches once on mount (cached for
@@ -56,11 +55,11 @@ function tooltipHtml(props: ZoningProperties): string {
 }
 
 interface Props {
-  selectedCategory?: ZoningCategory | null
-  onSelect?: (cat: ZoningCategory) => void
+  selectedDistrict?: string | null
+  onSelect?: (zoningSim: string, gen: string) => void
 }
 
-export function ZoningOverlay({ selectedCategory = null, onSelect }: Props = {}) {
+export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {}) {
   const [geo, setGeo] = useState<ZoningGeo | null>(null)
 
   useEffect(() => {
@@ -80,14 +79,15 @@ export function ZoningOverlay({ selectedCategory = null, onSelect }: Props = {})
     <GeoJSON
       // Re-mount when selection changes so styles re-apply (highlight the
       // selected category with bumped opacity + heavier stroke).
-      key={`zoning-overlay-${selectedCategory ?? 'none'}`}
+      key={`zoning-overlay-${selectedDistrict ?? 'none'}`}
       data={geo}
       pathOptions={{ className: 'zoning-poly' }}
       style={(feature) => {
-        const gen = (feature?.properties as ZoningProperties | undefined)?.gen ?? 'Other'
+        const fProps = feature?.properties as ZoningProperties | undefined
+        const gen = fProps?.gen ?? 'Other'
         const fill = genColor(gen)
-        const isSel = selectedCategory != null && gen === selectedCategory
-        const isDimmed = selectedCategory != null && !isSel
+        const isSel = selectedDistrict != null && fProps?.zoning_sim === selectedDistrict
+        const isDimmed = selectedDistrict != null && !isSel
         return {
           fillColor: fill,
           fillOpacity: isSel ? 0.42 : isDimmed ? 0.06 : 0.18,
@@ -108,8 +108,9 @@ export function ZoningOverlay({ selectedCategory = null, onSelect }: Props = {})
         if (onSelect) {
           layer.on({
             click: () => {
-              const gen = (props.gen || 'Other') as ZoningCategory
-              onSelect(gen)
+              const zoningSim = (props.zoning_sim || '')
+              const gen = (props.gen || 'Other')
+              onSelect(zoningSim, gen)
             },
           })
         }

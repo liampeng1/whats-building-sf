@@ -7,6 +7,7 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
+import { ZoningDistrictPanel } from './ZoningDistrictPanel'
 import { TransitRings } from './TransitRings'
 import { LensInfoPanel } from './LensInfoPanel'
 import { StationMarkers, type SelectedStation } from './StationMarkers'
@@ -137,7 +138,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [rapidBusOnly, setRapidBusOnly] = useState(false)
   const [selectedStation, setSelectedStation] = useState<SelectedStation | null>(null)
   const [stationRadiusM, setStationRadiusM] = useState<number>(800)  // default rail ½ mi
-  const [selectedZoning, setSelectedZoning] = useState<import('@/lib/cross-stats').ZoningCategory | null>(null)
+  const [selectedZoningDistrict, setSelectedZoningDistrict] = useState<{
+    zoningSim: string; gen: string
+  } | null>(null)
+  const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
   const [selectedTransitBand, setSelectedTransitBand] = useState<import('@/lib/cross-stats').TransitBand | null>(null)
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
@@ -154,6 +158,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setCrossStats(data))
       .catch(() => setCrossStats(null))
+    fetch('/zoning-heights.json')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows: { code: string; height_ft?: number; bulk?: string }[]) => {
+        const map: Record<string, { height_ft?: number; bulk?: string }> = {}
+        for (const r of rows) map[r.code] = { height_ft: r.height_ft, bulk: r.bulk }
+        setZoningHeights(map)
+      })
+      .catch(() => {})
     loadStations().catch(() => {})
   }, [])
   // Client-side viewport bounds — used to cull off-screen markers from the
@@ -210,6 +222,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     const radiusParam = Number(params.get('radius'))
     if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
 
+    const districtParam = params.get('district')
+    if (districtParam) {
+      setSelectedZoningDistrict({ zoningSim: districtParam, gen: '' })
+    }
+
     const onPop = () => {
       const sp = new URLSearchParams(window.location.search)
       setOpenPermit(sp.get('permit'))
@@ -252,8 +269,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     const defaultRadius = selectedStation?.kind === 'rapid-bus' ? RAPID_BUS_THRESHOLD_M : RAIL_THRESHOLD_M
     setOrDelete('radius', selectedStation ? String(stationRadiusM) : '', selectedStation ? String(defaultRadius) : '')
 
+    setOrDelete('district', selectedZoningDistrict?.zoningSim ?? '', '')
+
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, railOnly, rapidBusOnly, selectedStation, stationRadiusM])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, railOnly, rapidBusOnly, selectedStation, stationRadiusM, selectedZoningDistrict])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
@@ -552,8 +571,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
             context, not a competing data layer. */}
         {mapMode === 'zoning' && (
           <ZoningOverlay
-            selectedCategory={selectedZoning}
-            onSelect={setSelectedZoning}
+            selectedDistrict={selectedZoningDistrict?.zoningSim ?? null}
+            onSelect={(zoningSim, gen) => setSelectedZoningDistrict({ zoningSim, gen })}
           />
         )}
         {mapMode === 'transit' && (
@@ -641,10 +660,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
 
       {/* Lens info panels — opened by clicking a polygon in zoning or
           transit mode. Both share LensInfoPanel chrome. */}
-      <ZoningCategoryPanel
-        category={selectedZoning}
-        crossStats={crossStats}
-        onClose={() => setSelectedZoning(null)}
+      <ZoningDistrictPanel
+        zoningSim={selectedZoningDistrict?.zoningSim ?? null}
+        gen={selectedZoningDistrict?.gen ?? null}
+        heightFt={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.height_ft : undefined}
+        bulk={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.bulk : undefined}
+        onClose={() => setSelectedZoningDistrict(null)}
       />
       <TransitBandPanel
         band={selectedTransitBand}
@@ -675,67 +696,6 @@ function fmtPct(n: number): string {
   if (!Number.isFinite(n)) return '—'
   if (n < 0.005) return '<1%'
   return `${Math.round(n * 100)}%`
-}
-
-function ZoningCategoryPanel({
-  category,
-  crossStats,
-  onClose,
-}: {
-  category: import('@/lib/cross-stats').ZoningCategory | null
-  crossStats: import('@/lib/cross-stats').CrossStats | null
-  onClose: () => void
-}) {
-  const open = !!category
-  const row = category && crossStats
-    ? crossStats.zoning.find((r) => r.category === category)
-    : null
-  const topNhoods = row
-    ? Object.entries(row.neighborhood_share)
-        .filter(([, v]) => v > 0.005)
-        .sort((a, b) => (b[1] as number) - (a[1] as number))
-        .slice(0, 8)
-        .map(([nhood, share]) => ({
-          label: nhood,
-          value: fmtPct(share as number),
-          pct: share as number,
-          color: ZONING_PALETTE[category!] ?? '#9a4a31',
-        }))
-    : []
-  const transitRows = row
-    ? (
-        ['0.25mi', '0.5mi', '1mi'] as const
-      ).map((band) => ({
-        label: `Within ${band.replace('mi', ' mi')} of rail`,
-        value: fmtPct(row.transit_coverage[band] ?? 0),
-        pct: row.transit_coverage[band] ?? 0,
-        color: '#9a4a31',
-      }))
-    : []
-  return (
-    <LensInfoPanel
-      open={open}
-      eyebrow="Zoning category"
-      title={category ?? '—'}
-      subtitle={
-        row && row.share_of_sf > 0
-          ? `${fmtPct(row.share_of_sf)} of San Francisco's land area sits in ${category} zoning.`
-          : undefined
-      }
-      hero={
-        row
-          ? {
-              eyebrow: 'Share of SF',
-              value: fmtPct(row.share_of_sf),
-              detail: `${(row.area_sqm / 4046.8564224 / 1000).toFixed(1)}k acres`,
-            }
-          : undefined
-      }
-      primary={{ eyebrow: 'Top neighborhoods', rows: topNhoods }}
-      secondary={{ eyebrow: 'Transit reach', rows: transitRows }}
-      onClose={onClose}
-    />
-  )
 }
 
 function TransitBandPanel({
