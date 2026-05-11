@@ -28,7 +28,10 @@ import {
   netDelta,
   useCategory,
   STAGE_ORDER,
+  STAGE_COLORS,
+  STAGE_LABELS,
   CATEGORIES,
+  USE_CATEGORY_LABELS,
   type PermitStage,
   type UseCategory,
 } from '@/lib/permit-style'
@@ -817,6 +820,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onClose={() => setSelectedStation(null)}
         onRadiusChange={setStationRadiusM}
         permits={filteredPermits}
+        onOpenPermit={openPermitPanel}
       />
     </div>
   )
@@ -837,12 +841,14 @@ function StationPanel({
   onClose,
   onRadiusChange,
   permits,
+  onOpenPermit,
 }: {
   selected: SelectedStation | null
   radiusM: number
   onClose: () => void
   onRadiusChange: (m: number) => void
   permits: Permit[]
+  onOpenPermit: (id: string) => void
 }) {
   const open = !!selected
   const station = selected
@@ -853,6 +859,37 @@ function StationPanel({
 
   const isRail = selected?.kind === 'rail'
   const radiusOptions = isRail ? [400, 800, 1600] : [160, 400]
+
+  // Permits within the current radius — computed once here
+  const shedPermits = station
+    ? permits.filter((p) => {
+        const c = p.location?.coordinates
+        if (!c) return false
+        return withinStationRadius(c, station, radiusM)
+      })
+    : []
+
+  // Top 5 most recent
+  const recentPermits = [...shedPermits]
+    .filter((p) => !!p.status_date)
+    .sort((a, b) => (a.status_date! < b.status_date! ? 1 : -1))
+    .slice(0, 5)
+
+  // Zoning categories in shed
+  const zoningCounts: Record<string, number> = {}
+  for (const p of shedPermits) {
+    const cat = useCategory(p.proposed_use ?? p.existing_use)
+    const label = USE_CATEGORY_LABELS[cat]
+    zoningCounts[label] = (zoningCounts[label] ?? 0) + 1
+  }
+  const zoningEntries = Object.entries(zoningCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => ({
+      label,
+      value: `${shedPermits.length > 0 ? Math.round((count / shedPermits.length) * 100) : 0}%`,
+      pct: shedPermits.length > 0 ? count / shedPermits.length : 0,
+      color: '#7d9b76',
+    }))
 
   const subtitle = (() => {
     if (!station) return undefined
@@ -878,12 +915,46 @@ function StationPanel({
         subtitle={subtitle}
         hero={
           station
-            ? { eyebrow: 'Permits in shed', value: String(permits.length), detail: `${radiusM} m radius` }
+            ? { eyebrow: 'Permits in shed', value: String(shedPermits.length), detail: `${radiusM} m radius` }
             : undefined
         }
-        primary={{ eyebrow: 'Radius', rows }}
+        primary={{ eyebrow: 'Use mix in shed', rows: zoningEntries }}
+        secondary={{ eyebrow: 'Radius options', rows }}
         onClose={onClose}
-      />
+      >
+        {/* Recent permits in shed */}
+        {recentPermits.length > 0 && (
+          <div className="pt-5 border-t border-paper-edge">
+            <div className="civic-eyebrow mb-3">Recent permits in shed</div>
+            <ul className="space-y-2">
+              {recentPermits.map((p) => {
+                const stage = permitStage(p)
+                const stageColor = STAGE_COLORS[stage].fill
+                const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
+                return (
+                  <li key={p.permit_number}>
+                    <button
+                      type="button"
+                      onClick={() => { onOpenPermit(p.permit_number); onClose() }}
+                      className="w-full text-left flex items-start gap-2 hover:bg-paper-deep -mx-2 px-2 py-1.5 rounded transition-colors"
+                    >
+                      <span
+                        className="text-[10px] font-semibold uppercase tracking-wide shrink-0 w-20 pt-0.5"
+                        style={{ color: stageColor }}
+                      >
+                        {stageLabel}
+                      </span>
+                      <span className="font-serif text-ink text-sm leading-tight min-w-0 truncate">
+                        {p.address}
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
+      </LensInfoPanel>
       {/* Sibling control: clickable radius pills under the panel.
           LensInfoPanel rows are display-only, so we layer the actual control
           here, positioned to align with the panel chrome. */}

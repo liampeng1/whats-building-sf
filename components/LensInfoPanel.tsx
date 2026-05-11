@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Logo } from './Logo'
 import { ShareButton } from './ShareButton'
 
@@ -20,6 +21,8 @@ interface Props {
   primary: { eyebrow: string; rows: CrossRefRow[] }
   /** Second cross-ref block (e.g. "Transit reach" or "Zoning mix"). */
   secondary?: { eyebrow: string; rows: CrossRefRow[] }
+  /** Optional extra content rendered after secondary section. */
+  children?: ReactNode
   shareUrl?: string
   shareTitle?: string
   onClose: () => void
@@ -39,6 +42,7 @@ export function LensInfoPanel({
   hero,
   primary,
   secondary,
+  children,
   shareUrl,
   shareTitle,
   onClose,
@@ -143,6 +147,7 @@ export function LensInfoPanel({
               <CrossRefList rows={secondary.rows} />
             </div>
           )}
+          {children}
         </div>
       </aside>
     </>
