@@ -9,7 +9,7 @@ import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { TransitRings } from './TransitRings'
 import { LensInfoPanel } from './LensInfoPanel'
-import { transitAdjacent } from '@/lib/transit-stations'
+import { transitAdjacent, loadStations } from '@/lib/transit-stations'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
@@ -150,6 +150,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setCrossStats(data))
       .catch(() => setCrossStats(null))
+    loadStations().catch(() => {})
   }, [])
   // Client-side viewport bounds — used to cull off-screen markers from the
   // DOM. We don't refetch on pan; just narrow what's rendered.
