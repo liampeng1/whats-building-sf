@@ -28,6 +28,16 @@ describe('bart-stations', () => {
     const csv = 'stop_id,stop_name,stop_lat,stop_lon\nEMBR,Embarcadero,37.79,-122.39\n'
     expect(parseBartStops(csv)[0].modes).toEqual(['bart'])
   })
+
+  it('filters out rows with empty stop_name', () => {
+    const csv = 'stop_id,stop_name,stop_lat,stop_lon\nGOOD,Embarcadero,37.79,-122.39\nBAD,,37.79,-122.39\n'
+    expect(parseBartStops(csv)).toHaveLength(1)
+  })
+
+  it('filters out rows with non-numeric coordinates', () => {
+    const csv = 'stop_id,stop_name,stop_lat,stop_lon\nBAD,Bad Lat,not-a-number,37.79\n'
+    expect(parseBartStops(csv)).toHaveLength(0)
+  })
 })
 
 describe('BART_SF_BBOX', () => {

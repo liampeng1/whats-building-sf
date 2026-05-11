@@ -22,6 +22,7 @@ function slugify(s: string): string {
 export function parseBartStops(csv: string): RailStation[] {
   const rows = parseCsv(csv)
   return rows
+    .filter((r) => (r.stop_name ?? '').trim().length > 0)
     .map((r) => ({
       id: `bart-${slugify(r.stop_name)}`,
       name: r.stop_name,
