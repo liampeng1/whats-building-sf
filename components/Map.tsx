@@ -720,6 +720,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         gen={selectedZoningDistrict?.gen ?? null}
         heightFt={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.height_ft : undefined}
         bulk={selectedZoningDistrict ? zoningHeights[selectedZoningDistrict.zoningSim]?.bulk : undefined}
+        permitCountInDistrict={filteredPermits.length}
+        onDrillToDistrict={(zoningSim) => {
+          const url = new URL(window.location.href)
+          url.searchParams.set('district', zoningSim)
+          window.history.pushState({}, '', url)
+        }}
         onClose={() => setSelectedZoningDistrict(null)}
       />
       <StationPanel
