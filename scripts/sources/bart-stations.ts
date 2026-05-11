@@ -1,4 +1,5 @@
 import { fetchGtfsZip, parseCsv } from './_gtfs'
+import { slugify } from './_utils'
 import type { RailStation } from '../../lib/transit-stations'
 
 const BART_GTFS_URL = 'https://www.bart.gov/dev/schedules/google_transit.zip'
@@ -10,13 +11,6 @@ export const BART_SF_BBOX = {
   north: 37.81,
   west: -122.515,
   east: -122.355,
-}
-
-function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
 }
 
 export function parseBartStops(csv: string): RailStation[] {

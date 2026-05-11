@@ -1,3 +1,4 @@
+import { slugify } from './_utils'
 import type { RailStation, RapidBusStop } from '../../lib/transit-stations'
 
 interface MuniRoute {
@@ -14,10 +15,6 @@ interface MuniStop {
 }
 
 const RAIL_LINES = new Set(['K', 'L', 'M', 'N', 'T', 'J'])
-
-function slugify(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-}
 
 export function selectRailRouteIds(routes: MuniRoute[]): string[] {
   return routes.filter((r) => RAIL_LINES.has(r.lineabbr)).map((r) => r.route_id)
