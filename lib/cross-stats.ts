@@ -14,6 +14,8 @@ export type ZoningCategory =
 
 export type TransitBand = '0.25mi' | '0.5mi' | '1mi'
 
+export type RapidBusBand = '0.1mi' | '0.25mi'
+
 export const ZONING_CATEGORY_ORDER: ZoningCategory[] = [
   'Residential',
   'Mixed Use',
@@ -24,6 +26,8 @@ export const ZONING_CATEGORY_ORDER: ZoningCategory[] = [
 ]
 
 export const TRANSIT_BAND_ORDER: TransitBand[] = ['0.25mi', '0.5mi', '1mi']
+
+export const RAPID_BUS_BAND_ORDER: RapidBusBand[] = ['0.1mi', '0.25mi']
 
 export interface NhoodStats {
   nhood: string
@@ -48,6 +52,14 @@ export interface TransitBandStats {
   zoning_share: Partial<Record<ZoningCategory, number>>
 }
 
+export interface RapidBusBandStats {
+  band: RapidBusBand
+  area_sqm: number
+  share_of_sf: number
+  neighborhood_share: Record<string, number>
+  zoning_share: Partial<Record<ZoningCategory, number>>
+}
+
 export interface CrossStats {
   generated_at: string
   source_versions: {
@@ -58,6 +70,7 @@ export interface CrossStats {
   neighborhoods: NhoodStats[]
   zoning: ZoningStats[]
   transit_bands: TransitBandStats[]
+  transit_bands_rapid_bus?: RapidBusBandStats[]
 }
 
 let cached: CrossStats | null = null
