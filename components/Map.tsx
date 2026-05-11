@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { MapContainer, TileLayer, useMap, useMapEvents, GeoJSON } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, useMapEvents, GeoJSON, Circle } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './marker-cluster.css'
 import { PermitMarker } from './PermitMarker'
@@ -648,6 +648,33 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
                 setStationRadiusM(s.kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
               }}
             />
+            {selectedStation && (() => {
+              const list = selectedStation.kind === 'rail' ? RAIL_STATIONS : RAPID_BUS_STOPS
+              const s = list.find((x) => x.id === selectedStation.id)
+              if (!s) return null
+              const color = stationModeColor(selectedStation)
+              return (
+                <>
+                  <Circle
+                    center={[s.lat, s.lng]}
+                    radius={400}
+                    pathOptions={{
+                      color, weight: 1, opacity: 0.6,
+                      fillColor: color, fillOpacity: 0.08,
+                      dashArray: '4 4',
+                    }}
+                  />
+                  <Circle
+                    center={[s.lat, s.lng]}
+                    radius={160}
+                    pathOptions={{
+                      color, weight: 1.5, opacity: 0.7,
+                      fillColor: color, fillOpacity: 0.18,
+                    }}
+                  />
+                </>
+              )
+            })()}
           </>
         )}
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
@@ -768,6 +795,15 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       />
     </div>
   )
+}
+
+function stationModeColor(s: SelectedStation): string {
+  if (s.kind === 'rapid-bus') return '#9a4a31'
+  const station = RAIL_STATIONS.find((r) => r.id === s.id)
+  if (!station) return '#1c2438'
+  if (station.modes.includes('bart')) return '#1c2438'
+  if (station.modes.includes('caltrain')) return '#b08968'
+  return '#7d9b76'
 }
 
 function StationPanel({
