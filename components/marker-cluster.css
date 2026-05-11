@@ -52,6 +52,11 @@
   line-height: 1;
 }
 
+.marker-cluster {
+  opacity: var(--cluster-opacity, 1);
+  transition: opacity 100ms ease-out;
+}
+
 /* Pictographic SVG pins (DivIcon). The DivIcon's sized box already gives a
    tap target larger than the rendered SVG; on touch devices we expand the
    hitbox via a transparent ::after so small icons are still finger-friendly. */

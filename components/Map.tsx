@@ -31,6 +31,7 @@ import {
   type UseCategory,
 } from '@/lib/permit-style'
 import type { Permit, MapBounds } from '@/lib/types'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 
 // Inactive (cancelled / denied / expired / etc.) is off-track noise — exclude
 // it from the default selection. Users can opt it back in via the filter panel.
@@ -46,6 +47,13 @@ function pinOpacity(zoom: number): number {
   if (zoom <= PIN_FADE_MIN) return 0
   if (zoom >= PIN_FADE_MAX) return 1
   return (zoom - PIN_FADE_MIN) / (PIN_FADE_MAX - PIN_FADE_MIN)
+}
+
+/** Mirror of pinOpacity — fades clusters out as pins fade in across the band. */
+function clusterOpacity(zoom: number): number {
+  if (zoom <= PIN_FADE_MIN) return 1
+  if (zoom >= PIN_FADE_MAX) return 0
+  return 1 - (zoom - PIN_FADE_MIN) / (PIN_FADE_MAX - PIN_FADE_MIN)
 }
 
 /**
@@ -65,12 +73,18 @@ function ZoomTracker({
   useMapEvents({
     zoom: () => {
       const el = wrapperRef.current
-      if (el) el.style.setProperty('--pin-opacity', String(pinOpacity(map.getZoom())))
+      if (el) {
+        el.style.setProperty('--pin-opacity', String(pinOpacity(map.getZoom())))
+        el.style.setProperty('--cluster-opacity', String(clusterOpacity(map.getZoom())))
+      }
     },
     zoomend: () => {
       const z = map.getZoom()
       const el = wrapperRef.current
-      if (el) el.style.setProperty('--pin-opacity', String(pinOpacity(z)))
+      if (el) {
+        el.style.setProperty('--pin-opacity', String(pinOpacity(z)))
+        el.style.setProperty('--cluster-opacity', String(clusterOpacity(z)))
+      }
       onSettled(z)
     },
   })
@@ -531,12 +545,16 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   // React touch it again during animation — that's the whole point.
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const initialPinOp = pinOpacity(mapZoom)
+  const initialClusterOp = clusterOpacity(mapZoom)
 
   return (
     <div
       ref={wrapperRef}
       className={`relative w-full h-full ${openPermit || selectedNhood ? 'has-selection' : ''}`}
-      style={{ ['--pin-opacity' as string]: String(initialPinOp) }}
+      style={{
+        ['--pin-opacity' as string]: String(initialPinOp),
+        ['--cluster-opacity' as string]: String(initialClusterOp),
+      }}
     >
       {loading && (
         <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-paper/40 pointer-events-none">
@@ -619,11 +637,19 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
             }}
           />
         )}
-        <ZoomGatedPins
-          visiblePermits={visiblePermits}
-          onSelect={openPermitPanel}
-          zoom={mapZoom}
-        />
+        <MarkerClusterGroup
+          chunkedLoading
+          disableClusteringAtZoom={15}
+          maxClusterRadius={60}
+          spiderfyOnMaxZoom={false}
+          showCoverageOnHover={false}
+        >
+          <ZoomGatedPins
+            visiblePermits={visiblePermits}
+            onSelect={openPermitPanel}
+            zoom={mapZoom}
+          />
+        </MarkerClusterGroup>
       </MapContainer>
       <FilterPanel
         selectedStages={selectedStages}
