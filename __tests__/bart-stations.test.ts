@@ -12,6 +12,7 @@ describe('bart-stations', () => {
     expect(names).toEqual([
       'Daly City',
       'Embarcadero',
+      'Embarcadero Legacy',
       'Montgomery St.',
       'Powell St.',
     ])
@@ -53,6 +54,12 @@ describe('bart-stations', () => {
     const csv = await fs.readFile(FIX, 'utf8')
     const out = parseBartStops(csv)
     expect(out.find((s) => s.name.includes('parent'))).toBeUndefined()
+  })
+
+  it('accepts empty location_type (GTFS spec default = type 0)', async () => {
+    const csv = await fs.readFile(FIX, 'utf8')
+    const out = parseBartStops(csv)
+    expect(out.find((s) => s.name === 'Embarcadero Legacy')).toBeDefined()
   })
 })
 

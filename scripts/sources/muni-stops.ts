@@ -59,7 +59,7 @@ export function buildStopRouteMap(
 
 function isValidStopRow(s: GtfsStop): boolean {
   if (!s.stop_name?.trim()) return false
-  if (s.location_type !== '0') return false
+  if (s.location_type !== '' && s.location_type !== undefined && s.location_type !== '0') return false
   const lat = Number(s.stop_lat)
   const lng = Number(s.stop_lon)
   return Number.isFinite(lat) && Number.isFinite(lng)

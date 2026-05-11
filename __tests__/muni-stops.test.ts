@@ -74,6 +74,20 @@ describe('buildRailStations', () => {
     const out = buildRailStations(stops, stopMap, railIds)
     expect(out.find((s) => s.name.includes('Entrance'))).toBeUndefined()
   })
+
+  it('accepts empty location_type (GTFS spec default = type 0)', async () => {
+    const { stops } = await loadFixture()
+    const stopsWithEmpty = [
+      ...stops,
+      { stop_id: 'S-TEST-EMPTY', stop_name: 'Test Empty', stop_lat: '37.762', stop_lon: '-122.43', location_type: '' } as typeof stops[number],
+    ]
+    const stopMap = new Map<string, Set<string>>([
+      ['S-TEST-EMPTY', new Set(['R-K'])],
+    ])
+    const railIds = new Set(['R-K'])
+    const out = buildRailStations(stopsWithEmpty, stopMap, railIds)
+    expect(out.find((s) => s.name === 'Test Empty')).toBeDefined()
+  })
 })
 
 describe('buildRapidBusStops', () => {
