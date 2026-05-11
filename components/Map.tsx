@@ -221,6 +221,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
       const districtParam = sp.get('district')
       setSelectedZoningDistrict(districtParam ? { zoningSim: districtParam, gen: '' } : null)
+      const listParam = sp.get('list')
+      if (listParam === 'none' || listParam === 'top5' || listParam === 'all') {
+        setSummaryState(listParam)
+      }
+      const sheetParam = sp.get('sheet')
+      setSheetOpen(sheetParam === '1')
     }
 
     const params = new URLSearchParams(window.location.search)
@@ -294,8 +300,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
 
     setOrDelete('district', selectedZoningDistrict?.zoningSim ?? '', '')
 
+    setOrDelete('list', summaryState, 'top5')
+    setOrDelete('sheet', sheetOpen ? '1' : '', '')
+
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict, summaryState, sheetOpen])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
