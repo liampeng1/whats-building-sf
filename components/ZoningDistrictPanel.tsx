@@ -151,8 +151,7 @@ export function ZoningDistrictPanel({
 
       {open && (
         <div
-          className="absolute right-4 z-[1102] w-[360px] max-h-[60vh] overflow-y-auto bg-paper border border-paper-edge rounded p-3 text-[12px]"
-          style={{ bottom: '4rem' }}
+          className="fixed bottom-4 right-[540px] z-[1201] w-[360px] max-h-[80vh] overflow-y-auto bg-paper border border-paper-edge rounded p-3 text-[12px] hidden md:block"
           role="complementary"
         >
           {blurb && (
