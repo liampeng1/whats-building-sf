@@ -9,7 +9,8 @@ import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { TransitRings } from './TransitRings'
 import { LensInfoPanel } from './LensInfoPanel'
-import { transitAdjacent, loadStations } from '@/lib/transit-stations'
+import { StationMarkers, type SelectedStation } from './StationMarkers'
+import { RAIL_STATIONS, RAPID_BUS_STOPS, withinStationRadius, RAIL_THRESHOLD_M, RAPID_BUS_THRESHOLD_M, transitAdjacent, loadStations } from '@/lib/transit-stations'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
@@ -132,7 +133,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   // independent of the lens — you can have e.g. 'zoning' lens + transit-
   // only permits.
   const [mapMode, setMapMode] = useState<import('./MapModeSwitch').MapMode>('neighborhoods')
-  const [transitOnly, setTransitOnly] = useState(false)
+  const [railOnly, setRailOnly] = useState(false)
+  const [rapidBusOnly, setRapidBusOnly] = useState(false)
+  const [selectedStation, setSelectedStation] = useState<SelectedStation | null>(null)
+  const [stationRadiusM, setStationRadiusM] = useState<number>(800)  // default rail ½ mi
   const [selectedZoning, setSelectedZoning] = useState<import('@/lib/cross-stats').ZoningCategory | null>(null)
   const [selectedTransitBand, setSelectedTransitBand] = useState<import('@/lib/cross-stats').TransitBand | null>(null)
   // Parcel polygon for the currently-open permit. Fetched lazily from
@@ -386,10 +390,21 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           const delta = netDelta(p.existing_units, p.proposed_units)
           if (delta == null || delta < minUnits) return false
         }
-        if (transitOnly && !transitAdjacent(p.location?.coordinates)) return false
+        // Global transit-adjacent filter
+        if ((railOnly || rapidBusOnly) && !transitAdjacent(p.location?.coordinates, {
+          rail: railOnly, rapidBus: rapidBusOnly,
+        })) {
+          return false
+        }
+        // Per-station radius filter
+        if (selectedStation) {
+          const list = selectedStation.kind === 'rail' ? RAIL_STATIONS : RAPID_BUS_STOPS
+          const s = list.find((x) => x.id === selectedStation.id)
+          if (s && !withinStationRadius(p.location?.coordinates, s, stationRadiusM)) return false
+        }
         return true
       }),
-    [permits, selectedStages, selectedCategories, minUnits, transitOnly],
+    [permits, selectedStages, selectedCategories, minUnits, railOnly, rapidBusOnly, selectedStation, stationRadiusM],
   )
 
   // Permits grouped by neighborhood (point-in-polygon). Lifted up here so
@@ -516,10 +531,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           />
         )}
         {mapMode === 'transit' && (
-          <TransitRings
-            selectedBand={selectedTransitBand}
-            onSelect={setSelectedTransitBand}
-          />
+          <>
+            <TransitRings selectedBand={selectedTransitBand} onSelect={setSelectedTransitBand} />
+            <StationMarkers show onSelect={(s) => {
+              setSelectedStation(s)
+              // Default radius depends on station kind
+              setStationRadiusM(s.kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
+            }} />
+          </>
         )}
         {/* Choropleth always rendered. Below PIN_FADE_MIN it carries the
             visualization; above, only the navy stroke remains so neighborhood
@@ -570,8 +589,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onRecentActivityChange={setRecentActivity}
         mapMode={mapMode}
         onModeChange={setMapMode}
-        transitOnly={transitOnly}
-        onTransitToggle={() => setTransitOnly((v) => !v)}
+        railOnly={railOnly}
+        rapidBusOnly={rapidBusOnly}
+        onToggleRail={() => setRailOnly((v) => !v)}
+        onToggleRapidBus={() => setRapidBusOnly((v) => !v)}
         crossStats={crossStats}
         permitsByNhood={permitsByNhood}
         onSelectNhood={openNhoodPanel}

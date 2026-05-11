@@ -55,8 +55,10 @@ interface Props {
   onRecentActivityChange: (n: RecentActivityFilter) => void
   mapMode: MapMode
   onModeChange: (m: MapMode) => void
-  transitOnly: boolean
-  onTransitToggle: () => void
+  railOnly: boolean
+  rapidBusOnly: boolean
+  onToggleRail: () => void
+  onToggleRapidBus: () => void
   crossStats?: import('@/lib/cross-stats').CrossStats | null
   permitsByNhood?: Record<string, import('@/lib/types').Permit[]>
   onSelectNhood?: (name: string) => void
@@ -350,8 +352,10 @@ export function FilterPanel({
   onRecentActivityChange,
   mapMode,
   onModeChange,
-  transitOnly,
-  onTransitToggle,
+  railOnly,
+  rapidBusOnly,
+  onToggleRail,
+  onToggleRapidBus,
   crossStats = null,
   permitsByNhood,
   onSelectNhood,
@@ -464,7 +468,10 @@ export function FilterPanel({
     }
 
     const inactiveSuffix = selectedStages.has('inactive') ? ', plus cancelled' : ''
-    const transitSuffix = transitOnly ? ', transit-adjacent only' : ''
+    let transitSuffix = ''
+    if (railOnly && rapidBusOnly) transitSuffix = ', rail or rapid bus only'
+    else if (railOnly) transitSuffix = ', rail-adjacent only'
+    else if (rapidBusOnly) transitSuffix = ', rapid-bus-adjacent only'
 
     const sentence = `${subject}${stagePhrase}${sizeClause}${timeClause}${completedClause}${transitSuffix}${inactiveSuffix}.`
     return sentence.charAt(0).toUpperCase() + sentence.slice(1)
@@ -718,17 +725,32 @@ export function FilterPanel({
                 The map's *lens* (neighborhoods / zoning / transit-shed) is
                 up in the panel header via MapModeSwitch. */}
             <section className="border-t border-paper-edge pt-4">
+              <div className="civic-eyebrow mb-2">Transit-adjacent only</div>
               <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  checked={transitOnly}
-                  onChange={onTransitToggle}
+                  checked={railOnly}
+                  onChange={onToggleRail}
                   className="accent-ink mt-0.5"
                 />
                 <span className="flex-1">
-                  <span className="text-ink font-medium">Transit-adjacent only</span>
+                  <span className="text-ink font-medium">Rail</span>
                   <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
-                    Within ½ mi of BART or Muni Metro. Filters which permits show.
+                    BART, Muni Metro, Caltrain — within ½ mi
+                  </span>
+                </span>
+              </label>
+              <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none mt-2">
+                <input
+                  type="checkbox"
+                  checked={rapidBusOnly}
+                  onChange={onToggleRapidBus}
+                  className="accent-ink mt-0.5"
+                />
+                <span className="flex-1">
+                  <span className="text-ink font-medium">Rapid bus</span>
+                  <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
+                    SFMTA Rapid (R-suffix) lines — within 0.1 mi
                   </span>
                 </span>
               </label>
