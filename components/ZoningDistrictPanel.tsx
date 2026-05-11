@@ -125,13 +125,6 @@ export function ZoningDistrictPanel({
     })
   }
 
-  const lawRows = laws.map((l) => ({
-    label: `${l.law}: ${l.uplift_summary}`,
-    value: '',
-    pct: 1,
-    color: '#9a4a31',
-  }))
-
   return (
     <LensInfoPanel
       open={open}
@@ -144,13 +137,37 @@ export function ZoningDistrictPanel({
           : undefined
       }
       primary={{ eyebrow: 'Rules', rows: ruleRows }}
-      secondary={lawRows.length > 0 ? { eyebrow: 'State-law uplift', rows: lawRows } : undefined}
       onClose={onClose}
     >
       {/* Extended content — editorial context, height chart, glossary, sources */}
       {blurb && (
         <div className="pt-5 border-t border-paper-edge">
           <p className="text-ink-soft italic leading-relaxed text-sm">{blurb}</p>
+        </div>
+      )}
+
+      {laws.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-paper-edge">
+          <div className="civic-eyebrow mb-2">State-law uplift</div>
+          <ul className="space-y-3">
+            {laws.map((l) => (
+              <li key={l.law} className="border-l-2 pl-3" style={{ borderColor: '#9a4a31' }}>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="font-serif text-[14px] text-ink">{l.law}</span>
+                  <a
+                    href={l.source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] uppercase tracking-wider text-ink-faint hover:text-ink"
+                  >
+                    {l.source.cite} ↗
+                  </a>
+                </div>
+                <p className="text-[12px] text-ink-soft leading-snug mt-1">{l.uplift_summary}</p>
+                <p className="text-[11px] text-ink-faint leading-relaxed mt-1">{l.description}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -193,16 +210,6 @@ export function ZoningDistrictPanel({
             className="block hover:text-ink"
           >
             SF Planning Code {rec.source.density.section} ↗
-          </a>
-        )}
-        {laws.find((l) => l.law === 'SB-9') && (
-          <a
-            href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65852.21"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block hover:text-ink"
-          >
-            CA Gov. Code §65852.21 (SB-9) ↗
           </a>
         )}
         <a

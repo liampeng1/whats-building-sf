@@ -29,6 +29,15 @@ describe('eligibleLaws', () => {
     expect(eligibleLaws('RH-1', 'Residential').map((l) => l.law)).toContain('density-bonus')
     expect(eligibleLaws('NCT-3', 'Mixed Use').map((l) => l.law)).toContain('density-bonus')
   })
+
+  it('every eligibility entry carries a description and a source URL', () => {
+    const laws = eligibleLaws('RH-1', 'Residential')
+    for (const l of laws) {
+      expect(l.description.length).toBeGreaterThan(40)
+      expect(l.source.url).toMatch(/^https?:\/\//)
+      expect(l.source.cite).toBeTruthy()
+    }
+  })
 })
 
 describe('permitLawHeuristic', () => {

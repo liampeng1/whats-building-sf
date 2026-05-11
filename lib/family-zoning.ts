@@ -33,6 +33,54 @@ export type FamilyLaw = 'SB-9' | 'AB-2011' | 'SB-35' | 'density-bonus' | 'ADU'
 export interface FamilyLawEligibility {
   law: FamilyLaw
   uplift_summary: string
+  description: string
+  source: {
+    url: string
+    cite: string
+  }
+}
+
+const FAMILY_LAW_DETAILS: Record<FamilyLaw, { description: string; source: { url: string; cite: string } }> = {
+  'SB-9': {
+    description:
+      "California's 2021 family-zoning law. Allows by-right duplexes and lot splits in single-family-only zones (RH-1 in SF), overriding stricter local rules. SF Planning processes SB-9 ministerially when affordability and design conditions are met.",
+    source: {
+      url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65852.21',
+      cite: 'CA Gov. Code §65852.21',
+    },
+  },
+  'AB-2011': {
+    description:
+      'Affordable Housing and High Road Jobs Act. Allows by-right multifamily housing on commercial corridors (currently zoned office/retail) provided minimum-wage and labor standards are met. Density and FAR are bumped above baseline.',
+    source: {
+      url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65912.110',
+      cite: 'CA Gov. Code §65912.110',
+    },
+  },
+  'SB-35': {
+    description:
+      'Streamlined ministerial review (no public hearing) for housing projects in jurisdictions falling short of RHNA targets. SF has been below RHNA every cycle, so SB-35 applies broadly to qualifying projects in residential and mixed-use zones.',
+    source: {
+      url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65913.4',
+      cite: 'CA Gov. Code §65913.4',
+    },
+  },
+  'density-bonus': {
+    description:
+      'State Density Bonus Law. Projects that set aside affordable units get unit-count bonuses, height/setback waivers, and reduced parking requirements. The size of each concession scales with the affordability commitment.',
+    source: {
+      url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65915',
+      cite: 'CA Gov. Code §65915',
+    },
+  },
+  ADU: {
+    description:
+      'Accessory Dwelling Unit law. California allows up to two ADUs per single-family lot (one standard ADU + one Junior ADU), with state-mandated approval timelines and parking exemptions near transit.',
+    source: {
+      url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=GOV&sectionNum=65852.2',
+      cite: 'CA Gov. Code §65852.2',
+    },
+  },
 }
 
 const RESIDENTIAL_OR_MIXED = new Set(['Residential', 'Mixed Use'])
@@ -45,6 +93,7 @@ export function eligibleLaws(zoningSim: string, gen: string): FamilyLawEligibili
     out.push({
       law: 'SB-9',
       uplift_summary: '1 unit baseline → up to 4 units via lot split + duplex + ADU',
+      ...FAMILY_LAW_DETAILS['SB-9'],
     })
   }
 
@@ -52,6 +101,7 @@ export function eligibleLaws(zoningSim: string, gen: string): FamilyLawEligibili
     out.push({
       law: 'AB-2011',
       uplift_summary: 'By-right residential on eligible commercial corridors',
+      ...FAMILY_LAW_DETAILS['AB-2011'],
     })
   }
 
@@ -59,10 +109,12 @@ export function eligibleLaws(zoningSim: string, gen: string): FamilyLawEligibili
     out.push({
       law: 'SB-35',
       uplift_summary: 'Streamlined ministerial review when affordability targets met',
+      ...FAMILY_LAW_DETAILS['SB-35'],
     })
     out.push({
       law: 'density-bonus',
       uplift_summary: 'Up to 50% unit increase in exchange for affordable units',
+      ...FAMILY_LAW_DETAILS['density-bonus'],
     })
   }
 
@@ -70,6 +122,7 @@ export function eligibleLaws(zoningSim: string, gen: string): FamilyLawEligibili
     out.push({
       law: 'ADU',
       uplift_summary: 'Up to 2 ADUs per lot allowed by state law',
+      ...FAMILY_LAW_DETAILS['ADU'],
     })
   }
 
