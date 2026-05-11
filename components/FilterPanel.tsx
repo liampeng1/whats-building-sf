@@ -2,6 +2,7 @@
 import { Fragment, useState } from 'react'
 import { Logo } from './Logo'
 import { MapModeSwitch, type MapMode } from './MapModeSwitch'
+import { FilterPopover } from './FilterPopover'
 import {
   stageIconSvg,
   STAGE_LABELS,
@@ -59,6 +60,7 @@ interface Props {
   rapidBusOnly: boolean
   onToggleRail: () => void
   onToggleRapidBus: () => void
+  // TODO: Task 4.3 will repurpose these props when BrowsePanel is created
   crossStats?: import('@/lib/cross-stats').CrossStats | null
   permitsByNhood?: Record<string, import('@/lib/types').Permit[]>
   onSelectNhood?: (name: string) => void
@@ -163,6 +165,36 @@ function CategoryChip({
   )
 }
 
+/** Chip button that opens/closes a named filter popover. */
+function TriggerChip({
+  id,
+  label,
+  openFilter,
+  setOpenFilter,
+}: {
+  id: string
+  label: string
+  openFilter: string | null
+  setOpenFilter: (v: string | null) => void
+}) {
+  const isOpen = openFilter === id
+  return (
+    <button
+      type="button"
+      onClick={() => setOpenFilter(isOpen ? null : id)}
+      aria-expanded={isOpen}
+      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border transition ${
+        isOpen
+          ? 'bg-ink text-paper border-ink'
+          : 'bg-paper text-ink border-paper-edge hover:border-ink'
+      }`}
+    >
+      <span className="truncate max-w-[14rem]">{label}</span>
+      <span aria-hidden className="text-[9px]">▾</span>
+    </button>
+  )
+}
+
 /** "All / Clear" inline toggle for a section header. */
 function MasterButton({
   state,
@@ -186,157 +218,6 @@ function MasterButton({
   )
 }
 
-/**
- * Always-visible list of every "section" in the current map mode:
- *   • neighborhoods → 41 areas, each with permit count + transit-coverage chip
- *   • zoning        → 5 land-use categories with land share + transit chip
- *   • transit       → 3 distance bands with land share + zoning sample
- * Lets users scan without clicking on the map.
- */
-function SectionList({
-  mode,
-  crossStats,
-  permitsByNhood,
-  onSelectNhood,
-}: {
-  mode: MapMode
-  crossStats?: import('@/lib/cross-stats').CrossStats | null
-  permitsByNhood?: Record<string, import('@/lib/types').Permit[]>
-  onSelectNhood?: (name: string) => void
-}) {
-  if (!crossStats) return null
-
-  if (mode === 'neighborhoods') {
-    const rows = crossStats.neighborhoods.map((row) => ({
-      ...row,
-      permitCount: permitsByNhood?.[row.nhood]?.length ?? 0,
-    }))
-    rows.sort((a, b) => b.permitCount - a.permitCount || b.area_sqm - a.area_sqm)
-    const topPermitCount = Math.max(1, ...rows.map((r) => r.permitCount))
-    return (
-      <section className="border-t border-paper-edge pt-4">
-        <div className="civic-eyebrow mb-2">All neighborhoods · {rows.length}</div>
-        <ul className="space-y-1 max-h-72 overflow-y-auto -mx-1 px-1">
-          {rows.map((row) => {
-            const transitPct = Math.round((row.transit_coverage['0.5mi'] ?? 0) * 100)
-            const widthPct = (row.permitCount / topPermitCount) * 100
-            return (
-              <li key={row.nhood}>
-                <button
-                  type="button"
-                  onClick={() => onSelectNhood?.(row.nhood)}
-                  disabled={!onSelectNhood}
-                  className="w-full text-left grid grid-cols-[1fr_auto_auto] items-center gap-2 hover:bg-paper-deep rounded px-1.5 py-1 transition-colors"
-                >
-                  <span className="font-serif text-ink text-[13px] truncate leading-tight">
-                    {row.nhood}
-                  </span>
-                  <span className="text-[10px] text-ink-faint uppercase tracking-wider tabular-nums">
-                    {transitPct}% rail
-                  </span>
-                  <span className="text-[11px] tabular-nums w-14 text-right text-ink">
-                    {row.permitCount} permits
-                  </span>
-                  {row.permitCount > 0 && (
-                    <span
-                      className="col-span-3 h-[3px] rounded -mt-0.5"
-                      style={{
-                        width: `${widthPct}%`,
-                        backgroundColor: '#9a4a31',
-                        opacity: 0.6,
-                      }}
-                    />
-                  )}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-    )
-  }
-
-  if (mode === 'zoning') {
-    const rows = crossStats.zoning
-    return (
-      <section className="border-t border-paper-edge pt-4">
-        <div className="civic-eyebrow mb-2">Zoning categories · {rows.length}</div>
-        <ul className="space-y-2">
-          {rows.map((row) => {
-            const sharePct = Math.round(row.share_of_sf * 100)
-            const transitPct = Math.round((row.transit_coverage['0.5mi'] ?? 0) * 100)
-            return (
-              <li key={row.category} className="px-1">
-                <div className="flex items-baseline justify-between text-sm">
-                  <span className="font-serif text-ink">{row.category}</span>
-                  <span className="text-[11px] text-ink-soft tabular-nums">
-                    {sharePct}% of SF · {transitPct}% near rail
-                  </span>
-                </div>
-                <span className="block h-1.5 mt-1 rounded bg-paper-deep">
-                  <span
-                    className="block h-full rounded"
-                    style={{
-                      width: `${sharePct}%`,
-                      backgroundColor: '#b08968',
-                      opacity: 0.85,
-                    }}
-                  />
-                </span>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-    )
-  }
-
-  if (mode === 'transit') {
-    const rows = crossStats.transit_bands
-    return (
-      <section className="border-t border-paper-edge pt-4">
-        <div className="civic-eyebrow mb-2">Distance bands · {rows.length}</div>
-        <ul className="space-y-2">
-          {rows.map((row) => {
-            const sharePct = Math.round(row.share_of_sf * 100)
-            const dominantZoning = Object.entries(row.zoning_share)
-              .sort((a, b) => (b[1] as number) - (a[1] as number))[0]
-            return (
-              <li key={row.band} className="px-1">
-                <div className="flex items-baseline justify-between text-sm">
-                  <span className="font-serif text-ink">≤ {row.band} of rail</span>
-                  <span className="text-[11px] text-ink-soft tabular-nums">
-                    {sharePct}% of SF
-                  </span>
-                </div>
-                <span className="block h-1.5 mt-1 rounded bg-paper-deep">
-                  <span
-                    className="block h-full rounded"
-                    style={{
-                      width: `${sharePct}%`,
-                      backgroundColor: '#9a4a31',
-                      opacity: 0.85,
-                    }}
-                  />
-                </span>
-                {dominantZoning && (
-                  <div className="text-[10px] text-ink-faint mt-1">
-                    Mostly{' '}
-                    <span className="text-ink-soft">{dominantZoning[0]}</span>{' '}
-                    ({Math.round((dominantZoning[1] as number) * 100)}%)
-                  </div>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-    )
-  }
-
-  return null
-}
-
 export function FilterPanel({
   selectedStages,
   onToggleStage,
@@ -356,15 +237,10 @@ export function FilterPanel({
   rapidBusOnly,
   onToggleRail,
   onToggleRapidBus,
-  crossStats = null,
-  permitsByNhood,
-  onSelectNhood,
   visibleCount,
   totalCount,
 }: Props) {
-  // Closed by default on every viewport — the simplified summary tells you
-  // most of what you need at a glance; expanding is opt-in.
-  const [open, setOpen] = useState(false)
+  const [openFilter, setOpenFilter] = useState<string | null>(null)
   const housingOn = selectedCategories.has('housing')
   const completeOn = selectedStages.has('complete')
 
@@ -481,100 +357,114 @@ export function FilterPanel({
     ? `${visibleCount.toLocaleString()} of ${totalCount.toLocaleString()} visible`
     : null
 
+  // Per-filter summary labels for chip triggers
+  const categoryLabel = (() => {
+    if (selectedCategories.size === CATEGORIES.length) return 'Use: all'
+    if (selectedCategories.size === 0) return 'Use: none'
+    if (selectedCategories.size === 1) return `Use: ${USE_CATEGORY_LABELS[[...selectedCategories][0]].toLowerCase()}`
+    return `Use: ${selectedCategories.size} of ${CATEGORIES.length}`
+  })()
+
+  const stageLabel = (() => {
+    if (lifecycleOnCount === LIFECYCLE.length) return 'Stages: all'
+    if (lifecycleOnCount === 0) return 'Stages: none'
+    if (lifecycleOnCount === 1) {
+      const s = LIFECYCLE.find((x) => selectedStages.has(x))!
+      return `Stage: ${STAGE_LABELS[s].split(' / ')[0].split(' · ')[0].toLowerCase()}`
+    }
+    return `Stages: ${lifecycleOnCount} of ${LIFECYCLE.length}`
+  })()
+
+  const recentLabel = recentActivity === 0
+    ? 'Recent: any'
+    : recentActivity === 6 ? 'Recent: 6mo'
+    : recentActivity === 12 ? 'Recent: 1y'
+    : recentActivity === 24 ? 'Recent: 2y'
+    : 'Recent: 5y'
+
+  const transitLabel = (() => {
+    if (railOnly && rapidBusOnly) return 'Transit: rail + rapid bus'
+    if (railOnly) return 'Transit: rail'
+    if (rapidBusOnly) return 'Transit: rapid bus'
+    return 'Transit: any'
+  })()
+
   return (
     <div className="absolute top-4 right-4 z-[1000] bg-paper border border-paper-edge rounded-md shadow-lg w-[calc(100vw-2rem)] max-w-[340px] overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]">
       <div className="bg-ink text-paper shrink-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="px-4 pt-3 pb-2 text-left w-full focus:outline-none focus:ring-2 focus:ring-paper/50"
-        aria-expanded={open}
-      >
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            <Logo size={22} variant="on-ink" />
-            <div className="font-serif text-base leading-tight">
-              What&apos;s Building SF
+        <div className="px-4 pt-3 pb-2 text-left w-full">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <Logo size={22} variant="on-ink" />
+              <div className="font-serif text-base leading-tight">
+                What&apos;s Building SF
+              </div>
             </div>
           </div>
-          <span
-            aria-hidden
-            className={`text-xs leading-none transition-transform ${open ? 'rotate-180' : ''}`}
-          >
-            ▾
-          </span>
+          <p className="text-[13px] tracking-normal opacity-90 mt-1 leading-snug">
+            {filterSummary}
+          </p>
+          {/* Lifecycle key — always visible. Glyphs in left-to-right order
+              with arrow connectors so the progression filed → … → complete
+              reads at a glance. Doubles as the legend for the icons used on
+              map pins and in the chip toggles below. */}
+          <div className="flex items-center gap-1 mt-2 pt-2 border-t border-paper/15">
+            {LIFECYCLE.map((stage, i) => (
+              <Fragment key={stage}>
+                {i > 0 && (
+                  <span aria-hidden className="text-paper/40 text-[10px] leading-none">
+                    →
+                  </span>
+                )}
+                <span
+                  className="inline-flex shrink-0"
+                  style={{ width: 18, height: 18 }}
+                  dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 18) }}
+                  title={STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]}
+                />
+              </Fragment>
+            ))}
+            {filterNote && (
+              <span className="ml-auto text-[10px] uppercase tracking-wider opacity-70">
+                {filterNote}
+              </span>
+            )}
+          </div>
         </div>
-        <p className="text-[13px] tracking-normal opacity-90 mt-1 leading-snug">
-          {filterSummary}
-        </p>
-        {/* Lifecycle key — always visible. Glyphs in left-to-right order
-            with arrow connectors so the progression filed → … → complete
-            reads at a glance. Doubles as the legend for the icons used on
-            map pins and in the chip toggles below. */}
-        <div className="flex items-center gap-1 mt-2 pt-2 border-t border-paper/15">
-          {LIFECYCLE.map((stage, i) => (
-            <Fragment key={stage}>
-              {i > 0 && (
-                <span aria-hidden className="text-paper/40 text-[10px] leading-none">
-                  →
-                </span>
-              )}
-              <span
-                className="inline-flex shrink-0"
-                style={{ width: 18, height: 18 }}
-                dangerouslySetInnerHTML={{ __html: stageIconSvg(stage, 18) }}
-                title={STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]}
-              />
-            </Fragment>
-          ))}
-          {filterNote && (
-            <span className="ml-auto text-[10px] uppercase tracking-wider opacity-70">
-              {filterNote}
-            </span>
-          )}
-        </div>
-      </button>
 
-        {/* Map-mode segmented control. Always visible (open or closed) so
-            you can switch lens without expanding the panel. */}
+        {/* Map-mode segmented control. Always visible so you can switch
+            lens without interacting with the filter row. */}
         <div className="px-4 pb-3">
           <MapModeSwitch mode={mapMode} onChange={onModeChange} />
         </div>
       </div>
 
-      <div
-        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-        }`}
-      >
-        <div className="overflow-hidden min-h-0">
-          <div className="overflow-y-auto text-sm p-4 space-y-5 max-h-[calc(100dvh-9rem)]">
-            {/* USE TYPE */}
-            <section>
-              <div className="flex items-center justify-between mb-2">
-                <div className="civic-eyebrow">Use type</div>
-                <MasterButton
-                  state={categoryState}
-                  onSelectAll={() => onSetCategories(new Set(CATEGORIES))}
-                  onClear={() => onSetCategories(new Set())}
+      {/* Chip-trigger row — always visible, one chip per filter group */}
+      <div className="px-4 pb-4 pt-3 flex flex-wrap gap-1.5 relative">
+        {/* USE TYPE */}
+        <div className="relative">
+          <TriggerChip id="use-type" label={categoryLabel} openFilter={openFilter} setOpenFilter={setOpenFilter} />
+          <FilterPopover open={openFilter === 'use-type'} onClose={() => setOpenFilter(null)}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="civic-eyebrow">Use type</div>
+              <MasterButton
+                state={categoryState}
+                onSelectAll={() => onSetCategories(new Set(CATEGORIES))}
+                onClear={() => onSetCategories(new Set())}
+              />
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {CATEGORIES.map((cat) => (
+                <CategoryChip
+                  key={cat}
+                  cat={cat}
+                  on={selectedCategories.has(cat)}
+                  onToggle={() => onToggleCategory(cat)}
                 />
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {CATEGORIES.map((cat) => (
-                  <CategoryChip
-                    key={cat}
-                    cat={cat}
-                    on={selectedCategories.has(cat)}
-                    onToggle={() => onToggleCategory(cat)}
-                  />
-                ))}
-              </div>
-
-              <div
-                className={`mt-3 transition-opacity duration-200 ${
-                  housingOn ? '' : 'opacity-40 pointer-events-none'
-                }`}
-              >
+              ))}
+            </div>
+            {housingOn && (
+              <div className="mt-3">
                 <div className="text-[10px] uppercase tracking-wider text-ink-faint mb-1.5">
                   Net new homes
                 </div>
@@ -584,8 +474,6 @@ export function FilterPanel({
                       key={opt.value}
                       type="button"
                       onClick={() => onMinUnitsChange(opt.value)}
-                      disabled={!housingOn}
-                      aria-disabled={!housingOn}
                       className={`flex-1 px-2 py-1 text-xs rounded border transition ${
                         minUnits === opt.value
                           ? 'bg-ink text-paper border-ink font-semibold'
@@ -597,68 +485,43 @@ export function FilterPanel({
                   ))}
                 </div>
               </div>
-            </section>
+            )}
+          </FilterPopover>
+        </div>
 
-            {/* LIFECYCLE */}
-            <section>
-              <div className="flex items-center justify-between mb-2">
-                <div className="civic-eyebrow">Lifecycle</div>
-                <MasterButton
-                  state={lifecycleState}
-                  onSelectAll={() => onSetStages(new Set<PermitStage>(LIFECYCLE))}
-                  onClear={() => onSetStages(new Set<PermitStage>())}
+        {/* LIFECYCLE */}
+        <div className="relative">
+          <TriggerChip id="lifecycle" label={stageLabel} openFilter={openFilter} setOpenFilter={setOpenFilter} />
+          <FilterPopover open={openFilter === 'lifecycle'} onClose={() => setOpenFilter(null)}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="civic-eyebrow">Lifecycle</div>
+              <MasterButton
+                state={lifecycleState}
+                onSelectAll={() => onSetStages(new Set<PermitStage>(LIFECYCLE))}
+                onClear={() => onSetStages(new Set<PermitStage>())}
+              />
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {LIFECYCLE.map((stage) => (
+                <StageChip
+                  key={stage}
+                  stage={stage}
+                  on={selectedStages.has(stage)}
+                  onToggle={() => onToggleStage(stage)}
                 />
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {LIFECYCLE.map((stage) => (
-                  <StageChip
-                    key={stage}
-                    stage={stage}
-                    on={selectedStages.has(stage)}
-                    onToggle={() => onToggleStage(stage)}
-                  />
-                ))}
-              </div>
-
-              {/* Plain-language definitions — collapsed by default. The
-                  filed/approved/permitted distinction trips most people up,
-                  so the link is here, not buried in tooltips alone. */}
-              <details className="mt-2 group">
-                <summary className="text-[11px] text-ink-faint hover:text-ink cursor-pointer select-none list-none flex items-center gap-1">
-                  <span aria-hidden className="inline-block transition-transform group-open:rotate-90">›</span>
-                  What do these mean?
-                </summary>
-                <dl className="mt-2 space-y-2 pl-3 border-l border-paper-edge">
-                  {LIFECYCLE.map((stage) => (
-                    <div key={stage} className="text-[11px] leading-relaxed">
-                      <dt
-                        className="font-semibold inline"
-                        style={{ color: STAGE_COLORS[stage].fill }}
-                      >
-                        {STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]}
-                      </dt>
-                      <dd className="inline text-ink-soft">
-                        {' '}— {STAGE_DEFINITIONS[stage]}
-                      </dd>
-                    </div>
-                  ))}
-                  <div className="text-[10px] text-ink-faint italic pt-1">
-                    Sources: SF Department of Building Inspection · SF Planning Development Pipeline.{' '}
-                    <a
-                      href="/about"
-                      className="not-italic underline decoration-paper-edge underline-offset-2 hover:decoration-ink hover:text-ink"
-                    >
-                      Full methodology →
-                    </a>
-                  </div>
-                </dl>
-              </details>
-
-              <div
-                className={`mt-3 transition-opacity duration-200 ${
-                  completeOn ? '' : 'opacity-40 pointer-events-none'
-                }`}
-              >
+              ))}
+            </div>
+            <label className="flex items-center gap-2 text-xs text-ink-soft mt-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedStages.has('inactive')}
+                onChange={() => onToggleStage('inactive')}
+                className="accent-ink"
+              />
+              <span>Include cancelled / expired</span>
+            </label>
+            {completeOn && (
+              <div className="mt-3">
                 <div className="text-[10px] uppercase tracking-wider text-ink-faint mb-1.5">
                   Completed within
                 </div>
@@ -668,8 +531,6 @@ export function FilterPanel({
                       key={opt.value}
                       type="button"
                       onClick={() => onCompletedYearsChange(opt.value)}
-                      disabled={!completeOn}
-                      aria-disabled={!completeOn}
                       className={`flex-1 px-2 py-1 text-xs rounded border transition ${
                         completedYears === opt.value
                           ? 'bg-ink text-paper border-ink font-semibold'
@@ -681,90 +542,71 @@ export function FilterPanel({
                   ))}
                 </div>
               </div>
+            )}
+          </FilterPopover>
+        </div>
 
-              <label className="flex items-center gap-2 text-xs text-ink-soft mt-3 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={selectedStages.has('inactive')}
-                  onChange={() => onToggleStage('inactive')}
-                  className="accent-ink"
-                />
-                <span
-                  className="inline-flex w-4 h-4 shrink-0"
-                  dangerouslySetInnerHTML={{ __html: stageIconSvg('inactive', 14) }}
-                />
-                <span>Include cancelled / expired</span>
-              </label>
-            </section>
+        {/* RECENT ACTIVITY */}
+        <div className="relative">
+          <TriggerChip id="recent" label={recentLabel} openFilter={openFilter} setOpenFilter={setOpenFilter} />
+          <FilterPopover open={openFilter === 'recent'} onClose={() => setOpenFilter(null)}>
+            <div className="civic-eyebrow mb-2">Recent activity</div>
+            <div className="flex gap-1">
+              {RECENT_ACTIVITY_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => onRecentActivityChange(opt.value)}
+                  className={`flex-1 px-2 py-1 text-xs rounded border transition ${
+                    recentActivity === opt.value
+                      ? 'bg-ink text-paper border-ink font-semibold'
+                      : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-ink-faint mt-1.5 leading-snug">
+              Hide stalled permits — only show those with recent status updates.
+            </p>
+          </FilterPopover>
+        </div>
 
-            {/* RECENT ACTIVITY */}
-            <section className="border-t border-paper-edge pt-4">
-              <div className="civic-eyebrow mb-2">Recent activity</div>
-              <div className="flex gap-1">
-                {RECENT_ACTIVITY_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => onRecentActivityChange(opt.value)}
-                    className={`flex-1 px-2 py-1 text-xs rounded border transition ${
-                      recentActivity === opt.value
-                        ? 'bg-ink text-paper border-ink font-semibold'
-                        : 'bg-paper text-ink-soft border-paper-edge hover:border-ink'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-              <p className="text-[10px] text-ink-faint mt-1.5 leading-snug">
-                Hide stalled permits — only show those with recent status updates.
-              </p>
-            </section>
-
-            {/* PERMIT FILTER — transit-adjacency narrows visible permits.
-                The map's *lens* (neighborhoods / zoning / transit-shed) is
-                up in the panel header via MapModeSwitch. */}
-            <section className="border-t border-paper-edge pt-4">
-              <div className="civic-eyebrow mb-2">Transit-adjacent only</div>
-              <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={railOnly}
-                  onChange={onToggleRail}
-                  className="accent-ink mt-0.5"
-                />
-                <span className="flex-1">
-                  <span className="text-ink font-medium">Rail</span>
-                  <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
-                    BART, Muni Metro, Caltrain — within ½ mi
-                  </span>
+        {/* TRANSIT */}
+        <div className="relative">
+          <TriggerChip id="transit" label={transitLabel} openFilter={openFilter} setOpenFilter={setOpenFilter} />
+          <FilterPopover open={openFilter === 'transit'} onClose={() => setOpenFilter(null)}>
+            <div className="civic-eyebrow mb-2">Transit-adjacent only</div>
+            <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer">
+              <input
+                type="checkbox"
+                checked={railOnly}
+                onChange={onToggleRail}
+                className="accent-ink mt-0.5"
+              />
+              <span className="flex-1">
+                <span className="text-ink font-medium">Rail</span>
+                <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
+                  BART, Muni Metro, Caltrain — within ½ mi
                 </span>
-              </label>
-              <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer select-none mt-2">
-                <input
-                  type="checkbox"
-                  checked={rapidBusOnly}
-                  onChange={onToggleRapidBus}
-                  className="accent-ink mt-0.5"
-                />
-                <span className="flex-1">
-                  <span className="text-ink font-medium">Rapid bus</span>
-                  <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
-                    SFMTA Rapid (R-suffix) lines — within 0.1 mi
-                  </span>
+              </span>
+            </label>
+            <label className="flex items-start gap-2 text-xs text-ink-soft cursor-pointer mt-2">
+              <input
+                type="checkbox"
+                checked={rapidBusOnly}
+                onChange={onToggleRapidBus}
+                className="accent-ink mt-0.5"
+              />
+              <span className="flex-1">
+                <span className="text-ink font-medium">Rapid bus</span>
+                <span className="block text-[10px] text-ink-faint mt-0.5 leading-snug">
+                  SFMTA Rapid (R-suffix) lines — within 0.1 mi
                 </span>
-              </label>
-            </section>
-
-            {/* MODE SECTION LIST — every section in the active mode, with
-                inline cross-ref so you can scan without clicking. */}
-            <SectionList
-              mode={mapMode}
-              crossStats={crossStats}
-              permitsByNhood={permitsByNhood}
-              onSelectNhood={onSelectNhood}
-            />
-          </div>
+              </span>
+            </label>
+          </FilterPopover>
         </div>
       </div>
     </div>
