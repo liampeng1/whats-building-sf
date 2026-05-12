@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { CrossStats, ZoningCategory, TransitTier } from '@/lib/cross-stats'
 import type { LensStats } from '@/lib/lens-stats'
 import type { LensMode } from './LensRail'
@@ -27,13 +27,25 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
     return () => window.removeEventListener('keydown', onKey)
   }, [mode, onClose])
 
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const sync = () => setIsMobile(window.innerWidth < 768)
+    sync()
+    window.addEventListener('resize', sync)
+    return () => window.removeEventListener('resize', sync)
+  }, [])
+
   if (!mode) return null
 
   return (
     <div
       role="dialog"
       aria-label={`${mode} directory`}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-[1001] bg-paper border border-paper-edge rounded-md shadow-xl px-3.5 py-3 w-[380px] md:w-[420px] max-w-[calc(100vw-32px)]"
+      className={
+        isMobile
+          ? 'fixed bottom-0 left-0 right-0 z-[1001] bg-paper border-t border-paper-edge rounded-t-lg shadow-2xl px-3.5 py-3 max-h-[70dvh] overflow-y-auto'
+          : 'absolute top-full left-1/2 -translate-x-1/2 mt-2 z-[1001] bg-paper border border-paper-edge rounded-md shadow-xl px-3.5 py-3 w-[380px] md:w-[420px] max-w-[calc(100vw-32px)]'
+      }
     >
       <div className="text-[9px] font-mono uppercase tracking-wider text-ink-faint">
         Showing

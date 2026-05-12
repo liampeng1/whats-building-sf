@@ -59,4 +59,15 @@ describe('LensDirectory', () => {
     fireEvent.keyDown(window, { key: 'Escape' })
     expect(onClose).toHaveBeenCalled()
   })
+
+  it('renders bottom-anchored on narrow viewports', () => {
+    Object.defineProperty(window, 'innerWidth', { value: 400, configurable: true })
+    window.dispatchEvent(new Event('resize'))
+    render(
+      <LensDirectory mode="neighborhoods" crossStats={fakeCross} lensStats={fakeLens}
+        statusLine="x" onClose={() => {}} onSelectRegion={() => {}} />
+    )
+    const dialog = screen.getByRole('dialog')
+    expect(dialog.className).toMatch(/bottom-0/)
+  })
 })
