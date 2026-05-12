@@ -73,7 +73,7 @@ function ZoningMixBlock({
               key={cat}
               className="grid grid-cols-[5.5rem_3rem_1fr] items-center gap-2 text-xs"
             >
-              <span className="text-ink-soft uppercase tracking-wide truncate">
+              <span className="text-ink-soft uppercase tracking-wide line-clamp-2 leading-snug">
                 {cat}
               </span>
               <span
@@ -123,7 +123,7 @@ function TransitAccessBlock({
               key={b.band}
               className="grid grid-cols-[5.5rem_3rem_1fr] items-center gap-2 text-xs"
             >
-              <span className="text-ink-soft uppercase tracking-wide truncate">
+              <span className="text-ink-soft uppercase tracking-wide line-clamp-2 leading-snug">
                 {b.label}
               </span>
               <span className="font-semibold tabular-nums text-right text-construction">
@@ -278,7 +278,7 @@ export function NeighborhoodPanel({
               <Logo size={14} variant="on-paper" />
               <span>Neighborhood</span>
             </div>
-            <div className="font-serif text-lg text-ink truncate leading-tight">
+            <div className="font-serif text-lg text-ink line-clamp-2 leading-tight">
               {neighborhood ?? '—'}
             </div>
           </div>

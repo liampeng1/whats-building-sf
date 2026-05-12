@@ -83,7 +83,7 @@ export function ZoningDirectory({ geo, lens, onSelect, onSelectDistrict }: Props
                   const row = (
                     <>
                       <span className="font-mono text-[11px] font-semibold">{d.code}</span>
-                      <span className="text-[10px] text-ink-faint truncate">{d.description}</span>
+                      <span className="text-[10px] text-ink-faint line-clamp-2 min-w-0 leading-snug">{d.description}</span>
                       <span className="text-right font-mono text-[10px] text-construction font-semibold">
                         {pct(d.land_share_within_cat)}
                       </span>

@@ -133,7 +133,7 @@ export function PermitPanel({ permitNumber, onClose }: Props) {
               <Logo size={14} variant="on-paper" />
               <span>{permit ? `Permit #${permit.permit_number}` : 'Permit Record'}</span>
             </div>
-            <div className="font-serif text-base text-ink truncate leading-tight">
+            <div className="font-serif text-base text-ink line-clamp-2 leading-tight">
               {permit?.address ?? ' '}
             </div>
           </div>

@@ -938,7 +938,7 @@ function StationPanel({
                       >
                         {stageLabel}
                       </span>
-                      <span className="font-serif text-ink text-sm leading-tight min-w-0 truncate">
+                      <span className="font-serif text-ink text-sm leading-snug min-w-0 line-clamp-2">
                         {p.address}
                       </span>
                     </button>

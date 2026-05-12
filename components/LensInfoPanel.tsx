@@ -99,7 +99,7 @@ export function LensInfoPanel({
               <Logo size={14} variant="on-paper" />
               <span>{eyebrow}</span>
             </div>
-            <div className="font-serif text-lg text-ink truncate leading-tight">
+            <div className="font-serif text-lg text-ink leading-tight line-clamp-2">
               {title}
             </div>
           </div>
@@ -166,7 +166,7 @@ function CrossRefList({ rows }: { rows: CrossRefRow[] }) {
           className="grid grid-cols-[1fr_auto] items-center gap-3 text-sm"
         >
           <div className="min-w-0">
-            <div className="text-ink truncate leading-tight">{r.label}</div>
+            <div className="text-ink line-clamp-2 leading-snug">{r.label}</div>
             {r.pct != null && (
               <span className="block h-1.5 mt-1.5 rounded bg-paper-deep">
                 <span
