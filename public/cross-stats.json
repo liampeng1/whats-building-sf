@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-12T02:46:59.826Z",
+  "generated_at": "2026-05-12T03:36:54.457Z",
   "source_versions": {
     "neighborhoods": "public/sf-neighborhoods.geojson",
     "zoning_dataset": "3i4a-hu95",
@@ -1502,18 +1502,18 @@
   "transit_tiers": [
     {
       "tier": "rail",
-      "area_sqm": 33264808.58199937,
-      "share_of_sf": 0.2725612919417452
+      "area_sqm": 31898991.05053471,
+      "share_of_sf": 0.26137021624338275
     },
     {
       "tier": "rapid-bus",
-      "area_sqm": 24634894.891465794,
-      "share_of_sf": 0.20185051604657223
+      "area_sqm": 23163435.29232389,
+      "share_of_sf": 0.1897938427489171
     },
     {
       "tier": "local-bus",
-      "area_sqm": 16123947.176958567,
-      "share_of_sf": 0.13211450963016896
+      "area_sqm": 15444053.621318895,
+      "share_of_sf": 0.12654367745624526
     },
     {
       "tier": "poor",
