@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "cross-stats": "node --env-file=.env.local --import tsx scripts/build-cross-stats.ts"
+    "cross-stats": "node --env-file=.env.local --import tsx scripts/build-cross-stats.ts",
+    "build:zoning": "node --env-file=.env.local --import tsx scripts/build-zoning.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.37.0",

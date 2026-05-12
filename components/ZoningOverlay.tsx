@@ -79,7 +79,7 @@ export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {})
     let attempts = 0
 
     const load = () => {
-      fetch('/api/zoning', { signal: ctrl.signal })
+      fetch('/zoning.geojson', { signal: ctrl.signal })
         .then((r) => (r.ok ? r.json() : null))
         .then((data: ZoningGeo | null) => {
           if (cancelled) return
