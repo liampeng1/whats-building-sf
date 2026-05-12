@@ -17,8 +17,13 @@ export function MetricHint({ metric, label, className = '' }: Props) {
     const onClick = (e: MouseEvent) => {
       if (!wrapRef.current?.contains(e.target as Node)) setOpen(false)
     }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
     document.addEventListener('mousedown', onClick)
-    return () => document.removeEventListener('mousedown', onClick)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onClick)
+      window.removeEventListener('keydown', onKey)
+    }
   }, [open])
 
   const definition = METRIC_DEFINITIONS[metric]
@@ -44,7 +49,7 @@ export function MetricHint({ metric, label, className = '' }: Props) {
       {open && (
         <span
           role="tooltip"
-          className="absolute z-50 top-full left-0 mt-2 w-56 bg-ink text-paper text-[11px] leading-snug rounded p-2 shadow-lg"
+          className="absolute z-[1200] top-full left-0 mt-2 w-56 bg-ink text-paper text-[11px] leading-snug rounded p-2 shadow-lg"
         >
           {definition}
         </span>
