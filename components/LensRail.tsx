@@ -34,12 +34,11 @@ export function LensRail({ mode, onChange, open, onOpenChange }: Props) {
               aria-checked={isActive}
               aria-expanded={isOpen}
               onClick={() => {
-                if (isActive) {
-                  onOpenChange(isOpen ? null : m.value)
-                } else {
-                  onChange(m.value)
-                  onOpenChange(m.value)
-                }
+                // Clicking a chip always opens (or keeps open) the drawer
+                // with that lens's content. Switching lens swaps content.
+                // Closing is via the X, ESC, or click-outside.
+                if (!isActive) onChange(m.value)
+                onOpenChange(m.value)
               }}
               className={`text-[11px] px-2.5 py-1 rounded-full font-semibold transition ${
                 isActive ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'

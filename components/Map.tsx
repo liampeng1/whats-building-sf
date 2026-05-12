@@ -127,7 +127,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   const [mapMode, setMapMode] = useState<LensMode>('neighborhoods')
   const [transit, setTransit] = useState<'off' | 'rail' | 'rapid-bus' | 'both'>('off')
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [lensOpen, setLensOpen] = useState<LensMode | null>(null)
+  // Default: drawer is open showing whichever lens is active. The directory
+  // IS the lens — opening it shouldn't take a second click. Users can dismiss
+  // it with the X button, ESC, or by clicking outside.
+  const [lensOpen, setLensOpen] = useState<LensMode | null>('neighborhoods')
   const [lensStats, setLensStats] = useState<import('@/lib/lens-stats').LensStats | null>(null)
 
   // Derived booleans for downstream filter logic
@@ -202,9 +205,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       const lensOpenParam = sp.get('lensOpen')
       if (lensOpenParam === 'neighborhoods' || lensOpenParam === 'zoning' || lensOpenParam === 'transit') {
         setLensOpen(lensOpenParam)
-      } else {
+      } else if (lensOpenParam === 'closed') {
         setLensOpen(null)
       }
+      // No param → keep the initial open-by-default state set in useState.
       const transitParam = sp.get('transit')
       if (transitParam === 'rail' || transitParam === 'rapid-bus' || transitParam === 'both') {
         setTransit(transitParam)
