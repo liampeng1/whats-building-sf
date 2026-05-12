@@ -19,11 +19,11 @@ describe('LensRail (expandable)', () => {
     expect(onOpenChange).toHaveBeenCalledWith('neighborhoods')
   })
 
-  it('clicking the already-open mode keeps it open (close is via X/ESC/outside)', () => {
+  it('clicking the active + open chip closes the drawer (toggle)', () => {
     const onOpenChange = jest.fn()
     render(<LensRail mode="neighborhoods" onChange={() => {}} open="neighborhoods" onOpenChange={onOpenChange} />)
-    fireEvent.click(screen.getByRole('radio', { name: 'Neighborhoods' }))
-    expect(onOpenChange).toHaveBeenCalledWith('neighborhoods')
+    fireEvent.click(screen.getByRole('radio', { name: /Neighborhoods/i }))
+    expect(onOpenChange).toHaveBeenCalledWith(null)
   })
 
   it('clicking a different mode while open swaps + keeps open', () => {
