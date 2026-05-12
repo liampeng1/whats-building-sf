@@ -746,6 +746,22 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
             // 'tier'   = no detail panel for now.
           }}
         />
+        <button
+          type="button"
+          aria-label={lensOpen ? 'Close directory' : 'Open directory'}
+          aria-expanded={lensOpen !== null}
+          onClick={() => setLensOpen(lensOpen ? null : mapMode)}
+          className="-mt-px bg-paper border border-paper-edge border-t-0 rounded-b-md shadow-md w-8 h-5 flex items-center justify-center text-ink-soft hover:text-ink transition-colors focus:outline-none focus:ring-2 focus:ring-ink/30"
+        >
+          <span
+            aria-hidden
+            className={`inline-block text-[10px] leading-none transition-transform duration-150 ${
+              lensOpen ? 'rotate-180' : 'rotate-0'
+            }`}
+          >
+            ▾
+          </span>
+        </button>
       </div>
       <FilterFAB
         open={sheetOpen}

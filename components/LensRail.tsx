@@ -36,8 +36,6 @@ export function LensRail({ mode, onChange, open, onOpenChange }: Props) {
             aria-checked={isActive}
             aria-expanded={isOpen}
             onClick={() => {
-              // Clicking the active + open chip toggles closed.
-              // Clicking any other chip switches lens AND opens.
               if (isActive && isOpen) {
                 onOpenChange(null)
                 return
@@ -45,19 +43,11 @@ export function LensRail({ mode, onChange, open, onOpenChange }: Props) {
               if (!isActive) onChange(m.value)
               onOpenChange(m.value)
             }}
-            className={`text-[11px] px-2.5 py-1 rounded-full font-semibold transition inline-flex items-center gap-1 ${
+            className={`text-[11px] px-2.5 py-1 rounded-full font-semibold transition ${
               isActive ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'
             }`}
           >
             {m.label}
-            <span
-              aria-hidden
-              className={`inline-block text-[8px] leading-none transition-transform duration-150 ${
-                isOpen ? 'rotate-180' : 'rotate-0'
-              }`}
-            >
-              ▾
-            </span>
           </button>
         )
       })}
