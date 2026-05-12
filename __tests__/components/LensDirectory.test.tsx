@@ -60,7 +60,7 @@ describe('LensDirectory', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
-  it('renders bottom-anchored on narrow viewports', () => {
+  it('renders a full-width dropdown under the chip rail on narrow viewports', () => {
     Object.defineProperty(window, 'innerWidth', { value: 400, configurable: true })
     window.dispatchEvent(new Event('resize'))
     render(
@@ -68,7 +68,11 @@ describe('LensDirectory', () => {
         statusLine="x" onClose={() => {}} onSelectRegion={() => {}} />
     )
     const dialog = screen.getByRole('dialog')
-    expect(dialog.className).toMatch(/bottom-0/)
+    // Mobile path: width is calc(100vw-16px), height capped at 60dvh,
+    // positioned in normal flow (relative) under the LensRail — NOT a
+    // bottom-anchored sheet.
+    expect(dialog.className).toMatch(/w-\[calc\(100vw-16px\)\]/)
+    expect(dialog.className).not.toMatch(/bottom-0/)
   })
 
   it('closes on click outside the drawer', () => {

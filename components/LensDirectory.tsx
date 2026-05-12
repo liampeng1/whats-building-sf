@@ -61,7 +61,12 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
       aria-label={`${mode} directory`}
       className={
         isMobile
-          ? 'fixed bottom-0 left-0 right-0 z-[1001] bg-paper border-t border-paper-edge rounded-t-lg shadow-2xl px-3.5 py-3 max-h-[70dvh] overflow-y-auto'
+          // On phones: drop directly under the chip rail, fill the available
+          // horizontal space, cap at 60% of viewport height. Keeps the
+          // dropdown visually connected to the chip the user just tapped
+          // (the bottom-sheet was disorienting — chip at top, content at
+          // bottom, no perceived link between them).
+          ? 'bg-paper border border-paper-edge rounded-b-md shadow-md px-3.5 py-3 w-[calc(100vw-16px)] max-h-[60dvh] overflow-y-auto relative z-[1]'
           : 'bg-paper border border-paper-edge rounded-b-md shadow-md px-3.5 py-3 w-[380px] md:w-[420px] max-w-[calc(100vw-32px)] max-h-[70vh] overflow-y-auto relative z-[1]'
       }
     >
