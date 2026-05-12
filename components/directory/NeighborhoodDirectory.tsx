@@ -86,26 +86,26 @@ export function NeighborhoodDirectory({ geo, lens, onSelect }: Props) {
                     {s?.permits_12mo ?? 0} permits
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[10px] font-mono text-ink-soft">
-                  <span className="inline-flex items-center gap-1">
-                    <ZoningMixBar share={n.zoning_share} />
-                    <MetricHint metric="zoningMix" label="mix" />
-                  </span>
-                  <MetricHint metric="homesAdded" label={`+${s?.homes_added_12mo ?? 0} homes`} />
-                  <MetricHint
-                    metric="yoyChange"
-                    label={s ? formatYoy(s.yoy_pct) : '—'}
-                  />
-                  <MetricHint
-                    metric="daysToPermit"
-                    label={s && s.median_days_to_permit >= 0 ? `${s.median_days_to_permit} days` : '— days'}
-                  />
-                  <MetricHint
-                    metric="nearRail"
-                    label={`${Math.round(n.near_rail_pct * 100)}% near rail`}
-                  />
-                </div>
               </button>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[10px] font-mono text-ink-soft">
+                <span className="inline-flex items-center gap-1">
+                  <ZoningMixBar share={n.zoning_share} />
+                  <MetricHint metric="zoningMix" label="mix" />
+                </span>
+                <MetricHint metric="homesAdded" label={`+${s?.homes_added_12mo ?? 0} homes`} />
+                <MetricHint
+                  metric="yoyChange"
+                  label={s ? formatYoy(s.yoy_pct) : '—'}
+                />
+                <MetricHint
+                  metric="daysToPermit"
+                  label={s && s.median_days_to_permit >= 0 ? `${s.median_days_to_permit} days` : '— days'}
+                />
+                <MetricHint
+                  metric="nearRail"
+                  label={`${Math.round(n.near_rail_pct * 100)}% near rail`}
+                />
+              </div>
             </li>
           )
         })}
