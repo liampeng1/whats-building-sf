@@ -1,0 +1,62 @@
+/**
+ * @jest-environment jsdom
+ */
+import { render, screen, fireEvent } from '@testing-library/react'
+import { LensDirectory } from '@/components/LensDirectory'
+
+const fakeCross = {
+  generated_at: '',
+  source_versions: { neighborhoods: '', zoning_dataset: '', transit_stops_count: 0 },
+  neighborhoods: [], zoning: [], transit_bands: [],
+  transit_tiers: [
+    { tier: 'rail', area_sqm: 1, share_of_sf: 0.08 },
+    { tier: 'rapid-bus', area_sqm: 1, share_of_sf: 0.18 },
+    { tier: 'local-bus', area_sqm: 1, share_of_sf: 0.52 },
+    { tier: 'poor', area_sqm: 1, share_of_sf: 0.22 },
+  ],
+} as any
+const fakeLens = { neighborhoods: {}, zoning: {}, transit_tiers: {} } as any
+
+describe('LensDirectory', () => {
+  it('returns null when mode is null (closed)', () => {
+    const { container } = render(
+      <LensDirectory mode={null} crossStats={fakeCross} lensStats={fakeLens}
+        statusLine="x" onClose={() => {}} onSelectRegion={() => {}} />
+    )
+    expect(container.firstChild).toBeNull()
+  })
+
+  it('renders the neighborhoods directory when mode = neighborhoods', () => {
+    render(
+      <LensDirectory mode="neighborhoods" crossStats={fakeCross} lensStats={fakeLens}
+        statusLine="1,247 visible" onClose={() => {}} onSelectRegion={() => {}} />
+    )
+    expect(screen.getByPlaceholderText(/search 41 neighborhoods/i)).toBeInTheDocument()
+  })
+
+  it('renders the zoning directory when mode = zoning', () => {
+    render(
+      <LensDirectory mode="zoning" crossStats={fakeCross} lensStats={fakeLens}
+        statusLine="x" onClose={() => {}} onSelectRegion={() => {}} />
+    )
+    expect(screen.getByText('Showing')).toBeInTheDocument()
+  })
+
+  it('renders the transit directory when mode = transit', () => {
+    render(
+      <LensDirectory mode="transit" crossStats={fakeCross} lensStats={fakeLens}
+        statusLine="x" onClose={() => {}} onSelectRegion={() => {}} />
+    )
+    expect(screen.getByText('Rail-served')).toBeInTheDocument()
+  })
+
+  it('closes on ESC', () => {
+    const onClose = jest.fn()
+    render(
+      <LensDirectory mode="neighborhoods" crossStats={fakeCross} lensStats={fakeLens}
+        statusLine="x" onClose={onClose} onSelectRegion={() => {}} />
+    )
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(onClose).toHaveBeenCalled()
+  })
+})
