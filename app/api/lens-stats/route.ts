@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { computeLensStats } from '@/lib/lens-stats'
 import { classifyTier, loadStations } from '@/lib/transit-stations'
 import { fetchBuildingPermits } from '@/lib/datasf'
+import { enrichPermit, type NhoodFeatureCollection } from '@/lib/permit-enrich'
 
 /**
  * /api/lens-stats — temporal per-lens rollups (neighborhood, zoning, transit
@@ -12,15 +13,6 @@ import { fetchBuildingPermits } from '@/lib/datasf'
  * DataSF fetch) dynamically imports `@upstash/redis`, which has
  * historically been bundler-fragile on the edge runtime. This route is
  * invoked rarely (24h revalidation), so Node is the safer call.
- *
- * Field-shape caveat (deferred work, see PLAN.md task 5+):
- *   The aggregator reads camelCase, enrichment fields
- *   (`neighborhood`, `useCategory`, `stage`, `netUnits`, `filedDate`,
- *   `issuedDate`, optional `zoning_category`). DataSF permits arrive as
- *   snake_case. Until the permit→lens enrichment lands, this route will
- *   return empty neighborhood/zoning rollups. The aggregator degrades
- *   gracefully (skips rows missing the expected fields) so the route
- *   shape stays stable for the UI.
  *
  * Caveat on classifyTier:
  *   `classifyTier` reads from module-level globals populated by
@@ -38,16 +30,30 @@ export async function GET(req: NextRequest) {
     await loadStations(req.nextUrl.origin)
 
     const permits = await fetchBuildingPermits(2, 0)
+
+    // Enrich raw DataSF permits into the lens-flavored shape (camelCase
+    // dates, derived neighborhood/useCategory/stage/netUnits) the
+    // aggregator expects. Neighborhood assignment runs PIP against the
+    // SF Analysis Neighborhoods polygons.
+    const baseUrl = req.nextUrl.origin
+    const nhoodGeo = (await fetch(`${baseUrl}/sf-neighborhoods.geojson`).then(
+      (r) => (r.ok ? r.json() : null),
+    )) as NhoodFeatureCollection | null
+
+    let enrichedPermits: ReturnType<typeof enrichPermit>[] = []
+    if (nhoodGeo) {
+      enrichedPermits = permits.map((p) => enrichPermit(p, nhoodGeo))
+    }
+
     const stats = computeLensStats({
-      permits,
+      permits: enrichedPermits as any,
       now: new Date(),
       classifyTier,
     })
     if (permits.length > 0 && Object.keys(stats.neighborhoods).length === 0) {
       console.warn(
         '[lens-stats] Empty neighborhoods rollup despite ' + permits.length +
-        ' permits. Likely a field-shape mismatch (permits lack neighborhood/filedDate/etc). ' +
-        'Permit→lens enrichment is deferred — see PLAN.md.'
+        ' permits. Likely a PIP failure (missing/empty SF neighborhoods GeoJSON).'
       )
     }
     return NextResponse.json(stats, {
