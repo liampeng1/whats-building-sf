@@ -230,7 +230,22 @@
     "bulk": "X"
   },
   {
+    "code": "RH DTR",
+    "height_ft": 84,
+    "bulk": "X"
+  },
+  {
     "code": "RH-1",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RH-1(D)",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RH-1(S)",
     "height_ft": 40,
     "bulk": "X"
   },
@@ -240,16 +255,114 @@
     "bulk": "X"
   },
   {
+    "code": "RH-3",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
     "code": "RM-1",
-    "height_ft": 5555
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RM-2",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RM-3",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "RM-4",
+    "height_ft": 65,
+    "bulk": "X"
+  },
+  {
+    "code": "RTO-1",
+    "height_ft": 40,
+    "bulk": "X"
   },
   {
     "code": "RTO-C",
     "height_ft": 65
   },
   {
+    "code": "RTO-M",
+    "height_ft": 45,
+    "bulk": "X"
+  },
+  {
+    "code": "S-MU",
+    "height_ft": 190,
+    "bulk": "D"
+  },
+  {
+    "code": "SALI",
+    "height_ft": 55,
+    "bulk": "X"
+  },
+  {
+    "code": "SB-DTR",
+    "height_ft": 105,
+    "bulk": "X"
+  },
+  {
+    "code": "SPD",
+    "height_ft": 40,
+    "bulk": "X"
+  },
+  {
+    "code": "TB DTR",
+    "height_ft": 400,
+    "bulk": "X"
+  },
+  {
+    "code": "TI-MU",
+    "height_ft": 125
+  },
+  {
+    "code": "TI-OS",
+    "height_ft": 25
+  },
+  {
+    "code": "TI-PCI",
+    "height_ft": 45
+  },
+  {
+    "code": "TI-R",
+    "height_ft": 65
+  },
+  {
+    "code": "UMU",
+    "height_ft": 58,
+    "bulk": "X"
+  },
+  {
     "code": "WMUG",
     "height_ft": 55,
     "bulk": "X"
+  },
+  {
+    "code": "WMUO",
+    "height_ft": 55,
+    "bulk": "X"
+  },
+  {
+    "code": "YBI-MU",
+    "height_ft": 35
+  },
+  {
+    "code": "YBI-OS",
+    "height_ft": 2222
+  },
+  {
+    "code": "YBI-PCI",
+    "height_ft": 35
+  },
+  {
+    "code": "YBI-R",
+    "height_ft": 35
   }
 ]

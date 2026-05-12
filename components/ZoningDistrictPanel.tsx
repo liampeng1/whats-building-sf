@@ -29,7 +29,12 @@ export function ZoningDistrictPanel({
   const laws = zoningSim && gen ? eligibleLaws(zoningSim, gen) : []
   const blurb = gen ? getZoningBlurb(gen) : ''
 
-  const eyebrowLabel = districtName ?? 'Zoning district'
+  // Prefer the human-readable district name as the headline; demote the
+  // zoning code (e.g. RH-3) to the small eyebrow line. The code alone
+  // doesn't mean much to a casual reader — "Residential, Three Family"
+  // does.
+  const titleLabel = districtName ?? zoningSim ?? ''
+  const eyebrowLabel = districtName && zoningSim ? `Zoning district · ${zoningSim}` : 'Zoning district'
   const subtitleParts = [gen ?? undefined, codeSection ? `§${codeSection}` : undefined].filter(Boolean)
   const subtitleText = subtitleParts.length > 0 ? subtitleParts.join(' · ') : undefined
 
@@ -46,13 +51,17 @@ export function ZoningDistrictPanel({
   }
 
   if (!rec) {
-    // Polygon clicked but no record in the lookup. Shouldn't happen at
-    // runtime (build asserts coverage), but degrade gracefully if it does.
+    // No transcribed Planning Code record. Two reasons: (a) TI-* / YBI-*
+    // districts are governed by the TIDA Sub-Area Plan, not the SF Planning
+    // Code, so there's no §-citation to point at; (b) Planning Code districts
+    // we haven't transcribed yet — surface the §codesectio reference + an
+    // amlegal link so a reader still has somewhere to go.
+    const isTIDA = zoningSim.startsWith('TI-') || zoningSim.startsWith('YBI-')
     return (
       <LensInfoPanel
         open={open}
         eyebrow={eyebrowLabel}
-        title={zoningSim}
+        title={titleLabel}
         subtitle={subtitleText}
         hero={
           heightFt
@@ -61,7 +70,57 @@ export function ZoningDistrictPanel({
         }
         primary={{ eyebrow: 'Rules', rows: [] }}
         onClose={onClose}
-      />
+      >
+        <div className="pt-5 border-t border-paper-edge text-ink-soft text-sm leading-relaxed">
+          {isTIDA ? (
+            <>
+              <p>
+                {zoningSim.startsWith('YBI-') ? 'Yerba Buena Island' : 'Treasure Island'} land use is
+                governed by the <strong>Treasure Island / Yerba Buena Island Sub-Area Plan</strong>{' '}
+                (administered by TIDA), not the SF Planning Code. Detailed controls live in the
+                Design for Development and the Subdivision Code.
+              </p>
+              <a
+                href="https://sfgov.org/treasureisland/development-plan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-2 text-[12px] uppercase tracking-wider text-ink hover:underline"
+              >
+                TIDA Sub-Area Plan ↗
+              </a>
+            </>
+          ) : (
+            <>
+              <p>
+                Detailed Planning Code controls for this district haven&rsquo;t been transcribed yet.
+                {codeSection ? <> See <strong>§{codeSection}</strong> of the SF Planning Code for
+                density, height, FAR, parking, and principal-use limits.</> : <> See the SF Planning
+                Code for full controls.</>}
+              </p>
+              <a
+                href={
+                  codeSection
+                    ? `https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-${codeSection.replace(/[§\s]/g, '')}`
+                    : 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning'
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-2 text-[12px] uppercase tracking-wider text-ink hover:underline"
+              >
+                {codeSection ? `Planning Code §${codeSection}` : 'SF Planning Code'} ↗
+              </a>
+              <a
+                href="https://sfplanninggis.org/pim/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-1 text-[12px] uppercase tracking-wider text-ink-soft hover:text-ink hover:underline"
+              >
+                View on SF Property Information Map ↗
+              </a>
+            </>
+          )}
+        </div>
+      </LensInfoPanel>
     )
   }
 
@@ -135,7 +194,7 @@ export function ZoningDistrictPanel({
     <LensInfoPanel
       open={open}
       eyebrow={eyebrowLabel}
-      title={zoningSim}
+      title={titleLabel}
       subtitle={subtitleText}
       hero={
         heightFt

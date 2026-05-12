@@ -73,6 +73,26 @@ h1, h2, h3 {
   color: var(--ink-faint);
 }
 
+/* Per-polygon zoning-code label rendered at zoom ≥ 15 by ZoningOverlay */
+.zoning-code-label {
+  background: transparent;
+  border: 0;
+  text-align: center;
+  pointer-events: none;
+}
+.zoning-code-label span {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(252, 250, 244, 0.88);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #1c2438;
+  white-space: nowrap;
+  box-shadow: 0 0 0 0.5px rgba(28, 36, 56, 0.18);
+}
+
 .station-icon { pointer-events: auto; }
 
 .station-icon .dot {

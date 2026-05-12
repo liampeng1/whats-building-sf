@@ -1,7 +1,9 @@
 'use client'
-import { GeoJSON } from 'react-leaflet'
-import { useEffect, useState } from 'react'
-import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
+import { GeoJSON, Marker, useMap, useMapEvents } from 'react-leaflet'
+import { useEffect, useMemo, useState } from 'react'
+import L from 'leaflet'
+import type { FeatureCollection, Polygon, MultiPolygon, Position } from 'geojson'
+import { getZoningIntensity } from '@/lib/zoning-intensity'
 
 /**
  * Toggleable zoning-districts layer. Fetches once on mount (cached for
@@ -40,6 +42,32 @@ function genColor(gen: string): string {
   return GEN_COLORS[gen] ?? GEN_COLORS.Other
 }
 
+// Within-gen opacity ramp. Combined with the shared gen hue this produces
+// a "denser = stronger fill" reading without losing the family grouping.
+function fillOpacityFor(zoningSim: string, intensity = getZoningIntensity(zoningSim)): number {
+  return 0.08 + intensity * 0.32
+}
+
+// Bounding-box center — fine for placing a label, much cheaper than a true
+// centroid and good enough since the user just needs to see the code.
+function geomCenter(geom: Polygon | MultiPolygon): [number, number] | null {
+  let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity
+  const visit = (coords: Position | Position[] | Position[][] | Position[][][]) => {
+    if (typeof (coords as Position)[0] === 'number') {
+      const [lng, lat] = coords as Position
+      if (lng < minLng) minLng = lng
+      if (lng > maxLng) maxLng = lng
+      if (lat < minLat) minLat = lat
+      if (lat > maxLat) maxLat = lat
+    } else {
+      for (const c of coords as Position[] | Position[][] | Position[][][]) visit(c)
+    }
+  }
+  visit(geom.coordinates)
+  if (!Number.isFinite(minLng)) return null
+  return [(minLat + maxLat) / 2, (minLng + maxLng) / 2]
+}
+
 function tooltipHtml(props: ZoningProperties): string {
   return `
     <div style="font-family:var(--font-source-serif),Georgia,serif;font-size:0.95rem;color:#1c2438;font-weight:600;line-height:1.1">
@@ -59,10 +87,21 @@ const ZONING_CACHE_KEY = 'wbsf-zoning-v1'
 interface Props {
   selectedDistrict?: string | null
   onSelect?: (zoningSim: string, gen: string, districtna?: string, codesectio?: string) => void
+  /** Fires once after geo loads so a parent that only knows the zoning code
+   *  (e.g. URL deep-link `?district=RH-3`) can hydrate its display fields. */
+  onResolveDistrict?: (zoningSim: string, gen: string, districtna?: string, codesectio?: string) => void
 }
 
-export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {}) {
+export function ZoningOverlay({ selectedDistrict = null, onSelect, onResolveDistrict }: Props = {}) {
   const [geo, setGeo] = useState<ZoningGeo | null>(null)
+
+  useEffect(() => {
+    if (!geo || !selectedDistrict || !onResolveDistrict) return
+    const match = geo.features.find((f) => f.properties?.zoning_sim === selectedDistrict)
+    if (!match) return
+    const p = match.properties
+    onResolveDistrict(p.zoning_sim || '', p.gen || '', p.districtna || undefined, p.codesectio || undefined)
+  }, [geo, selectedDistrict, onResolveDistrict])
 
   useEffect(() => {
     // Seed from localStorage for instant paint on subsequent loads
@@ -112,6 +151,7 @@ export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {})
   if (!geo) return null
 
   return (
+    <>
     <GeoJSON
       // Re-mount when selection changes so styles re-apply (highlight the
       // selected category with bumped opacity + heavier stroke).
@@ -124,9 +164,10 @@ export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {})
         const fill = genColor(gen)
         const isSel = selectedDistrict != null && fProps?.zoning_sim === selectedDistrict
         const isDimmed = selectedDistrict != null && !isSel
+        const baseOpacity = fillOpacityFor(fProps?.zoning_sim ?? '')
         return {
           fillColor: fill,
-          fillOpacity: isSel ? 0.42 : isDimmed ? 0.06 : 0.18,
+          fillOpacity: isSel ? 0.55 : isDimmed ? 0.04 : baseOpacity,
           color: fill,
           weight: isSel ? 1.6 : 0.5,
           opacity: isSel ? 1 : isDimmed ? 0.25 : 0.6,
@@ -154,6 +195,57 @@ export function ZoningOverlay({ selectedDistrict = null, onSelect }: Props = {})
         }
       }}
     />
+    <ZoningLabels geo={geo} />
+    </>
+  )
+}
+
+const LABEL_MIN_ZOOM = 17
+
+/** Per-polygon code labels that fade in at high zoom. Centroids are
+ *  precomputed; viewport filtering keeps the rendered Marker count to
+ *  whatever's actually on screen (typically 20–60 at zoom ≥ 15). */
+function ZoningLabels({ geo }: { geo: ZoningGeo }) {
+  const map = useMap()
+  const [view, setView] = useState(() => ({
+    zoom: map.getZoom(),
+    bounds: map.getBounds(),
+  }))
+
+  useMapEvents({
+    zoomend: () => setView({ zoom: map.getZoom(), bounds: map.getBounds() }),
+    moveend: () => setView({ zoom: map.getZoom(), bounds: map.getBounds() }),
+  })
+
+  const centroids = useMemo(() => {
+    return geo.features.map((f) => ({
+      center: geomCenter(f.geometry),
+      code: f.properties.zoning_sim || '',
+    }))
+  }, [geo])
+
+  if (view.zoom < LABEL_MIN_ZOOM) return null
+
+  const visible = centroids.filter(
+    (c) => c.center && c.code && view.bounds.contains(c.center as L.LatLngTuple),
+  )
+
+  return (
+    <>
+      {visible.map((c, i) => (
+        <Marker
+          key={`${c.code}-${i}`}
+          position={c.center as L.LatLngTuple}
+          interactive={false}
+          icon={L.divIcon({
+            className: 'zoning-code-label',
+            html: `<span>${c.code}</span>`,
+            iconSize: [70, 16],
+            iconAnchor: [35, 8],
+          })}
+        />
+      ))}
+    </>
   )
 }
 

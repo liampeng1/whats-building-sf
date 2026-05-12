@@ -24,9 +24,8 @@ interface ZoningRow {
 export async function GET() {
   const headers: Record<string, string> = {}
   if (process.env.DATASF_APP_TOKEN) headers['X-App-Token'] = process.env.DATASF_APP_TOKEN
-  // 50K is DataSF's hard SoQL maximum; current row count is ~450, so this
-  // is plenty of headroom.
-  const url = `${ZONING_DATASET}?$limit=5000&$select=the_geom,zoning_sim,districtna,gen,codesectio`
+  // Dataset is ~10.6K rows as of 2026-05; 50K is DataSF's hard SoQL ceiling.
+  const url = `${ZONING_DATASET}?$limit=50000&$select=the_geom,zoning_sim,districtna,gen,codesectio`
   try {
     const res = await fetch(url, { headers, next: { revalidate: 604800 } })
     if (!res.ok) {
@@ -52,7 +51,6 @@ export async function GET() {
     return Response.json(collection, {
       headers: {
         'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=2592000',
-        'Access-Control-Allow-Origin': '*',
       },
     })
   } catch (err) {

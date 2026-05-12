@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { pointInGeometry } from '@/lib/point-in-polygon'
 import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson'
 
-export const revalidate = 86400 // 24h
+export const revalidate = 604800 // 7 days — matches /api/zoning bulk fetch
 
 interface ZoningProps {
   zoning_sim: string
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
         },
         {
           headers: {
-            'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
+            'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=2592000',
           },
         },
       )
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     { zoning_sim: null, gen: null },
     {
       headers: {
-        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
+        'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=2592000',
       },
     },
   )
