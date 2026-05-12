@@ -659,10 +659,16 @@ async function main() {
   const tierPoor = safeDifference(sfOutline, allFrequent)
   const sfArea = safeArea(sfOutline) || totalSfArea || 1
 
+  // Clip each tier polygon to the SF outline. Without this, rail and rapid-bus
+  // buffers extend across the Bay (e.g. BART stations in Oakland/Berkeley have
+  // 400m buffers that protrude beyond SF land), so the four shares add up to
+  // > 100% of SF area. We also persist the clipped polygons so the rendered
+  // map layer doesn't show rings spilling into the water.
   const tierFeatures: Array<{ tier: TransitTier; poly: AnyPoly | null }> = [
-    { tier: 'rail', poly: tierRail },
-    { tier: 'rapid-bus', poly: tierRapidBus },
-    { tier: 'local-bus', poly: tierLocalBus },
+    { tier: 'rail', poly: sfOutline ? safeIntersect(tierRail!, sfOutline) : tierRail },
+    { tier: 'rapid-bus', poly: sfOutline && tierRapidBus ? safeIntersect(tierRapidBus, sfOutline) : tierRapidBus },
+    { tier: 'local-bus', poly: sfOutline && tierLocalBus ? safeIntersect(tierLocalBus, sfOutline) : tierLocalBus },
+    // tierPoor is already (sfOutline − allFrequent), so it's inside SF by construction.
     { tier: 'poor', poly: tierPoor },
   ]
   const transit_tiers: TierStats[] = tierFeatures.map(({ tier, poly }) => {
