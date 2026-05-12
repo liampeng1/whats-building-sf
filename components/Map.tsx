@@ -7,6 +7,7 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
+import { ZoningLegend } from './ZoningLegend'
 import { ZoningDistrictPanel } from './ZoningDistrictPanel'
 import { TransitCorridors } from './TransitCorridors'
 import { LensInfoPanel } from './LensInfoPanel'
@@ -16,8 +17,8 @@ import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { pointInGeometry } from '@/lib/point-in-polygon'
-import { SummaryCard, type SummaryCardState, type SummaryCardItem } from './SummaryCard'
 import { LensRail, type LensMode } from './LensRail'
+import { LensDirectory } from './LensDirectory'
 import { FilterFAB } from './FilterFAB'
 import { FilterSheet } from './FilterSheet'
 import { PermitPanel } from './PermitPanel'
@@ -125,8 +126,9 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   // only permits.
   const [mapMode, setMapMode] = useState<LensMode>('neighborhoods')
   const [transit, setTransit] = useState<'off' | 'rail' | 'rapid-bus' | 'both'>('off')
-  const [summaryState, setSummaryState] = useState<SummaryCardState>('top5')
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [lensOpen, setLensOpen] = useState<LensMode | null>(null)
+  const [lensStats, setLensStats] = useState<import('@/lib/lens-stats').LensStats | null>(null)
 
   // Derived booleans for downstream filter logic
   const railOnly = transit === 'rail' || transit === 'both'
@@ -155,6 +157,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setCrossStats(data))
       .catch(() => setCrossStats(null))
+    fetch('/api/lens-stats')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setLensStats(data))
+      .catch(() => setLensStats(null))
     fetch('/zoning-heights.json')
       .then((r) => (r.ok ? r.json() : []))
       .then((rows: { code: string; height_ft?: number; bulk?: string }[]) => {
@@ -193,6 +199,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       if (modeParam === 'neighborhoods' || modeParam === 'zoning' || modeParam === 'transit') {
         setMapMode(modeParam)
       }
+      const lensOpenParam = sp.get('lensOpen')
+      if (lensOpenParam === 'neighborhoods' || lensOpenParam === 'zoning' || lensOpenParam === 'transit') {
+        setLensOpen(lensOpenParam)
+      } else {
+        setLensOpen(null)
+      }
       const transitParam = sp.get('transit')
       if (transitParam === 'rail' || transitParam === 'rapid-bus' || transitParam === 'both') {
         setTransit(transitParam)
@@ -210,10 +222,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
       const districtParam = sp.get('district')
       setSelectedZoningDistrict(districtParam ? { zoningSim: districtParam, gen: '' } : null)
-      const listParam = sp.get('list')
-      if (listParam === 'none' || listParam === 'top5' || listParam === 'all') {
-        setSummaryState(listParam)
-      }
       const sheetParam = sp.get('sheet')
       setSheetOpen(sheetParam === '1')
     }
@@ -291,11 +299,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
 
     setOrDelete('mode', mapMode, 'neighborhoods')
 
-    setOrDelete('list', summaryState, 'top5')
+    setOrDelete('lensOpen', lensOpen ?? '', '')
+
     setOrDelete('sheet', sheetOpen ? '1' : '', '')
 
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict, mapMode, summaryState, sheetOpen])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict, mapMode, lensOpen, sheetOpen])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
@@ -515,46 +524,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     })
   }, [filteredPermits, viewportBounds])
 
-  const summaryItems: SummaryCardItem[] = useMemo(() => {
-    if (mapMode === 'neighborhoods') {
-      return (crossStats?.neighborhoods ?? [])
-        .map((row) => ({
-          id: row.nhood,
-          name: row.nhood,
-          count: permitsByNhood?.[row.nhood]?.length ?? 0,
-        }))
-        .sort((a, b) => b.count - a.count)
-    }
-    if (mapMode === 'zoning') {
-      return (crossStats?.zoning ?? []).map((row) => ({
-        id: row.category,
-        name: row.category,
-        count: Math.round(row.share_of_sf * 100),
-      }))
-    }
-    // transit lens — rank stations by permit count within their shed
-    const ranked: SummaryCardItem[] = []
-    for (const s of RAIL_STATIONS) {
-      let count = 0
-      for (const p of filteredPermits) {
-        const c = p.location?.coordinates
-        if (!c) continue
-        if (withinStationRadius(c, s, RAIL_THRESHOLD_M)) count++
-      }
-      if (count > 0) ranked.push({ id: s.id, name: s.name, count })
-    }
-    for (const s of RAPID_BUS_STOPS) {
-      let count = 0
-      for (const p of filteredPermits) {
-        const c = p.location?.coordinates
-        if (!c) continue
-        if (withinStationRadius(c, s, RAPID_BUS_THRESHOLD_M)) count++
-      }
-      if (count > 0) ranked.push({ id: s.id, name: s.name, count })
-    }
-    return ranked.sort((a, b) => b.count - a.count)
-  }, [mapMode, crossStats, permitsByNhood, filteredPermits])
-
   const summarySentence = useMemo(() => {
     const cats =
       selectedCategories.size === CATEGORIES.length
@@ -663,6 +632,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
               onSelect={(zoningSim, gen, districtna, codesectio) =>
                 setSelectedZoningDistrict({ zoningSim, gen, districtna, codesectio })
               }
+              onResolveDistrict={(zoningSim, gen, districtna, codesectio) => {
+                // Only hydrate if the current selection is still this district
+                // and is missing the human name (URL deep-link case).
+                setSelectedZoningDistrict((prev) => {
+                  if (!prev || prev.zoningSim !== zoningSim || prev.districtna) return prev
+                  return { zoningSim, gen: prev.gen || gen, districtna, codesectio }
+                })
+              }}
             />
           </>
         )}
@@ -746,25 +723,25 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           ))}
         </MarkerClusterGroup>
       </MapContainer>
-      <SummaryCard
-        state={summaryState}
-        summary={summarySentence}
-        eyebrow="What's Building SF"
-        items={summaryItems}
-        onStateChange={setSummaryState}
-        onItemClick={(id) => {
-          if (mapMode === 'neighborhoods') openNhoodPanel(id)
-          else if (mapMode === 'zoning') setSelectedZoningDistrict({ zoningSim: id, gen: '' })
-          else if (mapMode === 'transit') {
-            const kind: SelectedStation['kind'] = id.startsWith('bus-') ? 'rapid-bus' : 'rail'
-            setSelectedStation({ kind, id })
-            setStationRadiusM(kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
-          }
-        }}
-      />
       <LensRail
         mode={mapMode}
         onChange={(m) => setMapMode(m)}
+        open={lensOpen}
+        onOpenChange={setLensOpen}
+      />
+      <LensDirectory
+        mode={lensOpen}
+        crossStats={crossStats}
+        lensStats={lensStats}
+        statusLine={summarySentence}
+        onClose={() => setLensOpen(null)}
+        onSelectRegion={(kind, id) => {
+          if (kind === 'neighborhood') openNhoodPanel(id)
+          else if (kind === 'zoning') setSelectedZoningDistrict({ zoningSim: id, gen: '' })
+          // tier select: leave as no-op for now (per spec — detail panels for tiers
+          // are out of scope for this task; clicking the tier row still highlights
+          // the polygon via the existing onSelect machinery in the overlay).
+        }}
       />
       <FilterFAB
         open={sheetOpen}
@@ -790,6 +767,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         transit={transit}
         onTransitChange={setTransit}
       />
+      {mapMode === 'zoning' && <ZoningLegend />}
       <AboutLink />
       <CoffeeButton />
       <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
