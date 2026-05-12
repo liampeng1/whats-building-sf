@@ -59,7 +59,7 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
       className={
         isMobile
           ? 'fixed bottom-0 left-0 right-0 z-[1001] bg-paper border-t border-paper-edge rounded-t-lg shadow-2xl px-3.5 py-3 max-h-[70dvh] overflow-y-auto'
-          : 'absolute top-full left-1/2 -translate-x-1/2 mt-2 z-[1001] bg-paper border border-paper-edge rounded-md shadow-xl px-3.5 py-3 w-[380px] md:w-[420px] max-w-[calc(100vw-32px)]'
+          : 'absolute top-14 left-1/2 -translate-x-1/2 z-[1001] bg-paper border border-paper-edge rounded-md shadow-xl px-3.5 py-3 w-[380px] md:w-[420px] max-w-[calc(100vw-32px)]'
       }
     >
       <div className="text-[9px] font-mono uppercase tracking-wider text-ink-faint">
