@@ -62,21 +62,11 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
           : 'bg-paper border border-paper-edge rounded-b-md shadow-md px-3.5 py-3 w-[380px] md:w-[420px] max-w-[calc(100vw-32px)] max-h-[70vh] overflow-y-auto relative z-[1]'
       }
     >
-      <div className="flex items-start justify-between gap-2 pb-2 border-b border-paper-edge/40">
-        <div>
-          <div className="text-[9px] font-mono uppercase tracking-wider text-ink-faint">
-            Showing
-          </div>
-          <div className="font-serif text-[13px]">{statusLine}</div>
+      <div className="pb-2 border-b border-paper-edge/40">
+        <div className="text-[9px] font-mono uppercase tracking-wider text-ink-faint">
+          Showing
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close directory"
-          className="text-ink-faint hover:text-ink rounded-full w-6 h-6 flex items-center justify-center text-[15px] leading-none -mr-1 -mt-1 focus:outline-none focus:ring-2 focus:ring-ink/30"
-        >
-          ×
-        </button>
+        <div className="font-serif text-[13px]">{statusLine}</div>
       </div>
 
       {mode === 'neighborhoods' && (
