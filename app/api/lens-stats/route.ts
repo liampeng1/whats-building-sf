@@ -7,11 +7,11 @@ import { fetchBuildingPermits } from '@/lib/datasf'
  * /api/lens-stats — temporal per-lens rollups (neighborhood, zoning, transit
  * tier) over the trailing 12 months. Drives the lens-directory drawers.
  *
- * Runtime: edge. Both the permit loader (`fetchBuildingPermits` →
- * optional Upstash REST snapshot → DataSF fetch) and the transit-station
- * hydration use plain `fetch`; @upstash/redis is REST-based and
- * edge-compatible. Heavier per-region invocation is fine here — this is a
- * once-daily-revalidated read-only aggregate.
+ * Runtime: Node (default). Matches the rest of app/api/. The permit
+ * loader (`fetchBuildingPermits` → optional Upstash REST snapshot →
+ * DataSF fetch) dynamically imports `@upstash/redis`, which has
+ * historically been bundler-fragile on the edge runtime. This route is
+ * invoked rarely (24h revalidation), so Node is the safer call.
  *
  * Field-shape caveat (deferred work, see PLAN.md task 5+):
  *   The aggregator reads camelCase, enrichment fields
@@ -29,7 +29,6 @@ import { fetchBuildingPermits } from '@/lib/datasf'
  *   every permit classifies as 'poor', which is acceptable degraded
  *   behavior for an aggregate endpoint.
  */
-export const runtime = 'edge'
 export const revalidate = 86_400 // 24h — matches the daily DataSF snapshot
 
 export async function GET(req: NextRequest) {
@@ -44,6 +43,13 @@ export async function GET(req: NextRequest) {
       now: new Date(),
       classifyTier,
     })
+    if (permits.length > 0 && Object.keys(stats.neighborhoods).length === 0) {
+      console.warn(
+        '[lens-stats] Empty neighborhoods rollup despite ' + permits.length +
+        ' permits. Likely a field-shape mismatch (permits lack neighborhood/filedDate/etc). ' +
+        'Permit→lens enrichment is deferred — see PLAN.md.'
+      )
+    }
     return NextResponse.json(stats, {
       headers: {
         'Cache-Control':

@@ -60,4 +60,40 @@ describe('computeLensStats', () => {
     expect(out.transit_tiers['rail'].permits).toBe(2)
     expect(out.transit_tiers['rail'].homes).toBe(18)
   })
+
+  it('computes top_neighborhoods sorted by count when permits carry zoning_category', () => {
+    const enriched = [
+      { id: 'p1', neighborhood: 'Mission', filedDate: '2025-09-01',
+        netUnits: 1, zoning_category: 'Mixed Use',
+        location: { type: 'Point', coordinates: [-122.42, 37.76] } },
+      { id: 'p2', neighborhood: 'Mission', filedDate: '2025-10-01',
+        netUnits: 2, zoning_category: 'Mixed Use',
+        location: { type: 'Point', coordinates: [-122.42, 37.76] } },
+      { id: 'p3', neighborhood: 'South of Market', filedDate: '2025-11-01',
+        netUnits: 3, zoning_category: 'Mixed Use',
+        location: { type: 'Point', coordinates: [-122.40, 37.78] } },
+    ] as any
+    const out = computeLensStats({ permits: enriched, now: new Date('2026-05-11') })
+    expect(out.zoning['Mixed Use'].top_neighborhoods[0]).toBe('Mission')
+    expect(out.zoning['Mixed Use'].top_neighborhoods).toContain('South of Market')
+  })
+
+  it('computes dominant_zoning per tier from permits with zoning_category', () => {
+    const enriched = [
+      { id: 'p1', neighborhood: 'Mission', filedDate: '2025-09-01',
+        netUnits: 1, zoning_category: 'Mixed Use',
+        location: { type: 'Point', coordinates: [-122.42, 37.76] } },
+      { id: 'p2', neighborhood: 'Mission', filedDate: '2025-10-01',
+        netUnits: 1, zoning_category: 'Residential',
+        location: { type: 'Point', coordinates: [-122.42, 37.76] } },
+      { id: 'p3', neighborhood: 'Mission', filedDate: '2025-11-01',
+        netUnits: 1, zoning_category: 'Mixed Use',
+        location: { type: 'Point', coordinates: [-122.42, 37.76] } },
+    ] as any
+    const out = computeLensStats({
+      permits: enriched, now: new Date('2026-05-11'),
+      classifyTier: () => 'rail',
+    })
+    expect(out.transit_tiers['rail'].dominant_zoning).toBe('Mixed Use')
+  })
 })
