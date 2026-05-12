@@ -70,4 +70,30 @@ describe('LensDirectory', () => {
     const dialog = screen.getByRole('dialog')
     expect(dialog.className).toMatch(/bottom-0/)
   })
+
+  it('closes on click outside the drawer', () => {
+    const onClose = jest.fn()
+    render(
+      <>
+        <div data-testid="outside">other content</div>
+        <LensDirectory mode="neighborhoods" crossStats={fakeCross} lensStats={fakeLens}
+          statusLine="x" onClose={onClose} onSelectRegion={() => {}} />
+      </>
+    )
+    fireEvent.mouseDown(screen.getByTestId('outside'))
+    expect(onClose).toHaveBeenCalled()
+  })
+
+  it('does not close when clicking a LensRail chip (those have own logic)', () => {
+    const onClose = jest.fn()
+    render(
+      <>
+        <button role="radio" data-testid="chip">chip</button>
+        <LensDirectory mode="neighborhoods" crossStats={fakeCross} lensStats={fakeLens}
+          statusLine="x" onClose={onClose} onSelectRegion={() => {}} />
+      </>
+    )
+    fireEvent.mouseDown(screen.getByTestId('chip'))
+    expect(onClose).not.toHaveBeenCalled()
+  })
 })

@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CrossStats, ZoningCategory, TransitTier } from '@/lib/cross-stats'
 import type { LensStats } from '@/lib/lens-stats'
 import type { LensMode } from './LensRail'
@@ -20,11 +20,25 @@ interface Props {
 }
 
 export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose, onSelectRegion }: Props) {
+  const wrapRef = useRef<HTMLDivElement | null>(null)
+
   useEffect(() => {
     if (!mode) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null
+      if (!target) return
+      // Don't close if clicking a LensRail chip — those have their own toggle logic.
+      if (target.closest('[role="radio"]')) return
+      if (!wrapRef.current?.contains(target)) onClose()
+    }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    // mousedown so we react before any inner click handlers
+    document.addEventListener('mousedown', onClick)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('mousedown', onClick)
+    }
   }, [mode, onClose])
 
   const [isMobile, setIsMobile] = useState(false)
@@ -39,6 +53,7 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
 
   return (
     <div
+      ref={wrapRef}
       role="dialog"
       aria-label={`${mode} directory`}
       className={
