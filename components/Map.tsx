@@ -727,26 +727,26 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           ))}
         </MarkerClusterGroup>
       </MapContainer>
-      <LensRail
-        mode={mapMode}
-        onChange={(m) => setMapMode(m)}
-        open={lensOpen}
-        onOpenChange={setLensOpen}
-      />
-      <LensDirectory
-        mode={lensOpen}
-        crossStats={crossStats}
-        lensStats={lensStats}
-        statusLine={summarySentence}
-        onClose={() => setLensOpen(null)}
-        onSelectRegion={(kind, id) => {
-          if (kind === 'neighborhood') openNhoodPanel(id)
-          // 'zoning' is a category click — drill-down inside the drawer is the
-          // entire interaction; we deliberately don't open a detail panel
-          // because "Residential" isn't a single district.
-          // 'tier' click is a no-op for now (no per-tier detail panel yet).
-        }}
-      />
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center">
+        <LensRail
+          mode={mapMode}
+          onChange={(m) => setMapMode(m)}
+          open={lensOpen}
+          onOpenChange={setLensOpen}
+        />
+        <LensDirectory
+          mode={lensOpen}
+          crossStats={crossStats}
+          lensStats={lensStats}
+          statusLine={summarySentence}
+          onClose={() => setLensOpen(null)}
+          onSelectRegion={(kind, id) => {
+            if (kind === 'neighborhood') openNhoodPanel(id)
+            // 'zoning' = category click; drill-down handled inside the drawer.
+            // 'tier'   = no detail panel for now.
+          }}
+        />
+      </div>
       <FilterFAB
         open={sheetOpen}
         onToggle={() => setSheetOpen((v) => !v)}
