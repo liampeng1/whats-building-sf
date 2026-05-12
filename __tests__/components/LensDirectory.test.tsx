@@ -84,16 +84,21 @@ describe('LensDirectory', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
-  it('does not close when clicking a LensRail chip (those have own logic)', () => {
+  it('does not close when clicking inside the LensRail (chips or chevron own toggle logic)', () => {
     const onClose = jest.fn()
     render(
       <>
-        <button role="radio" data-testid="chip">chip</button>
+        <div data-lens-rail>
+          <button role="radio" data-testid="chip">chip</button>
+          <button data-testid="chevron">chevron</button>
+        </div>
         <LensDirectory mode="neighborhoods" crossStats={fakeCross} lensStats={fakeLens}
           statusLine="x" onClose={onClose} onSelectRegion={() => {}} />
       </>
     )
     fireEvent.mouseDown(screen.getByTestId('chip'))
+    expect(onClose).not.toHaveBeenCalled()
+    fireEvent.mouseDown(screen.getByTestId('chevron'))
     expect(onClose).not.toHaveBeenCalled()
   })
 })

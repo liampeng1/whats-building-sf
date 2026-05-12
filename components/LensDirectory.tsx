@@ -28,8 +28,10 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null
       if (!target) return
-      // Don't close if clicking a LensRail chip — those have their own toggle logic.
-      if (target.closest('[role="radio"]')) return
+      // The LensRail (chips + chevron toggle) has its own click logic that
+      // owns open/close. Treat anything inside it as part of the dropdown,
+      // not an outside-click.
+      if (target.closest('[data-lens-rail]')) return
       if (!wrapRef.current?.contains(target)) onClose()
     }
     window.addEventListener('keydown', onKey)

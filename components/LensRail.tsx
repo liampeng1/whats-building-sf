@@ -19,6 +19,7 @@ export function LensRail({ mode, onChange, open, onOpenChange }: Props) {
   const anyOpen = open !== null
   return (
     <div
+      data-lens-rail
       className={`bg-paper border border-paper-edge ${
         anyOpen ? 'rounded-t-md border-b-0' : 'rounded-md'
       } shadow-md flex items-center gap-1 pl-1.5 pr-1 py-1 relative z-[2]`}
