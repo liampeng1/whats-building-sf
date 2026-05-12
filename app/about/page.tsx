@@ -49,6 +49,12 @@ const DATA_SOURCES: SourceLink[] = [
       "The 41-neighborhood definition the city uses for its own analytics. We render these as the choropleth at low zoom and as the panel context when you click into one.",
   },
   {
+    label: 'DataSF · Planning Records',
+    href: 'https://data.sfgov.org/City-Infrastructure/Planning-Records/qvu5-m3a2',
+    blurb:
+      "SF Planning's case-level entitlement records — environmental review, conditional use, design review, etc. Surfaced in permit detail panels when a related planning case exists so you can see what stage the project's in before construction permits.",
+  },
+  {
     label: 'DataSF · Zoning Districts',
     href: 'https://data.sfgov.org/Geographic-Locations-and-Boundaries/Zoning-Districts/3i4a-hu95',
     blurb:
@@ -56,21 +62,27 @@ const DATA_SOURCES: SourceLink[] = [
   },
   {
     label: 'DataSF · Height + Bulk Districts',
-    href: 'https://data.sfgov.org/Geographic-Locations-and-Boundaries/Height-and-Bulk-Districts/aizk-9pid',
+    href: 'https://data.sfgov.org/Geographic-Locations-and-Boundaries/Height-and-Bulk-Districts/h9wh-cg3m',
     blurb:
       "Maximum building height per parcel. Surfaced in zoning detail panels with numeric comparisons against city landmarks (a 40-ft cap is roughly four stories, etc.) so the limits feel concrete.",
-  },
-  {
-    label: 'BART + Muni + Caltrain · 511.org regional GTFS',
-    href: 'https://511.org/open-data/transit',
-    blurb:
-      "Bay Area's official GTFS feed. We pull station locations for BART, Muni Metro, Caltrain, plus stop locations for Muni's rapid-bus (R-suffix) lines and the SFMTA Frequent Transit Network. Used to build the transit tier polygons and the per-station walk-shed views.",
   },
   {
     label: 'MOHCD · Affordable Housing Pipeline',
     href: 'https://data.sfgov.org/Housing-and-Buildings/Affordable-Housing-Pipeline/aaxw-2cb8',
     blurb:
       "SF Mayor's Office of Housing & Community Development tracker of below-market-rate units. We join this against the permit dataset by block + lot to surface BMR counts in permit detail panels.",
+  },
+  {
+    label: 'BART · Schedules + Stations GTFS',
+    href: 'https://www.bart.gov/dev/schedules/google_transit.zip',
+    blurb:
+      "BART's own published GTFS feed. We use the stops file for station coordinates and route attribution — those drive the Rail-served tier and the per-station walk-shed.",
+  },
+  {
+    label: '511.org · Regional GTFS (Muni + Caltrain)',
+    href: 'https://511.org/open-data/transit',
+    blurb:
+      "MTC's open-data transit feed for the Bay Area. We pull Muni stop locations (including R-suffix rapid-bus lines and the SFMTA Frequent Transit Network) and Caltrain stops to build the rapid-bus and local-bus tier polygons.",
   },
 ]
 
@@ -145,45 +157,20 @@ export default function AboutPage() {
               </p>
             </li>
             <li className="border-t-2 border-ink pt-3">
-              <div className="civic-eyebrow mb-1.5">Open data, no key</div>
+              <div className="civic-eyebrow mb-1.5">Ground-truth construction</div>
               <p className="text-sm text-ink leading-snug">
-                Every permit on the map is also available as{' '}
-                <a
-                  href="/api/public/permits.json"
-                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
-                >
-                  JSON
-                </a>
-                ,{' '}
-                <a
-                  href="/api/public/permits.csv"
-                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
-                >
-                  CSV
-                </a>
-                , or an{' '}
-                <a
-                  href="/feed.xml"
-                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
-                >
-                  Atom feed
-                </a>
-                . No login, no API key.
+                An issued permit can sit for months before ground breaks. We
+                join the permits dataset against SF Planning&apos;s Pipeline so
+                you can tell which projects are <em>actually</em> being built.
               </p>
             </li>
             <li className="border-t-2 border-ink pt-3">
-              <div className="civic-eyebrow mb-1.5">Free + open source</div>
+              <div className="civic-eyebrow mb-1.5">Three lenses</div>
               <p className="text-sm text-ink leading-snug">
-                Built as a civic-data side project. Source on{' '}
-                <a
-                  href="https://github.com/liampeng1/whats-building-sf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
-                >
-                  GitHub
-                </a>
-                ; suggestions and PRs welcome.
+                Switch between Neighborhoods, Zoning, and Transit to see how
+                much is happening in each part of the city — with cross-context
+                between the three (zoning mix per nhood, % near rail, top
+                neighborhoods per zone, and so on).
               </p>
             </li>
           </ul>
@@ -370,14 +357,7 @@ export default function AboutPage() {
               using turf.js — every neighborhood&apos;s zoning mix, every zoning category&apos;s
               top neighborhoods, every neighborhood&apos;s % near rail. These are geometric
               and don&apos;t change between builds; the temporal data (permit counts, homes
-              added, days-to-permit, YoY) comes from the daily snapshot via{' '}
-              <a
-                href="/api/lens-stats"
-                className="underline decoration-paper-edge underline-offset-2 hover:decoration-ink"
-              >
-                <code>/api/lens-stats</code>
-              </a>
-              .
+              added, days-to-permit, YoY) comes from the daily DataSF snapshot.
             </li>
             <li>
               <span className="font-semibold">Zoning detail panels include height context.</span>{' '}
