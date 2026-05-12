@@ -7,7 +7,6 @@ import { PermitMarker } from './PermitMarker'
 import { MapEventHandler } from './MapEventHandler'
 import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
-import { ZoningLegend } from './ZoningLegend'
 import { ZoningDistrictPanel } from './ZoningDistrictPanel'
 import { TransitCorridors } from './TransitCorridors'
 import { LensInfoPanel } from './LensInfoPanel'
@@ -776,7 +775,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         transit={transit}
         onTransitChange={setTransit}
       />
-      {mapMode === 'zoning' && <ZoningLegend />}
       <AboutLink />
       <CoffeeButton />
       <PermitPanel permitNumber={openPermit} onClose={closePermitPanel} />
