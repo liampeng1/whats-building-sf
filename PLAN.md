@@ -83,3 +83,25 @@ The launch narrative leans on "the report the city doesn't publish."
 - **r/yimby**: filtered URL highlighting AB-2011 / density-bonus / SB-35 projects
 - **r/sanfrancisco**: deep-link with their neighborhood preselected, plus the `/stats` page
 - **SF urbanist Twitter**: weekly digest + per-stat OG images
+
+### Deferred follow-ups (post lens-directories)
+
+- **Permit→zoning enrichment** — cron-side point-in-polygon pass that
+  writes `zoning_category` onto every Permit in the daily snapshot.
+  Unlocks `ZoningDirectory`'s Permits bar and "Top:" neighborhoods.
+  Schema is already in place; no UI change required when this lands.
+- **Permit→neighborhood enrichment** — similar PIP pass to populate
+  `neighborhood` on each Permit, plus shape-adapter for the snake_case
+  `filed_date` / camelCase `filedDate` mismatch. Until this lands,
+  `/api/lens-stats` returns empty rollups for nhoods.
+- **Z+ Zoning height-band slicing** — ingest DataSF height districts;
+  add as a 4th option to the zoning drawer sub-tab.
+- **Z++ State-law eligibility slicing** — per-parcel SB 9 / AB 2011 /
+  SB 35 computation.
+- **N3 Per-acre sort toggle** — third sort option on the neighborhoods
+  directory.
+- **Cross-stats build performance** — current runtime is ~30 min for a
+  full rebuild. Bbox prefilter on per-zoning-category × nhood
+  intersections could cut to ~3 min.
+- **Glossary section on /about** — surface the new lens-directory
+  metrics' definitions on the /about page, sourced from METRIC_DEFINITIONS.
