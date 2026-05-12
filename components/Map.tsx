@@ -737,10 +737,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onClose={() => setLensOpen(null)}
         onSelectRegion={(kind, id) => {
           if (kind === 'neighborhood') openNhoodPanel(id)
-          else if (kind === 'zoning') setSelectedZoningDistrict({ zoningSim: id, gen: '' })
-          // tier select: leave as no-op for now (per spec — detail panels for tiers
-          // are out of scope for this task; clicking the tier row still highlights
-          // the polygon via the existing onSelect machinery in the overlay).
+          // 'zoning' is a category click — drill-down inside the drawer is the
+          // entire interaction; we deliberately don't open a detail panel
+          // because "Residential" isn't a single district.
+          // 'tier' click is a no-op for now (no per-tier detail panel yet).
         }}
       />
       <FilterFAB
