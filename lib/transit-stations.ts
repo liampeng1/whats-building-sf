@@ -24,25 +24,37 @@ export interface RapidBusStop {
   routes: string[]
 }
 
+export interface FrequentLocalStop {
+  id: string
+  name: string
+  lat: number
+  lng: number
+  routes: string[]
+}
+
 // `let` so loadStations() can replace contents; the arrays themselves
 // keep their reference identity (we splice into them) so consumers that
 // stash a reference still see the populated data.
 export const RAIL_STATIONS: RailStation[] = []
 export const RAPID_BUS_STOPS: RapidBusStop[] = []
+export const FREQUENT_LOCAL_STOPS: FrequentLocalStop[] = []
 
 let hydrated = false
 export async function loadStations(baseUrl = ''): Promise<void> {
   if (hydrated) return
   hydrated = true
   try {
-    const [rail, rapid] = await Promise.all([
+    const [rail, rapid, local] = await Promise.all([
       fetch(`${baseUrl}/rail-stations.json`).then((r) => (r.ok ? r.json() : [])),
       fetch(`${baseUrl}/rapid-bus-stops.json`).then((r) => (r.ok ? r.json() : [])),
+      fetch(`${baseUrl}/frequent-local-stops.json`).then((r) => (r.ok ? r.json() : [])),
     ])
     RAIL_STATIONS.length = 0
     RAIL_STATIONS.push(...(rail as RailStation[]))
     RAPID_BUS_STOPS.length = 0
     RAPID_BUS_STOPS.push(...(rapid as RapidBusStop[]))
+    FREQUENT_LOCAL_STOPS.length = 0
+    FREQUENT_LOCAL_STOPS.push(...(local as FrequentLocalStop[]))
   } catch {
     // Leave arrays empty; the UI degrades gracefully.
   }
@@ -105,6 +117,32 @@ export function transitAdjacent(
   if (rail && railShed(coords, opts.railThresholdM)) return true
   if (rapidBus && rapidBusShed(coords, opts.rapidBusThresholdM)) return true
   return false
+}
+
+export type TransitTier = 'rail' | 'rapid-bus' | 'local-bus' | 'poor'
+
+/**
+ * SFMTA Frequent Transit Network — local Muni lines with ≥ 6 trips/hr
+ * in the AM peak (per the most recent SFMTA FTN map). Stop coords are
+ * loaded from /frequent-local-stops.json by loadStations().
+ */
+export const FREQUENT_LOCAL_LINES = ['1', '14', '22', '24', '30', '38', '49'] as const
+
+const FREQUENT_LOCAL_THRESHOLD_M = 400 // ¼ mi
+
+export function classifyTier(
+  coords: [number, number] | null | undefined,
+): TransitTier {
+  if (!coords) return 'poor'
+  if (railShed(coords, 400)) return 'rail'
+  if (rapidBusShed(coords, 400)) return 'rapid-bus'
+  const [lng, lat] = coords
+  for (const s of FREQUENT_LOCAL_STOPS) {
+    if (distanceMeters(lat, lng, s.lat, s.lng) <= FREQUENT_LOCAL_THRESHOLD_M) {
+      return 'local-bus'
+    }
+  }
+  return 'poor'
 }
 
 /** Used by the per-station click filter in Phase 2. */
