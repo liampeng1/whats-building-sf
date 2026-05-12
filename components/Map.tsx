@@ -635,14 +635,6 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
               onSelect={(zoningSim, gen, districtna, codesectio) =>
                 setSelectedZoningDistrict({ zoningSim, gen, districtna, codesectio })
               }
-              onResolveDistrict={(zoningSim, gen, districtna, codesectio) => {
-                // Only hydrate if the current selection is still this district
-                // and is missing the human name (URL deep-link case).
-                setSelectedZoningDistrict((prev) => {
-                  if (!prev || prev.zoningSim !== zoningSim || prev.districtna) return prev
-                  return { zoningSim, gen: prev.gen || gen, districtna, codesectio }
-                })
-              }}
             />
           </>
         )}
