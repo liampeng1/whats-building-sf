@@ -1,6 +1,7 @@
 import { parseCsv, fetchGtfsZip } from './_gtfs'
 import { slugify } from './_utils'
-import type { RailStation, RapidBusStop } from '../../lib/transit-stations'
+import type { RailStation, RapidBusStop, FrequentLocalStop } from '../../lib/transit-stations'
+import { FREQUENT_LOCAL_LINES } from '../../lib/transit-stations'
 
 interface GtfsStop { stop_id: string; stop_name: string; stop_lat: string; stop_lon: string; location_type?: string }
 interface GtfsRoute { route_id: string; route_short_name: string }
@@ -38,6 +39,13 @@ export function selectRailRouteIds(routes: GtfsRoute[]): string[] {
 
 export function selectRapidBusRouteIds(routes: GtfsRoute[]): string[] {
   return routes.filter((r) => /R$/.test(r.route_short_name)).map((r) => r.route_id)
+}
+
+/** Select GTFS route ids for the SFMTA Frequent Transit Network local lines
+ *  (≥ 6 trips/hr AM peak, per FREQUENT_LOCAL_LINES). */
+export function selectFrequentLocalRouteIds(routes: GtfsRoute[]): string[] {
+  const target = new Set<string>(FREQUENT_LOCAL_LINES as readonly string[])
+  return routes.filter((r) => target.has(r.route_short_name)).map((r) => r.route_id)
 }
 
 /** Build stop_id → Set<route_id> by chaining stop_times → trips → route_id. */
@@ -121,12 +129,50 @@ export function buildRapidBusStops(
     })
 }
 
-/** Top-level async fetch: pulls SFMTA GTFS via 511 and returns rail + rapid. */
-export async function fetchMuni(): Promise<{ rail: RailStation[]; rapid: RapidBusStop[] }> {
+export function buildFrequentLocalStops(
+  stops: GtfsStop[],
+  routes: GtfsRoute[],
+  stopToRoutes: Map<string, Set<string>>,
+  localIds: Set<string>,
+): FrequentLocalStop[] {
+  const idToShort = new Map(routes.map((r) => [r.route_id, r.route_short_name]))
+  return stops
+    .filter(isValidStopRow)
+    .filter((s) => {
+      const r = stopToRoutes.get(s.stop_id)
+      if (!r) return false
+      for (const id of r) if (localIds.has(id)) return true
+      return false
+    })
+    .map((s) => {
+      const ids = stopToRoutes.get(s.stop_id)!
+      const shortNames: string[] = []
+      for (const id of ids) {
+        if (localIds.has(id)) {
+          const sn = idToShort.get(id)
+          if (sn) shortNames.push(sn)
+        }
+      }
+      return {
+        id: `local-${s.stop_id}-${slugify(s.stop_name)}`,
+        name: s.stop_name,
+        lat: Number(s.stop_lat),
+        lng: Number(s.stop_lon),
+        routes: [...new Set(shortNames)],
+      }
+    })
+}
+
+/** Top-level async fetch: pulls SFMTA GTFS via 511 and returns rail + rapid + local. */
+export async function fetchMuni(): Promise<{
+  rail: RailStation[]
+  rapid: RapidBusStop[]
+  local: FrequentLocalStop[]
+}> {
   const key = process.env.FIVE_ELEVEN_API_KEY
   if (!key) {
     console.warn('FIVE_ELEVEN_API_KEY not set; skipping Muni stations')
-    return { rail: [], rapid: [] }
+    return { rail: [], rapid: [], local: [] }
   }
   const url = `https://api.511.org/transit/datafeeds?operator_id=SF&api_key=${encodeURIComponent(key)}`
   const entries = await fetchGtfsZip(url, ['stops.txt', 'routes.txt', 'trips.txt', 'stop_times.txt'])
@@ -147,8 +193,10 @@ export async function fetchMuni(): Promise<{ rail: RailStation[]; rapid: RapidBu
   const stopMap = buildStopRouteMap(gtfs.stop_times, gtfs.trips)
   const railIds = new Set(selectRailRouteIds(gtfs.routes))
   const rapidIds = new Set(selectRapidBusRouteIds(gtfs.routes))
+  const localIds = new Set(selectFrequentLocalRouteIds(gtfs.routes))
   return {
     rail: buildRailStations(gtfs.stops, stopMap, railIds),
     rapid: buildRapidBusStops(gtfs.stops, gtfs.routes, stopMap, rapidIds),
+    local: buildFrequentLocalStops(gtfs.stops, gtfs.routes, stopMap, localIds),
   }
 }

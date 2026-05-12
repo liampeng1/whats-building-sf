@@ -1,0 +1,5212 @@
+[
+  {
+    "id": "local-17764-16th-st-4th-st",
+    "name": "16th St & 4th St",
+    "lat": 37.766765,
+    "lng": -122.390719,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13282-16th-st-bryant-st",
+    "name": "16th St & Bryant St",
+    "lat": 37.765595,
+    "lng": -122.410408,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13281-16th-st-bryant-st",
+    "name": "16th St & Bryant St",
+    "lat": 37.765658,
+    "lng": -122.410294,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13283-16th-st-church-st",
+    "name": "16th St & Church St",
+    "lat": 37.764579,
+    "lng": -122.428523,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13284-16th-st-dolores-st",
+    "name": "16th St & Dolores St",
+    "lat": 37.764707,
+    "lng": -122.426521,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13285-16th-st-dolores-st",
+    "name": "16th St & Dolores St",
+    "lat": 37.764609,
+    "lng": -122.426292,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17289-16th-st-folsom-st",
+    "name": "16th St & Folsom St",
+    "lat": 37.7654,
+    "lng": -122.415428,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13293-16th-st-mission-st",
+    "name": "16th St & Mission St",
+    "lat": 37.764983,
+    "lng": -122.419835,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13291-16th-st-mission-st",
+    "name": "16th St & Mission St",
+    "lat": 37.765152,
+    "lng": -122.419611,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17763-16th-st-missouri-st",
+    "name": "16th St & Missouri St",
+    "lat": 37.766384,
+    "lng": -122.397023,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17866-16th-st-owen-st",
+    "name": "16th St & Owen St",
+    "lat": 37.76665,
+    "lng": -122.39253,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13295-16th-st-potrero-ave",
+    "name": "16th St & Potrero Ave",
+    "lat": 37.7658,
+    "lng": -122.407624,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13296-16th-st-potrero-ave",
+    "name": "16th St & Potrero Ave",
+    "lat": 37.765764,
+    "lng": -122.407612,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17767-16th-street-4th-street",
+    "name": "16th Street & 4th Street",
+    "lat": 37.766864,
+    "lng": -122.390891,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17768-16th-street-missouri-st",
+    "name": "16th Street & Missouri St",
+    "lat": 37.766492,
+    "lng": -122.397011,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17865-16th-street-owen-st",
+    "name": "16th Street & Owen St",
+    "lat": 37.766722,
+    "lng": -122.392805,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17770-16th-street-rhode-island-st",
+    "name": "16th Street & Rhode Island St",
+    "lat": 37.76611,
+    "lng": -122.402822,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17769-16th-street-wisconsin-st",
+    "name": "16th Street & Wisconsin St",
+    "lat": 37.766287,
+    "lng": -122.399842,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17761-16th-st-rhode-island-st",
+    "name": "16th St& Rhode Island St",
+    "lat": 37.765994,
+    "lng": -122.402856,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13299-16th-st-shotwell-st",
+    "name": "16th St & Shotwell St",
+    "lat": 37.765218,
+    "lng": -122.416048,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13300-16th-st-valencia-st",
+    "name": "16th St & Valencia St",
+    "lat": 37.764987,
+    "lng": -122.421746,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13301-16th-st-valencia-st",
+    "name": "16th St & Valencia St",
+    "lat": 37.764849,
+    "lng": -122.422056,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17762-16th-st-wisconsin-st",
+    "name": "16th St & Wisconsin St",
+    "lat": 37.766198,
+    "lng": -122.399911,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13514-26th-st-castro-st",
+    "name": "26th St & Castro St",
+    "lat": 37.74815,
+    "lng": -122.43363,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13521-26th-st-noe-st",
+    "name": "26th St & Noe St",
+    "lat": 37.748174,
+    "lng": -122.431636,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13520-26th-st-noe-st",
+    "name": "26th St & Noe St",
+    "lat": 37.74827,
+    "lng": -122.43177,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17836-30th-ave-geary-blvd",
+    "name": "30th Ave & Geary Blvd",
+    "lat": 37.780771,
+    "lng": -122.490064,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13536-30th-st-church-st",
+    "name": "30th St & Church St",
+    "lat": 37.74204,
+    "lng": -122.42676,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13535-30th-st-church-st",
+    "name": "30th St & Church St",
+    "lat": 37.742159,
+    "lng": -122.426369,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13537-30th-st-dolores-st",
+    "name": "30th St & Dolores St",
+    "lat": 37.742304,
+    "lng": -122.424026,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13538-30th-st-dolores-st",
+    "name": "30th St & Dolores St",
+    "lat": 37.74217,
+    "lng": -122.424457,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13541-30th-st-mission-st",
+    "name": "30th St & Mission St",
+    "lat": 37.74231,
+    "lng": -122.42217,
+    "routes": [
+      "24",
+      "14"
+    ]
+  },
+  {
+    "id": "local-13540-30th-st-mission-st",
+    "name": "30th St & Mission St",
+    "lat": 37.742408,
+    "lng": -122.422037,
+    "routes": [
+      "24",
+      "14"
+    ]
+  },
+  {
+    "id": "local-13542-30th-st-noe-st",
+    "name": "30th St & Noe St",
+    "lat": 37.74188,
+    "lng": -122.43079,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13544-30th-st-sanchez-st",
+    "name": "30th St & Sanchez St",
+    "lat": 37.74191,
+    "lng": -122.42902,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13543-30th-st-sanchez-st",
+    "name": "30th St & Sanchez St",
+    "lat": 37.74202,
+    "lng": -122.4286,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17837-32nd-ave-anza-st",
+    "name": "32nd Ave & Anza St",
+    "lat": 37.777737,
+    "lng": -122.491999,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13546-32nd-ave-california-st",
+    "name": "32nd Ave & California St",
+    "lat": 37.783419,
+    "lng": -122.492442,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13547-32nd-ave-california-st",
+    "name": "32nd Ave & California St",
+    "lat": 37.783429,
+    "lng": -122.492553,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13549-32nd-ave-clement-st",
+    "name": "32nd Ave & Clement St",
+    "lat": 37.781802,
+    "lng": -122.492425,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13548-32nd-ave-clement-st",
+    "name": "32nd Ave & Clement St",
+    "lat": 37.781995,
+    "lng": -122.492335,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13550-32nd-ave-geary-blvd",
+    "name": "32nd Ave & Geary Blvd",
+    "lat": 37.779939,
+    "lng": -122.492296,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13551-33rd-ave-anza-st",
+    "name": "33rd Ave & Anza St",
+    "lat": 37.777861,
+    "lng": -122.493249,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13554-33rd-ave-balboa-st",
+    "name": "33rd Ave & Balboa St",
+    "lat": 37.775997,
+    "lng": -122.493133,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13555-33rd-ave-clement-st",
+    "name": "33rd Ave & Clement St",
+    "lat": 37.781537,
+    "lng": -122.493354,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13560-33rd-ave-geary-blvd",
+    "name": "33rd Ave & Geary Blvd",
+    "lat": 37.779566,
+    "lng": -122.493376,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13114-3rd-st-brannan-st",
+    "name": "3rd St & Brannan St",
+    "lat": 37.779285,
+    "lng": -122.393185,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13144-3rd-st-bryant-st",
+    "name": "3rd St & Bryant St",
+    "lat": 37.781651,
+    "lng": -122.396198,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13124-3rd-st-folsom-st",
+    "name": "3rd St & Folsom St",
+    "lat": 37.784204,
+    "lng": -122.399326,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17324-3rd-st-gene-friend-way",
+    "name": "3rd St & Gene Friend Way",
+    "lat": 37.76871,
+    "lng": -122.389377,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13136-3rd-st-mission-st",
+    "name": "3rd St & Mission St",
+    "lat": 37.786373,
+    "lng": -122.40211,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13141-3rd-st-palou-ave",
+    "name": "3rd St & Palou Ave",
+    "lat": 37.734091,
+    "lng": -122.390928,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17321-3rd-st-warriors-way",
+    "name": "3rd St & Warriors Way",
+    "lat": 37.769049,
+    "lng": -122.389228,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-15573-4080-mission-st",
+    "name": "4080 Mission St",
+    "lat": 37.73217,
+    "lng": -122.428,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-13566-42nd-ave-clement-st",
+    "name": "42nd Ave & Clement St",
+    "lat": 37.781087,
+    "lng": -122.502994,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13567-43rd-ave-clement-st",
+    "name": "43rd Ave & Clement St",
+    "lat": 37.781007,
+    "lng": -122.504232,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13568-43rd-ave-point-lobos-ave",
+    "name": "43rd Ave & Point Lobos Ave",
+    "lat": 37.779784,
+    "lng": -122.504139,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13608-48th-ave-point-lobos-ave",
+    "name": "48th Ave & Point Lobos Ave",
+    "lat": 37.779023,
+    "lng": -122.509411,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13158-4th-st-folsom-st",
+    "name": "4th St & Folsom St",
+    "lat": 37.782081,
+    "lng": -122.401333,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13161-4th-st-market-st",
+    "name": "4th St & Market St",
+    "lat": 37.785411,
+    "lng": -122.405531,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13160-4th-st-mission-st",
+    "name": "4th St & Mission St",
+    "lat": 37.784259,
+    "lng": -122.404117,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17839-arguello-blvd-geary-blvd",
+    "name": "Arguello Blvd & Geary Blvd",
+    "lat": 37.781867,
+    "lng": -122.458806,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13089-beale-st-mission-st",
+    "name": "Beale St & Mission St",
+    "lat": 37.791939,
+    "lng": -122.396879,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-13086-broadway-steiner-st",
+    "name": "Broadway & Steiner St",
+    "lat": 37.794056,
+    "lng": -122.436278,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13085-broadway-steiner-st",
+    "name": "Broadway & Steiner St",
+    "lat": 37.794131,
+    "lng": -122.436442,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-13072-broderick-st-bay-st",
+    "name": "Broderick St & Bay St",
+    "lat": 37.801541,
+    "lng": -122.444798,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13074-broderick-st-beach-st",
+    "name": "Broderick St & Beach St",
+    "lat": 37.803415,
+    "lng": -122.445176,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13075-broderick-st-francisco-st",
+    "name": "Broderick St & Francisco St",
+    "lat": 37.800622,
+    "lng": -122.444603,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13076-broderick-st-jefferson-st",
+    "name": "Broderick St & Jefferson St",
+    "lat": 37.804343,
+    "lng": -122.44536,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13077-broderick-st-north-point-st",
+    "name": "Broderick St & North Point St",
+    "lat": 37.802478,
+    "lng": -122.444982,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13828-california-st-10th-ave",
+    "name": "California St & 10th Ave",
+    "lat": 37.784665,
+    "lng": -122.469159,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13830-california-st-10th-ave",
+    "name": "California St & 10th Ave",
+    "lat": 37.784551,
+    "lng": -122.468963,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13832-california-st-12th-ave",
+    "name": "California St & 12th Ave",
+    "lat": 37.784454,
+    "lng": -122.471103,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13831-california-st-12th-ave",
+    "name": "California St & 12th Ave",
+    "lat": 37.784586,
+    "lng": -122.470848,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13834-california-st-16th-ave",
+    "name": "California St & 16th Ave",
+    "lat": 37.784253,
+    "lng": -122.475501,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13833-california-st-16th-ave",
+    "name": "California St & 16th Ave",
+    "lat": 37.784386,
+    "lng": -122.475229,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13836-california-st-19th-ave",
+    "name": "California St & 19th Ave",
+    "lat": 37.784109,
+    "lng": -122.47871,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13835-california-st-19th-ave",
+    "name": "California St & 19th Ave",
+    "lat": 37.784241,
+    "lng": -122.478446,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13838-california-st-22nd-ave",
+    "name": "California St & 22nd Ave",
+    "lat": 37.783941,
+    "lng": -122.481893,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13837-california-st-22nd-ave",
+    "name": "California St & 22nd Ave",
+    "lat": 37.784097,
+    "lng": -122.481659,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13839-california-st-25th-ave",
+    "name": "California St & 25th Ave",
+    "lat": 37.78395,
+    "lng": -122.48482,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13840-california-st-25th-ave",
+    "name": "California St & 25th Ave",
+    "lat": 37.783808,
+    "lng": -122.485286,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13842-california-st-28th-ave",
+    "name": "California St & 28th Ave",
+    "lat": 37.783658,
+    "lng": -122.488456,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13841-california-st-28th-ave",
+    "name": "California St & 28th Ave",
+    "lat": 37.783798,
+    "lng": -122.488074,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13844-california-st-30th-ave",
+    "name": "California St & 30th Ave",
+    "lat": 37.783578,
+    "lng": -122.490087,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13843-california-st-30th-ave",
+    "name": "California St & 30th Ave",
+    "lat": 37.783671,
+    "lng": -122.490513,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13822-california-st-4th-ave",
+    "name": "California St & 4th Ave",
+    "lat": 37.785353,
+    "lng": -122.462292,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13823-california-st-4th-ave",
+    "name": "California St & 4th Ave",
+    "lat": 37.785275,
+    "lng": -122.462177,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13824-california-st-6th-ave",
+    "name": "California St & 6th Ave",
+    "lat": 37.785069,
+    "lng": -122.464641,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13825-california-st-6th-ave",
+    "name": "California St & 6th Ave",
+    "lat": 37.784902,
+    "lng": -122.464709,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-17160-california-st-8th-ave",
+    "name": "California St & 8th Ave",
+    "lat": 37.784792,
+    "lng": -122.466819,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13827-california-st-8th-ave",
+    "name": "California St & 8th Ave",
+    "lat": 37.78463,
+    "lng": -122.466825,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13846-california-st-arguello-blvd",
+    "name": "California St & Arguello Blvd",
+    "lat": 37.785659,
+    "lng": -122.459036,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13845-california-st-arguello-blvd",
+    "name": "California St & Arguello Blvd",
+    "lat": 37.785703,
+    "lng": -122.459288,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13847-california-st-baker-st",
+    "name": "California St & Baker St",
+    "lat": 37.787738,
+    "lng": -122.443634,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13848-california-st-baker-st",
+    "name": "California St & Baker St",
+    "lat": 37.78762,
+    "lng": -122.443384,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13852-california-st-cherry-st",
+    "name": "California St & Cherry St",
+    "lat": 37.786042,
+    "lng": -122.456835,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13853-california-st-cherry-st",
+    "name": "California St & Cherry St",
+    "lat": 37.785974,
+    "lng": -122.456329,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13859-california-st-divisadero-st",
+    "name": "California St & Divisadero St",
+    "lat": 37.787954,
+    "lng": -122.440721,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13858-california-st-divisadero-st",
+    "name": "California St & Divisadero St",
+    "lat": 37.788087,
+    "lng": -122.44087,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13876-california-st-laurel-st",
+    "name": "California St & Laurel St",
+    "lat": 37.786801,
+    "lng": -122.44998,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13875-california-st-laurel-st",
+    "name": "California St & Laurel St",
+    "lat": 37.786923,
+    "lng": -122.449957,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13887-california-st-park-presidio-blvd",
+    "name": "California St & Park Presidio Blvd",
+    "lat": 37.784365,
+    "lng": -122.472764,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13886-california-st-park-presidio-blvd",
+    "name": "California St & Park Presidio Blvd",
+    "lat": 37.784514,
+    "lng": -122.472952,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13884-california-st-pierce-st",
+    "name": "California St & Pierce St",
+    "lat": 37.788518,
+    "lng": -122.437484,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13885-california-st-pierce-st",
+    "name": "California St & Pierce St",
+    "lat": 37.788455,
+    "lng": -122.436808,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13893-california-st-presidio-ave",
+    "name": "California St & Presidio Ave",
+    "lat": 37.787212,
+    "lng": -122.446931,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13892-california-st-presidio-ave",
+    "name": "California St & Presidio Ave",
+    "lat": 37.787265,
+    "lng": -122.446965,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13896-california-st-spruce-st",
+    "name": "California St & Spruce St",
+    "lat": 37.786462,
+    "lng": -122.453522,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-13897-california-st-spruce-st",
+    "name": "California St & Spruce St",
+    "lat": 37.786382,
+    "lng": -122.45327,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14307-castro-st-14th-st",
+    "name": "Castro St & 14th St",
+    "lat": 37.76761,
+    "lng": -122.43558,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14308-castro-st-14th-st",
+    "name": "Castro St & 14th St",
+    "lat": 37.76742,
+    "lng": -122.43571,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14309-castro-st-15th-st",
+    "name": "Castro St & 15th St",
+    "lat": 37.76583,
+    "lng": -122.43557,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14310-castro-st-15th-st",
+    "name": "Castro St & 15th St",
+    "lat": 37.76561,
+    "lng": -122.43538,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14312-castro-st-16th-st",
+    "name": "Castro St & 16th St",
+    "lat": 37.76427,
+    "lng": -122.43544,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14311-castro-st-16th-st",
+    "name": "Castro St & 16th St",
+    "lat": 37.764164,
+    "lng": -122.435254,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14313-castro-st-17th-st",
+    "name": "Castro St & 17th St",
+    "lat": 37.76237,
+    "lng": -122.43508,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14315-castro-st-18th-st",
+    "name": "Castro St & 18th St",
+    "lat": 37.760863,
+    "lng": -122.435048,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14314-castro-st-18th-st",
+    "name": "Castro St & 18th St",
+    "lat": 37.760836,
+    "lng": -122.434934,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14316-castro-st-19th-st",
+    "name": "Castro St & 19th St",
+    "lat": 37.75939,
+    "lng": -122.43491,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14317-castro-st-19th-st",
+    "name": "Castro St & 19th St",
+    "lat": 37.75916,
+    "lng": -122.43479,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14318-castro-st-20th-st",
+    "name": "Castro St & 20th St",
+    "lat": 37.75778,
+    "lng": -122.43477,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14319-castro-st-20th-st",
+    "name": "Castro St & 20th St",
+    "lat": 37.757632,
+    "lng": -122.434636,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14321-castro-st-21st-st",
+    "name": "Castro St & 21st St",
+    "lat": 37.756098,
+    "lng": -122.434625,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14320-castro-st-21st-st",
+    "name": "Castro St & 21st St",
+    "lat": 37.755955,
+    "lng": -122.434465,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14323-castro-st-22nd-st",
+    "name": "Castro St & 22nd St",
+    "lat": 37.75441,
+    "lng": -122.43431,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14322-castro-st-22nd-st",
+    "name": "Castro St & 22nd St",
+    "lat": 37.75464,
+    "lng": -122.43448,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14324-castro-st-23rd-st",
+    "name": "Castro St & 23rd St",
+    "lat": 37.752779,
+    "lng": -122.434156,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14325-castro-st-23rd-st",
+    "name": "Castro St & 23rd St",
+    "lat": 37.752895,
+    "lng": -122.434316,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14326-castro-st-24th-st",
+    "name": "Castro St & 24th St",
+    "lat": 37.7512,
+    "lng": -122.43401,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14327-castro-st-24th-st",
+    "name": "Castro St & 24th St",
+    "lat": 37.751315,
+    "lng": -122.43411,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14328-castro-st-25th-st",
+    "name": "Castro St & 25th St",
+    "lat": 37.74981,
+    "lng": -122.43404,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14329-castro-st-25th-st",
+    "name": "Castro St & 25th St",
+    "lat": 37.7496,
+    "lng": -122.43383,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17290-castro-st-26th-st",
+    "name": "Castro St & 26th St",
+    "lat": 37.748201,
+    "lng": -122.433893,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14330-castro-st-duboce-ave",
+    "name": "Castro St & Duboce Ave",
+    "lat": 37.76918,
+    "lng": -122.43596,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14331-castro-st-duboce-ave",
+    "name": "Castro St & Duboce Ave",
+    "lat": 37.76895,
+    "lng": -122.43571,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14332-castro-st-elizabeth-st",
+    "name": "Castro St & Elizabeth St",
+    "lat": 37.751886,
+    "lng": -122.434053,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14333-castro-st-elizabeth-st",
+    "name": "Castro St & Elizabeth St",
+    "lat": 37.752083,
+    "lng": -122.434248,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14334-castro-st-market-st",
+    "name": "Castro St & Market St",
+    "lat": 37.762397,
+    "lng": -122.435266,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-13940-chestnut-st-divisadero-st",
+    "name": "Chestnut St & Divisadero St",
+    "lat": 37.800051,
+    "lng": -122.442746,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13941-chestnut-st-fillmore-st",
+    "name": "Chestnut St & Fillmore St",
+    "lat": 37.800845,
+    "lng": -122.436245,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13942-chestnut-st-fillmore-st",
+    "name": "Chestnut St & Fillmore St",
+    "lat": 37.800738,
+    "lng": -122.436371,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17856-chestnut-st-gough-st",
+    "name": "Chestnut St & Gough St",
+    "lat": 37.801825,
+    "lng": -122.428104,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17857-chestnut-st-gough-st",
+    "name": "Chestnut St & Gough St",
+    "lat": 37.801914,
+    "lng": -122.427955,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13948-chestnut-st-laguna-st",
+    "name": "Chestnut St & Laguna St",
+    "lat": 37.80137,
+    "lng": -122.431406,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13947-chestnut-st-laguna-st",
+    "name": "Chestnut St & Laguna St",
+    "lat": 37.801486,
+    "lng": -122.431475,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13953-chestnut-st-pierce-st",
+    "name": "Chestnut St & Pierce St",
+    "lat": 37.80031,
+    "lng": -122.439616,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13952-chestnut-st-pierce-st",
+    "name": "Chestnut St & Pierce St",
+    "lat": 37.800506,
+    "lng": -122.439352,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13957-chestnut-st-van-ness-ave",
+    "name": "Chestnut St & Van Ness Ave",
+    "lat": 37.802199,
+    "lng": -122.424894,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13958-chestnut-st-webster-st",
+    "name": "Chestnut St & Webster St",
+    "lat": 37.801103,
+    "lng": -122.434502,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13959-chestnut-st-webster-st",
+    "name": "Chestnut St & Webster St",
+    "lat": 37.800951,
+    "lng": -122.434697,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-13984-church-st-16th-st",
+    "name": "Church St & 16th St",
+    "lat": 37.764621,
+    "lng": -122.428722,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14005-church-st-duboce-ave",
+    "name": "Church St & Duboce Ave",
+    "lat": 37.769499,
+    "lng": -122.429167,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17074-church-st-duboce-ave",
+    "name": "Church St & Duboce Ave",
+    "lat": 37.76932,
+    "lng": -122.42903,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-18059-church-st-market-st",
+    "name": "Church St & Market St",
+    "lat": 37.767286,
+    "lng": -122.429053,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17073-church-st-market-st",
+    "name": "Church St & Market St",
+    "lat": 37.767509,
+    "lng": -122.428927,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-15926-city-college-terminal",
+    "name": "City College Terminal",
+    "lat": 37.723718,
+    "lng": -122.45259,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-14015-clay-st-drumm-st",
+    "name": "Clay St & Drumm St",
+    "lat": 37.79532,
+    "lng": -122.397473,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14016-clay-st-franklin-st",
+    "name": "Clay St & Franklin St",
+    "lat": 37.791907,
+    "lng": -122.424463,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14017-clay-st-front-st",
+    "name": "Clay St & Front St",
+    "lat": 37.795116,
+    "lng": -122.399101,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14018-clay-st-grant-ave",
+    "name": "Clay St & Grant Ave",
+    "lat": 37.794263,
+    "lng": -122.405971,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14019-clay-st-hyde-st",
+    "name": "Clay St & Hyde St",
+    "lat": 37.792756,
+    "lng": -122.417899,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14020-clay-st-jones-st",
+    "name": "Clay St & Jones St",
+    "lat": 37.793173,
+    "lng": -122.414616,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14021-clay-st-kearny-st",
+    "name": "Clay St & Kearny St",
+    "lat": 37.794477,
+    "lng": -122.404411,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14022-clay-st-larkin-st",
+    "name": "Clay St & Larkin St",
+    "lat": 37.792526,
+    "lng": -122.419589,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14023-clay-st-leavenworth-st",
+    "name": "Clay St & Leavenworth St",
+    "lat": 37.792959,
+    "lng": -122.416304,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14024-clay-st-mason-st",
+    "name": "Clay St & Mason St",
+    "lat": 37.793653,
+    "lng": -122.410823,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14025-clay-st-montgomery-st",
+    "name": "Clay St & Montgomery St",
+    "lat": 37.794682,
+    "lng": -122.40277,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14026-clay-st-polk-st",
+    "name": "Clay St & Polk St",
+    "lat": 37.792357,
+    "lng": -122.42101,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14027-clay-st-powell-st",
+    "name": "Clay St & Powell St",
+    "lat": 37.793826,
+    "lng": -122.409591,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14028-clay-st-sansome-st",
+    "name": "Clay St & Sansome St",
+    "lat": 37.794778,
+    "lng": -122.401325,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14029-clay-st-stockton-st",
+    "name": "Clay St & Stockton St",
+    "lat": 37.794082,
+    "lng": -122.407561,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14030-clay-st-taylor-st",
+    "name": "Clay St & Taylor St",
+    "lat": 37.793363,
+    "lng": -122.412744,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14031-clay-st-van-ness-ave",
+    "name": "Clay St & Van Ness Ave",
+    "lat": 37.792106,
+    "lng": -122.422913,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14100-columbus-ave-bay-st",
+    "name": "Columbus Ave & Bay St",
+    "lat": 37.80551,
+    "lng": -122.41784,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14103-columbus-ave-chestnut-st",
+    "name": "Columbus Ave & Chestnut St",
+    "lat": 37.803794,
+    "lng": -122.415136,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14105-columbus-ave-filbert-st",
+    "name": "Columbus Ave & Filbert St",
+    "lat": 37.801188,
+    "lng": -122.411605,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14106-columbus-ave-francisco-st",
+    "name": "Columbus Ave & Francisco St",
+    "lat": 37.804517,
+    "lng": -122.416167,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14107-columbus-ave-francisco-st",
+    "name": "Columbus Ave & Francisco St",
+    "lat": 37.804205,
+    "lng": -122.415973,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14114-columbus-ave-lombard-st",
+    "name": "Columbus Ave & Lombard St",
+    "lat": 37.802598,
+    "lng": -122.413646,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14115-columbus-ave-mason-st",
+    "name": "Columbus Ave & Mason St",
+    "lat": 37.802089,
+    "lng": -122.41266,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14116-columbus-ave-north-point-st",
+    "name": "Columbus Ave & North Point St",
+    "lat": 37.80549,
+    "lng": -122.417589,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14118-columbus-ave-taylor-st",
+    "name": "Columbus Ave & Taylor St",
+    "lat": 37.803285,
+    "lng": -122.414643,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14119-columbus-ave-union-st",
+    "name": "Columbus Ave & Union St",
+    "lat": 37.8005,
+    "lng": -122.410356,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14120-columbus-ave-union-st",
+    "name": "Columbus Ave & Union St",
+    "lat": 37.800384,
+    "lng": -122.410505,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14143-cortland-ave-andover-st",
+    "name": "Cortland Ave & Andover St",
+    "lat": 37.73904,
+    "lng": -122.41658,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14142-cortland-ave-andover-st",
+    "name": "Cortland Ave & Andover St",
+    "lat": 37.73909,
+    "lng": -122.41639,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-18081-cortland-ave-bayshore-blvd",
+    "name": "Cortland Ave & Bayshore Blvd",
+    "lat": 37.739684,
+    "lng": -122.407769,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14148-cortland-ave-bayshore-blvd",
+    "name": "Cortland Ave & Bayshore Blvd",
+    "lat": 37.739567,
+    "lng": -122.407031,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14146-cortland-ave-bocana-st",
+    "name": "Cortland Ave & Bocana St",
+    "lat": 37.73931,
+    "lng": -122.41872,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14145-cortland-ave-bocana-st",
+    "name": "Cortland Ave & Bocana St",
+    "lat": 37.7393,
+    "lng": -122.41846,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14147-cortland-ave-bradford-st",
+    "name": "Cortland Ave & Bradford St",
+    "lat": 37.739791,
+    "lng": -122.409746,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17213-cortland-ave-bronte-st",
+    "name": "Cortland Ave & Bronte St",
+    "lat": 37.739711,
+    "lng": -122.41017,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14151-cortland-ave-ellsworth-st",
+    "name": "Cortland Ave & Ellsworth St",
+    "lat": 37.73892,
+    "lng": -122.41455,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14152-cortland-ave-ellsworth-st",
+    "name": "Cortland Ave & Ellsworth St",
+    "lat": 37.738829,
+    "lng": -122.414615,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14150-cortland-ave-elsie-st",
+    "name": "Cortland Ave & Elsie St",
+    "lat": 37.7397,
+    "lng": -122.41969,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14149-cortland-ave-elsie-st",
+    "name": "Cortland Ave & Elsie St",
+    "lat": 37.73992,
+    "lng": -122.41997,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14154-cortland-ave-folsom-st",
+    "name": "Cortland Ave & Folsom St",
+    "lat": 37.73892,
+    "lng": -122.41343,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14153-cortland-ave-folsom-st",
+    "name": "Cortland Ave & Folsom St",
+    "lat": 37.739,
+    "lng": -122.41366,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14155-cortland-ave-hilton-st",
+    "name": "Cortland Ave & Hilton St",
+    "lat": 37.739692,
+    "lng": -122.40781,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14156-cortland-ave-mission-st",
+    "name": "Cortland Ave & Mission St",
+    "lat": 37.74101,
+    "lng": -122.42267,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14157-cortland-ave-mission-st",
+    "name": "Cortland Ave & Mission St",
+    "lat": 37.74085,
+    "lng": -122.42251,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14158-cortland-ave-prentiss-st",
+    "name": "Cortland Ave & Prentiss St",
+    "lat": 37.73978,
+    "lng": -122.41199,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14159-cortland-ave-prentiss-st",
+    "name": "Cortland Ave & Prentiss St",
+    "lat": 37.73957,
+    "lng": -122.41211,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14160-cortland-ave-prospect-ave",
+    "name": "Cortland Ave & Prospect Ave",
+    "lat": 37.740294,
+    "lng": -122.420904,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14161-cortland-ave-prospect-ave",
+    "name": "Cortland Ave & Prospect Ave",
+    "lat": 37.7402,
+    "lng": -122.42093,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-18150-crissy-field-terminal",
+    "name": "Crissy Field Terminal",
+    "lat": 37.802755,
+    "lng": -122.461705,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18153-crissy-field-terminal",
+    "name": "Crissy Field Terminal",
+    "lat": 37.802778,
+    "lng": -122.461552,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17568-divisadero-st-bay-st",
+    "name": "Divisadero St & Bay St",
+    "lat": 37.801907,
+    "lng": -122.443331,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14407-divisadero-st-beach-st",
+    "name": "Divisadero St & Beach St",
+    "lat": 37.803772,
+    "lng": -122.443697,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14408-divisadero-st-bush-st",
+    "name": "Divisadero St & Bush St",
+    "lat": 37.786283,
+    "lng": -122.439996,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14410-divisadero-st-california-st",
+    "name": "Divisadero St & California St",
+    "lat": 37.787988,
+    "lng": -122.4405,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14409-divisadero-st-california-st",
+    "name": "Divisadero St & California St",
+    "lat": 37.788184,
+    "lng": -122.440385,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14411-divisadero-st-chestnut-st",
+    "name": "Divisadero St & Chestnut St",
+    "lat": 37.800087,
+    "lng": -122.442964,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14412-divisadero-st-clay-st",
+    "name": "Divisadero St & Clay St",
+    "lat": 37.789977,
+    "lng": -122.440741,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14413-divisadero-st-clay-st",
+    "name": "Divisadero St & Clay St",
+    "lat": 37.78997,
+    "lng": -122.44089,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14414-divisadero-st-eddy-st",
+    "name": "Divisadero St & Eddy St",
+    "lat": 37.780591,
+    "lng": -122.438942,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14415-divisadero-st-eddy-st",
+    "name": "Divisadero St & Eddy St",
+    "lat": 37.780591,
+    "lng": -122.438942,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14418-divisadero-st-francisco-st",
+    "name": "Divisadero St & Francisco St",
+    "lat": 37.80097,
+    "lng": -122.443136,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14422-divisadero-st-geary-blvd",
+    "name": "Divisadero St & Geary Blvd",
+    "lat": 37.78316,
+    "lng": -122.439526,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14421-divisadero-st-geary-blvd",
+    "name": "Divisadero St & Geary Blvd",
+    "lat": 37.783375,
+    "lng": -122.439412,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14424-divisadero-st-haight-st",
+    "name": "Divisadero St & Haight St",
+    "lat": 37.77105,
+    "lng": -122.4371,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14423-divisadero-st-haight-st",
+    "name": "Divisadero St & Haight St",
+    "lat": 37.771329,
+    "lng": -122.436983,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14426-divisadero-st-hayes-st",
+    "name": "Divisadero St & Hayes St",
+    "lat": 37.774889,
+    "lng": -122.437865,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14425-divisadero-st-hayes-st",
+    "name": "Divisadero St & Hayes St",
+    "lat": 37.775059,
+    "lng": -122.437739,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14427-divisadero-st-jackson-st",
+    "name": "Divisadero St & Jackson St",
+    "lat": 37.79154,
+    "lng": -122.44108,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14428-divisadero-st-mcallister-st",
+    "name": "Divisadero St & Mcallister St",
+    "lat": 37.77786,
+    "lng": -122.4383,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14429-divisadero-st-mcallister-st",
+    "name": "Divisadero St & Mcallister St",
+    "lat": 37.777682,
+    "lng": -122.438415,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14430-divisadero-st-north-point-st",
+    "name": "Divisadero St & North Point St",
+    "lat": 37.802844,
+    "lng": -122.443514,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14432-divisadero-st-oak-st",
+    "name": "Divisadero St & Oak St",
+    "lat": 37.773051,
+    "lng": -122.437487,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14431-divisadero-st-oak-st",
+    "name": "Divisadero St & Oak St",
+    "lat": 37.773185,
+    "lng": -122.43735,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14433-divisadero-st-pine-st",
+    "name": "Divisadero St & Pine St",
+    "lat": 37.786997,
+    "lng": -122.440317,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14434-divisadero-st-sutter-st",
+    "name": "Divisadero St & Sutter St",
+    "lat": 37.785338,
+    "lng": -122.439813,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14435-divisadero-st-sutter-st",
+    "name": "Divisadero St & Sutter St",
+    "lat": 37.78515,
+    "lng": -122.439939,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-14603-fillmore-st-bay-st",
+    "name": "Fillmore St & Bay St",
+    "lat": 37.802585,
+    "lng": -122.43668,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14606-fillmore-st-beach-st",
+    "name": "Fillmore St & Beach St",
+    "lat": 37.804423,
+    "lng": -122.437127,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14605-fillmore-st-broadway",
+    "name": "Fillmore St & Broadway",
+    "lat": 37.793805,
+    "lng": -122.434878,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14604-fillmore-st-broadway",
+    "name": "Fillmore St & Broadway",
+    "lat": 37.794158,
+    "lng": -122.434842,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14610-fillmore-st-cervantes-blvd",
+    "name": "Fillmore St & Cervantes Blvd",
+    "lat": 37.802817,
+    "lng": -122.436806,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14608-fillmore-st-chestnut-st",
+    "name": "Fillmore St & Chestnut St",
+    "lat": 37.801091,
+    "lng": -122.436229,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14609-fillmore-st-chestnut-st",
+    "name": "Fillmore St & Chestnut St",
+    "lat": 37.800891,
+    "lng": -122.436469,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14612-fillmore-st-eddy-st",
+    "name": "Fillmore St & Eddy St",
+    "lat": 37.781523,
+    "lng": -122.432401,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14611-fillmore-st-eddy-st",
+    "name": "Fillmore St & Eddy St",
+    "lat": 37.781733,
+    "lng": -122.432329,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14614-fillmore-st-geary-blvd",
+    "name": "Fillmore St & Geary Blvd",
+    "lat": 37.784403,
+    "lng": -122.432808,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14615-fillmore-st-geary-blvd",
+    "name": "Fillmore St & Geary Blvd",
+    "lat": 37.784359,
+    "lng": -122.433065,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14613-fillmore-st-golden-gate-ave",
+    "name": "Fillmore St & Golden Gate Ave",
+    "lat": 37.779859,
+    "lng": -122.431955,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14617-fillmore-st-grove-st",
+    "name": "Fillmore St & Grove St",
+    "lat": 37.776859,
+    "lng": -122.431472,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14616-fillmore-st-grove-st",
+    "name": "Fillmore St & Grove St",
+    "lat": 37.776998,
+    "lng": -122.431369,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14618-fillmore-st-haight-st",
+    "name": "Fillmore St & Haight St",
+    "lat": 37.772199,
+    "lng": -122.430537,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14620-fillmore-st-haight-st",
+    "name": "Fillmore St & Haight St",
+    "lat": 37.772033,
+    "lng": -122.430347,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14622-fillmore-st-hayes-st",
+    "name": "Fillmore St & Hayes St",
+    "lat": 37.775598,
+    "lng": -122.431207,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14621-fillmore-st-hayes-st",
+    "name": "Fillmore St & Hayes St",
+    "lat": 37.776106,
+    "lng": -122.431197,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14624-fillmore-st-jackson-st",
+    "name": "Fillmore St & Jackson St",
+    "lat": 37.792386,
+    "lng": -122.434607,
+    "routes": [
+      "24",
+      "22"
+    ]
+  },
+  {
+    "id": "local-14623-fillmore-st-jackson-st",
+    "name": "Fillmore St & Jackson St",
+    "lat": 37.792761,
+    "lng": -122.434556,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14625-fillmore-st-jefferson-st",
+    "name": "Fillmore St & Jefferson St",
+    "lat": 37.805609,
+    "lng": -122.437207,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14627-fillmore-st-lombard-st",
+    "name": "Fillmore St & Lombard St",
+    "lat": 37.799595,
+    "lng": -122.436051,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14626-fillmore-st-lombard-st",
+    "name": "Fillmore St & Lombard St",
+    "lat": 37.799707,
+    "lng": -122.435952,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14629-fillmore-st-mcallister-st",
+    "name": "Fillmore St & Mcallister St",
+    "lat": 37.778343,
+    "lng": -122.431762,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14628-fillmore-st-mcallister-st",
+    "name": "Fillmore St & Mcallister St",
+    "lat": 37.77854,
+    "lng": -122.431687,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14630-fillmore-st-north-point-st",
+    "name": "Fillmore St & North Point St",
+    "lat": 37.803547,
+    "lng": -122.436791,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14632-fillmore-st-oak-st",
+    "name": "Fillmore St & Oak St",
+    "lat": 37.773759,
+    "lng": -122.430866,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14631-fillmore-st-oak-st",
+    "name": "Fillmore St & Oak St",
+    "lat": 37.774268,
+    "lng": -122.430825,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14633-fillmore-st-o-farrell-st",
+    "name": "Fillmore St & O'Farrell St",
+    "lat": 37.783193,
+    "lng": -122.432627,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14634-fillmore-st-o-farrell-st",
+    "name": "Fillmore St & O'Farrell St",
+    "lat": 37.783019,
+    "lng": -122.432699,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14636-fillmore-st-pine-st",
+    "name": "Fillmore St & Pine St",
+    "lat": 37.787717,
+    "lng": -122.433655,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14635-fillmore-st-pine-st",
+    "name": "Fillmore St & Pine St",
+    "lat": 37.788049,
+    "lng": -122.433565,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14638-fillmore-st-sacramento-st",
+    "name": "Fillmore St & Sacramento St",
+    "lat": 37.789744,
+    "lng": -122.433947,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14637-fillmore-st-sacramento-st",
+    "name": "Fillmore St & Sacramento St",
+    "lat": 37.789925,
+    "lng": -122.4341,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14640-fillmore-st-sutter-st",
+    "name": "Fillmore St & Sutter St",
+    "lat": 37.786051,
+    "lng": -122.433244,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14641-fillmore-st-sutter-st",
+    "name": "Fillmore St & Sutter St",
+    "lat": 37.785814,
+    "lng": -122.433268,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14642-fillmore-st-turk-st",
+    "name": "Fillmore St & Turk St",
+    "lat": 37.780204,
+    "lng": -122.432138,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14643-fillmore-st-union-st",
+    "name": "Fillmore St & Union St",
+    "lat": 37.797391,
+    "lng": -122.435489,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-14725-fremont-st-market-st",
+    "name": "Fremont St & Market St",
+    "lat": 37.791645,
+    "lng": -122.398151,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14263-geary-blvd-17th-ave",
+    "name": "Geary Blvd & 17th Ave",
+    "lat": 37.780597,
+    "lng": -122.476045,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14264-geary-blvd-17th-ave",
+    "name": "Geary Blvd & 17th Ave",
+    "lat": 37.780463,
+    "lng": -122.475977,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14265-geary-blvd-20th-ave",
+    "name": "Geary Blvd & 20th Ave",
+    "lat": 37.780355,
+    "lng": -122.479599,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14266-geary-blvd-20th-ave",
+    "name": "Geary Blvd & 20th Ave",
+    "lat": 37.780319,
+    "lng": -122.479232,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14267-geary-blvd-22nd-ave",
+    "name": "Geary Blvd & 22nd Ave",
+    "lat": 37.780247,
+    "lng": -122.481754,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14268-geary-blvd-23rd-ave",
+    "name": "Geary Blvd & 23rd Ave",
+    "lat": 37.780167,
+    "lng": -122.48243,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14270-geary-blvd-25th-ave",
+    "name": "Geary Blvd & 25th Ave",
+    "lat": 37.780077,
+    "lng": -122.484562,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14269-geary-blvd-25th-ave",
+    "name": "Geary Blvd & 25th Ave",
+    "lat": 37.78022,
+    "lng": -122.48461,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14271-geary-blvd-28th-ave",
+    "name": "Geary Blvd & 28th Ave",
+    "lat": 37.780005,
+    "lng": -122.487806,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14272-geary-blvd-28th-ave",
+    "name": "Geary Blvd & 28th Ave",
+    "lat": 37.779862,
+    "lng": -122.488046,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14273-geary-blvd-30th-ave",
+    "name": "Geary Blvd & 30th Ave",
+    "lat": 37.779959,
+    "lng": -122.489972,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14274-geary-blvd-30th-ave",
+    "name": "Geary Blvd & 30th Ave",
+    "lat": 37.779727,
+    "lng": -122.49019,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14275-geary-blvd-32nd-ave",
+    "name": "Geary Blvd & 32nd Ave",
+    "lat": 37.779629,
+    "lng": -122.491714,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14278-geary-blvd-33rd-ave",
+    "name": "Geary Blvd & 33rd Ave",
+    "lat": 37.779798,
+    "lng": -122.493445,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14277-geary-blvd-33rd-ave",
+    "name": "Geary Blvd & 33rd Ave",
+    "lat": 37.779735,
+    "lng": -122.493112,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-14279-geary-blvd-33rd-ave",
+    "name": "Geary Blvd & 33rd Ave",
+    "lat": 37.779574,
+    "lng": -122.493399,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14280-geary-blvd-36th-ave",
+    "name": "Geary Blvd & 36th Ave",
+    "lat": 37.779671,
+    "lng": -122.496402,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14281-geary-blvd-36th-ave",
+    "name": "Geary Blvd & 36th Ave",
+    "lat": 37.779439,
+    "lng": -122.49662,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14282-geary-blvd-39th-ave",
+    "name": "Geary Blvd & 39th Ave",
+    "lat": 37.779473,
+    "lng": -122.500677,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14283-geary-blvd-39th-ave",
+    "name": "Geary Blvd & 39th Ave",
+    "lat": 37.779286,
+    "lng": -122.499829,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14255-geary-blvd-3rd-ave",
+    "name": "Geary Blvd & 3rd Ave",
+    "lat": 37.781179,
+    "lng": -122.461305,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14256-geary-blvd-3rd-ave",
+    "name": "Geary Blvd & 3rd Ave",
+    "lat": 37.781045,
+    "lng": -122.461156,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14285-geary-blvd-42nd-ave",
+    "name": "Geary Blvd & 42nd Ave",
+    "lat": 37.779151,
+    "lng": -122.502775,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14286-geary-blvd-45th-ave",
+    "name": "Geary Blvd & 45th Ave",
+    "lat": 37.779043,
+    "lng": -122.506259,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14258-geary-blvd-6th-ave",
+    "name": "Geary Blvd & 6th Ave",
+    "lat": 37.781,
+    "lng": -122.464125,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14257-geary-blvd-6th-ave",
+    "name": "Geary Blvd & 6th Ave",
+    "lat": 37.78109,
+    "lng": -122.464492,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14260-geary-blvd-9th-ave",
+    "name": "Geary Blvd & 9th Ave",
+    "lat": 37.780777,
+    "lng": -122.467323,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14259-geary-blvd-9th-ave",
+    "name": "Geary Blvd & 9th Ave",
+    "lat": 37.780982,
+    "lng": -122.467644,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-17854-geary-blvd-arguello-blvd",
+    "name": "Geary Blvd & Arguello Blvd",
+    "lat": 37.781313,
+    "lng": -122.458955,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14288-geary-blvd-arguello-blvd",
+    "name": "Geary Blvd & Arguello Blvd",
+    "lat": 37.781153,
+    "lng": -122.458692,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14289-geary-blvd-baker-st",
+    "name": "Geary Blvd & Baker St",
+    "lat": 37.782973,
+    "lng": -122.442965,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14291-geary-blvd-collins-st",
+    "name": "Geary Blvd & Collins St",
+    "lat": 37.782028,
+    "lng": -122.449911,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14290-geary-blvd-collins-st",
+    "name": "Geary Blvd & Collins St",
+    "lat": 37.782242,
+    "lng": -122.449992,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14292-geary-blvd-commonwealth-st",
+    "name": "Geary Blvd & Commonwealth St",
+    "lat": 37.781528,
+    "lng": -122.455677,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14294-geary-blvd-divisadero-st",
+    "name": "Geary Blvd & Divisadero St",
+    "lat": 37.783178,
+    "lng": -122.439572,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14293-geary-blvd-divisadero-st",
+    "name": "Geary Blvd & Divisadero St",
+    "lat": 37.783428,
+    "lng": -122.439366,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-17954-geary-blvd-fillmore-st",
+    "name": "Geary Blvd & Fillmore St",
+    "lat": 37.784382,
+    "lng": -122.432052,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14295-geary-blvd-fillmore-st",
+    "name": "Geary Blvd & Fillmore St",
+    "lat": 37.784391,
+    "lng": -122.43305,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14298-geary-blvd-gough-st",
+    "name": "Geary Blvd & Gough St",
+    "lat": 37.785434,
+    "lng": -122.425082,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14304-geary-blvd-laguna-st",
+    "name": "Geary Blvd & Laguna St",
+    "lat": 37.785033,
+    "lng": -122.427811,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14305-geary-blvd-laguna-st",
+    "name": "Geary Blvd & Laguna St",
+    "lat": 37.784854,
+    "lng": -122.428155,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-17953-geary-blvd-masonic-st",
+    "name": "Geary Blvd & Masonic St",
+    "lat": 37.782197,
+    "lng": -122.447034,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14756-geary-blvd-park-presidio-blvd",
+    "name": "Geary Blvd & Park Presidio Blvd",
+    "lat": 37.780642,
+    "lng": -122.471827,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14755-geary-blvd-park-presidio-blvd",
+    "name": "Geary Blvd & Park Presidio Blvd",
+    "lat": 37.780669,
+    "lng": -122.472802,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14758-geary-blvd-presidio-ave",
+    "name": "Geary Blvd & Presidio Ave",
+    "lat": 37.782536,
+    "lng": -122.44669,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14761-geary-blvd-scott-st",
+    "name": "Geary Blvd & Scott St",
+    "lat": 37.783624,
+    "lng": -122.437669,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14760-geary-blvd-scott-st",
+    "name": "Geary Blvd & Scott St",
+    "lat": 37.783847,
+    "lng": -122.437761,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14762-geary-blvd-spruce-st",
+    "name": "Geary Blvd & Spruce St",
+    "lat": 37.781849,
+    "lng": -122.453075,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14763-geary-blvd-spruce-st",
+    "name": "Geary Blvd & Spruce St",
+    "lat": 37.781599,
+    "lng": -122.453258,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14764-geary-blvd-stanyan-st",
+    "name": "Geary Blvd & Stanyan St",
+    "lat": 37.78126,
+    "lng": -122.456434,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14765-geary-blvd-st-joseph-s-ave",
+    "name": "Geary Blvd & St Joseph'S Ave",
+    "lat": 37.782795,
+    "lng": -122.442541,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14768-geary-blvd-van-ness-ave",
+    "name": "Geary Blvd & Van Ness Ave",
+    "lat": 37.785745,
+    "lng": -122.421575,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14769-geary-blvd-webster-st",
+    "name": "Geary Blvd & Webster St",
+    "lat": 37.784641,
+    "lng": -122.431021,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14300-geary-st-jones-st",
+    "name": "Geary St & Jones St",
+    "lat": 37.786769,
+    "lng": -122.413332,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14301-geary-st-kearny-st",
+    "name": "Geary St & Kearny St",
+    "lat": 37.787997,
+    "lng": -122.403656,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14302-geary-st-larkin-st",
+    "name": "Geary St & Larkin St",
+    "lat": 37.786137,
+    "lng": -122.41825,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14303-geary-st-leavenworth-st",
+    "name": "Geary St & Leavenworth St",
+    "lat": 37.786556,
+    "lng": -122.414971,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14757-geary-st-powell-st",
+    "name": "Geary St & Powell St",
+    "lat": 37.787401,
+    "lng": -122.408391,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14766-geary-st-stockton-st",
+    "name": "Geary St & Stockton St",
+    "lat": 37.787633,
+    "lng": -122.406568,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14767-geary-st-taylor-st",
+    "name": "Geary St & Taylor St",
+    "lat": 37.786983,
+    "lng": -122.411681,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-14905-gough-st-sacramento-st",
+    "name": "Gough St & Sacramento St",
+    "lat": 37.791041,
+    "lng": -122.425771,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-15017-hermann-st-fillmore-st",
+    "name": "Hermann St & Fillmore St",
+    "lat": 37.770307,
+    "lng": -122.429929,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-15018-hermann-st-fillmore-st",
+    "name": "Hermann St & Fillmore St",
+    "lat": 37.770248,
+    "lng": -122.429701,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-15092-industrial-st-bay-shore-blvd",
+    "name": "Industrial St & Bay Shore Blvd",
+    "lat": 37.738148,
+    "lng": -122.406539,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15093-industrial-st-bay-shore-blvd",
+    "name": "Industrial St & Bay Shore Blvd",
+    "lat": 37.737943,
+    "lng": -122.40678,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15094-industrial-st-elmira-st",
+    "name": "Industrial St & Elmira St",
+    "lat": 37.73879,
+    "lng": -122.40373,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15095-industrial-st-palou-ave",
+    "name": "Industrial St & Palou Ave",
+    "lat": 37.73955,
+    "lng": -122.40101,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15096-industrial-st-revere-ave",
+    "name": "Industrial St & Revere Ave",
+    "lat": 37.73913,
+    "lng": -122.40305,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15145-jackson-st-divisadero-st",
+    "name": "Jackson St & Divisadero St",
+    "lat": 37.791724,
+    "lng": -122.440888,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15147-jackson-st-fillmore-st",
+    "name": "Jackson St & Fillmore St",
+    "lat": 37.792529,
+    "lng": -122.434676,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15160-jackson-st-scott-st",
+    "name": "Jackson St & Scott St",
+    "lat": 37.791932,
+    "lng": -122.43924,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15161-jackson-st-scott-st",
+    "name": "Jackson St & Scott St",
+    "lat": 37.791772,
+    "lng": -122.439612,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15163-jackson-st-steiner-st",
+    "name": "Jackson St & Steiner St",
+    "lat": 37.792201,
+    "lng": -122.43632,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15162-jackson-st-steiner-st",
+    "name": "Jackson St & Steiner St",
+    "lat": 37.79235,
+    "lng": -122.436109,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15167-jackson-st-webster-st",
+    "name": "Jackson St & Webster St",
+    "lat": 37.792716,
+    "lng": -122.433025,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15173-jefferson-st-divisadero-st",
+    "name": "Jefferson St & Divisadero St",
+    "lat": 37.804557,
+    "lng": -122.443892,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-14821-kearny-st-geary-st",
+    "name": "Kearny St & Geary St",
+    "lat": 37.788051,
+    "lng": -122.403461,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15336-main-st-market-st",
+    "name": "Main St & Market St",
+    "lat": 37.79253,
+    "lng": -122.39567,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15638-market-st-1st-st",
+    "name": "Market St & 1st St",
+    "lat": 37.790485,
+    "lng": -122.399723,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15641-market-st-3rd-st",
+    "name": "Market St & 3rd St",
+    "lat": 37.787667,
+    "lng": -122.403359,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15684-market-st-montgomery-st",
+    "name": "Market St & Montgomery St",
+    "lat": 37.78849,
+    "lng": -122.40248,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15689-market-st-sansome-st",
+    "name": "Market St & Sansome St",
+    "lat": 37.790013,
+    "lng": -122.400491,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15693-market-st-steuart-st",
+    "name": "Market St & Steuart St",
+    "lat": 37.79426,
+    "lng": -122.39491,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-18152-mason-st-sports-basement",
+    "name": "Mason St - Sports Basement",
+    "lat": 37.803565,
+    "lng": -122.458967,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18151-mason-st-sports-basement",
+    "name": "Mason St - Sports Basement",
+    "lat": 37.803678,
+    "lng": -122.458867,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18027-mason-st-tunnel-top-park",
+    "name": "Mason St - Tunnel Top Park",
+    "lat": 37.804146,
+    "lng": -122.454418,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18024-mason-st-tunnel-top-park",
+    "name": "Mason St - Tunnel Top Park",
+    "lat": 37.804289,
+    "lng": -122.454166,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18023-mason-st-yacht-girard",
+    "name": "Mason St - Yacht/Girard",
+    "lat": 37.805021,
+    "lng": -122.448502,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18028-mason-st-yacht-girard",
+    "name": "Mason St - Yacht/Girard",
+    "lat": 37.804816,
+    "lng": -122.448949,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17765-mission-bay-north-4th-st",
+    "name": "Mission Bay North & 4th St",
+    "lat": 37.771062,
+    "lng": -122.390872,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-17766-mission-bay-south-4th-st-se-fs-bz",
+    "name": "Mission Bay South & 4th St Se-Fs/ Bz",
+    "lat": 37.770513,
+    "lng": -122.391037,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-15544-mission-st-11th-st",
+    "name": "Mission St & 11th St",
+    "lat": 37.774912,
+    "lng": -122.416283,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15545-mission-st-11th-st",
+    "name": "Mission St & 11th St",
+    "lat": 37.774306,
+    "lng": -122.417292,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15546-mission-st-13th-st",
+    "name": "Mission St & 13th St",
+    "lat": 37.77047,
+    "lng": -122.41978,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15548-mission-st-14th-st",
+    "name": "Mission St & 14th St",
+    "lat": 37.7678,
+    "lng": -122.42002,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15547-mission-st-14th-st",
+    "name": "Mission St & 14th St",
+    "lat": 37.76862,
+    "lng": -122.41993,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15551-mission-st-16th-st",
+    "name": "Mission St & 16th St",
+    "lat": 37.765125,
+    "lng": -122.419668,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15552-mission-st-16th-st",
+    "name": "Mission St & 16th St",
+    "lat": 37.764804,
+    "lng": -122.419737,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15554-mission-st-18th-st",
+    "name": "Mission St & 18th St",
+    "lat": 37.761761,
+    "lng": -122.419463,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15553-mission-st-18th-st",
+    "name": "Mission St & 18th St",
+    "lat": 37.762635,
+    "lng": -122.419348,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15528-mission-st-1st-st",
+    "name": "Mission St & 1st St",
+    "lat": 37.78992,
+    "lng": -122.39749,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15557-mission-st-20th-st",
+    "name": "Mission St & 20th St",
+    "lat": 37.75911,
+    "lng": -122.41902,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15558-mission-st-20th-st",
+    "name": "Mission St & 20th St",
+    "lat": 37.75817,
+    "lng": -122.41909,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15562-mission-st-22nd-st",
+    "name": "Mission St & 22nd St",
+    "lat": 37.75517,
+    "lng": -122.4188,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15561-mission-st-22nd-st",
+    "name": "Mission St & 22nd St",
+    "lat": 37.75582,
+    "lng": -122.41871,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15565-mission-st-24th-st",
+    "name": "Mission St & 24th St",
+    "lat": 37.752356,
+    "lng": -122.418401,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15566-mission-st-24th-st",
+    "name": "Mission St & 24th St",
+    "lat": 37.751964,
+    "lng": -122.418528,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15568-mission-st-26th-st",
+    "name": "Mission St & 26th St",
+    "lat": 37.74857,
+    "lng": -122.41818,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15567-mission-st-26th-st",
+    "name": "Mission St & 26th St",
+    "lat": 37.74951,
+    "lng": -122.4181,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15529-mission-st-2nd-st",
+    "name": "Mission St & 2nd St",
+    "lat": 37.78775,
+    "lng": -122.40024,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15530-mission-st-2nd-st",
+    "name": "Mission St & 2nd St",
+    "lat": 37.78787,
+    "lng": -122.39985,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15572-mission-st-30th-st",
+    "name": "Mission St & 30th St",
+    "lat": 37.742417,
+    "lng": -122.421991,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15571-mission-st-30th-st",
+    "name": "Mission St & 30th St",
+    "lat": 37.742408,
+    "lng": -122.421945,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15532-mission-st-3rd-st",
+    "name": "Mission St & 3rd St",
+    "lat": 37.78597,
+    "lng": -122.40249,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15531-mission-st-3rd-st",
+    "name": "Mission St & 3rd St",
+    "lat": 37.78651,
+    "lng": -122.40157,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15534-mission-st-4th-st",
+    "name": "Mission St & 4th St",
+    "lat": 37.78436,
+    "lng": -122.40452,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15533-mission-st-4th-st",
+    "name": "Mission St & 4th St",
+    "lat": 37.78464,
+    "lng": -122.40393,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15536-mission-st-5th-st",
+    "name": "Mission St & 5th St",
+    "lat": 37.782725,
+    "lng": -122.40664,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15535-mission-st-5th-st",
+    "name": "Mission St & 5th St",
+    "lat": 37.782716,
+    "lng": -122.406525,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15537-mission-st-6th-st",
+    "name": "Mission St & 6th St",
+    "lat": 37.78119,
+    "lng": -122.40831,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15538-mission-st-6th-st",
+    "name": "Mission St & 6th St",
+    "lat": 37.78075,
+    "lng": -122.4091,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-17129-mission-st-7th-st",
+    "name": "Mission St & 7th St",
+    "lat": 37.779354,
+    "lng": -122.410505,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15539-mission-st-7th-st",
+    "name": "Mission St & 7th St",
+    "lat": 37.77897,
+    "lng": -122.41135,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15541-mission-st-8th-st",
+    "name": "Mission St & 8th St",
+    "lat": 37.7777,
+    "lng": -122.41273,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15540-mission-st-8th-st",
+    "name": "Mission St & 8th St",
+    "lat": 37.77723,
+    "lng": -122.41355,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15543-mission-st-9th-st",
+    "name": "Mission St & 9th St",
+    "lat": 37.77594,
+    "lng": -122.41518,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15542-mission-st-9th-st",
+    "name": "Mission St & 9th St",
+    "lat": 37.77645,
+    "lng": -122.41431,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15574-mission-st-acton-st",
+    "name": "Mission St & Acton St",
+    "lat": 37.708808,
+    "lng": -122.452578,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15575-mission-st-allison-st",
+    "name": "Mission St & Allison St",
+    "lat": 37.71448,
+    "lng": -122.44264,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15578-mission-st-appleton-ave",
+    "name": "Mission St & Appleton Ave",
+    "lat": 37.73899,
+    "lng": -122.42404,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15577-mission-st-appleton-ave",
+    "name": "Mission St & Appleton Ave",
+    "lat": 37.738867,
+    "lng": -122.423871,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15579-mission-st-beale-st",
+    "name": "Mission St & Beale St",
+    "lat": 37.791144,
+    "lng": -122.395916,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15580-mission-st-bosworth-st",
+    "name": "Mission St & Bosworth St",
+    "lat": 37.73334,
+    "lng": -122.42682,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15584-mission-st-cortland-ave",
+    "name": "Mission St & Cortland Ave",
+    "lat": 37.741079,
+    "lng": -122.422874,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15583-mission-st-cortland-ave",
+    "name": "Mission St & Cortland Ave",
+    "lat": 37.741052,
+    "lng": -122.422759,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15585-mission-st-evergreen-st",
+    "name": "Mission St & Evergreen St",
+    "lat": 37.70741,
+    "lng": -122.45653,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15586-mission-st-excelsior-ave",
+    "name": "Mission St & Excelsior Ave",
+    "lat": 37.726355,
+    "lng": -122.43351,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15588-mission-st-flournoy-st",
+    "name": "Mission St & Flournoy St",
+    "lat": 37.70682,
+    "lng": -122.45906,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15589-mission-st-foote-ave",
+    "name": "Mission St & Foote Ave",
+    "lat": 37.71285,
+    "lng": -122.44462,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15590-mission-st-francis-st",
+    "name": "Mission St & Francis St",
+    "lat": 37.72635,
+    "lng": -122.43365,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-17945-mission-st-fremont-st",
+    "name": "Mission St & Fremont St",
+    "lat": 37.790261,
+    "lng": -122.396788,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15592-mission-st-geneva-ave",
+    "name": "Mission St & Geneva Ave",
+    "lat": 37.716455,
+    "lng": -122.441149,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15593-mission-st-geneva-ave",
+    "name": "Mission St & Geneva Ave",
+    "lat": 37.716642,
+    "lng": -122.440782,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15594-mission-st-goethe-st",
+    "name": "Mission St & Goethe St",
+    "lat": 37.70736,
+    "lng": -122.45708,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15595-mission-st-guttenberg-st",
+    "name": "Mission St & Guttenberg St",
+    "lat": 37.71251,
+    "lng": -122.44475,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15597-mission-st-highland-ave",
+    "name": "Mission St & Highland Ave",
+    "lat": 37.73706,
+    "lng": -122.4242,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15596-mission-st-highland-ave",
+    "name": "Mission St & Highland Ave",
+    "lat": 37.737448,
+    "lng": -122.423963,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15599-mission-st-italy-ave",
+    "name": "Mission St & Italy Ave",
+    "lat": 37.71865,
+    "lng": -122.439259,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15598-mission-st-italy-ave",
+    "name": "Mission St & Italy Ave",
+    "lat": 37.71915,
+    "lng": -122.439087,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15600-mission-st-lawrence-ave",
+    "name": "Mission St & Lawrence Ave",
+    "lat": 37.7095,
+    "lng": -122.45087,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15602-mission-st-lowell-st",
+    "name": "Mission St & Lowell St",
+    "lat": 37.711432,
+    "lng": -122.446486,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15601-mission-st-lowell-st",
+    "name": "Mission St & Lowell St",
+    "lat": 37.711468,
+    "lng": -122.446291,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15604-mission-st-mt-vernon-ave",
+    "name": "Mission St & Mt Vernon Ave",
+    "lat": 37.7147,
+    "lng": -122.44265,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15605-mission-st-murray-st",
+    "name": "Mission St & Murray St",
+    "lat": 37.73404,
+    "lng": -122.42592,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15608-mission-st-oliver-st",
+    "name": "Mission St & Oliver St",
+    "lat": 37.70962,
+    "lng": -122.45006,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15609-mission-st-onondaga-ave",
+    "name": "Mission St & Onondaga Ave",
+    "lat": 37.721282,
+    "lng": -122.437483,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15610-mission-st-persia-ave",
+    "name": "Mission St & Persia Ave",
+    "lat": 37.72338,
+    "lng": -122.43568,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15616-mission-st-persia-st",
+    "name": "Mission St & Persia St",
+    "lat": 37.723263,
+    "lng": -122.435971,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-17841-mission-st-power-st",
+    "name": "Mission St & Power St",
+    "lat": 37.746245,
+    "lng": -122.419401,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15614-mission-st-richland-ave",
+    "name": "Mission St & Richland Ave",
+    "lat": 37.73562,
+    "lng": -122.4247,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15613-mission-st-richland-ave",
+    "name": "Mission St & Richland Ave",
+    "lat": 37.73591,
+    "lng": -122.42442,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15615-mission-st-russia-ave",
+    "name": "Mission St & Russia Ave",
+    "lat": 37.721469,
+    "lng": -122.437117,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-17099-mission-st-san-jose-ave",
+    "name": "Mission St & San Jose Ave",
+    "lat": 37.706372,
+    "lng": -122.459975,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15619-mission-st-sickles-ave",
+    "name": "Mission St & Sickles Ave",
+    "lat": 37.70866,
+    "lng": -122.45332,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15621-mission-st-silver-ave",
+    "name": "Mission St & Silver Ave",
+    "lat": 37.728723,
+    "lng": -122.431354,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15620-mission-st-silver-ave",
+    "name": "Mission St & Silver Ave",
+    "lat": 37.728723,
+    "lng": -122.43132,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-17299-mission-st-south-van-ness-ave",
+    "name": "Mission St & South Van Ness Ave",
+    "lat": 37.772994,
+    "lng": -122.418485,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15623-mission-st-spear-st",
+    "name": "Mission St & Spear St",
+    "lat": 37.79239,
+    "lng": -122.39435,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15625-mission-st-trumbull-st",
+    "name": "Mission St & Trumbull St",
+    "lat": 37.73045,
+    "lng": -122.42971,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15624-mission-st-trumbull-st",
+    "name": "Mission St & Trumbull St",
+    "lat": 37.73066,
+    "lng": -122.42927,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15626-mission-st-valencia-st",
+    "name": "Mission St & Valencia St",
+    "lat": 37.74508,
+    "lng": -122.4203,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15627-mission-st-whittier-st",
+    "name": "Mission St & Whittier St",
+    "lat": 37.71048,
+    "lng": -122.44834,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15628-mission-st-whittier-st",
+    "name": "Mission St & Whittier St",
+    "lat": 37.71022,
+    "lng": -122.44845,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-15490-newcomb-ave-newhall-st",
+    "name": "Newcomb Ave & Newhall St",
+    "lat": 37.736304,
+    "lng": -122.391522,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15491-newhall-st-oakdale-ave",
+    "name": "Newhall St & Oakdale Ave",
+    "lat": 37.735796,
+    "lng": -122.392175,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15732-noe-st-27th-st",
+    "name": "Noe St & 27th St",
+    "lat": 37.74668,
+    "lng": -122.43148,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15733-noe-st-27th-st",
+    "name": "Noe St & 27th St",
+    "lat": 37.74654,
+    "lng": -122.43132,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15734-noe-st-28th-st",
+    "name": "Noe St & 28th St",
+    "lat": 37.74519,
+    "lng": -122.43134,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15735-noe-st-28th-st",
+    "name": "Noe St & 28th St",
+    "lat": 37.74493,
+    "lng": -122.43117,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15737-noe-st-29th-st",
+    "name": "Noe St & 29th St",
+    "lat": 37.7433,
+    "lng": -122.43104,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15736-noe-st-29th-st",
+    "name": "Noe St & 29th St",
+    "lat": 37.743311,
+    "lng": -122.431179,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15738-noe-st-30th-st",
+    "name": "Noe St & 30th St",
+    "lat": 37.74201,
+    "lng": -122.43101,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15459-north-point-st-hyde-st",
+    "name": "North Point St & Hyde St",
+    "lat": 37.805633,
+    "lng": -122.420467,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15458-north-point-st-hyde-st",
+    "name": "North Point St & Hyde St",
+    "lat": 37.805803,
+    "lng": -122.420226,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15464-north-point-st-larkin-st",
+    "name": "North Point St & Larkin St",
+    "lat": 37.80559,
+    "lng": -122.42189,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15465-north-point-st-larkin-st",
+    "name": "North Point St & Larkin St",
+    "lat": 37.805411,
+    "lng": -122.422106,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15469-north-point-st-polk-st",
+    "name": "North Point St & Polk St",
+    "lat": 37.805241,
+    "lng": -122.423494,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15468-north-point-st-polk-st",
+    "name": "North Point St & Polk St",
+    "lat": 37.805313,
+    "lng": -122.423987,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15472-north-point-st-van-ness-ave",
+    "name": "North Point St & Van Ness Ave",
+    "lat": 37.805045,
+    "lng": -122.42495,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-15781-ocean-ave-balboa-park-bart-station",
+    "name": "Ocean Ave/Balboa Park BART Station",
+    "lat": 37.722942,
+    "lng": -122.447493,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15782-ocean-ave-cayuga-ave",
+    "name": "Ocean Ave & Cayuga Ave",
+    "lat": 37.72367,
+    "lng": -122.43867,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15783-ocean-ave-cayuga-ave",
+    "name": "Ocean Ave & Cayuga Ave",
+    "lat": 37.72357,
+    "lng": -122.43853,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15790-ocean-ave-howth-st",
+    "name": "Ocean Ave & Howth St",
+    "lat": 37.723022,
+    "lng": -122.449784,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15791-ocean-ave-howth-st",
+    "name": "Ocean Ave & Howth St",
+    "lat": 37.72286,
+    "lng": -122.44929,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-17804-ocean-ave-i-280-on-ramp",
+    "name": "Ocean Ave & I-280 On Ramp",
+    "lat": 37.723031,
+    "lng": -122.446932,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15796-ocean-ave-mission-st",
+    "name": "Ocean Ave & Mission St",
+    "lat": 37.723887,
+    "lng": -122.436143,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15800-ocean-ave-otsego-ave",
+    "name": "Ocean Ave & Otsego Ave",
+    "lat": 37.72326,
+    "lng": -122.44124,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-17638-ocean-ave-otsego-ave",
+    "name": "Ocean Ave & Otsego Ave",
+    "lat": 37.723433,
+    "lng": -122.440816,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15801-ocean-ave-persia-ave",
+    "name": "Ocean Ave & Persia Ave",
+    "lat": 37.72382,
+    "lng": -122.43589,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15804-ocean-ave-san-jose-ave",
+    "name": "Ocean Ave & San Jose Ave",
+    "lat": 37.723004,
+    "lng": -122.444951,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15805-ocean-ave-san-jose-st",
+    "name": "Ocean Ave & San Jose St",
+    "lat": 37.7229,
+    "lng": -122.4444,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-15810-o-farrell-st-grant-ave",
+    "name": "O'Farrell St & Grant Ave",
+    "lat": 37.786642,
+    "lng": -122.405629,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15813-o-farrell-st-larkin-st",
+    "name": "O'Farrell St & Larkin St",
+    "lat": 37.785138,
+    "lng": -122.4177,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15814-o-farrell-st-leavenworth-st",
+    "name": "O'Farrell St & Leavenworth St",
+    "lat": 37.785538,
+    "lng": -122.414445,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15817-o-farrell-st-powell-st",
+    "name": "O'Farrell St & Powell St",
+    "lat": 37.786322,
+    "lng": -122.40814,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-17301-o-farrell-st-taylor-st",
+    "name": "O'Farrell St & Taylor St",
+    "lat": 37.78585,
+    "lng": -122.41198,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-15818-o-farrell-st-van-ness-ave",
+    "name": "O'Farrell St & Van Ness Ave",
+    "lat": 37.784657,
+    "lng": -122.421415,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-17870-otis-mccoppin-st",
+    "name": "Otis & Mccoppin St",
+    "lat": 37.771603,
+    "lng": -122.420365,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15836-otis-st-12th-st",
+    "name": "Otis St & 12th St",
+    "lat": 37.77281,
+    "lng": -122.41917,
+    "routes": [
+      "14",
+      "49"
+    ]
+  },
+  {
+    "id": "local-15867-palou-ave-industrial-st",
+    "name": "Palou Ave & Industrial St",
+    "lat": 37.739529,
+    "lng": -122.400547,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15877-palou-ave-newhall-st",
+    "name": "Palou Ave & Newhall St",
+    "lat": 37.735029,
+    "lng": -122.39292,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17756-palou-ave-newhall-st",
+    "name": "Palou Ave & Newhall St",
+    "lat": 37.735162,
+    "lng": -122.392886,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15879-palou-ave-phelps-st",
+    "name": "Palou Ave & Phelps St",
+    "lat": 37.7361,
+    "lng": -122.394535,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15880-palou-ave-phelps-st",
+    "name": "Palou Ave & Phelps St",
+    "lat": 37.7361,
+    "lng": -122.39481,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15882-palou-ave-quint-st",
+    "name": "Palou Ave & Quint St",
+    "lat": 37.737216,
+    "lng": -122.396722,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15881-palou-ave-quint-st",
+    "name": "Palou Ave & Quint St",
+    "lat": 37.737163,
+    "lng": -122.396367,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15883-palou-ave-rankin-st",
+    "name": "Palou Ave & Rankin St",
+    "lat": 37.73821,
+    "lng": -122.39824,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-15884-palou-ave-rankin-st",
+    "name": "Palou Ave & Rankin St",
+    "lat": 37.73825,
+    "lng": -122.39853,
+    "routes": [
+      "24"
+    ]
+  },
+  {
+    "id": "local-17743-persia-st-mission-st",
+    "name": "Persia St & Mission St",
+    "lat": 37.72337,
+    "lng": -122.436246,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-16109-point-lobos-ave-42nd-ave",
+    "name": "Point Lobos Ave & 42nd Ave",
+    "lat": 37.779651,
+    "lng": -122.502855,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-16111-point-lobos-ave-44th-ave",
+    "name": "Point Lobos Ave & 44th Ave",
+    "lat": 37.779837,
+    "lng": -122.50501,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-16129-point-lobos-ave-46th-ave",
+    "name": "Point Lobos Ave & 46th Ave",
+    "lat": 37.780041,
+    "lng": -122.50744,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-16290-sacramento-st-battery-st",
+    "name": "Sacramento St & Battery St",
+    "lat": 37.79418,
+    "lng": -122.400282,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16291-sacramento-st-buchanan-st",
+    "name": "Sacramento St & Buchanan St",
+    "lat": 37.79036,
+    "lng": -122.4306,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16292-sacramento-st-buchanan-st",
+    "name": "Sacramento St & Buchanan St",
+    "lat": 37.790194,
+    "lng": -122.430855,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16294-sacramento-st-davis-st",
+    "name": "Sacramento St & Davis St",
+    "lat": 37.79455,
+    "lng": -122.3976,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16296-sacramento-st-fillmore-st",
+    "name": "Sacramento St & Fillmore St",
+    "lat": 37.78981,
+    "lng": -122.43382,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16295-sacramento-st-fillmore-st",
+    "name": "Sacramento St & Fillmore St",
+    "lat": 37.78988,
+    "lng": -122.43429,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16297-sacramento-st-franklin-st",
+    "name": "Sacramento St & Franklin St",
+    "lat": 37.79118,
+    "lng": -122.42407,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16298-sacramento-st-gough-st",
+    "name": "Sacramento St & Gough St",
+    "lat": 37.79092,
+    "lng": -122.42613,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16299-sacramento-st-grant-ave",
+    "name": "Sacramento St & Grant Ave",
+    "lat": 37.793411,
+    "lng": -122.406306,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16300-sacramento-st-hyde-st",
+    "name": "Sacramento St & Hyde St",
+    "lat": 37.79199,
+    "lng": -122.41749,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16301-sacramento-st-jones-st",
+    "name": "Sacramento St & Jones St",
+    "lat": 37.79242,
+    "lng": -122.4142,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16302-sacramento-st-kearny-st",
+    "name": "Sacramento St & Kearny St",
+    "lat": 37.79362,
+    "lng": -122.40482,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16306-sacramento-st-laguna-st",
+    "name": "Sacramento St & Laguna St",
+    "lat": 37.7904,
+    "lng": -122.4293,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16305-sacramento-st-laguna-st",
+    "name": "Sacramento St & Laguna St",
+    "lat": 37.79057,
+    "lng": -122.42888,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16303-sacramento-st-larkin-st",
+    "name": "Sacramento St & Larkin St",
+    "lat": 37.79175,
+    "lng": -122.4195,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16304-sacramento-st-leavenworth-st",
+    "name": "Sacramento St & Leavenworth St",
+    "lat": 37.79221,
+    "lng": -122.41587,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16307-sacramento-st-montgomery-st",
+    "name": "Sacramento St & Montgomery St",
+    "lat": 37.79382,
+    "lng": -122.4031,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16309-sacramento-st-octavia-st",
+    "name": "Sacramento St & Octavia St",
+    "lat": 37.79076,
+    "lng": -122.42746,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16310-sacramento-st-octavia-st",
+    "name": "Sacramento St & Octavia St",
+    "lat": 37.79061,
+    "lng": -122.4276,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16311-sacramento-st-polk-st",
+    "name": "Sacramento St & Polk St",
+    "lat": 37.79155,
+    "lng": -122.42118,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16312-sacramento-st-powell-st",
+    "name": "Sacramento St & Powell St",
+    "lat": 37.79305,
+    "lng": -122.40926,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16313-sacramento-st-presidio-ave",
+    "name": "Sacramento St & Presidio Ave",
+    "lat": 37.788175,
+    "lng": -122.447057,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16314-sacramento-st-sansome-st",
+    "name": "Sacramento St & Sansome St",
+    "lat": 37.794055,
+    "lng": -122.401452,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16315-sacramento-st-sproule-ln",
+    "name": "Sacramento St & Sproule Ln",
+    "lat": 37.79271,
+    "lng": -122.4119,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16316-sacramento-st-stockton-st",
+    "name": "Sacramento St & Stockton St",
+    "lat": 37.79328,
+    "lng": -122.40755,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16317-sacramento-st-van-ness-ave",
+    "name": "Sacramento St & Van Ness Ave",
+    "lat": 37.79141,
+    "lng": -122.42227,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16319-sacramento-st-webster-st",
+    "name": "Sacramento St & Webster St",
+    "lat": 37.79013,
+    "lng": -122.43225,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16320-sacramento-st-webster-st",
+    "name": "Sacramento St & Webster St",
+    "lat": 37.789987,
+    "lng": -122.4325,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-18088-south-van-ness-ave-market-st",
+    "name": "South Van Ness Ave & Market St",
+    "lat": 37.7751,
+    "lng": -122.41924,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-16425-starr-king-way-gough-st",
+    "name": "Starr King Way & Gough St",
+    "lat": 37.78505,
+    "lng": -122.424085,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-16486-steiner-st-california-st",
+    "name": "Steiner St & California St",
+    "lat": 37.78884,
+    "lng": -122.43561,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16487-steiner-st-green-st",
+    "name": "Steiner St & Green St",
+    "lat": 37.795859,
+    "lng": -122.436863,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-16488-steiner-st-green-st",
+    "name": "Steiner St & Green St",
+    "lat": 37.79606,
+    "lng": -122.43707,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-16489-steiner-st-sacramento-st",
+    "name": "Steiner St & Sacramento St",
+    "lat": 37.789329,
+    "lng": -122.435556,
+    "routes": [
+      "1"
+    ]
+  },
+  {
+    "id": "local-16491-steiner-st-union-st",
+    "name": "Steiner St & Union St",
+    "lat": 37.79668,
+    "lng": -122.43721,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-16490-steiner-st-union-st",
+    "name": "Steiner St & Union St",
+    "lat": 37.796785,
+    "lng": -122.437054,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-16492-steiner-st-vallejo-st",
+    "name": "Steiner St & Vallejo St",
+    "lat": 37.794911,
+    "lng": -122.436669,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-16493-steiner-st-vallejo-st",
+    "name": "Steiner St & Vallejo St",
+    "lat": 37.7949,
+    "lng": -122.43685,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-16498-steuart-st-mission-st",
+    "name": "Steuart St & Mission St",
+    "lat": 37.7933,
+    "lng": -122.39344,
+    "routes": [
+      "14"
+    ]
+  },
+  {
+    "id": "local-16511-stockton-st-clay-st",
+    "name": "Stockton St & Clay St",
+    "lat": 37.79381,
+    "lng": -122.40779,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16512-stockton-st-columbus-ave",
+    "name": "Stockton St & Columbus Ave",
+    "lat": 37.79913,
+    "lng": -122.40887,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16513-stockton-st-columbus-ave",
+    "name": "Stockton St & Columbus Ave",
+    "lat": 37.799277,
+    "lng": -122.40905,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16516-stockton-st-geary-st",
+    "name": "Stockton St & Geary St",
+    "lat": 37.787704,
+    "lng": -122.406729,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16520-stockton-st-pacific-ave",
+    "name": "Stockton St & Pacific Ave",
+    "lat": 37.796306,
+    "lng": -122.408295,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16521-stockton-st-pacific-ave",
+    "name": "Stockton St & Pacific Ave",
+    "lat": 37.79716,
+    "lng": -122.40862,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16522-stockton-st-sacramento-st",
+    "name": "Stockton St & Sacramento St",
+    "lat": 37.79348,
+    "lng": -122.40788,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16524-stockton-st-sutter-st",
+    "name": "Stockton St & Sutter St",
+    "lat": 37.78997,
+    "lng": -122.40716,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16523-stockton-st-sutter-st",
+    "name": "Stockton St & Sutter St",
+    "lat": 37.79013,
+    "lng": -122.40705,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18116-stockton-st-washington-st",
+    "name": "Stockton St & Washington St",
+    "lat": 37.79486,
+    "lng": -122.408009,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16526-stockton-st-washington-st",
+    "name": "Stockton St & Washington St",
+    "lat": 37.794707,
+    "lng": -122.408118,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-16596-sutter-st-kearny-st",
+    "name": "Sutter St & Kearny St",
+    "lat": 37.789818,
+    "lng": -122.404378,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17235-townsend-st-4th-st",
+    "name": "Townsend St & 4th St",
+    "lat": 37.777278,
+    "lng": -122.394631,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-18109-townsend-st-lusk-st",
+    "name": "Townsend St & Lusk St",
+    "lat": 37.777875,
+    "lng": -122.393908,
+    "routes": [
+      "30"
+    ]
+  },
+  {
+    "id": "local-17916-transit-center-bay-d",
+    "name": "Transit Center Bay D",
+    "lat": 37.789975,
+    "lng": -122.395206,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-16754-union-st-fillmore-st",
+    "name": "Union St & Fillmore St",
+    "lat": 37.797124,
+    "lng": -122.435661,
+    "routes": [
+      "22"
+    ]
+  },
+  {
+    "id": "local-15511-v-a-hospital",
+    "name": "V.A. Hospital",
+    "lat": 37.781827,
+    "lng": -122.504106,
+    "routes": [
+      "38"
+    ]
+  },
+  {
+    "id": "local-16806-van-ness-ave-bay-st",
+    "name": "Van Ness Ave & Bay St",
+    "lat": 37.804287,
+    "lng": -122.424996,
+    "routes": [
+      "49",
+      "30"
+    ]
+  },
+  {
+    "id": "local-18092-van-ness-ave-bush-st",
+    "name": "Van Ness Ave & Bush St",
+    "lat": 37.788449,
+    "lng": -122.421918,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-16800-van-ness-ave-chestnut-st",
+    "name": "Van Ness Ave & Chestnut St",
+    "lat": 37.80258,
+    "lng": -122.42464,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-16801-van-ness-ave-chestnut-st",
+    "name": "Van Ness Ave & Chestnut St",
+    "lat": 37.802431,
+    "lng": -122.424905,
+    "routes": [
+      "49",
+      "30"
+    ]
+  },
+  {
+    "id": "local-18093-van-ness-ave-clay-st",
+    "name": "Van Ness Ave & Clay St",
+    "lat": 37.792134,
+    "lng": -122.422661,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18103-van-ness-ave-eddy-st",
+    "name": "Van Ness Ave & Eddy St",
+    "lat": 37.782917,
+    "lng": -122.420865,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18090-van-ness-ave-eddy-st",
+    "name": "Van Ness Ave & Eddy St",
+    "lat": 37.782854,
+    "lng": -122.420785,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18091-van-ness-ave-geary-blvd",
+    "name": "Van Ness Ave & Geary Blvd",
+    "lat": 37.785647,
+    "lng": -122.421368,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18099-van-ness-ave-jackson-st",
+    "name": "Van Ness Ave & Jackson St",
+    "lat": 37.793963,
+    "lng": -122.423096,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18105-van-ness-ave-market-st",
+    "name": "Van Ness Ave & Market St",
+    "lat": 37.775172,
+    "lng": -122.419309,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18104-van-ness-ave-mcallister-st",
+    "name": "Van Ness Ave & Mcallister St",
+    "lat": 37.780097,
+    "lng": -122.420304,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18089-van-ness-ave-mcallister-st",
+    "name": "Van Ness Ave & Mcallister St",
+    "lat": 37.780035,
+    "lng": -122.420224,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-16820-van-ness-ave-north-point-st",
+    "name": "Van Ness Ave & North Point St",
+    "lat": 37.805072,
+    "lng": -122.42542,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-16819-van-ness-ave-north-point-st",
+    "name": "Van Ness Ave & North Point St",
+    "lat": 37.80485,
+    "lng": -122.42546,
+    "routes": [
+      "49",
+      "30"
+    ]
+  },
+  {
+    "id": "local-18102-van-ness-ave-o-farrell-st",
+    "name": "Van Ness Ave & O'Farrell St",
+    "lat": 37.784782,
+    "lng": -122.421208,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18094-van-ness-ave-pacific-st",
+    "name": "Van Ness Ave & Pacific St",
+    "lat": 37.794784,
+    "lng": -122.423199,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18100-van-ness-ave-sacramento-st",
+    "name": "Van Ness Ave & Sacramento St",
+    "lat": 37.791313,
+    "lng": -122.42257,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18101-van-ness-ave-sutter-st",
+    "name": "Van Ness Ave & Sutter St",
+    "lat": 37.787574,
+    "lng": -122.42178,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18097-van-ness-ave-union-st",
+    "name": "Van Ness Ave & Union St",
+    "lat": 37.798576,
+    "lng": -122.424035,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18096-van-ness-ave-union-st",
+    "name": "Van Ness Ave & Union St",
+    "lat": 37.798514,
+    "lng": -122.423955,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18098-van-ness-ave-vallejo-st",
+    "name": "Van Ness Ave & Vallejo St",
+    "lat": 37.79672,
+    "lng": -122.423657,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-18095-van-ness-ave-vallejo-st",
+    "name": "Van Ness Ave & Vallejo St",
+    "lat": 37.796801,
+    "lng": -122.4236,
+    "routes": [
+      "49"
+    ]
+  },
+  {
+    "id": "local-16931-washington-st-webster-st",
+    "name": "Washington St & Webster St",
+    "lat": 37.791716,
+    "lng": -122.432842,
+    "routes": [
+      "24"
+    ]
+  }
+]

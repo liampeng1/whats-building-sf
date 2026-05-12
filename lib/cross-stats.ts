@@ -34,6 +34,19 @@ export interface NhoodStats {
   area_sqm: number
   zoning_share: Partial<Record<ZoningCategory, number>>
   transit_coverage: Record<TransitBand, number>
+  /** % of nhood land within ¼ mi of any frequent transit (rail ∪ rapid-bus ∪ frequent-local). */
+  near_rail_pct: number
+}
+
+export interface ZoningDistrict {
+  /** Planning-code district code, e.g. "RH-1". */
+  code: string
+  /** Human-readable name, e.g. "Residential — single-family". */
+  name: string
+  /** One-line plain-English description. */
+  description: string
+  /** 0..1 — share of the parent zoning category's total area. */
+  land_share_within_cat: number
 }
 
 export interface ZoningStats {
@@ -42,6 +55,17 @@ export interface ZoningStats {
   share_of_sf: number
   neighborhood_share: Record<string, number>
   transit_coverage: Record<TransitBand, number>
+  /** Drill-down: zoning_sim districts inside this category, sorted by share desc. */
+  districts: ZoningDistrict[]
+}
+
+export type { TransitTier } from './transit-stations'
+import type { TransitTier } from './transit-stations'
+
+export interface TierStats {
+  tier: TransitTier
+  area_sqm: number
+  share_of_sf: number
 }
 
 export interface TransitBandStats {
@@ -71,6 +95,8 @@ export interface CrossStats {
   zoning: ZoningStats[]
   transit_bands: TransitBandStats[]
   transit_bands_rapid_bus?: RapidBusBandStats[]
+  /** Four mutually-exclusive transit-tier polygons: rail / rapid-bus / local-bus / poor. */
+  transit_tiers: TierStats[]
 }
 
 let cached: CrossStats | null = null
