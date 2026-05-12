@@ -740,10 +740,15 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           lensStats={lensStats}
           statusLine={summarySentence}
           onClose={() => setLensOpen(null)}
-          onSelectRegion={(kind, id) => {
+          onSelectRegion={(kind, id, extra) => {
             if (kind === 'neighborhood') openNhoodPanel(id)
-            // 'zoning' = category click; drill-down handled inside the drawer.
-            // 'tier'   = no detail panel for now.
+            else if (kind === 'district') {
+              // Specific zoning district click from drill-down — open the
+              // existing ZoningDistrictPanel. `extra` carries the gen category.
+              setSelectedZoningDistrict({ zoningSim: id, gen: extra ?? '' })
+            }
+            // 'zoning'  = category click; drill-down handled inside the drawer.
+            // 'tier'    = no detail panel for now.
           }}
         />
       </div>

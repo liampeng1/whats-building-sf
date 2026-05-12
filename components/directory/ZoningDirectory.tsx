@@ -8,6 +8,7 @@ interface Props {
   geo: ZoningStats[]
   lens: Record<string, ZoningLensStats>
   onSelect: (cat: ZoningCategory) => void
+  onSelectDistrict?: (code: string, gen: ZoningCategory) => void
 }
 
 const COLORS: Record<ZoningCategory, string> = {
@@ -19,7 +20,7 @@ const COLORS: Record<ZoningCategory, string> = {
   Other:       '#a8a29e',
 }
 
-export function ZoningDirectory({ geo, lens, onSelect }: Props) {
+export function ZoningDirectory({ geo, lens, onSelect, onSelectDistrict }: Props) {
   const [expanded, setExpanded] = useState<ZoningCategory | null>(null)
 
   return (
@@ -78,15 +79,37 @@ export function ZoningDirectory({ geo, lens, onSelect }: Props) {
                 <div className="text-[9px] font-mono uppercase tracking-wider text-ink-faint mb-1">
                   Districts within {z.category}
                 </div>
-                {z.districts.slice(0, 12).map((d) => (
-                  <div key={d.code} className="grid grid-cols-[80px_1fr_40px] gap-2 items-baseline py-0.5">
-                    <span className="font-mono text-[11px] font-semibold">{d.code}</span>
-                    <span className="text-[10px] text-ink-faint truncate">{d.description}</span>
-                    <span className="text-right font-mono text-[10px] text-construction font-semibold">
-                      {pct(d.land_share_within_cat)}
-                    </span>
-                  </div>
-                ))}
+                {z.districts.slice(0, 12).map((d) => {
+                  const row = (
+                    <>
+                      <span className="font-mono text-[11px] font-semibold">{d.code}</span>
+                      <span className="text-[10px] text-ink-faint truncate">{d.description}</span>
+                      <span className="text-right font-mono text-[10px] text-construction font-semibold">
+                        {pct(d.land_share_within_cat)}
+                      </span>
+                    </>
+                  )
+                  if (!onSelectDistrict) {
+                    return (
+                      <div key={d.code} className="grid grid-cols-[80px_1fr_40px] gap-2 items-baseline py-0.5">
+                        {row}
+                      </div>
+                    )
+                  }
+                  return (
+                    <button
+                      key={d.code}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onSelectDistrict(d.code, z.category)
+                      }}
+                      className="grid grid-cols-[80px_1fr_40px] gap-2 items-baseline py-1 -mx-1 px-1 w-full text-left rounded hover:bg-paper transition focus:outline-none focus:ring-2 focus:ring-ink/30"
+                    >
+                      {row}
+                    </button>
+                  )
+                })}
               </div>
             )}
           </li>

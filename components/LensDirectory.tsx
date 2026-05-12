@@ -14,8 +14,9 @@ interface Props {
   statusLine: string
   onClose: () => void
   onSelectRegion: (
-    kind: 'neighborhood' | 'zoning' | 'tier',
+    kind: 'neighborhood' | 'zoning' | 'tier' | 'district',
     id: string,
+    extra?: string,
   ) => void
 }
 
@@ -83,6 +84,7 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
           geo={crossStats?.zoning ?? []}
           lens={lensStats?.zoning ?? {}}
           onSelect={(cat) => onSelectRegion('zoning', cat as string)}
+          onSelectDistrict={(code, gen) => onSelectRegion('district', code, gen as string)}
         />
       )}
       {mode === 'transit' && (
