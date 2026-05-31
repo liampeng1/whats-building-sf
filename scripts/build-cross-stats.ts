@@ -321,15 +321,12 @@ async function main() {
     // TIDA — governed elsewhere
     'TI-R', 'TI-MU', 'TI-OS', 'TI-PCI',
     'YBI-R', 'YBI-MU', 'YBI-OS', 'YBI-PCI',
-    // Higher-density Residential — Planning Code §209
-    'RH-1(D)', 'RH-1(S)',
-    'RM-2', 'RM-3', 'RM-4',
-    // Transit-oriented Residential — §207.6
-    'RTO-1', 'RTO-M',
-    // Downtown Residential Transfer
+    // Downtown Residential Transfer — not in the residential summary table (Phase 2)
     'RH DTR', 'SB-DTR', 'TB DTR',
-    // Misc Mixed Use / Industrial — Planning Code §219, §216
+    // Misc Mixed Use / Industrial — Planning Code §219, §216 (Phase 2)
     'UMU', 'SALI', 'S-MU', 'SPD', 'WMUO',
+    // NOTE: the residential family (RH-1(D)/(S), RM-2/3/4, RTO-1/M, …) is now
+    // transcribed in lib/zoning-rules.ts — removed from this fallback allowlist.
   ])
   const presentCodes = new Set(Object.keys(ZONING_RULES))
   const datasetCodes = new Set(
