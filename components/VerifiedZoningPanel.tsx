@@ -176,6 +176,13 @@ export function VerifiedPanel({
         </div>
       )}
 
+      {/* Use-only districts (e.g. P, M, SALI) carry a short explanatory note in
+          place of FAR/density/open-space scalars — so the near-empty card reads
+          as honestly map-/code-governed rather than broken. */}
+      {rec.controls_note && (
+        <p className="pt-3 text-[11px] text-ink-soft leading-snug">{rec.controls_note}</p>
+      )}
+
       {/* Full source-backed controls, each with a verbatim-quote disclosure.
           Rendered as a custom block (not primary.rows) because each row carries
           a <details> "what the code says". */}

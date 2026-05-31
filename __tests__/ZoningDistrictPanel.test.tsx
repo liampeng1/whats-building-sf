@@ -31,3 +31,8 @@ it('renders RTO-1 mix + parking rows and omits non-residential FAR', () => {
   const links = screen.getAllByRole('link') as HTMLAnchorElement[]
   expect(links.some((a) => a.href.includes('/sf_planning/'))).toBe(true)  // §-deep-links present
 })
+
+it('renders Public (P) with its controls note and no crash on absent metrics', () => {
+  render(<ZoningDistrictPanel zoningSim="P" gen="Public" districtName="P" onClose={() => {}} />)
+  expect(screen.getByText(/uses governed by §211/i)).toBeInTheDocument()
+})
