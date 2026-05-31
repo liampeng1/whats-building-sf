@@ -13,3 +13,20 @@ it('shows verified RM-2 rules, a verbatim quote, and a real amlegal link', () =>
   expect(links.some((a) => a.href.includes('/sf_planning/0-0-0-19952'))).toBe(true)   // §207 deep-link
   expect(links.some((a) => a.href.includes('sfplanning.org') && a.href.includes('.pdf'))).toBe(true) // source doc
 })
+
+it('reveals the verbatim "what the code says" disclosure for a rule', () => {
+  render(<ZoningDistrictPanel zoningSim="RM-2" gen="Residential" districtName="RM-2" onClose={() => {}} />)
+  // The progressive-disclosure summary exists, and the verbatim source sentence
+  // is in the DOM (inside the collapsed <details>).
+  expect(screen.getAllByText(/what the code says/i).length).toBeGreaterThan(0)
+  expect(screen.getByText(/Three dwelling units per lot or one dwelling unit per 600 sq\.ft\./i)).toBeInTheDocument()
+})
+
+it('renders RTO-1 mix + parking rows and omits non-residential FAR', () => {
+  render(<ZoningDistrictPanel zoningSim="RTO-1" gen="Residential" districtName="RTO-1" onClose={() => {}} />)
+  expect(screen.getByText(/Dwelling-unit mix:/i)).toBeInTheDocument()
+  expect(screen.getByText(/Parking:/i)).toBeInTheDocument()
+  expect(screen.queryByText(/FAR \(non-residential\)/i)).not.toBeInTheDocument()  // "Not Applicable" → omitted
+  const links = screen.getAllByRole('link') as HTMLAnchorElement[]
+  expect(links.some((a) => a.href.includes('/sf_planning/'))).toBe(true)  // §-deep-links present
+})
