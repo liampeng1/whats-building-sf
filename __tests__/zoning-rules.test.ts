@@ -1,4 +1,5 @@
 import { ZONING_RULES, getZoningRecord } from '../lib/zoning-rules'
+import type { ZoningRecord } from '../lib/zoning-rules'
 
 describe('ZONING_RULES schema', () => {
   it('includes at least the 5 representative codes', () => {
@@ -26,6 +27,12 @@ describe('ZONING_RULES schema', () => {
 
   it('RH-1 cites §209 for density', () => {
     expect(ZONING_RULES['RH-1'].source.density?.section).toBe('§209')
+  })
+
+  it('ZoningRecord supports verified fields', () => {
+    const r = ZONING_RULES['RH-1'] as ZoningRecord
+    void r.verified; void r.name; void r.open_space_per_unit; void r.min_lot
+    expect(true).toBe(true)
   })
 
   it('every record has at least one principal use', () => {

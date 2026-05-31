@@ -165,7 +165,7 @@ export function ZoningDistrictPanel({
       color: '#7d9b76',
     })
   }
-  if (rec.parking_min.residential) {
+  if (rec.parking_min?.residential) {
     ruleRows.push({
       label: `Parking (resi): ${rec.parking_min.residential}`,
       value: '',
@@ -173,7 +173,7 @@ export function ZoningDistrictPanel({
       color: '#b08968',
     })
   }
-  if (rec.parking_min.commercial) {
+  if (rec.parking_min?.commercial) {
     ruleRows.push({
       label: `Parking (commercial): ${rec.parking_min.commercial}`,
       value: '',

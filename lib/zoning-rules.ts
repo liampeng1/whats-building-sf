@@ -11,28 +11,58 @@
  * Schema reference: docs/superpowers/specs/2026-05-10-improvements-design.md §1a
  */
 
-export interface CodeCitation {
-  article: string
-  section: string
-  url: string
+import { type CodeCitation } from './zoning-sources'
+
+export interface DensityRule {
+  units_per_lot?: number
+  sqft_per_unit?: number
+  du_per_acre?: number        // retained for legacy NCT records
+  max_units?: number
+  cu_pathway?: string
+  note?: string
 }
 
 export interface ZoningRecord {
   code: string
-  density: { units_per_lot?: number; du_per_acre?: number; note?: string }
-  far?: { max: number; note?: string }
+  name?: string                              // NEW
+  classification?: CodeCitation              // NEW (§209.x / §834)
+  verified?: boolean                         // NEW — true once transcribed from source
+
+  density: DensityRule
+  far?: { max: number; note?: string }                 // deprecated (non-resi only)
+  far_non_residential?: { max: number; note?: string } // NEW
+  min_lot?: { width_ft: number; area_sqft: number }    // NEW
+  open_space_per_unit?: { private_sqft: number; note?: string } // NEW
   principal_uses: string[]
-  parking_min: { residential?: string; commercial?: string }
+  conditional_uses?: string[]                // NEW
+  front_setback_text?: string                // NEW (verbatim)
+  rear_yard_text?: string                    // NEW (verbatim)
+  dwelling_unit_mix_text?: string            // NEW
+  parking_text?: string                      // NEW
+
+  // legacy (deprecated — Phase 2 removes; kept so old records compile)
+  parking_min?: { residential?: string; commercial?: string }
   setbacks?: { front_ft?: number; rear_ft?: number; side_ft?: number }
   lot_coverage_max_pct?: number
+
   source: {
     density: CodeCitation
     far?: CodeCitation
+    far_non_residential?: CodeCitation
+    min_lot?: CodeCitation
+    open_space?: CodeCitation
     principal_uses: CodeCitation
-    parking_min: CodeCitation
+    conditional_uses?: CodeCitation
+    front_setback?: CodeCitation
+    rear_yard?: CodeCitation
+    dwelling_unit_mix?: CodeCitation
+    parking?: CodeCitation
+    parking_min?: CodeCitation              // legacy alias used by old records
     setbacks?: CodeCitation
     lot_coverage_max_pct?: CodeCitation
     retrieved_at: string
+    document?: string
+    document_url?: string
   }
 }
 
@@ -47,6 +77,7 @@ function cite(article: string, section: string): CodeCitation {
     article,
     section,
     url: `${AMLEGAL}/0-0-0-${sectionSlug}`,
+    quote: '',
   }
 }
 
