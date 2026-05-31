@@ -62,6 +62,7 @@ export const SECTION_URL: Record<string, string> = {
   '§211.2': '0-0-0-50182',  // SEC. 211.2. CONDITIONAL USES, P DISTRICTS.
   '§836': '0-0-0-67785',    // SEC. 836. SALI - SERVICE/ARTS/LIGHT INDUSTRIAL DISTRICT.
   '§202.1': '0-0-0-49715',  // SEC. 202.1. ZONING CONTROL TABLES. (reading key)
+  '§207.7': '0-0-0-56190',  // SEC. 207.7. REQUIRED MINIMUM DWELLING UNIT MIX. (commercial 25%/10% rule)
 }
 
 /** Build a verified citation: real amlegal URL + verbatim quote.
