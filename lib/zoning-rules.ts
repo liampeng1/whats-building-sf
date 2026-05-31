@@ -11,7 +11,7 @@
  * Schema reference: docs/superpowers/specs/2026-05-10-improvements-design.md §1a
  */
 
-import { type CodeCitation, sourced, SECTION_URL } from './zoning-sources'
+import { type CodeCitation, sourced } from './zoning-sources'
 
 export interface DensityRule {
   units_per_lot?: number
@@ -1698,11 +1698,4 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
 
 export function getZoningRecord(code: string): ZoningRecord | undefined {
   return ZONING_RULES[code]
-}
-
-/** True if the section has a verified amlegal opaque-ID mapping. Used by the
- *  build/validation layer to guard that every cited section resolves; keeps the
- *  SECTION_URL map a load-bearing dependency of the transcribed records. */
-export function sectionIsMapped(section: string): boolean {
-  return Boolean(SECTION_URL[section])
 }
