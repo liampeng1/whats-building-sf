@@ -114,4 +114,11 @@ describe('verified zoning records', () => {
       expect(SECTION_URL[r.classification!.section]).toBeDefined()
     }
   })
+  it('C-3 / C-2 FAR matches Table 124 (POC-corrected values)', () => {
+    expect(ZONING_RULES['C-2'].far_non_residential?.max).toBe(3.6)
+    expect(ZONING_RULES['C-3-O'].far_non_residential?.max).toBe(9.0)
+    expect(ZONING_RULES['C-3-R'].far_non_residential?.max).toBe(6.0)
+    expect(ZONING_RULES['C-3-G'].far_non_residential?.max).toBe(6.0)  // was wrongly 9.0
+    expect(ZONING_RULES['C-3-S'].far_non_residential?.max).toBe(5.0)  // was wrongly 4.5
+  })
 })
