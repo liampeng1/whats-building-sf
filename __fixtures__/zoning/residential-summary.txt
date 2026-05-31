@@ -1,0 +1,239 @@
+# Source: SF Planning — Summary of Planning Code Standards for Residential Districts (rev. 09/2008)
+# URL: https://default.sfplanning.org/publications_reports/residential_districts_controls_summary_table.pdf
+
+SUMMARY OF THE PLANNING CODE STANDARDS FOR RESIDENTIAL DISTRICTS
+
+COLUMN HEADERS:
+ZONING DISTRICT (§209.1)
+MAXIMUM DWELLING UNIT DENSITY (§§209–209.9)
+OTHER PRINCIPAL USES (Permitted as of Right) (§§209–209.9)
+OTHER CONDITIONAL USES (Subject to Commission Approval)
+MINIMUM LOT SIZE (§121)
+BASIC FLOOR AREA RATIO (Other than Dwellings) (§124)
+FRONT SET-BACK REQUIREMENTS (§132)
+REAR YARD REQUIREMENTS (§134)
+USABLE OPEN SPACE REQUIREMENTS FOR DWELLING UNITS (§135)
+OTHER SPECIAL REQUIREMENTS
+
+---
+
+RH-1(D)
+House, One-Family (Detached Dwellings) (§206.1)
+MAXIMUM DWELLING UNIT DENSITY: One dwelling unit per lot.
+MINIMUM LOT SIZE: Width: 33 ft.; Area: 4000 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 300 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§133) Side yards: requirement based on lot width.
+  (§261) Use district height limit – 35 ft.; 30 ft. at front of property.
+
+---
+
+RH-1
+House, One-Family (§206.1)
+MAXIMUM DWELLING UNIT DENSITY: One dwelling unit per lot; up to one unit per 3000 sq.ft. of lot area (maximum of 3 units) with conditional use approval.
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 300 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§261) Use district height limit – 35 ft.; 30 ft. at front of property.
+
+---
+
+RH-1(S)
+House, One-Family with Minor Second Unit (§206.1)
+MAXIMUM DWELLING UNIT DENSITY: Same as RH-1; or 2 dwelling units per lot with second unit limited to 600 sq.ft. of net floor area.
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 300 sq.ft. for first unit and 100 sq.ft. for second minor unit, if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§261) Use district height limit – 35 ft.; 30 ft. at front of property.
+
+---
+
+RH-2
+House, Two-Family (§206.1)
+MAXIMUM DWELLING UNIT DENSITY: Two dwelling units per lot; up to one unit per 1500 sq.ft. of lot area with conditional use approval.
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 45% of lot depth, except of reductions based upon average of adjacent buildings; if averaged, last 10 ft. is limited to height of 30 ft. and a minimum of 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 125 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§144) Limits on parking entrances and blank facades.
+  (§261) Use district height limit – 40 ft.; 30 ft. at front of property.
+
+---
+
+RH-3
+House, Three-Family (§206.1)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot; up to one unit per 1000 sq.ft. of lot area with conditional use approval.
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 45% of lot depth, except of reductions based upon average of adjacent buildings; if averaged, last 10 ft. is limited to height of 30 ft. and a minimum of 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 100 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§144) Limits on parking entrances and blank facades.
+
+---
+
+RM-1
+Mixed (Apartments and Houses), Low Density (§206.2)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot or one dwelling unit per 800 sq.ft. of lot area
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 45% of lot depth, except of reductions based upon average of adjacent buildings; if averaged, last 10 ft. is limited to height of 30 ft. and a minimum of 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 100 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§144) Limits on parking entrances and blank facades.
+  (§145) Building stepping or multiple pedestrian entrances on wider lots.
+
+---
+
+RM-2
+Mixed (Apartments and Houses), Moderate Density (§206.2)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot or one dwelling unit per 600 sq.ft. of lot area
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 45% of lot depth, except of reductions based upon average of adjacent buildings; if averaged, last 10 ft. is limited to height of 30 ft. and a minimum of 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 80 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§144) Limits on parking entrances and blank facades.
+  (§145) Building stepping or multiple pedestrian entrances on wider lots.
+
+---
+
+RM-3
+Mixed (Apartments and Houses), Medium Density (§206.2)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot or one dwelling unit per 400 sq.ft. of lot area
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 3.6 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 60 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+
+---
+
+RM-4
+Mixed (Apartments and Houses), High Density (§206.2)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot or one dwelling unit per 200 sq.ft. of lot area
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 4.8 times lot area
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 36 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+
+---
+
+RC-3
+Residential-Commercial Combined, Medium Density (§206.3)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot or one dwelling unit per 400 sq.ft. of lot area
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 3.6 times lot area
+FRONT SET-BACK: No requirement.
+REAR YARD: 25% of lot depth, but no less than 15 feet. (at dwellings levels only)
+USABLE OPEN SPACE: 60 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§209.8) Commercial establishments exclude those designed primarily for customers arriving at that establishment by private motor vehicle.
+
+---
+
+RC-4
+Residential-Commercial Combined, High Density (§206.3)
+MAXIMUM DWELLING UNIT DENSITY: Three dwelling units per lot or one dwelling unit per 200 sq.ft. of lot area
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 4.8 times lot area
+FRONT SET-BACK: No requirement.
+REAR YARD: 25% of lot depth, but no less than 15 feet. (at dwellings levels only)
+USABLE OPEN SPACE: 36 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§209.8) Commercial establishments exclude those designed primarily for customers arriving at that establishment by private motor vehicle.
+
+---
+
+RED
+Residential Enclave District (§813)
+MAXIMUM DWELLING UNIT DENSITY: One dwelling unit per 400 sq.ft. of lot area
+OTHER PRINCIPAL USES: SRO units; child care facility; live/work unit where work activity is an arts activity; automobile parking lots; open recreation and horticulture; walk-up facilities except ATMs
+OTHER CONDITIONAL USES: Residential care facility; educational services, religious facility; assembly or social service; automobile parking garages; retail sales and services and office uses when in a landmark building or a contributory building in a historic district.
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: 1.0 times lot area
+FRONT SET-BACK: No requirement.
+REAR YARD: 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 60 sq.ft. per unit if all private; 80 sq.ft. if common space. 36 sq.ft. per unit for live/work units
+
+---
+
+RTO
+Residential Transit Oriented Development (§206.4)
+MAXIMUM DWELLING UNIT DENSITY: Permitted 1 dwelling unit per 600 square feet of lot area; may exceed this limit for BMR units, affordable housing, or other special uses (§209.1(m)). With a conditional use permit density may exceed 1 unit per 600 and is then limited by height, bulk and unit mix requirements.
+OTHER PRINCIPAL USES: (§230) Neighborhood serving commercial uses permitted on corner lots only. Limit 1,200 gross sq.ft. total per corner; NC-1 rules generally apply. Residential care facility for 6 or fewer; child care facility for 12 or fewer; open space for horticulture or passive recreation; public structure or use of non-industrial character; sale or lease sign
+OTHER CONDITIONAL USES: (§209.4) Community facilities
+MINIMUM LOT SIZE: Width: 25 ft.; Area: 2500 sq.ft.
+BASIC FLOOR AREA RATIO: Not Applicable
+FRONT SET-BACK: Based upon average of adjacent buildings; up to 15 ft. or 15% of lot depth
+REAR YARD: 45% of lot depth, except of reductions based upon average of adjacent buildings; if averaged, last 10 ft. is limited to height of 30 ft. and a minimum of 25% of lot depth, but no less than 15 feet.
+USABLE OPEN SPACE: 100 sq.ft. per unit if all private; common space substituted must be 1/3 greater.
+OTHER SPECIAL REQUIREMENTS:
+  (§151.1) No residential parking required; Permitted 3 spaces for every 4 units maximum; conditional use for 1 space per unit. Not permitted above.
+  (§207.6) Minimum dwelling unit mix – 40% 2-bedroom for buildings with 5 or more units.
+  (§144) Limits on parking entrances and blank facades. Parking must be set back and screened.
+
+---
+
+SHARED USE COLUMNS (apply to RH and RM districts, read top-to-bottom in the table):
+
+OTHER PRINCIPAL USES (Permitted as of Right) for RH-1(D) through RM-4: Residential care facility for 6 or fewer; child care facility for 12 or fewer; open space for horticulture or passive recreation; public structure or use of non-industrial character; sale or lease sign.
+
+OTHER CONDITIONAL USES (RH-1(D) / RH-1 / RH-1(S)): Medical institution; residential care facility for 7 or more; child care facility for 13 or more; elementary school; secondary school; religious institution; community facility; open recreation area; greenhouse or plant nursery; utility installation or public service facility; community garage; access driveway to C or M district; non-accessory parking for a specific use; Planned Unit Development; C2 use in structure on designated landmark site.
+
+OTHER PRINCIPAL USES (RM districts, additional): Same uses as above, plus: Group housing, boarding; group housing, religious orders.
+
+OTHER CONDITIONAL USES (RH-2 / RH-3 / RM-1 / RM-2): Same uses as above, plus: Group housing, boarding; group housing, religious orders; group housing, medical and educational institutions; hotel up to 5 rooms.
+
+OTHER CONDITIONAL USES (RM-3 / RM-4): Same uses as above, excluding those listed in previous column as principal uses.
+
+OTHER PRINCIPAL USES (RC-3 / RC-4): Same uses as above, plus: Hotel up to 5 rooms, open recreation area; access driveway to C or M district; The following uses in or below the ground story: philanthropic facility; childcare facility for 13 or more; elementary school; secondary school; religious institution; community facility; private recreation facility; greenhouse or plant nursery; plus any C-2-zoned commercial establishment.
+
+OTHER CONDITIONAL USES (RC-3 / RC-4): Same uses as above, excluding those listed in previous column as principal uses, plus: Hotel or 6 or more rooms; uses restricted in previous column to location in or below ground story, if located above ground story; plus C-2-zoned commercial establishment above ground story.
+
+---
+
+NOTES:
+
+This chart is only a summary of the Planning Code provisions. The Code sections referred to in the chart should be consulted for the complete requirements, and for detailed methods by which these requirements are applied to specific property situations.
+
+For answers to questions concerning this summary chart and the Code provisions, contact the Planning Department at 558-6377 or visit the Department at 1650 Mission Street, Suite 400, San Francisco, 94103.
+
+The chart above covers only the Residential zoning districts. Other use districts not covered by the chart are the Commercial and Industrial districts (§§210-227, Articles 7 & 8) Public Use districts (§§234-234.2) and Special Use districts (§§235-249.99 and the SU-numbered series sheets of the Zoning Map.
+
+Other Code provisions of general application to Residential districts that are not referred to in this chart are the following:
+
+● Height and Bulk districts (§122, Article 2.5 and the HT-numbered series sheets of the Zoning Map
+● Off-street parking requirements (Article 1.5)
+● Review of buildings exceeding a height of 40 feet in R districts (§253)
+● Off-street loading requirements (Article 1.5)
+● Legislated set-back lines, which may be more restrictive than §132 (§131 and ordinances and resolutions for specific streets.
+● Accessory uses permitted for listed principal and conditional uses (§§204-204.5)
+● Obstructions permitted over streets and alleys and in required set-backs, yards and usable open space (§136)
+● Temporary uses permitted by the Commission or Zoning Administrator (§§205-205.2
+● Requirement that all dwelling units face on an open area (§140)
+● Nonconforming uses (§§180-187)
+● Street trees required for new development (§143)
+● Density limitations for group housing (§208)
+● Screening of rooftop features (§141)
+● Density limitations for group housing (§208)
+● Screening of parking features (§142)
+● Sign regulations, including Special Sign districts (Article 6, especially §606 and §§608-608.10 and the SS-numbered series sheets of the Zoning Map
+
+Chart corrected to 09/2008
+U:\SDowdee\Documents\Residential Standards Summary.xls
