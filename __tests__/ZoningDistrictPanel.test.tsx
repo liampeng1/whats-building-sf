@@ -11,6 +11,7 @@ it('shows verified RM-2 rules, a verbatim quote, and a real amlegal link', () =>
   expect(screen.getAllByText(/80 sq\.ft\./i).length).toBeGreaterThan(0)   // open space
   const links = screen.getAllByRole('link') as HTMLAnchorElement[]
   expect(links.some((a) => a.href.includes('/sf_planning/0-0-0-19952'))).toBe(true)   // §207 deep-link
+  expect(links.some((a) => a.href.includes('/sf_planning/0-0-0-56337'))).toBe(true)   // §209.2 classification deep-link
   expect(links.some((a) => a.href.includes('sfplanning.org') && a.href.includes('.pdf'))).toBe(true) // source doc
 })
 

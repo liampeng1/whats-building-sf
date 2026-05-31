@@ -160,6 +160,22 @@ export function VerifiedPanel({
       primary={{ eyebrow: 'At a glance', rows: glanceRows }}
       onClose={onClose}
     >
+      {/* District-definition citation — the §-section that defines this district
+          type (e.g. §209.2 for RM). Links straight to the current code section. */}
+      {rec.classification && (
+        <div className="pt-3 text-[11px] text-ink-faint leading-snug">
+          District defined at{' '}
+          <a
+            href={rec.classification.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="uppercase tracking-wider hover:text-ink"
+          >
+            {rec.classification.section} ↗
+          </a>
+        </div>
+      )}
+
       {/* Full source-backed controls, each with a verbatim-quote disclosure.
           Rendered as a custom block (not primary.rows) because each row carries
           a <details> "what the code says". */}

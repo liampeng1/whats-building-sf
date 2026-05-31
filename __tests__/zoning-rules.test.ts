@@ -108,4 +108,10 @@ describe('verified zoning records', () => {
       }
     }
   })
+  it('every verified record has a classification whose section resolves', () => {
+    for (const r of verified()) {
+      expect(r.classification?.section).toMatch(/^§/)
+      expect(SECTION_URL[r.classification!.section]).toBeDefined()
+    }
+  })
 })
