@@ -39,6 +39,7 @@ export interface ZoningRecord {
   rear_yard_text?: string                    // NEW (verbatim)
   dwelling_unit_mix_text?: string            // NEW
   parking_text?: string                      // NEW
+  controls_note?: string                     // use-only districts (e.g. P) with no FAR/density/open-space scalars
 
   // legacy (deprecated — Phase 2 removes; kept so old records compile)
   parking_min?: { residential?: string; commercial?: string }

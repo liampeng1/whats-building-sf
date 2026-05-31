@@ -50,6 +50,18 @@ export const SECTION_URL: Record<string, string> = {
   '§206.4': '0-0-0-63354',  // SEC. 206.4. THE 100 PERCENT AFFORDABLE HOUSING BONUS …
   // Article 8 — Mixed Use Districts
   '§813': '0-0-0-26741',    // SEC. 813. [REDESIGNATED.] → RED controls now at §834.
+  // Commercial / Industrial / Public (Phase 2) — all titles re-confirmed via the
+  // amlegal /api/render-section endpoint (Task 1, Step 2).
+  '§210.1': '0-0-0-20117',  // SEC. 210.1. C-2 DISTRICTS: COMMUNITY BUSINESS.
+  '§210.2': '0-0-0-20120',  // SEC. 210.2. C-3 DISTRICTS: DOWNTOWN COMMERCIAL.
+  '§210.3': '0-0-0-20123',  // SEC. 210.3. PDR DISTRICTS.
+  '§210.4': '0-0-0-20132',  // SEC. 210.4. M DISTRICTS: INDUSTRIAL.
+  '§123': '0-0-0-18094',    // SEC. 123. MAXIMUM FLOOR AREA RATIO.
+  '§211': '0-0-0-50175',    // SEC. 211. P (PUBLIC) DISTRICTS.
+  '§211.1': '0-0-0-50178',  // SEC. 211.1. PRINCIPAL USES PERMITTED, P DISTRICTS.
+  '§211.2': '0-0-0-50182',  // SEC. 211.2. CONDITIONAL USES, P DISTRICTS.
+  '§836': '0-0-0-67785',    // SEC. 836. SALI - SERVICE/ARTS/LIGHT INDUSTRIAL DISTRICT.
+  '§202.1': '0-0-0-49715',  // SEC. 202.1. ZONING CONTROL TABLES. (reading key)
 }
 
 /** Build a verified citation: real amlegal URL + verbatim quote.
