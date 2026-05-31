@@ -5,7 +5,8 @@ export interface CodeCitation {
   section: string   // e.g. "§207"
   url: string
   quote: string     // verbatim source sentence (may be "" for legacy/unverified)
-  article?: string  // legacy field, retained for old records
+  article?: string  // forward-compat: old zoning-rules `cite()` records set this;
+                    // lets those records adopt this shared type in Task 2.
 }
 
 const AMLEGAL = 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning'
@@ -51,23 +52,16 @@ export const SECTION_URL: Record<string, string> = {
   '§813': '0-0-0-26741',    // SEC. 813. [REDESIGNATED.] → RED controls now at §834.
 }
 
-// NOTE (semantic mismatch, flagged in Task 1 report):
-//   The source table is the SF Planning rev-09/2008 residential summary; the
-//   *current* amlegal code has been renumbered. The opaque IDs above resolve to
-//   the section NUMBER cited (the page title matches), but a few sections no
-//   longer carry the content the 2008 table implies:
-//     • §206.1–§206.4 are now Affordable/Educator Housing program sections, not
-//       the RH/RM/RC/RTO district definitions. Use the §209.x series instead:
-//       RH=§209.1, RM=§209.2, RC=§209.3, RTO=§209.4.
-//     • §813 is "[REDESIGNATED.]" — the RED (Residential Enclave District)
-//       controls now live at §834 (0-0-0-67758, title "RED - RESIDENTIAL
-//       ENCLAVE DISTRICT.", confirmed by page title).
-//   Downstream tasks MUST use §209.1/§209.2/§209.3/§209.4 and §834 for
-//   residential district classification, never the stale §206.x/§813 numbers.
-
 /** Build a verified citation: real amlegal URL + verbatim quote.
- *  IDs are stored with their full `0-0-0-<n>` form, so the URL is a plain join. */
+ *  IDs are stored with their full `0-0-0-<n>` form, so the URL is a plain join.
+ *  Unknown sections degrade to the article-index root rather than a dead link;
+ *  this is a soft fallback — the authoritative guard is the "every cited section
+ *  resolves in SECTION_URL" invariant test, which fails the build on a real gap.
+ *  We still warn in dev so an unmapped section never passes unnoticed. */
 export function sourced(section: string, quote: string): CodeCitation {
   const id = SECTION_URL[section]
+  if (!id && process.env.NODE_ENV !== 'production') {
+    console.warn(`sourced(): no verified amlegal id for ${section} — using article root`)
+  }
   return { section, quote, url: id ? `${AMLEGAL}/${id}` : AMLEGAL }
 }

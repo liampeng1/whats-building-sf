@@ -12,4 +12,15 @@ describe('zoning sources', () => {
     expect(c.url).toBe('https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-19952')
     expect(c.quote).toContain('600')
   })
+  it('falls back to the article root for an unknown section', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(sourced('§999', 'x').url)
+      .toBe('https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning')
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
+  })
+  it('resolves the §§209–209.9 range anchor to a real section page', () => {
+    expect(sourced('§§209–209.9', 'x').url)
+      .toBe('https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-20077')
+  })
 })
