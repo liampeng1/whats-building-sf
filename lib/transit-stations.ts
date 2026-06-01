@@ -32,6 +32,30 @@ export interface FrequentLocalStop {
   routes: string[]
 }
 
+/** GTFS-derived service class for a route. Rapid vs local is NOT encoded
+ *  here — that is derivable from the route name and the frequency values. */
+export type RouteMode = 'bus' | 'muni-metro' | 'cable-car'
+
+/** One route serving a stop, with its weekday peak and off-peak frequency
+ *  (trips per hour, departing this stop). 0 means it does not run in that
+ *  window. Headway in minutes is 60 / tph. */
+export interface RouteFreq {
+  route: string
+  mode: RouteMode
+  peakTph: number
+  offPeakTph: number
+}
+
+/** A boardable Muni stop with per-route frequency. Emitted to
+ *  /muni-stop-frequency.json by scripts/build-cross-stats.ts. */
+export interface FreqStop {
+  id: string
+  name: string
+  lat: number
+  lng: number
+  routes: RouteFreq[]
+}
+
 // `let` so loadStations() can replace contents; the arrays themselves
 // keep their reference identity (we splice into them) so consumers that
 // stash a reference still see the populated data.

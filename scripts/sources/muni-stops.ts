@@ -4,11 +4,11 @@ import type { RailStation, RapidBusStop, FrequentLocalStop } from '../../lib/tra
 import { FREQUENT_LOCAL_LINES } from '../../lib/transit-stations'
 
 interface GtfsStop { stop_id: string; stop_name: string; stop_lat: string; stop_lon: string; location_type?: string }
-interface GtfsRoute { route_id: string; route_short_name: string }
-interface GtfsTrip { route_id: string; trip_id: string }
-interface GtfsStopTime { trip_id: string; stop_id: string }
+interface GtfsRoute { route_id: string; route_short_name: string; route_type?: string }
+interface GtfsTrip { route_id: string; trip_id: string; service_id?: string }
+interface GtfsStopTime { trip_id: string; stop_id: string; departure_time?: string }
 
-interface ParsedGtfs {
+export interface ParsedGtfs {
   stops: GtfsStop[]
   routes: GtfsRoute[]
   trips: GtfsTrip[]
@@ -163,19 +163,28 @@ export function buildFrequentLocalStops(
     })
 }
 
-/** Top-level async fetch: pulls SFMTA GTFS via 511 and returns rail + rapid + local. */
-export async function fetchMuni(): Promise<{
-  rail: RailStation[]
-  rapid: RapidBusStop[]
-  local: FrequentLocalStop[]
-}> {
+/** Parsed SFMTA feed plus the calendar tables needed for frequency analysis.
+ *  calendar/calendarDates are raw GTFS rows (consumed by muni-frequency). */
+export interface MuniGtfs {
+  gtfs: ParsedGtfs
+  calendar: Record<string, string>[]
+  calendarDates: Record<string, string>[]
+}
+
+/** Single network pull of the SFMTA GTFS feed. Returns null when the API key
+ *  is unset so the build can degrade gracefully. Fetched once and shared by
+ *  both the station builders and the frequency builder to avoid re-downloading
+ *  the (large) stop_times feed twice. */
+export async function fetchMuniGtfs(): Promise<MuniGtfs | null> {
   const key = process.env.FIVE_ELEVEN_API_KEY
   if (!key) {
     console.warn('FIVE_ELEVEN_API_KEY not set; skipping Muni stations')
-    return { rail: [], rapid: [], local: [] }
+    return null
   }
   const url = `https://api.511.org/transit/datafeeds?operator_id=SF&api_key=${encodeURIComponent(key)}`
-  const entries = await fetchGtfsZip(url, ['stops.txt', 'routes.txt', 'trips.txt', 'stop_times.txt'])
+  const entries = await fetchGtfsZip(url, [
+    'stops.txt', 'routes.txt', 'trips.txt', 'stop_times.txt', 'calendar.txt', 'calendar_dates.txt',
+  ])
 
   // Re-serialize parsed records back to CSV text so parseGtfsFiles drives
   // both the production path and tests off the same shape.
@@ -186,10 +195,19 @@ export async function fetchMuni(): Promise<{
   const gtfs = parseGtfsFiles({
     stops: toCsv(entries['stops.txt'], ['stop_id', 'stop_name', 'stop_lat', 'stop_lon', 'location_type']),
     routes: toCsv(entries['routes.txt'], ['route_id', 'route_short_name', 'route_type']),
-    trips: toCsv(entries['trips.txt'], ['route_id', 'trip_id']),
-    stop_times: toCsv(entries['stop_times.txt'], ['trip_id', 'stop_id']),
+    trips: toCsv(entries['trips.txt'], ['route_id', 'trip_id', 'service_id']),
+    stop_times: toCsv(entries['stop_times.txt'], ['trip_id', 'stop_id', 'departure_time']),
   })
 
+  return { gtfs, calendar: entries['calendar.txt'], calendarDates: entries['calendar_dates.txt'] }
+}
+
+/** Derive rail + rapid + frequent-local stops from an already-parsed feed. */
+export function buildMuniFromGtfs(gtfs: ParsedGtfs): {
+  rail: RailStation[]
+  rapid: RapidBusStop[]
+  local: FrequentLocalStop[]
+} {
   const stopMap = buildStopRouteMap(gtfs.stop_times, gtfs.trips)
   const railIds = new Set(selectRailRouteIds(gtfs.routes))
   const rapidIds = new Set(selectRapidBusRouteIds(gtfs.routes))
@@ -199,4 +217,15 @@ export async function fetchMuni(): Promise<{
     rapid: buildRapidBusStops(gtfs.stops, gtfs.routes, stopMap, rapidIds),
     local: buildFrequentLocalStops(gtfs.stops, gtfs.routes, stopMap, localIds),
   }
+}
+
+/** Top-level async fetch: pulls SFMTA GTFS via 511 and returns rail + rapid + local. */
+export async function fetchMuni(): Promise<{
+  rail: RailStation[]
+  rapid: RapidBusStop[]
+  local: FrequentLocalStop[]
+}> {
+  const m = await fetchMuniGtfs()
+  if (!m) return { rail: [], rapid: [], local: [] }
+  return buildMuniFromGtfs(m.gtfs)
 }

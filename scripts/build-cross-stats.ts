@@ -20,7 +20,9 @@ import path from 'node:path'
 import * as turf from '@turf/turf'
 import type { Feature, FeatureCollection, Polygon, MultiPolygon } from 'geojson'
 import { fetchBartStations } from './sources/bart-stations'
-import { fetchMuni } from './sources/muni-stops'
+import { fetchMuniGtfs, buildMuniFromGtfs } from './sources/muni-stops'
+import { buildMuniFrequency } from './sources/muni-frequency'
+import type { CalendarRow, CalendarDateRow } from './sources/muni-frequency'
 import { fetchCaltrainSfStations } from './sources/caltrain-stations'
 import { mergeRailStations } from './sources/merge-rail'
 import { fetchHeightPolygons, joinHeightsToZoning } from './sources/zoning-heights'
@@ -357,11 +359,14 @@ async function main() {
   )
 
   console.log('• loading rail stations from BART + Muni + Caltrain…')
-  const [bart, muni, caltrain] = await Promise.all([
+  const [bart, muniGtfs, caltrain] = await Promise.all([
     fetchBartStations(),
-    fetchMuni(),
+    fetchMuniGtfs(),
     fetchCaltrainSfStations(),
   ])
+  const muni = muniGtfs
+    ? buildMuniFromGtfs(muniGtfs.gtfs)
+    : { rail: [], rapid: [], local: [] }
   const rail = mergeRailStations([...bart, ...muni.rail, ...caltrain])
   const rapid = muni.rapid
   const local = muni.local
@@ -370,6 +375,22 @@ async function main() {
   await fs.writeFile(path.join(PUBLIC_DIR, 'rail-stations.json'), JSON.stringify(rail, null, 2))
   await fs.writeFile(path.join(PUBLIC_DIR, 'rapid-bus-stops.json'), JSON.stringify(rapid, null, 2))
   await fs.writeFile(LOCAL_STOPS_PATH, JSON.stringify(local, null, 2))
+
+  // Per-stop weekday frequency for ALL Muni routes (bus + metro + cable car),
+  // derived from the same feed pull. Each stop lists every route serving it
+  // with peak and off-peak trips/hr. See scripts/sources/muni-frequency.ts.
+  const freq = muniGtfs
+    ? buildMuniFrequency(
+        muniGtfs.gtfs as unknown as Parameters<typeof buildMuniFrequency>[0],
+        muniGtfs.calendar as unknown as CalendarRow[],
+        muniGtfs.calendarDates as unknown as CalendarDateRow[],
+      )
+    : []
+  console.log(`  muni stop-frequency: ${freq.length} stops`)
+  await fs.writeFile(
+    path.join(PUBLIC_DIR, 'muni-stop-frequency.json'),
+    JSON.stringify(freq, null, 2),
+  )
 
   console.log('• loading height/bulk districts (h9wh-cg3m)…')
   const heightPolys = await fetchHeightPolygons()
