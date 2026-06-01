@@ -63,6 +63,21 @@ export const SECTION_URL: Record<string, string> = {
   '§836': '0-0-0-67785',    // SEC. 836. SALI - SERVICE/ARTS/LIGHT INDUSTRIAL DISTRICT.
   '§202.1': '0-0-0-49715',  // SEC. 202.1. ZONING CONTROL TABLES. (reading key)
   '§207.7': '0-0-0-56190',  // SEC. 207.7. REQUIRED MINIMUM DWELLING UNIT MIX. (commercial 25%/10% rule)
+  // §208 — cited by some Mixed-Use density rows for group/form-based density.
+  // NOTE: the prior-POC expected title "Density of Dwelling Units in RC, NC, C, M,
+  // MU and other districts" is STALE (2008 numbering). The CURRENT §208 page is
+  // titled "DENSITY LIMITATIONS FOR GROUP HOUSING OR HOMELESS SHELTERS" — section
+  // number matches, but content scope differs; use with care. (Task 1, Step 1.)
+  '§208': '0-0-0-20056',    // SEC. 208. DENSITY LIMITATIONS FOR GROUP HOUSING OR HOMELESS SHELTERS.
+  // Mixed-Use Art. 8 (Phase 3) — all titles confirmed via /api/render-section.
+  '§830': '0-0-0-67565',    // SEC. 830. CMUO - CENTRAL SOMA MIXED USE-OFFICE DISTRICT.
+  '§831': '0-0-0-67718',    // SEC. 831. MUG - MIXED USE-GENERAL DISTRICT.
+  '§832': '0-0-0-67732',    // SEC. 832. MUO - MIXED USE-OFFICE DISTRICT.
+  '§833': '0-0-0-67745',    // SEC. 833. MUR - MIXED USE-RESIDENTIAL DISTRICT.
+  '§835': '0-0-0-67772',    // SEC. 835. RED-MX - RESIDENTIAL ENCLAVE-MIXED DISTRICT.
+  '§838': '0-0-0-67810',    // SEC. 838. UMU - URBAN MIXED USE DISTRICT.
+  '§839': '0-0-0-70715',    // SEC. 839. WMUG - WSOMA MIXED USE-GENERAL DISTRICT.
+  '§840': '0-0-0-67836',    // SEC. 840. WMUO - WSOMA MIXED USE-OFFICE DISTRICT.
 }
 
 /** Build a verified citation: real amlegal URL + verbatim quote.

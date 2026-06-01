@@ -88,7 +88,7 @@ describe('verified zoning records', () => {
   })
   it('open space ramps down and FAR ramps up across RM density', () => {
     const os = (c: string) => ZONING_RULES[c].open_space_per_unit!.private_sqft
-    const far = (c: string) => ZONING_RULES[c].far_non_residential!.max
+    const far = (c: string) => ZONING_RULES[c].far_non_residential!.max!
     expect(os('RM-1')).toBeGreaterThanOrEqual(os('RM-4'))
     expect(far('RM-1')).toBeLessThanOrEqual(far('RM-4'))
   })

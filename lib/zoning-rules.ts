@@ -19,6 +19,7 @@ export interface DensityRule {
   du_per_acre?: number        // retained for legacy NCT records
   max_units?: number
   cu_pathway?: string
+  model?: 'form-based' | 'unit-based'  // Mixed-Use: form-based = envelope-governed, no DU/lot cap
   note?: string
 }
 
@@ -30,7 +31,7 @@ export interface ZoningRecord {
 
   density: DensityRule
   far?: { max: number; note?: string }                 // deprecated (non-resi only)
-  far_non_residential?: { max: number; note?: string } // NEW
+  far_non_residential?: { max?: number; banded?: string; basis?: string; note?: string } // NEW (banded = height-keyed FAR ramp; basis = e.g. "per §124, by height district")
   min_lot?: { width_ft: number; area_sqft: number }    // NEW
   open_space_per_unit?: { private_sqft: number; note?: string } // NEW
   principal_uses: string[]
