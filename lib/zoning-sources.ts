@@ -103,6 +103,31 @@ export const SECTION_URL: Record<string, string> = {
   '§810': '0-0-0-26704',    // SEC. 810. CHINATOWN COMMUNITY BUSINESS DISTRICT. (CCB)
   '§811': '0-0-0-26717',    // SEC. 811. CHINATOWN VISITOR RETAIL DISTRICT. (CVR)
   '§812': '0-0-0-26729',    // SEC. 812. CHINATOWN RESIDENTIAL NEIGHBORHOOD COMMERCIAL DISTRICT. (CRNC)
+  // DTR (Phase 5) — Downtown Residential districts in Art. 8; titles confirmed
+  // via /api/render-section. (TB-DTR / §828 renders the GOVERNING_PLAN fallback.)
+  '§827': '0-0-0-26847',    // SEC. 827. RINCON HILL DOWNTOWN RESIDENTIAL MIXED USE DISTRICT (RH-DTR).
+  '§829': '0-0-0-26925',    // SEC. 829. SOUTH BEACH DOWNTOWN RESIDENTIAL MIXED USE DISTRICT (SB-DTR).
+}
+
+/** Districts governed by a Redevelopment Plan / Design-for-Development / SUD that
+ *  supersedes the SF Planning Code — rendered as an honest fallback, not fabricated controls. */
+export const GOVERNING_PLAN: Record<string, { plan: string; url: string }> = {
+  'MB-O':  { plan: 'Mission Bay Redevelopment Plan (OCII)', url: 'https://sfocii.org/projects/mission-bay-south/overview' },
+  'MB-RA': { plan: 'Mission Bay Redevelopment Plan (OCII)', url: 'https://sfocii.org/projects/mission-bay-south/overview' },
+  'PM-CF': { plan: 'Parkmerced Design Standards & Guidelines (SUD §249.64)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-34612' },
+  'PM-MU1':{ plan: 'Parkmerced Design Standards & Guidelines (SUD §249.64)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-34612' },
+  'PM-MU2':{ plan: 'Parkmerced Design Standards & Guidelines (SUD §249.64)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-34612' },
+  'PM-OS': { plan: 'Parkmerced Design Standards & Guidelines (SUD §249.64)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-34612' },
+  'PM-R':  { plan: 'Parkmerced Design Standards & Guidelines (SUD §249.64)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-34612' },
+  'PM-S':  { plan: 'Parkmerced Design Standards & Guidelines (SUD §249.64)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-34612' },
+  'BR-MU': { plan: 'Candlestick Point Design for Development (BVHP Redevelopment Plan)', url: 'https://sfocii.org/projects/hunters-point-shipyard-candlestick-point-2/overview' },
+  'P70-MU':{ plan: 'Candlestick Point Design for Development (BVHP Redevelopment Plan)', url: 'https://sfocii.org/projects/hunters-point-shipyard-candlestick-point-2/overview' },
+  'PPS-MU':{ plan: 'Candlestick Point Design for Development (BVHP Redevelopment Plan)', url: 'https://sfocii.org/projects/hunters-point-shipyard-candlestick-point-2/overview' },
+  'HP-RA': { plan: 'Hunters Point Shipyard Redevelopment (OCII)', url: 'https://sfocii.org/completed-project-areas/hunters-point' },
+  'MR-MU': { plan: 'Mission Rock Design Controls (SUD §249.80)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-58323' },
+  'S-MU':  { plan: 'Potrero Power Station Design for Development (SUD §249.87)', url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-62911' },
+  'TB-DTR':{ plan: 'Transbay Redevelopment Plan (OCII)', url: 'https://sfocii.org' },
+  'Job Corps': { plan: 'Federal facility (Treasure Island Job Corps) — outside the SF Planning Code', url: 'https://sfgov.org/treasureisland/development-plan' },
 }
 
 /** Build a verified citation: real amlegal URL + verbatim quote.

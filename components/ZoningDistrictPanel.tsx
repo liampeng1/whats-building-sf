@@ -6,6 +6,7 @@ import { Glossary } from './Glossary'
 import { HeightContext } from './HeightContext'
 import { getZoningBlurb } from '@/lib/zoning-blurbs'
 import { VerifiedPanel } from './VerifiedZoningPanel'
+import { GOVERNING_PLAN } from '@/lib/zoning-sources'
 
 interface Props {
   zoningSim: string | null
@@ -48,6 +49,65 @@ export function ZoningDistrictPanel({
         primary={{ eyebrow: 'Rules', rows: [] }}
         onClose={onClose}
       />
+    )
+  }
+
+  // ── Governing-plan fallback ───────────────────────────────────────────────
+  // Some districts are governed by a Redevelopment Plan / Design-for-Development
+  // / SUD that supersedes the SF Planning Code (Mission Bay, Parkmerced, Hunters
+  // Point / Candlestick, Mission Rock, Potrero Power Station, Transbay …). There
+  // are no Planning Code rule values to show, so rather than fabricate controls
+  // (or surface a stale record), we link the real governing plan. This takes
+  // precedence over the record-based rendering below — even a district that still
+  // carries a stale record renders the honest plan link.
+  const governing = GOVERNING_PLAN[zoningSim]
+  if (governing) {
+    return (
+      <LensInfoPanel
+        open={open}
+        eyebrow={eyebrowLabel}
+        title={titleLabel}
+        subtitle={subtitleText}
+        hero={
+          heightFt
+            ? { eyebrow: 'Max height', value: `${heightFt} ft`, detail: bulk ? `bulk ${bulk}` : '' }
+            : undefined
+        }
+        primary={{ eyebrow: 'Rules', rows: [] }}
+        onClose={onClose}
+      >
+        <div className="pt-5 border-t border-paper-edge text-ink-soft text-sm leading-relaxed">
+          <p>
+            Governed by <strong>{governing.plan}</strong> — this district&rsquo;s controls live
+            in a Redevelopment Plan / Design-for-Development that supersedes the SF Planning Code,
+            so there are no Planning Code rule values to show.
+          </p>
+          <a
+            href={governing.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-2 text-[12px] uppercase tracking-wider text-ink hover:underline"
+          >
+            View the governing plan ↗
+          </a>
+          <a
+            href="https://sfplanninggis.org/pim/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mt-1 text-[12px] uppercase tracking-wider text-ink-soft hover:text-ink hover:underline"
+          >
+            View on SF Property Information Map ↗
+          </a>
+          <a
+            href="https://data.sfgov.org/Geographic-Locations-and-Boundaries/Zoning-Districts/3i4a-hu95"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mt-1 text-[12px] uppercase tracking-wider text-ink-soft hover:text-ink hover:underline"
+          >
+            DataSF: Zoning Districts dataset ↗
+          </a>
+        </div>
+      </LensInfoPanel>
     )
   }
 

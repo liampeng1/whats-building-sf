@@ -68,23 +68,6 @@ export interface ZoningRecord {
   }
 }
 
-const AMLEGAL = 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning'
-
-function cite(article: string, section: string): CodeCitation {
-  // The amlegal URL fragment for each section is unstable; we link to the
-  // article-level page so readers can search by section. Acceptable trade-
-  // off: stable links over deep-section anchors that the publisher rewrites.
-  const sectionSlug = section.replace(/[§\s]/g, '')
-  return {
-    article,
-    section,
-    url: `${AMLEGAL}/0-0-0-${sectionSlug}`,
-    quote: '',
-  }
-}
-
-const RETRIEVED = '2026-05-10'
-
 export const ZONING_RULES: Record<string, ZoningRecord> = {
   // ── Verified residential records (transcribed verbatim from the SF Planning
   //    "Summary of Planning Code Standards for Residential Districts", rev.
@@ -1587,33 +1570,45 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
   },
 
-  // ── Special / Redevelopment Districts (STUB) ─────────────────────────────
-
-  'BR-MU': {
-    code: 'BR-MU',
-    density: { note: 'Bayview/Hunters Point Redevelopment SUD; see codesection' },
-    principal_uses: ['Mixed-use (per Special Use District controls)'],
-    parking_min: { residential: 'See SUD controls' },
-
-    source: {
-      density: cite('Special Use District', '§263.35'),
-      principal_uses: cite('Special Use District', '§263.35'),
-      parking_min: cite('Special Use District', '§263.35'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
   'CCB': {
     code: 'CCB',
-    density: { note: 'Castro/Upper Market Commercial district; see §810.1 for full controls' },
-    principal_uses: ['Mixed commercial and residential (per §810.1)'],
-    parking_min: { residential: 'See §810.1' },
-
+    name: 'Chinatown Community Business',
+    classification: sourced('§810', 'CHINATOWN COMMUNITY BUSINESS DISTRICT'),
+    verified: true,
+    density: {
+      sqft_per_unit: 200,
+      note: 'Up to 1 unit per 200 sq. ft. lot area.',
+    },
+    far_non_residential: { max: 2.8 },
+    open_space_per_unit: { private_sqft: 48, note: 'Usable open space: 48 sq. ft. per dwelling unit' },
+    controls_note: 'Height: P up to 35 feet; C above 35 feet. See Height & Bulk Maps. Use Size: P up to 2,500 sq. ft.; C 2,501 to 5,000 sq. ft. Lot Size: P up to 5,000 sq. ft.; C 5,001 sq. ft. & above.',
+    parking_text: 'P up to one car for each two Dwelling Units; C up to .75 cars for each Dwelling Unit; NP above 0.75 cars per Dwelling Unit',
+    dwelling_unit_mix_text: 'Not Applicable',
+    principal_uses: [
+      'Residential Uses (P 1st/2nd/3rd+)',
+      'Retail Sales and Service Uses (P 1st/2nd/3rd+)',
+      'Institutional Uses (P)',
+      'Flexible Retail (P 1st floor)',
+      'Trade Office (P), Trade Shop (P 1st floor)',
+    ],
+    conditional_uses: [
+      'Bar (C)',
+      'Hotel (C)',
+      'Restaurant (P 1st; C 2nd/3rd+)',
+      'Formula Retail (C)',
+      'Mortuary (C 1st & 2nd)',
+    ],
     source: {
-      density: cite('Article 8', '§810.1'),
-      principal_uses: cite('Article 8', '§810.1'),
-      parking_min: cite('Article 8', '§810.1'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§207', 'Up to 1 unit per 200 sq. ft. lot area.'),
+      far_non_residential: sourced('§124', '2.8 to 1'),
+      open_space: sourced('§135', '48 sq. ft.'),
+      parking: sourced('§151.1', 'P up to one car for each two Dwelling Units; C up to .75 cars for each Dwelling Unit, subject to the criteria and procedures of Section 151.1(e); NP above 0.75 cars for each Dwelling Unit § 303(u).'),
+      dwelling_unit_mix: sourced('§207.6', 'Not Applicable'),
+      principal_uses: sourced('§810', 'Residential Uses … P P P; Retail Sales and Service Uses* … P P P; Institutional Uses* … P P P; Flexible Retail … P NP NP; Trade Office … P P P.'),
+      conditional_uses: sourced('§810', 'Bar … C C C; Hotel … C C C; Restaurant … P(3) C(1)(3) C(1)(3); Formula Retail … C(3); Mortuary … C C NP.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-26704',
     },
   },
 
@@ -1664,99 +1659,85 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
 
   'CRNC': {
     code: 'CRNC',
-    density: { note: 'Commercial/Residential Neighborhood Commercial district; see §812.1' },
-    principal_uses: ['Mixed commercial and residential (per §812.1)'],
-    parking_min: { residential: 'See §812.1' },
-
+    name: 'Chinatown Residential Neighborhood Commercial',
+    classification: sourced('§812', 'CHINATOWN RESIDENTIAL NEIGHBORHOOD COMMERCIAL DISTRICT'),
+    verified: true,
+    density: {
+      sqft_per_unit: 200,
+      note: 'Up to 1 unit per 200 sq. ft. lot area.',
+    },
+    far_non_residential: { max: 1.0 },
+    open_space_per_unit: { private_sqft: 48, note: 'Usable open space: 48 sq. ft. per dwelling unit' },
+    controls_note: 'Height: P up to 35 feet; C above 35 feet. See Height & Bulk Maps. Use Size: P up to 2,500 sq. ft.; C 2,501 to 4,000 sq. ft. Lot Size: P up to 5,000 sq. ft.; C 5,001 sq. ft. & above.',
+    parking_text: 'P up to one car for each two Dwelling Units; C for up to .75 cars for each Dwelling Unit; NP above 0.75 cars per Dwelling Unit',
+    dwelling_unit_mix_text: 'Not Applicable',
+    principal_uses: [
+      'Residential Uses (P 1st/2nd/3rd+)',
+      'Institutional Uses (P)',
+      'Retail Sales and Service Uses (P 1st floor)',
+      'Flexible Retail (P 1st floor)',
+      'Restaurant (P 1st floor)',
+    ],
+    conditional_uses: [
+      'Bar (C 1st floor)',
+      'Jewelry Store (C 1st floor)',
+      'Services, Financial (C 1st floor)',
+      'Movie Theater (C 1st floor)',
+      'Formula Retail (C)',
+    ],
     source: {
-      density: cite('Article 8', '§812.1'),
-      principal_uses: cite('Article 8', '§812.1'),
-      parking_min: cite('Article 8', '§812.1'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§207', 'Up to 1 unit per 200 sq. ft. lot area.'),
+      far_non_residential: sourced('§124', '1.0 to 1'),
+      open_space: sourced('§135', '48 sq. ft.'),
+      parking: sourced('§151.1', 'P up to one car for each two Dwelling Units; C for up to .75 cars for each Dwelling Unit, subject to the criteria and procedures of Sections 303(u) and 151.1(e), NP above 0.75 cars for each Dwelling Unit.'),
+      dwelling_unit_mix: sourced('§207.6', 'Not Applicable'),
+      principal_uses: sourced('§812', 'Residential Uses … P P P; Institutional Uses* … P P P; Retail Sales and Service Uses* … P NP NP; Flexible Retail … P NP NP; Restaurant … P(2) NP NP.'),
+      conditional_uses: sourced('§812', 'Bar … C NP NP; Jewelry Store … C NP NP; Services, Financial … C NP NP; Movie Theater … C NP NP; Formula Retail … C(2).'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-26729',
     },
   },
 
   'CVR': {
     code: 'CVR',
-    density: { note: 'Castro Village Commercial district; see §811.1 for full controls' },
-    principal_uses: ['Commercial and residential mixed use (per §811.1)'],
-    parking_min: { residential: 'See §811.1' },
-
-    source: {
-      density: cite('Article 8', '§811.1'),
-      principal_uses: cite('Article 8', '§811.1'),
-      parking_min: cite('Article 8', '§811.1'),
-      retrieved_at: RETRIEVED,
+    name: 'Chinatown Visitor Retail',
+    classification: sourced('§811', 'CHINATOWN VISITOR RETAIL DISTRICT'),
+    verified: true,
+    density: {
+      sqft_per_unit: 200,
+      note: 'Up to 1 unit per 200 sq. ft. lot area.',
     },
-  },
-
-  'HP-RA': {
-    code: 'HP-RA',
-    density: { note: 'Hunters Point Redevelopment Area; controls per Redevelopment Plan' },
-    principal_uses: ['Mixed-use (per Hunters Point Redevelopment Plan)'],
-    parking_min: { residential: 'See Redevelopment Plan controls' },
-
+    far_non_residential: { max: 2.0 },
+    open_space_per_unit: { private_sqft: 48, note: 'Usable open space: 48 sq. ft. per dwelling unit' },
+    controls_note: 'Height: P up to 35 feet; C above 35 feet (50-N). See Height & Bulk Maps. Use Size: P up to 2,500 sq. ft.; C 2,501 to 5,000 sq. ft. Lot Size: P up to 5,000 sq. ft.; C 5,001 sq. ft. & above.',
+    parking_text: 'P up to one car for each two Dwelling Units; C for up to .75 cars for each Dwelling Unit; NP above 0.75 cars per Dwelling Unit',
+    dwelling_unit_mix_text: 'Not Applicable',
+    principal_uses: [
+      'Residential Uses (P 1st/2nd/3rd+)',
+      'Institutional Uses (P)',
+      'Retail Sales and Service Uses (P 1st & 2nd floors)',
+      'Restaurant (P 1st floor)',
+      'Flexible Retail (P 1st floor)',
+    ],
+    conditional_uses: [
+      'Bar (C 1st & 2nd floors)',
+      'Hotel (C)',
+      'Entertainment, General (C 1st & 2nd floors)',
+      'Services, Health (C 1st; P 2nd)',
+      'Services, Personal (C 1st; P 2nd)',
+    ],
     source: {
-      density: cite('Special Use District', '§249.52'),
-      principal_uses: cite('Special Use District', '§249.52'),
-      parking_min: cite('Special Use District', '§249.52'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'Job Corps': {
-    code: 'Job Corps',
-    density: { note: 'Public/institutional use; Job Corps facility per §249.52' },
-    principal_uses: ['Public institutional (Job Corps training facility)'],
-    parking_min: { commercial: 'See §249.52' },
-
-    source: {
-      density: cite('Article 2', '§249.52'),
-      principal_uses: cite('Article 2', '§249.52'),
-      parking_min: cite('Article 2', '§249.52'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'MB-O': {
-    code: 'MB-O',
-    density: { note: 'Mission Bay Office district; see §912 for full controls' },
-    principal_uses: ['Office and commercial (per Mission Bay controls §912)'],
-    parking_min: { commercial: 'See §912' },
-
-    source: {
-      density: cite('Article 9', '§912'),
-      principal_uses: cite('Article 9', '§912'),
-      parking_min: cite('Article 9', '§912'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'MB-RA': {
-    code: 'MB-RA',
-    density: { note: 'Mission Bay Residential/Affordable district; see §902 for full controls' },
-    principal_uses: ['Residential and affordable housing (per Mission Bay controls §902)'],
-    parking_min: { residential: 'See §902' },
-
-    source: {
-      density: cite('Article 9', '§902'),
-      principal_uses: cite('Article 9', '§902'),
-      parking_min: cite('Article 9', '§902'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'MR-MU': {
-    code: 'MR-MU',
-    density: { note: 'Mixed-use Residential district; see §249.80 for full controls' },
-    principal_uses: ['Mixed-use residential (per Special Use District §249.80)'],
-    parking_min: { residential: 'See §249.80' },
-
-    source: {
-      density: cite('Article 2', '§249.80'),
-      principal_uses: cite('Article 2', '§249.80'),
-      parking_min: cite('Article 2', '§249.80'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§207', 'Up to 1 unit per 200 sq. ft. lot area.'),
+      far_non_residential: sourced('§124', '2.0 to 1'),
+      open_space: sourced('§135', '48 sq. ft.'),
+      parking: sourced('§151.1', 'P up to one car for each two Dwelling Units; C for up to .75 cars for each Dwelling Unit, subject to the criteria and procedures of Sections 303(u) and 151.1(e), NP above 0.75 cars for each Dwelling Unit.'),
+      dwelling_unit_mix: sourced('§207.6', 'Not Applicable'),
+      principal_uses: sourced('§811', 'Residential Uses … P P P; Institutional Uses* … P P P; Retail Sales and Service Uses* … P P NP; Restaurant … P C(1) NP; Flexible Retail … P NP NP.'),
+      conditional_uses: sourced('§811', 'Bar … C C NP; Hotel … C C C; Entertainment, General … C C NP; Services, Health … C P NP; Services, Personal … C P NP.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-26717',
     },
   },
 
@@ -1901,129 +1882,42 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
   },
 
-  'P70-MU': {
-    code: 'P70-MU',
-    density: { note: 'Public 70% Mixed Use district; see §249.79 for full controls' },
-    principal_uses: ['Mixed use (per Special Use District §249.79)'],
-    parking_min: { residential: 'See §249.79' },
-
-    source: {
-      density: cite('Article 2', '§249.79'),
-      principal_uses: cite('Article 2', '§249.79'),
-      parking_min: cite('Article 2', '§249.79'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PM-CF': {
-    code: 'PM-CF',
-    density: { note: 'Parkmerced Community Facilities subdistrict; see §249.64' },
-    principal_uses: ['Community facilities and public uses (per §249.64)'],
-    parking_min: { commercial: 'See §249.64' },
-
-    source: {
-      density: cite('Article 2', '§249.64'),
-      principal_uses: cite('Article 2', '§249.64'),
-      parking_min: cite('Article 2', '§249.64'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PM-MU1': {
-    code: 'PM-MU1',
-    density: { note: 'Parkmerced Mixed Use 1 subdistrict; see §249.64' },
-    principal_uses: ['Mixed use residential and commercial (per §249.64)'],
-    parking_min: { residential: 'See §249.64' },
-
-    source: {
-      density: cite('Article 2', '§249.64'),
-      principal_uses: cite('Article 2', '§249.64'),
-      parking_min: cite('Article 2', '§249.64'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PM-MU2': {
-    code: 'PM-MU2',
-    density: { note: 'Parkmerced Mixed Use 2 subdistrict; see §249.64' },
-    principal_uses: ['Mixed use residential and commercial (per §249.64)'],
-    parking_min: { residential: 'See §249.64' },
-
-    source: {
-      density: cite('Article 2', '§249.64'),
-      principal_uses: cite('Article 2', '§249.64'),
-      parking_min: cite('Article 2', '§249.64'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PM-OS': {
-    code: 'PM-OS',
-    density: { note: 'Parkmerced Open Space subdistrict; see §249.64' },
-    principal_uses: ['Open space and parks (per §249.64)'],
-    parking_min: { commercial: 'See §249.64' },
-
-    source: {
-      density: cite('Article 2', '§249.64'),
-      principal_uses: cite('Article 2', '§249.64'),
-      parking_min: cite('Article 2', '§249.64'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PM-R': {
-    code: 'PM-R',
-    density: { note: 'Parkmerced Residential subdistrict; see §249.64' },
-    principal_uses: ['Residential (per §249.64)'],
-    parking_min: { residential: 'See §249.64' },
-
-    source: {
-      density: cite('Article 2', '§249.64'),
-      principal_uses: cite('Article 2', '§249.64'),
-      parking_min: cite('Article 2', '§249.64'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PM-S': {
-    code: 'PM-S',
-    density: { note: 'Parkmerced Support/Service subdistrict; see §249.64' },
-    principal_uses: ['Support services and civic uses (per §249.64)'],
-    parking_min: { commercial: 'See §249.64' },
-
-    source: {
-      density: cite('Article 2', '§249.64'),
-      principal_uses: cite('Article 2', '§249.64'),
-      parking_min: cite('Article 2', '§249.64'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
-  'PPS-MU': {
-    code: 'PPS-MU',
-    density: { note: 'Potrero/Showplace Square Mixed Use; see §249.87 for full controls' },
-    principal_uses: ['Mixed use (per Special Use District §249.87)'],
-    parking_min: { residential: 'See §249.87' },
-
-    source: {
-      density: cite('Article 2', '§249.87'),
-      principal_uses: cite('Article 2', '§249.87'),
-      parking_min: cite('Article 2', '§249.87'),
-      retrieved_at: RETRIEVED,
-    },
-  },
-
   'RCD': {
     code: 'RCD',
-    density: { note: 'Residential/Commercial District (named); see §758 for full controls' },
-    principal_uses: ['Residential and commercial mixed use (per §758)'],
-    parking_min: { residential: 'See §758' },
-
+    name: 'Regional Commercial',
+    classification: sourced('§758', 'REGIONAL COMMERCIAL DISTRICT'),
+    verified: true,
+    density: { model: 'form-based', note: 'Form-Based Density.' },
+    far_non_residential: { max: 2.5 },
+    open_space_per_unit: { private_sqft: 80, note: '80 sq. ft. per unit if private, or 100 sq. ft. per unit if common; roof decks do not qualify' },
+    controls_note: 'Height: 55-X, 65-X. See Height & Bulk Maps (Sheets HT07/HT08); height sculpting required on narrow streets. Use Size: P up to 10,000 sq. ft.; C 10,001 sq. ft. and above.',
+    parking_text: 'Car parking not required. P up to 0.5 spaces per Dwelling Unit; C up to 0.75 spaces per Dwelling Unit',
+    dwelling_unit_mix_text: 'Generally required for creation of five or more Dwelling Units. No less than 40% of the total number of proposed Dwelling Units shall contain at least two bedrooms; or no less than 30% of the total number of proposed Dwelling Units shall contain at least three bedrooms.',
+    principal_uses: [
+      'Residential Uses (P 1st/2nd/3rd+)',
+      'Arts Activities (P)',
+      'Manufacturing, Light (P 1st & 2nd)',
+      'Retail Sales and Service Uses (P 1st & 2nd floors)',
+      'Bar (P 1st & 2nd floors)',
+    ],
+    conditional_uses: [
+      'Group Housing (C)',
+      'Cannabis Retail (C 1st & 2nd)',
+      'Formula Retail (C)',
+      'Liquor Store (C 1st floor)',
+      'Entertainment, General (C 1st & 2nd floors)',
+    ],
     source: {
-      density: cite('Article 7', '§758'),
-      principal_uses: cite('Article 7', '§758'),
-      parking_min: cite('Article 7', '§758'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§207', 'Form-Based Density'),
+      far_non_residential: sourced('§124', '2.5 to 1'),
+      open_space: sourced('§135', '80 square feet per unit if private, or 100 square feet per unit if common - roof decks do not qualify.'),
+      parking: sourced('§151.1', 'Car parking not required. P up to 0.5 spaces per Dwelling Unit; C up to 0.75 spaces per Dwelling Unit. Bike parking required per § 155.2. If car parking is provided, car share spaces are required when a project has 50 units or more per § 166.'),
+      dwelling_unit_mix: sourced('§207.6', 'Generally required for creation of five or more Dwelling Units. No less than 40% of the total number of proposed Dwelling Units shall contain at least two bedrooms; or no less than 30% of the total number of proposed Dwelling Units shall contain at least three bedrooms.'),
+      principal_uses: sourced('§758', 'Residential Uses … P P P; Arts Activities … P P P; Manufacturing, Light … P P NP; Retail Sales and Service Uses* … P P NP; Bar … P P NP.'),
+      conditional_uses: sourced('§758', 'Group Housing … C(1)(12); Cannabis Retail … C C NP; Formula Retail … C; Liquor Store … C NP NP; Entertainment, General … C(4) C(4) NP.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-57126',
     },
   },
 
@@ -2106,6 +2000,94 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
       retrieved_at: '2026-05-31',
       document: 'SF Planning Code — Article 8 (amlegal, latest)',
       document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-67772',
+    },
+  },
+
+  // ── DTR (Downtown Residential) — Art. 8, §§ 825-829 ────────────────────────
+  // Form-based, height-governed mixed-use residential. Verified from Table 827 /
+  // Table 829 (amlegal §827 / §829). TB-DTR (§828) is governed by the Transbay
+  // Redevelopment Plan and renders the GOVERNING_PLAN fallback, not a record.
+  // DataSF code spellings are exact: 'RH DTR' (space) and 'SB-DTR' (hyphen).
+
+  'RH DTR': {
+    code: 'RH DTR',
+    name: 'Rincon Hill Downtown Residential',
+    classification: sourced('§827', 'RINCON HILL DOWNTOWN RESIDENTIAL MIXED USE DISTRICT (RH-DTR)'),
+    verified: true,
+    density: { model: 'form-based', note: 'Form-Based Density. Dwelling Unit Mix Required § 207.6.' },
+    open_space_per_unit: { private_sqft: 75, note: '75 sq. ft. per unit; up to 50% may be provided off-site if publicly accessible.' },
+    controls_note: 'Height and Bulk: Varies 45 - 550 feet (see Zoning Map 1H and § 263.19; bulk per § 270(e)). Lot Size: No limit. Use Size [Non-Residential]: P up to 25,000 sq. ft., C above. Minimum Dwelling Unit Densities, if Applicable: generally 50 to 100 dwelling units per acre (§ 207.9). Maximum Dwelling Unit Size: P up to 4,000 sq. ft. of Gross Floor Area or an FAR of 1.2:1; C above.',
+    dwelling_unit_mix_text: 'Form-Based Density. Dwelling Unit Mix Required § 207.6.',
+    parking_text: 'None Required. Up to one car per two Dwelling Units permitted; up to one car per Dwelling Unit per procedures and criteria of Sections 151.1, 825(b)(7) and 827(a)(8).',
+    principal_uses: [
+      'Residential Use (P)',
+      'Residential Care Facility (P)',
+      'Child Care Facility (P)',
+      'All Non-Residential Uses Permitted, except as described below (P up to 25,000 sq. ft.)',
+      'Awning, Canopy, Marquee (P)',
+      'Business Sign (P)',
+    ],
+    conditional_uses: [
+      'Hospital or Medical Center (C)',
+      'Other Institutions, except Residential Care Facility (C)',
+      'Public Use (C)',
+      'Movie Theater (C)',
+      'Nighttime Entertainment (C)',
+      'Automotive Sale or Rental (C)',
+      'Mortuary (C)',
+      'Wireless Telecommunications Services Facility (C; P if Micro WTS Facility)',
+    ],
+    source: {
+      density: sourced('§827', 'Residential Density, General … Form-Based Density. Dwelling Unit Mix Required § 207.6'),
+      open_space: sourced('§827', 'Usable Open Space [Per Residential Unit] … 75 sq. ft. per unit; up to 50% may be provided off-site if publicly accessible.'),
+      parking: sourced('§827', 'Accessory Off-Street Parking, Residential … None Required. Up to one car per two Dwelling Units permitted; up to one car per Dwelling Unit per procedures and criteria of Sections 151.1, 825(b)(7) and 827(a)(8).'),
+      dwelling_unit_mix: sourced('§207.6', 'Form-Based Density. Dwelling Unit Mix Required § 207.6'),
+      principal_uses: sourced('§827', 'Residential Use … P; Residential Care Facility … P; Child Care Facility … P; All Non-Residential Uses Permitted, except as described below; Awning … P; Canopy … P; Marquee … P; Business Sign … P.'),
+      conditional_uses: sourced('§827', 'Hospital or Medical Center … C; Other Institutions, except Residential Care Facility … C; Public Use … C; Movie Theater … C; Nighttime Entertainment … C; Automotive Sale or Rental … C; Mortuary … C; Wireless Telecommunications Services Facility … C; P if the facility is a Micro WTS Facility.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code §827, Table 827 (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-26847',
+    },
+  },
+
+  'SB-DTR': {
+    code: 'SB-DTR',
+    name: 'South Beach Downtown Residential',
+    classification: sourced('§829', 'SOUTH BEACH DOWNTOWN RESIDENTIAL MIXED USE DISTRICT (SB-DTR)'),
+    verified: true,
+    density: { model: 'form-based', note: 'Form-Based Density. Dwelling Unit Mix Required § 207.6.' },
+    open_space_per_unit: { private_sqft: 75, note: '75 sq. ft. per unit; up to 50% may be provided off-site if publicly accessible.' },
+    controls_note: 'Height and Bulk: Varies 40 - 200 feet (see Zoning Map 1H and § 263.19; bulk per § 270(e)). Lot Size: No limit. Use Size [Non-Residential]: P up to 25,000 sq. ft., C above. Minimum Dwelling Unit Densities, if Applicable: generally 50 to 100 dwelling units per acre (§ 207.9). Maximum Dwelling Unit Size: P up to 4,000 sq. ft. of Gross Floor Area or an FAR of 1.2:1; C above.',
+    dwelling_unit_mix_text: 'Form-Based Density. Dwelling Unit Mix Required § 207.6.',
+    parking_text: 'None Required. Up to one car per four Dwelling Units permitted; up to .75 cars per unit or 1 car per unit based on unit size, per procedures and criteria of Section 151.1.',
+    principal_uses: [
+      'Residential Use (P)',
+      'Residential Care Facility (P)',
+      'Child Care Facility (P)',
+      'All Non-Residential Uses Permitted, except as described below (P up to 25,000 sq. ft.)',
+      'Awning, Canopy, Marquee (P)',
+      'Business Sign (P)',
+    ],
+    conditional_uses: [
+      'Hospital or Medical Center (C)',
+      'Other Institutions, except Residential Care Facility (C)',
+      'Public Use (C)',
+      'Movie Theater (C)',
+      'Nighttime Entertainment (C)',
+      'Automotive Sale or Rental (C)',
+      'Mortuary (C)',
+      'Wireless Telecommunications Services Facility (C; P if Micro WTS Facility)',
+    ],
+    source: {
+      density: sourced('§829', 'Residential Density, General … Form-Based Density. Dwelling Unit Mix Required § 207.6'),
+      open_space: sourced('§829', 'Usable Open Space [Per Residential Unit] … 75 sq. ft. per unit; up to 50% may be provided off-site if publicly accessible.'),
+      parking: sourced('§829', 'Accessory Off-Street Parking, Residential … None Required. Up to one car per four Dwelling Units permitted; up to .75 cars per unit or 1 car per unit based on unit size, per procedures and criteria of Section 151.1.'),
+      dwelling_unit_mix: sourced('§207.6', 'Form-Based Density. Dwelling Unit Mix Required § 207.6'),
+      principal_uses: sourced('§829', 'Residential Use … P; Residential Care Facility … P; Child Care Facility … P; All Non-Residential Uses Permitted, except as described below; Awning … P; Canopy … P; Marquee … P; Business Sign … P.'),
+      conditional_uses: sourced('§829', 'Hospital or Medical Center … C; Other Institutions, except Residential Care Facility … C; Public Use … C; Movie Theater … C; Nighttime Entertainment … C; Automotive Sale or Rental … C; Mortuary … C; Wireless Telecommunications Services Facility … C; P if the facility is a Micro WTS Facility.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code §829, Table 829 (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-26925',
     },
   },
 

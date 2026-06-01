@@ -37,6 +37,11 @@ it('renders Public (P) with its controls note and no crash on absent metrics', (
   expect(screen.getByText(/uses governed by §211/i)).toBeInTheDocument()
 })
 
+it('shows the governing-plan fallback for a redevelopment district', () => {
+  render(<ZoningDistrictPanel zoningSim="MB-RA" gen="" districtName="MB-RA" onClose={() => {}} />)
+  expect(screen.getByText(/Mission Bay Redevelopment Plan/i)).toBeInTheDocument()
+})
+
 it('renders banded FAR for PDR and form-based density for UMU', () => {
   const { rerender } = render(<ZoningDistrictPanel zoningSim="PDR-1-G" gen="Industrial" districtName="PDR-1-G" onClose={() => {}} />)
   expect(screen.getAllByText(/FAR \(non-residential\)/i).length).toBeGreaterThan(0)
