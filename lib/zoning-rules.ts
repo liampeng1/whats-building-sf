@@ -1723,7 +1723,10 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     dwelling_unit_mix_text: 'At least 40% of all dwelling units must contain two or more bedrooms or 30% of all dwelling units must contain three or more bedrooms.',
     parking_text: 'No car parking required. Maximum permitted as set forth in § 151.1 . Bike parking required per § 155.2. If car parking is provided, car share spaces are required when a project has 50 units or more per § 166.',
     source: {
-      density: sourced('§208', 'Form-Based Density.'),
+      // §832's general DU-density row also cross-refs §208, but §208's current
+      // content is group-housing/shelter density; the general form-based value is
+      // governed by §207 (as for the other 7 MU districts). Cite §207 for content-match.
+      density: sourced('§207', 'Form-Based Density.'),
       far_non_residential: sourced('§124', 'Varies, depending on height, as set forth in § 124. For Office Uses minimum intensities may apply pursuant to § 207.9.'),
       principal_uses: sourced('§832', 'Agricultural Uses … P; Automotive Uses* … P; Entertainment, Arts and Recreation Uses* … P; Movie Theater … P up to three screens; Light Manufacturing … P; Institutional Uses … P; Retail Sales and Service Uses* … P(4) (6); Non-Retail Sales and Service … P; Public Transportation Facility … P.'),
       conditional_uses: sourced('§832', 'Entertainment, Nighttime … C; Adult Sex Venue … C; Hotel … C(5); Wireless Telecommunications Services Facility … C(2).'),
