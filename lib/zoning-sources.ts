@@ -78,6 +78,31 @@ export const SECTION_URL: Record<string, string> = {
   '§838': '0-0-0-67810',    // SEC. 838. UMU - URBAN MIXED USE DISTRICT.
   '§839': '0-0-0-70715',    // SEC. 839. WMUG - WSOMA MIXED USE-GENERAL DISTRICT.
   '§840': '0-0-0-67836',    // SEC. 840. WMUO - WSOMA MIXED USE-OFFICE DISTRICT.
+  // Neighborhood Commercial + Chinatown (Phase 4) — all titles confirmed via
+  // /api/render-section (Task 1, Step 2).
+  // Named NC districts (Art. 7).
+  '§710': '0-0-0-25492',    // SEC. 710. NC-1 - NEIGHBORHOOD COMMERCIAL CLUSTER DISTRICT.
+  '§711': '0-0-0-25507',    // SEC. 711. NC-2 - SMALL-SCALE NEIGHBORHOOD COMMERCIAL DISTRICT.
+  '§712': '0-0-0-25522',    // SEC. 712. NC-3 - MODERATE-SCALE NEIGHBORHOOD COMMERCIAL DISTRICT.
+  '§713': '0-0-0-25536',    // SEC. 713. NC-S - NEIGHBORHOOD COMMERCIAL SHOPPING CENTER DISTRICT.
+  // Named NCT districts (Art. 7).
+  '§750': '0-0-0-57016',    // SEC. 750. NCT-1 - NEIGHBORHOOD COMMERCIAL TRANSIT CLUSTER DISTRICT.
+  '§751': '0-0-0-57028',    // SEC. 751. NCT-2 - SMALL-SCALE NEIGHBORHOOD COMMERCIAL TRANSIT DISTRICT.
+  '§752': '0-0-0-57664',    // SEC. 752. NCT-3 - MODERATE-SCALE NEIGHBORHOOD COMMERCIAL TRANSIT DISTRICT.
+  // Generic NCD / NCT umbrella — the bare-code districts have NO single dedicated
+  // section. They are governed by §702 (classes) + §703 (requirements); cite the
+  // closest applicable § when transcribing a bare NCD / NCT record.
+  '§702': '0-0-0-25376',    // SEC. 702. CLASSES OF NEIGHBORHOOD COMMERCIAL DISTRICTS. (NCD/NCT umbrella)
+  '§703': '0-0-0-25401',    // SEC. 703. NEIGHBORHOOD COMMERCIAL DISTRICT REQUIREMENTS. (generic NC controls)
+  // RCD — RESOLVED: RCD = Regional Commercial District (§758, Art. 7), NOT a
+  // Chinatown district. DataSF zoning_sim=RCD → districtna "REGIONAL COMMERCIAL";
+  // amlegal §758 title "REGIONAL COMMERCIAL DISTRICT" matches. The Chinatown
+  // theory was wrong (CRNC lives at §812, see below).
+  '§758': '0-0-0-57126',    // SEC. 758. REGIONAL COMMERCIAL DISTRICT. (RCD)
+  // Chinatown Mixed Use (Art. 8).
+  '§810': '0-0-0-26704',    // SEC. 810. CHINATOWN COMMUNITY BUSINESS DISTRICT. (CCB)
+  '§811': '0-0-0-26717',    // SEC. 811. CHINATOWN VISITOR RETAIL DISTRICT. (CVR)
+  '§812': '0-0-0-26729',    // SEC. 812. CHINATOWN RESIDENTIAL NEIGHBORHOOD COMMERCIAL DISTRICT. (CRNC)
 }
 
 /** Build a verified citation: real amlegal URL + verbatim quote.
