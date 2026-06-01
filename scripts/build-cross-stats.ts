@@ -150,6 +150,7 @@ interface NhoodStats {
   zoning_share: Partial<Record<ZoningCategory, number>>
   transit_coverage: { '0.1mi': number; '0.25mi': number }
   near_rail_pct: number
+  tier_share: Partial<Record<TransitTier, number>>
 }
 interface ZoningStats {
   category: ZoningCategory
@@ -399,6 +400,37 @@ async function main() {
     `local-buf: ${localBuffer ? 'ok' : '—'}, any-frequent: ${anyFrequentBuffer ? 'ok' : '—'}`,
   )
 
+  // Build the four mutually-exclusive, SF-clipped transit-tier polygons up
+  // front so the per-neighborhood loop can compute each neighborhood's tier
+  // breakdown against them (and the citywide transit_tiers stats below reuse
+  // the same polys). Tiers are nested-difference: rapid-bus excludes rail,
+  // local-bus excludes rail∪rapid, poor is SF minus all frequent.
+  console.log('• building transit-tier polygons…')
+  // SF outline = pairwise union of all neighborhood polygons. We don't ship
+  // a separate sf-outline.geojson asset, so reuse the nhood layer.
+  let sfOutline: AnyPoly | null = null
+  for (const f of nhoodGeo.features) {
+    sfOutline = sfOutline ? safeUnion(sfOutline, f as AnyPoly) : (f as AnyPoly)
+  }
+  const tierRail = railBuffer
+  const tierRapidBus = safeDifference(rapidBuffer, tierRail)
+  const railOrRapid = safeUnion(tierRail, tierRapidBus)
+  const tierLocalBus = safeDifference(localBuffer, railOrRapid)
+  const allFrequent = safeUnion(railOrRapid, tierLocalBus)
+  const tierPoor = safeDifference(sfOutline, allFrequent)
+  // Clip each tier polygon to the SF outline. Without this, rail and rapid-bus
+  // buffers extend across the Bay (e.g. BART stations in Oakland/Berkeley have
+  // 400m buffers that protrude beyond SF land), so the four shares add up to
+  // > 100% of SF area. We also persist the clipped polygons so the rendered
+  // map layer doesn't show rings spilling into the water.
+  const tierFeatures: Array<{ tier: TransitTier; poly: AnyPoly | null }> = [
+    { tier: 'rail', poly: sfOutline ? safeIntersect(tierRail!, sfOutline) : tierRail },
+    { tier: 'rapid-bus', poly: sfOutline && tierRapidBus ? safeIntersect(tierRapidBus, sfOutline) : tierRapidBus },
+    { tier: 'local-bus', poly: sfOutline && tierLocalBus ? safeIntersect(tierLocalBus, sfOutline) : tierLocalBus },
+    // tierPoor is already (sfOutline − allFrequent), so it's inside SF by construction.
+    { tier: 'poor', poly: tierPoor },
+  ]
+
   // Persist transit rings as a GeoJSON file for client-side rendering.
   const ringsCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -490,8 +522,24 @@ async function main() {
       const inter = safeIntersect(nhoodFeature, anyFrequentBuffer)
       near_rail_pct = safeArea(inter) / totalArea
     }
+    // tier_share: % of nhood land in each mutually-exclusive transit tier
+    // (rail / rapid-bus / local-bus / poor). Same intersect-and-normalize
+    // pattern as zoning_share; sums to ≈1. Zero entries omitted.
+    // tier_share: % of nhood land in each mutually-exclusive transit tier
+    // (rail / rapid-bus / local-bus / poor). Same intersect-and-normalize
+    // pattern as zoning_share; sums to ≈1. Cheap in practice (~12s for all
+    // neighborhoods × 4 tiers) — the build's heavy section is per-zoning,
+    // not this. Zero entries omitted.
+    const tier_share: Partial<Record<TransitTier, number>> = {}
+    if (totalArea > 0) {
+      for (const { tier, poly } of tierFeatures) {
+        if (!poly) continue
+        const a = safeArea(safeIntersect(nhoodFeature, poly))
+        if (a > 0) tier_share[tier] = a / totalArea
+      }
+    }
     nhoodOut.push({
-      nhood, area_sqm: totalArea, zoning_share, transit_coverage: tc, near_rail_pct,
+      nhood, area_sqm: totalArea, zoning_share, transit_coverage: tc, near_rail_pct, tier_share,
     })
     process.stdout.write('.')
   }
@@ -642,38 +690,10 @@ async function main() {
   }
   console.log(' ✓')
 
-  // Four mutually-exclusive transit-tier polygons:
-  //   rail       = rail-buffer
-  //   rapid-bus  = rapid-buffer − rail
-  //   local-bus  = local-buffer − (rail ∪ rapid-bus)
-  //   poor       = sf-outline − (rail ∪ rapid-bus ∪ local-bus)
-  console.log('• building transit-tier polygons…')
-  // SF outline = pairwise union of all neighborhood polygons. We don't ship
-  // a separate sf-outline.geojson asset, so reuse the nhood layer.
-  let sfOutline: AnyPoly | null = null
-  for (const f of nhoodGeo.features) {
-    sfOutline = sfOutline ? safeUnion(sfOutline, f as AnyPoly) : (f as AnyPoly)
-  }
-  const tierRail = railBuffer
-  const tierRapidBus = safeDifference(rapidBuffer, tierRail)
-  const railOrRapid = safeUnion(tierRail, tierRapidBus)
-  const tierLocalBus = safeDifference(localBuffer, railOrRapid)
-  const allFrequent = safeUnion(railOrRapid, tierLocalBus)
-  const tierPoor = safeDifference(sfOutline, allFrequent)
+  // Citywide tier stats — tierFeatures + sfOutline are built up front (above
+  // the per-neighborhood loop) so the neighborhood tier_share breakdown can
+  // reuse them. Here we just total each tier's clipped area as a share of SF.
   const sfArea = safeArea(sfOutline) || totalSfArea || 1
-
-  // Clip each tier polygon to the SF outline. Without this, rail and rapid-bus
-  // buffers extend across the Bay (e.g. BART stations in Oakland/Berkeley have
-  // 400m buffers that protrude beyond SF land), so the four shares add up to
-  // > 100% of SF area. We also persist the clipped polygons so the rendered
-  // map layer doesn't show rings spilling into the water.
-  const tierFeatures: Array<{ tier: TransitTier; poly: AnyPoly | null }> = [
-    { tier: 'rail', poly: sfOutline ? safeIntersect(tierRail!, sfOutline) : tierRail },
-    { tier: 'rapid-bus', poly: sfOutline && tierRapidBus ? safeIntersect(tierRapidBus, sfOutline) : tierRapidBus },
-    { tier: 'local-bus', poly: sfOutline && tierLocalBus ? safeIntersect(tierLocalBus, sfOutline) : tierLocalBus },
-    // tierPoor is already (sfOutline − allFrequent), so it's inside SF by construction.
-    { tier: 'poor', poly: tierPoor },
-  ]
   const transit_tiers: TierStats[] = tierFeatures.map(({ tier, poly }) => {
     const a = safeArea(poly)
     return { tier, area_sqm: a, share_of_sf: a / sfArea }

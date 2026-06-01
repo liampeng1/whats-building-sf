@@ -16,6 +16,7 @@ import {
   type PermitStage,
   type UseCategory,
 } from '@/lib/permit-style'
+import { TIER_ORDER, TIER_LABELS, TIER_COLORS } from '@/lib/transit-tiers-style'
 
 interface Props {
   neighborhood: string | null
@@ -98,7 +99,7 @@ function ZoningMixBlock({
   )
 }
 
-function TransitAccessBlock({
+export function TransitAccessBlock({
   crossStats,
   neighborhood,
 }: {
@@ -108,23 +109,45 @@ function TransitAccessBlock({
   if (!crossStats || !neighborhood) return null
   const row = crossStats.neighborhoods.find((r) => r.nhood === neighborhood)
   if (!row) return null
-  const bands: { band: string; label: string; share: number }[] = [
-    { band: '0.1mi', label: 'within 0.1 mi', share: row.transit_coverage['0.1mi'] ?? 0 },
-    { band: '0.25mi', label: 'within ¼ mi', share: row.transit_coverage['0.25mi'] ?? 0 },
-  ]
+
+  // Preferred: the four mutually-exclusive transit tiers (share of nhood land),
+  // matching the map heat layer + tier panel. Falls back to the coverage bands
+  // if tier_share is absent (e.g. cross-stats.json built before this field).
+  const hasTiers = !!row.tier_share && Object.keys(row.tier_share).length > 0
+
+  const rows = hasTiers
+    ? TIER_ORDER.map((tier) => ({
+        key: tier,
+        label: TIER_LABELS[tier],
+        share: row.tier_share![tier] ?? 0,
+        color: TIER_COLORS[tier],
+      }))
+    : [
+        { key: '0.1mi', label: 'within 0.1 mi', share: row.transit_coverage['0.1mi'] ?? 0, color: '#9a4a31' },
+        { key: '0.25mi', label: 'within ¼ mi', share: row.transit_coverage['0.25mi'] ?? 0, color: '#9a4a31' },
+      ]
+
   return (
     <div>
       <div className="civic-eyebrow mb-2">Transit access · land share</div>
       <ul className="space-y-1.5">
-        {bands.map((b) => {
-          const pct = Math.round(b.share * 100)
+        {rows.map((r) => {
+          const pct = Math.round(r.share * 100)
           return (
             <li
-              key={b.band}
-              className="grid grid-cols-[5.5rem_3rem_1fr] items-center gap-2 text-xs"
+              key={r.key}
+              className="grid grid-cols-[6.5rem_2.5rem_1fr] items-center gap-2 text-xs"
             >
-              <span className="text-ink-soft uppercase tracking-wide line-clamp-2 leading-snug">
-                {b.label}
+              <span className="flex items-center gap-1.5 min-w-0">
+                {hasTiers && (
+                  <span
+                    className="inline-block w-2 h-2 rounded-full shrink-0"
+                    style={{ background: r.color }}
+                  />
+                )}
+                <span className="text-ink-soft uppercase tracking-wide line-clamp-2 leading-snug">
+                  {r.label}
+                </span>
               </span>
               <span className="font-semibold tabular-nums text-right text-construction">
                 {pct}%
@@ -133,7 +156,7 @@ function TransitAccessBlock({
                 className="h-2 rounded"
                 style={{
                   width: `${pct}%`,
-                  backgroundColor: '#9a4a31',
+                  backgroundColor: r.color,
                   opacity: 0.7,
                 }}
               />
@@ -142,7 +165,9 @@ function TransitAccessBlock({
         })}
       </ul>
       <p className="text-[10px] text-ink-faint italic mt-2 leading-snug">
-        Walking shed of any BART or Muni Metro station.
+        {hasTiers
+          ? 'Share of this neighborhood’s land by nearest frequent transit.'
+          : 'Walking shed of any BART or Muni Metro station.'}
       </p>
     </div>
   )

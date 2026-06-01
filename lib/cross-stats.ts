@@ -36,6 +36,13 @@ export interface NhoodStats {
   transit_coverage: Record<TransitBand, number>
   /** % of nhood land within ¼ mi of any frequent transit (rail ∪ rapid-bus ∪ frequent-local). */
   near_rail_pct: number
+  /**
+   * Share of the neighborhood's land in each mutually-exclusive transit tier
+   * (rail / rapid-bus / local-bus / poor); sums to ≈1. Optional so a stale
+   * cross-stats.json (built before this field existed) still type-checks —
+   * consumers fall back to transit_coverage when it's absent.
+   */
+  tier_share?: Partial<Record<TransitTier, number>>
 }
 
 export interface ZoningDistrict {
