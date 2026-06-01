@@ -9,6 +9,10 @@ import { NeighborhoodChoropleth } from './NeighborhoodChoropleth'
 import { ZoningOverlay } from './ZoningOverlay'
 import { ZoningDistrictPanel } from './ZoningDistrictPanel'
 import { TransitCorridors } from './TransitCorridors'
+import { TransitTierOverlay } from './TransitTierOverlay'
+import { TransitTierPanel } from './TransitTierPanel'
+import { TIER_ORDER } from '@/lib/transit-tiers-style'
+import type { TransitTier } from '@/lib/cross-stats'
 import { LensInfoPanel } from './LensInfoPanel'
 import { StationMarkers, type SelectedStation } from './StationMarkers'
 import { RAIL_STATIONS, RAPID_BUS_STOPS, withinStationRadius, RAIL_THRESHOLD_M, RAPID_BUS_THRESHOLD_M, transitAdjacent, loadStations } from '@/lib/transit-stations'
@@ -143,6 +147,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     districtna?: string
     codesectio?: string
   } | null>(null)
+  // Selected transit-access tier (rail / rapid-bus / local-bus / poor).
+  // Drives the heat-layer highlight + the TransitTierPanel. Shareable via
+  // the ?tier= URL param (mirrors ?district=).
+  const [selectedTier, setSelectedTier] = useState<TransitTier | null>(null)
   const [zoningHeights, setZoningHeights] = useState<Record<string, { height_ft?: number; bulk?: string }>>({})
   // Parcel polygon for the currently-open permit. Fetched lazily from
   // /api/parcel and rendered as a thin amber outline under the marker so
@@ -225,6 +233,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       if (Number.isFinite(radiusParam) && radiusParam > 0) setStationRadiusM(radiusParam)
       const districtParam = sp.get('district')
       setSelectedZoningDistrict(districtParam ? { zoningSim: districtParam, gen: '' } : null)
+      const tierParam = sp.get('tier')
+      setSelectedTier(
+        tierParam && (TIER_ORDER as string[]).includes(tierParam)
+          ? (tierParam as TransitTier)
+          : null,
+      )
       const sheetParam = sp.get('sheet')
       setSheetOpen(sheetParam === '1')
     }
@@ -300,6 +314,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
 
     setOrDelete('district', selectedZoningDistrict?.zoningSim ?? '', '')
 
+    setOrDelete('tier', selectedTier ?? '', '')
+
     setOrDelete('mode', mapMode, 'neighborhoods')
 
     setOrDelete('lensOpen', lensOpen ?? '', '')
@@ -307,7 +323,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
     setOrDelete('sheet', sheetOpen ? '1' : '', '')
 
     window.history.replaceState({}, '', url.toString())
-  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict, mapMode, lensOpen, sheetOpen])
+  }, [selectedStages, selectedCategories, minUnits, completedYears, recentActivity, transit, selectedStation, stationRadiusM, selectedZoningDistrict, selectedTier, mapMode, lensOpen, sheetOpen])
 
   // Centralized "pan + zoom into a permit" used by both pin clicks and
   // URL-driven loads. Lives in a useEffect on [openPermit, permits] so
@@ -640,6 +656,10 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         )}
         {mapMode === 'transit' && (
           <>
+            <TransitTierOverlay
+              selectedTier={selectedTier}
+              onSelect={setSelectedTier}
+            />
             <TransitCorridors />
             <StationMarkers
               show
@@ -730,6 +750,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
           crossStats={crossStats}
           lensStats={lensStats}
           statusLine={summarySentence}
+          selectedTier={selectedTier}
           onClose={() => setLensOpen(null)}
           onSelectRegion={(kind, id, extra) => {
             if (kind === 'neighborhood') openNhoodPanel(id)
@@ -737,9 +758,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
               // Specific zoning district click from drill-down — open the
               // existing ZoningDistrictPanel. `extra` carries the gen category.
               setSelectedZoningDistrict({ zoningSim: id, gen: extra ?? '' })
+            } else if (kind === 'tier') {
+              // Toggle the transit-access tier: re-clicking the active tier
+              // clears the highlight + closes the panel.
+              setSelectedTier((cur) => (cur === id ? null : (id as TransitTier)))
             }
-            // 'zoning'  = category click; drill-down handled inside the drawer.
-            // 'tier'    = no detail panel for now.
+            // 'zoning' = category click; drill-down handled inside the drawer.
           }}
         />
       </div>
@@ -805,6 +829,12 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onRadiusChange={setStationRadiusM}
         permits={filteredPermits}
         onOpenPermit={openPermitPanel}
+      />
+      <TransitTierPanel
+        tier={selectedTier}
+        stats={crossStats?.transit_tiers ?? []}
+        lens={lensStats?.transit_tiers ?? null}
+        onClose={() => setSelectedTier(null)}
       />
     </div>
   )

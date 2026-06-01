@@ -12,6 +12,7 @@ interface Props {
   crossStats: CrossStats | null
   lensStats: LensStats | null
   statusLine: string
+  selectedTier?: TransitTier | null
   onClose: () => void
   onSelectRegion: (
     kind: 'neighborhood' | 'zoning' | 'tier' | 'district',
@@ -20,7 +21,7 @@ interface Props {
   ) => void
 }
 
-export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose, onSelectRegion }: Props) {
+export function LensDirectory({ mode, crossStats, lensStats, statusLine, selectedTier = null, onClose, onSelectRegion }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -96,6 +97,7 @@ export function LensDirectory({ mode, crossStats, lensStats, statusLine, onClose
         <TransitDirectory
           geo={crossStats?.transit_tiers ?? []}
           lens={lensStats?.transit_tiers ?? {} as any}
+          selectedTier={selectedTier}
           onSelect={(tier) => onSelectRegion('tier', tier as string)}
         />
       )}
