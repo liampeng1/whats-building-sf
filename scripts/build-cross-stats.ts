@@ -29,6 +29,12 @@ import { fetchHeightPolygons, joinHeightsToZoning } from './sources/zoning-heigh
 import { ZONING_RULES } from '../lib/zoning-rules'
 import type { TransitTier } from '../lib/transit-stations'
 import {
+  combinedBusPeakTph,
+  VERY_FREQUENT_BUS_TPH,
+  FREQUENT_BUS_TPH,
+  BASIC_BUS_TPH,
+} from '../lib/transit-stations'
+import {
   fetchBartCorridors,
   fetchMuniCorridors,
   fetchCaltrainCorridors,
@@ -238,6 +244,33 @@ function bufferUnion(
   return acc
 }
 
+/** Like bufferUnion but for large stop sets (the frequency bands run into the
+ *  thousands). Coarser circles (fewer steps) plus a balanced divide-and-conquer
+ *  union keep this from degrading to the O(n²) blow-up of linear accumulation. */
+function bufferUnionMany(
+  stops: { lat: number; lng: number }[],
+  miles: number,
+): AnyPoly | null {
+  if (stops.length === 0) return null
+  let polys = stops
+    .map((s) => turf.buffer(turf.point([s.lng, s.lat]), miles, { units: 'miles', steps: 16 }))
+    .filter((f): f is AnyPoly => !!f)
+  if (polys.length === 0) return null
+  while (polys.length > 1) {
+    const next: AnyPoly[] = []
+    for (let i = 0; i < polys.length; i += 2) {
+      if (i + 1 < polys.length) {
+        const u = safeUnion(polys[i], polys[i + 1])
+        next.push(u ?? polys[i])
+      } else {
+        next.push(polys[i])
+      }
+    }
+    polys = next
+  }
+  return polys[0]
+}
+
 function pickCategory(props: Record<string, unknown>): ZoningCategory {
   const gen = String(props.gen ?? '')
   return (ZONING_CATEGORIES as readonly string[]).includes(gen)
@@ -410,14 +443,21 @@ async function main() {
   const rapidBusRings = buildTransitRings(rapid, RAPID_BUS_BANDS)
   console.log(`  bands: ${Object.keys(transitRings).join(', ')}`)
 
-  console.log('• building per-mode ¼-mile buffer unions for tier polygons…')
+  console.log('• building ¼-mile buffer unions for frequency-band tier polygons…')
+  // Cumulative bands: each buffer covers every stop AT OR ABOVE its threshold,
+  // so nested differences below reproduce classifyTier's "max nearby tph" rule.
+  const veryFreqStops = freq.filter((s) => combinedBusPeakTph(s) >= VERY_FREQUENT_BUS_TPH)
+  const freqStops = freq.filter((s) => combinedBusPeakTph(s) >= FREQUENT_BUS_TPH)
+  const basicStops = freq.filter((s) => combinedBusPeakTph(s) >= BASIC_BUS_TPH)
   const railBuffer = bufferUnion(rail, NEAR_RAIL_BUFFER_MI)
-  const rapidBuffer = bufferUnion(rapid, NEAR_RAIL_BUFFER_MI)
-  const localBuffer = bufferUnion(local, NEAR_RAIL_BUFFER_MI)
-  const anyFrequentBuffer = safeUnion(safeUnion(railBuffer, rapidBuffer), localBuffer)
+  const veryFreqBuffer = bufferUnionMany(veryFreqStops, NEAR_RAIL_BUFFER_MI)
+  const freqBuffer = bufferUnionMany(freqStops, NEAR_RAIL_BUFFER_MI)
+  const basicBuffer = bufferUnionMany(basicStops, NEAR_RAIL_BUFFER_MI)
+  // "Any frequent transit" (for the nhood coverage metric) = rail or a stop
+  // with ≥ 6 combined bus tph — the analog of the old rail ∪ rapid ∪ local.
+  const anyFrequentBuffer = safeUnion(railBuffer, freqBuffer)
   console.log(
-    `  rail-buf: ${railBuffer ? 'ok' : '—'}, rapid-buf: ${rapidBuffer ? 'ok' : '—'}, ` +
-    `local-buf: ${localBuffer ? 'ok' : '—'}, any-frequent: ${anyFrequentBuffer ? 'ok' : '—'}`,
+    `  bands: very-freq ${veryFreqStops.length}, freq ${freqStops.length}, basic ${basicStops.length} stops`,
   )
 
   // Persist transit rings as a GeoJSON file for client-side rendering.
@@ -663,11 +703,15 @@ async function main() {
   }
   console.log(' ✓')
 
-  // Four mutually-exclusive transit-tier polygons:
-  //   rail       = rail-buffer
-  //   rapid-bus  = rapid-buffer − rail
-  //   local-bus  = local-buffer − (rail ∪ rapid-bus)
-  //   poor       = sf-outline − (rail ∪ rapid-bus ∪ local-bus)
+  // Five mutually-exclusive transit-tier polygons, by descending access:
+  //   rail              = rail-buffer
+  //   very-frequent-bus = (≥12 tph buffer) − rail
+  //   frequent-bus      = (≥6 tph buffer)  − (rail ∪ ≥12)
+  //   basic-bus         = (≥2 tph buffer)  − (rail ∪ ≥6)
+  //   poor              = sf-outline − (rail ∪ ≥2)
+  // Because the band buffers nest (≥2 ⊇ ≥6 ⊇ ≥12), the differences leave each
+  // point in the band of the highest-frequency stop within ¼ mi — matching
+  // classifyTier.
   console.log('• building transit-tier polygons…')
   // SF outline = pairwise union of all neighborhood polygons. We don't ship
   // a separate sf-outline.geojson asset, so reuse the nhood layer.
@@ -676,11 +720,13 @@ async function main() {
     sfOutline = sfOutline ? safeUnion(sfOutline, f as AnyPoly) : (f as AnyPoly)
   }
   const tierRail = railBuffer
-  const tierRapidBus = safeDifference(rapidBuffer, tierRail)
-  const railOrRapid = safeUnion(tierRail, tierRapidBus)
-  const tierLocalBus = safeDifference(localBuffer, railOrRapid)
-  const allFrequent = safeUnion(railOrRapid, tierLocalBus)
-  const tierPoor = safeDifference(sfOutline, allFrequent)
+  const tierVeryFreq = safeDifference(veryFreqBuffer, tierRail)
+  const railOrVeryFreq = safeUnion(tierRail, veryFreqBuffer)
+  const tierFreq = safeDifference(freqBuffer, railOrVeryFreq)
+  const railToFreq = safeUnion(railOrVeryFreq, freqBuffer)
+  const tierBasic = safeDifference(basicBuffer, railToFreq)
+  const served = safeUnion(railToFreq, basicBuffer)
+  const tierPoor = safeDifference(sfOutline, served)
   const sfArea = safeArea(sfOutline) || totalSfArea || 1
 
   // Clip each tier polygon to the SF outline. Without this, rail and rapid-bus
@@ -690,9 +736,10 @@ async function main() {
   // map layer doesn't show rings spilling into the water.
   const tierFeatures: Array<{ tier: TransitTier; poly: AnyPoly | null }> = [
     { tier: 'rail', poly: sfOutline ? safeIntersect(tierRail!, sfOutline) : tierRail },
-    { tier: 'rapid-bus', poly: sfOutline && tierRapidBus ? safeIntersect(tierRapidBus, sfOutline) : tierRapidBus },
-    { tier: 'local-bus', poly: sfOutline && tierLocalBus ? safeIntersect(tierLocalBus, sfOutline) : tierLocalBus },
-    // tierPoor is already (sfOutline − allFrequent), so it's inside SF by construction.
+    { tier: 'very-frequent-bus', poly: sfOutline && tierVeryFreq ? safeIntersect(tierVeryFreq, sfOutline) : tierVeryFreq },
+    { tier: 'frequent-bus', poly: sfOutline && tierFreq ? safeIntersect(tierFreq, sfOutline) : tierFreq },
+    { tier: 'basic-bus', poly: sfOutline && tierBasic ? safeIntersect(tierBasic, sfOutline) : tierBasic },
+    // tierPoor is already (sfOutline − served), so it's inside SF by construction.
     { tier: 'poor', poly: tierPoor },
   ]
   const transit_tiers: TierStats[] = tierFeatures.map(({ tier, poly }) => {

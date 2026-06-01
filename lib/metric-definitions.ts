@@ -17,12 +17,14 @@ export const METRIC_DEFINITIONS = {
     '% of matching permits in this category.',
   transitTierRail:
     'Within ¼ mile of BART, Muni Metro, or Caltrain.',
-  transitTierRapidBus:
-    'Within ¼ mile of a Muni rapid-bus (R-suffix) line, but not also rail.',
-  transitTierLocalBus:
-    'Within ¼ mile of a frequent local Muni line, but not rapid-bus or rail.',
+  transitTierVeryFrequentBus:
+    'Within ¼ mile of a stop with ≥ 12 combined bus trips/hr at peak (≤ ~5 min), but not rail.',
+  transitTierFrequentBus:
+    'Within ¼ mile of a stop with ≥ 6 combined bus trips/hr at peak (≤ ~10 min), but not rail.',
+  transitTierBasicBus:
+    'Within ¼ mile of a stop with ≥ 2 combined bus trips/hr at peak (≤ ~30 min), but not rail.',
   transitTierPoor:
-    'No frequent transit within ¼ mile.',
+    'No rail and fewer than 2 bus trips/hr at peak within ¼ mile.',
 } as const
 
 export type MetricKey = keyof typeof METRIC_DEFINITIONS

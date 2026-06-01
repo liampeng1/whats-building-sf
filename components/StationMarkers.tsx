@@ -3,9 +3,10 @@
 import { Marker } from 'react-leaflet'
 import L from 'leaflet'
 import {
-  RAIL_STATIONS, RAPID_BUS_STOPS,
-  type RailStation, type RapidBusStop,
+  RAIL_STATIONS, FREQ_STOPS, stopFreqBand,
+  type RailStation, type FreqStop,
 } from '@/lib/transit-stations'
+import { TIER_COLORS } from '@/lib/transit-tiers-style'
 
 // BART — 16px navy filled circle with cream "B" centered
 const BART_ICON = L.divIcon({
@@ -31,13 +32,22 @@ const CALTRAIN_ICON = L.divIcon({
   iconAnchor: [7, 7],
 })
 
-// Rapid bus — 8px open sienna dot, no glyph
-const BUS_ICON = L.divIcon({
-  className: 'station-icon station-bus',
-  html: '<span class="bus-dot"></span>',
-  iconSize: [8, 8],
-  iconAnchor: [4, 4],
-})
+// Bus stop — 8px open dot whose border color encodes the frequency band.
+// One cached icon per band color (reuses the .bus-dot visual + hover).
+const freqIconCache = new Map<string, L.DivIcon>()
+function freqIcon(color: string): L.DivIcon {
+  let icon = freqIconCache.get(color)
+  if (!icon) {
+    icon = L.divIcon({
+      className: 'station-icon station-bus',
+      html: `<span class="bus-dot" style="border-color:${color}"></span>`,
+      iconSize: [8, 8],
+      iconAnchor: [4, 4],
+    })
+    freqIconCache.set(color, icon)
+  }
+  return icon
+}
 
 function railIconForStation(s: RailStation): L.DivIcon {
   // Merged stations may serve multiple modes; pick the most prominent for display.
@@ -47,7 +57,7 @@ function railIconForStation(s: RailStation): L.DivIcon {
 }
 
 export interface SelectedStation {
-  kind: 'rail' | 'rapid-bus'
+  kind: 'rail' | 'rapid-bus' | 'freq-stop'
   id: string
 }
 
@@ -71,15 +81,19 @@ export function StationMarkers({ show, zoom, onSelect }: Props) {
           title={`${s.name} · ${s.modes.join(' / ')}`}
         />
       ))}
-      {showBus && RAPID_BUS_STOPS.map((s: RapidBusStop) => (
-        <Marker
-          key={s.id}
-          position={[s.lat, s.lng]}
-          icon={BUS_ICON}
-          eventHandlers={{ click: () => onSelect({ kind: 'rapid-bus', id: s.id }) }}
-          title={`${s.name} · ${s.routes.join(', ')}`}
-        />
-      ))}
+      {showBus && FREQ_STOPS.map((s: FreqStop) => {
+        const band = stopFreqBand(s)
+        if (band === 'poor') return null // < 2 bus trips/hr — not a meaningful stop dot
+        return (
+          <Marker
+            key={s.id}
+            position={[s.lat, s.lng]}
+            icon={freqIcon(TIER_COLORS[band])}
+            eventHandlers={{ click: () => onSelect({ kind: 'freq-stop', id: s.id }) }}
+            title={`${s.name} · ${s.routes.map((r) => r.route).join(', ')}`}
+          />
+        )
+      })}
     </>
   )
 }

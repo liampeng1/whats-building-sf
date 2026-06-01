@@ -22,8 +22,9 @@ import {
 
 const DEF_KEY: Record<TransitTier, keyof typeof METRIC_DEFINITIONS> = {
   rail: 'transitTierRail',
-  'rapid-bus': 'transitTierRapidBus',
-  'local-bus': 'transitTierLocalBus',
+  'very-frequent-bus': 'transitTierVeryFrequentBus',
+  'frequent-bus': 'transitTierFrequentBus',
+  'basic-bus': 'transitTierBasicBus',
   poor: 'transitTierPoor',
 }
 

@@ -1,11 +1,29 @@
 import {
-  classifyTier, FREQUENT_LOCAL_LINES, RAIL_STATIONS, RAPID_BUS_STOPS,
+  classifyTier,
+  markFreqStopsChanged,
+  RAIL_STATIONS,
+  FREQ_STOPS,
+  type FreqStop,
 } from '@/lib/transit-stations'
+
+// Detailed band-boundary + grid coverage lives in
+// transit-stations-frequency.test.ts; this file pins the high-level
+// rail-precedence / frequency-band / poor behavior of classifyTier.
+function busStop(lat: number, lng: number, peakTph: number): FreqStop {
+  return {
+    id: `s-${lat}-${lng}`,
+    name: 'Y',
+    lat,
+    lng,
+    routes: [{ route: '38', mode: 'bus', peakTph, offPeakTph: 0 }],
+  }
+}
 
 describe('classifyTier', () => {
   beforeEach(() => {
     RAIL_STATIONS.length = 0
-    RAPID_BUS_STOPS.length = 0
+    FREQ_STOPS.length = 0
+    markFreqStopsChanged()
   })
 
   it('returns "rail" if a rail station is within 400 m', () => {
@@ -13,17 +31,13 @@ describe('classifyTier', () => {
     expect(classifyTier([-122.4194, 37.7749])).toBe('rail')
   })
 
-  it('returns "rapid-bus" if rapid stop in range and no rail', () => {
-    RAPID_BUS_STOPS.push({ id: 'b1', name: 'Y', lat: 37.78, lng: -122.42, routes: ['38R'] })
-    expect(classifyTier([-122.42, 37.78])).toBe('rapid-bus')
-  })
-
-  it('returns "local-bus" if a frequent local stop in range and no rapid/rail', () => {
-    expect(FREQUENT_LOCAL_LINES).toBeDefined()
-    expect(Array.isArray(FREQUENT_LOCAL_LINES)).toBe(true)
+  it('returns a frequency band from the nearest bus stop when no rail', () => {
+    FREQ_STOPS.push(busStop(37.78, -122.42, 7))
+    markFreqStopsChanged()
+    expect(classifyTier([-122.42, 37.78])).toBe('frequent-bus')
   })
 
   it('returns "poor" when nothing is in range', () => {
-    expect(classifyTier([-122.40, 37.70])).toBe('poor')
+    expect(classifyTier([-122.4, 37.7])).toBe('poor')
   })
 })

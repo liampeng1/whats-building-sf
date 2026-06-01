@@ -25,11 +25,11 @@ function permit(
 }
 
 // Classifier keyed off longitude for deterministic tests:
-//  lng 1 → rail, 2 → rapid-bus, 3 → local-bus, else poor.
+//  lng 1 → rail, 2 → very-frequent-bus, 3 → frequent-bus, else poor.
 const classify = (coords: [number, number] | null | undefined): TransitTier => {
   if (!coords) return 'poor'
   return (
-    { 1: 'rail', 2: 'rapid-bus', 3: 'local-bus' } as Record<number, TransitTier>
+    { 1: 'rail', 2: 'very-frequent-bus', 3: 'frequent-bus' } as Record<number, TransitTier>
   )[coords[0]] ?? 'poor'
 }
 
@@ -42,9 +42,14 @@ describe('homesShareByTier', () => {
     ]
     const share = homesShareByTier(permits, classify)
     expect(share.rail).toBeCloseTo(0.6)
-    expect(share['rapid-bus']).toBeCloseTo(0.2)
+    expect(share['very-frequent-bus']).toBeCloseTo(0.2)
     expect(share.poor).toBeCloseTo(0.2)
-    const total = share.rail + share['rapid-bus'] + share['local-bus'] + share.poor
+    const total =
+      share.rail +
+      share['very-frequent-bus'] +
+      share['frequent-bus'] +
+      share['basic-bus'] +
+      share.poor
     expect(total).toBeCloseTo(1)
   })
 
@@ -55,7 +60,7 @@ describe('homesShareByTier', () => {
     ]
     const share = homesShareByTier(permits, classify)
     expect(share.rail).toBe(0)
-    expect(share['rapid-bus']).toBe(1)
+    expect(share['very-frequent-bus']).toBe(1)
   })
 
   it('returns all-zero shares when there are no homes', () => {
@@ -86,7 +91,7 @@ describe('stageBreakdown', () => {
         coords: [1, 0], status: 'complete', completed_date: '2025-01-01',
         proposed_units: '5', existing_units: '0',
       }),
-      // rapid-bus — different tier, excluded
+      // very-frequent-bus — different tier, excluded
       permit({ coords: [2, 0], status: 'filed', proposed_units: '99', existing_units: '0' }),
     ]
     const out = stageBreakdown(permits, 'rail', classify)

@@ -15,7 +15,9 @@ import { TIER_ORDER } from '@/lib/transit-tiers-style'
 import type { TransitTier } from '@/lib/cross-stats'
 import { LensInfoPanel } from './LensInfoPanel'
 import { StationMarkers, type SelectedStation } from './StationMarkers'
-import { RAIL_STATIONS, RAPID_BUS_STOPS, withinStationRadius, RAIL_THRESHOLD_M, RAPID_BUS_THRESHOLD_M, transitAdjacent, loadStations } from '@/lib/transit-stations'
+import { StopFrequencyPanel } from './StopFrequencyPanel'
+import { RAIL_STATIONS, RAPID_BUS_STOPS, FREQ_STOPS, stopFreqBand, withinStationRadius, RAIL_THRESHOLD_M, RAPID_BUS_THRESHOLD_M, transitAdjacent, loadStations } from '@/lib/transit-stations'
+import { TIER_COLORS } from '@/lib/transit-tiers-style'
 import { NeighborhoodPanel } from './NeighborhoodPanel'
 import L from 'leaflet'
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
@@ -224,7 +226,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
       }
       const stationParam = sp.get('station')
       if (stationParam) {
-        const kind: SelectedStation['kind'] = stationParam.startsWith('bus-') ? 'rapid-bus' : 'rail'
+        const kind: SelectedStation['kind'] = stationParam.startsWith('freq-')
+          ? 'freq-stop'
+          : stationParam.startsWith('bus-')
+            ? 'rapid-bus'
+            : 'rail'
         setSelectedStation({ kind, id: stationParam })
       } else {
         setSelectedStation(null)
@@ -494,8 +500,7 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         }
         // Per-station radius filter
         if (selectedStation) {
-          const list = selectedStation.kind === 'rail' ? RAIL_STATIONS : RAPID_BUS_STOPS
-          const s = list.find((x) => x.id === selectedStation.id)
+          const s = lookupStation(selectedStation)
           if (s && !withinStationRadius(p.location?.coordinates, s, stationRadiusM)) return false
         }
         return true
@@ -666,12 +671,11 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
               zoom={mapZoom}
               onSelect={(s) => {
                 setSelectedStation(s)
-                setStationRadiusM(s.kind === 'rail' ? RAIL_THRESHOLD_M : RAPID_BUS_THRESHOLD_M)
+                setStationRadiusM(s.kind === 'rapid-bus' ? RAPID_BUS_THRESHOLD_M : RAIL_THRESHOLD_M)
               }}
             />
             {selectedStation && (() => {
-              const list = selectedStation.kind === 'rail' ? RAIL_STATIONS : RAPID_BUS_STOPS
-              const s = list.find((x) => x.id === selectedStation.id)
+              const s = lookupStation(selectedStation)
               if (!s) return null
               const color = stationModeColor(selectedStation)
               return (
@@ -823,12 +827,16 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         onClose={() => setSelectedZoningDistrict(null)}
       />
       <StationPanel
-        selected={selectedStation}
+        selected={selectedStation?.kind === 'freq-stop' ? null : selectedStation}
         radiusM={stationRadiusM}
         onClose={() => setSelectedStation(null)}
         onRadiusChange={setStationRadiusM}
         permits={filteredPermits}
         onOpenPermit={openPermitPanel}
+      />
+      <StopFrequencyPanel
+        stopId={selectedStation?.kind === 'freq-stop' ? selectedStation.id : null}
+        onClose={() => setSelectedStation(null)}
       />
       <TransitTierPanel
         tier={selectedTier}
@@ -842,8 +850,19 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
   )
 }
 
+/** Coordinates for any selected station, across all three marker layers. */
+function lookupStation(s: SelectedStation): { lat: number; lng: number } | undefined {
+  if (s.kind === 'rail') return RAIL_STATIONS.find((x) => x.id === s.id)
+  if (s.kind === 'rapid-bus') return RAPID_BUS_STOPS.find((x) => x.id === s.id)
+  return FREQ_STOPS.find((x) => x.id === s.id)
+}
+
 function stationModeColor(s: SelectedStation): string {
   if (s.kind === 'rapid-bus') return '#9a4a31'
+  if (s.kind === 'freq-stop') {
+    const stop = FREQ_STOPS.find((x) => x.id === s.id)
+    return stop ? TIER_COLORS[stopFreqBand(stop)] : '#9a4a31'
+  }
   const station = RAIL_STATIONS.find((r) => r.id === s.id)
   if (!station) return '#1c2438'
   if (station.modes.includes('bart')) return '#1c2438'

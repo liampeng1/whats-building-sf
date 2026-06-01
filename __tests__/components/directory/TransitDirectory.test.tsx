@@ -8,15 +8,17 @@ import type { TierLensStats } from '@/lib/lens-stats'
 
 const GEO: TierStats[] = [
   { tier: 'rail', area_sqm: 1000, share_of_sf: 0.26 },
-  { tier: 'rapid-bus', area_sqm: 800, share_of_sf: 0.19 },
-  { tier: 'local-bus', area_sqm: 600, share_of_sf: 0.13 },
+  { tier: 'very-frequent-bus', area_sqm: 800, share_of_sf: 0.19 },
+  { tier: 'frequent-bus', area_sqm: 600, share_of_sf: 0.13 },
+  { tier: 'basic-bus', area_sqm: 500, share_of_sf: 0.1 },
   { tier: 'poor', area_sqm: 2000, share_of_sf: 0.42 },
 ]
 
 const LENS: Record<string, TierLensStats> = {
   rail: { permits: 1240, homes: 3100, dominant_zoning: 'Mixed Use', use_mix: {} },
-  'rapid-bus': { permits: 800, homes: 1500, dominant_zoning: 'Residential', use_mix: {} },
-  'local-bus': { permits: 400, homes: 700, dominant_zoning: 'Residential', use_mix: {} },
+  'very-frequent-bus': { permits: 800, homes: 1500, dominant_zoning: 'Residential', use_mix: {} },
+  'frequent-bus': { permits: 400, homes: 700, dominant_zoning: 'Residential', use_mix: {} },
+  'basic-bus': { permits: 300, homes: 500, dominant_zoning: 'Residential', use_mix: {} },
   poor: { permits: 200, homes: 300, dominant_zoning: 'Residential', use_mix: {} },
 }
 
@@ -29,7 +31,7 @@ describe('TransitDirectory', () => {
     expect(screen.getByText('26%')).toBeInTheDocument()
     expect(screen.getByText('42%')).toBeInTheDocument()
     expect(screen.getByText(/1,240 permits/)).toBeInTheDocument()
-    expect(screen.getAllByText(/Mostly/).length).toBe(4)
+    expect(screen.getAllByText(/Mostly/).length).toBe(5)
     expect(screen.getByText(/Transit access · land share/)).toBeInTheDocument()
   })
 
@@ -42,9 +44,9 @@ describe('TransitDirectory', () => {
 
   it('marks the selected tier row as pressed', () => {
     render(
-      <TransitDirectory geo={GEO} lens={LENS} onSelect={() => {}} selectedTier="rapid-bus" />,
+      <TransitDirectory geo={GEO} lens={LENS} onSelect={() => {}} selectedTier="very-frequent-bus" />,
     )
     const pressed = screen.getByRole('button', { pressed: true })
-    expect(pressed).toHaveTextContent('Rapid-bus only')
+    expect(pressed).toHaveTextContent('Very frequent bus')
   })
 })

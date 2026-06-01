@@ -248,7 +248,7 @@ export function buildStopFrequency(
     if (routeFreqs.length === 0) continue
     routeFreqs.sort((a, b) => a.route.localeCompare(b.route))
     out.push({
-      id: `muni-${stop.stop_id}-${slugify(stop.stop_name)}`,
+      id: `freq-${stop.stop_id}-${slugify(stop.stop_name)}`,
       name: stop.stop_name,
       lat: Number(stop.stop_lat),
       lng: Number(stop.stop_lon),

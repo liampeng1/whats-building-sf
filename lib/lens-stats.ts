@@ -147,16 +147,17 @@ export function computeLensStats(input: LensStatsInput): LensStats {
 
   // ---- transit tiers ----
   const tierAgg: Record<TransitTier, TierLensStats> = {
-    'rail':      { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
-    'rapid-bus': { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
-    'local-bus': { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
-    'poor':      { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'rail':              { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'very-frequent-bus': { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'frequent-bus':      { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'basic-bus':         { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'poor':              { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
   }
   const tierZoningCounts: Record<TransitTier, Record<string, number>> = {
-    'rail': {}, 'rapid-bus': {}, 'local-bus': {}, 'poor': {},
+    'rail': {}, 'very-frequent-bus': {}, 'frequent-bus': {}, 'basic-bus': {}, 'poor': {},
   }
   const tierUseCounts: Record<TransitTier, Partial<Record<UseCategory, number>>> = {
-    'rail': {}, 'rapid-bus': {}, 'local-bus': {}, 'poor': {},
+    'rail': {}, 'very-frequent-bus': {}, 'frequent-bus': {}, 'basic-bus': {}, 'poor': {},
   }
   if (classifyTier) {
     for (const p of permits) {

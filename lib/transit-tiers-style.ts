@@ -2,25 +2,34 @@
  * Single source of truth for transit-tier presentation: order, labels,
  * colors, and the heat-layer fill opacity. Shared by TransitTierOverlay
  * (map), TransitDirectory (drawer legend), and TransitTierPanel (detail)
- * so the four levels read identically everywhere.
+ * so the five levels read identically everywhere.
  */
 import type { TransitTier } from '@/lib/cross-stats'
 
-export const TIER_ORDER: TransitTier[] = ['rail', 'rapid-bus', 'local-bus', 'poor']
+export const TIER_ORDER: TransitTier[] = [
+  'rail',
+  'very-frequent-bus',
+  'frequent-bus',
+  'basic-bus',
+  'poor',
+]
 
 export const TIER_LABELS: Record<TransitTier, string> = {
   rail: 'Rail-served',
-  'rapid-bus': 'Rapid-bus only',
-  'local-bus': 'Local-bus only',
+  'very-frequent-bus': 'Very frequent bus',
+  'frequent-bus': 'Frequent bus',
+  'basic-bus': 'Basic bus',
   poor: 'Transit-poor',
 }
 
-// Hues borrowed from the existing transit-corridor palette so the heat fill
-// and the lines drawn on top read as one system.
+// Sequential ramp over the existing transit palette: strongest access reads
+// darkest/warmest, fading to a muted taupe so the heat fill and the corridor
+// lines drawn on top read as one system.
 export const TIER_COLORS: Record<TransitTier, string> = {
   rail: '#1c2438', // navy — BART/rail
-  'rapid-bus': '#9a4a31', // sienna — rapid-bus / construction accent
-  'local-bus': '#7d9b76', // sage — Muni Metro
+  'very-frequent-bus': '#9a4a31', // sienna — strongest bus access
+  'frequent-bus': '#c08552', // amber
+  'basic-bus': '#7d9b76', // sage
   poor: '#a8a29e', // taupe — muted, recedes
 }
 
@@ -28,8 +37,9 @@ export const TIER_COLORS: Record<TransitTier, string> = {
 // tints so it stays background.
 export const TIER_BASE_OPACITY: Record<TransitTier, number> = {
   rail: 0.42,
-  'rapid-bus': 0.34,
-  'local-bus': 0.26,
+  'very-frequent-bus': 0.38,
+  'frequent-bus': 0.3,
+  'basic-bus': 0.2,
   poor: 0.1,
 }
 

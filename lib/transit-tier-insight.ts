@@ -28,8 +28,9 @@ function homesOf(p: Permit): number {
 
 const ZERO_BY_TIER: Record<TransitTier, number> = {
   rail: 0,
-  'rapid-bus': 0,
-  'local-bus': 0,
+  'very-frequent-bus': 0,
+  'frequent-bus': 0,
+  'basic-bus': 0,
   poor: 0,
 }
 
@@ -49,8 +50,9 @@ export function homesShareByTier(
   if (total === 0) return { ...ZERO_BY_TIER }
   return {
     rail: homes.rail / total,
-    'rapid-bus': homes['rapid-bus'] / total,
-    'local-bus': homes['local-bus'] / total,
+    'very-frequent-bus': homes['very-frequent-bus'] / total,
+    'frequent-bus': homes['frequent-bus'] / total,
+    'basic-bus': homes['basic-bus'] / total,
     poor: homes.poor / total,
   }
 }

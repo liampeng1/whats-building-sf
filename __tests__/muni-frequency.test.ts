@@ -160,7 +160,7 @@ describe('buildStopFrequency', () => {
 
   it('produces stable, unique ids in the muni-<stop_id>-<slug> shape', () => {
     const out = buildStopFrequency(stops, routes, { counts: peak, hours: 2 }, { counts: off, hours: 5 })
-    expect(out.find((s) => s.name === 'Mission & 24th')!.id).toBe('muni-S1-mission-24th')
+    expect(out.find((s) => s.name === 'Mission & 24th')!.id).toBe('freq-S1-mission-24th')
     expect(new Set(out.map((s) => s.id)).size).toBe(out.length)
   })
 
