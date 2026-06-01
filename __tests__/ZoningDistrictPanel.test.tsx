@@ -36,3 +36,11 @@ it('renders Public (P) with its controls note and no crash on absent metrics', (
   render(<ZoningDistrictPanel zoningSim="P" gen="Public" districtName="P" onClose={() => {}} />)
   expect(screen.getByText(/uses governed by §211/i)).toBeInTheDocument()
 })
+
+it('renders banded FAR for PDR and form-based density for UMU', () => {
+  const { rerender } = render(<ZoningDistrictPanel zoningSim="PDR-1-G" gen="Industrial" districtName="PDR-1-G" onClose={() => {}} />)
+  expect(screen.getAllByText(/FAR \(non-residential\)/i).length).toBeGreaterThan(0)
+  expect(screen.getAllByText(/to 1/i).length).toBeGreaterThan(0)   // the banded ramp string
+  rerender(<ZoningDistrictPanel zoningSim="UMU" gen="Mixed Use" districtName="UMU" onClose={() => {}} />)
+  expect(screen.getAllByText(/form-based density/i).length).toBeGreaterThan(0)
+})

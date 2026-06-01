@@ -67,10 +67,15 @@ export function VerifiedPanel({
     rows.push({ label: `Density: ${d.note}`, quote: src.density?.quote || undefined })
   }
 
-  // FAR (non-residential) — make clear it's the non-dwelling FAR. Omit if absent.
-  if (rec.far_non_residential?.max != null) {
+  // FAR (non-residential) — make clear it's the non-dwelling FAR. Handles the
+  // scalar `max`, the height-keyed `banded` ramp string (PDR), and the
+  // `basis`-only form (Mixed-Use). Omit the row entirely if none are present.
+  const far = rec.far_non_residential
+  const farValue =
+    far?.max != null ? `${far.max}` : far?.banded ?? far?.basis ?? null
+  if (farValue != null) {
     rows.push({
-      label: `FAR (non-residential): ${rec.far_non_residential.max}`,
+      label: `FAR (non-residential): ${farValue}`,
       quote: src.far_non_residential?.quote || undefined,
     })
   }
