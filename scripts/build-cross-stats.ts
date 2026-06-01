@@ -321,10 +321,16 @@ async function main() {
     // TIDA — governed elsewhere
     'TI-R', 'TI-MU', 'TI-OS', 'TI-PCI',
     'YBI-R', 'YBI-MU', 'YBI-OS', 'YBI-PCI',
-    // Downtown Residential Transfer — not in the residential summary table (Phase 2)
-    'RH DTR', 'SB-DTR', 'TB DTR',
+    // Downtown Residential — RH DTR (§827) and SB-DTR (§829) are now transcribed
+    // in lib/zoning-rules.ts. TB DTR (§828) is governed by the Transbay
+    // Redevelopment Plan → renders the GOVERNING_PLAN fallback.
+    'TB DTR',
     // Misc Mixed Use / Industrial — Planning Code §219, §216 (Phase 2)
     'S-MU', 'SPD',
+    // Redevelopment / Area-Plan governed (render GOVERNING_PLAN fallback)
+    'MB-O', 'MB-RA',
+    'PM-CF', 'PM-MU1', 'PM-MU2', 'PM-OS', 'PM-R', 'PM-S',
+    'BR-MU', 'P70-MU', 'PPS-MU', 'HP-RA', 'MR-MU', 'Job Corps',
     // NOTE: the residential family (RH-1(D)/(S), RM-2/3/4, RTO-1/M, …) is now
     // transcribed in lib/zoning-rules.ts — removed from this fallback allowlist.
   ])

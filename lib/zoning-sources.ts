@@ -103,6 +103,10 @@ export const SECTION_URL: Record<string, string> = {
   '§810': '0-0-0-26704',    // SEC. 810. CHINATOWN COMMUNITY BUSINESS DISTRICT. (CCB)
   '§811': '0-0-0-26717',    // SEC. 811. CHINATOWN VISITOR RETAIL DISTRICT. (CVR)
   '§812': '0-0-0-26729',    // SEC. 812. CHINATOWN RESIDENTIAL NEIGHBORHOOD COMMERCIAL DISTRICT. (CRNC)
+  // DTR (Phase 5) — Downtown Residential districts in Art. 8; titles confirmed
+  // via /api/render-section. (TB-DTR / §828 renders the GOVERNING_PLAN fallback.)
+  '§827': '0-0-0-26847',    // SEC. 827. RINCON HILL DOWNTOWN RESIDENTIAL MIXED USE DISTRICT (RH-DTR).
+  '§829': '0-0-0-26925',    // SEC. 829. SOUTH BEACH DOWNTOWN RESIDENTIAL MIXED USE DISTRICT (SB-DTR).
 }
 
 /** Districts governed by a Redevelopment Plan / Design-for-Development / SUD that
