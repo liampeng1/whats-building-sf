@@ -324,7 +324,7 @@ async function main() {
     // Downtown Residential Transfer — not in the residential summary table (Phase 2)
     'RH DTR', 'SB-DTR', 'TB DTR',
     // Misc Mixed Use / Industrial — Planning Code §219, §216 (Phase 2)
-    'UMU', 'S-MU', 'SPD', 'WMUO',
+    'S-MU', 'SPD',
     // NOTE: the residential family (RH-1(D)/(S), RM-2/3/4, RTO-1/M, …) is now
     // transcribed in lib/zoning-rules.ts — removed from this fallback allowlist.
   ])
