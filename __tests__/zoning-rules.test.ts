@@ -114,6 +114,13 @@ describe('verified zoning records', () => {
       expect(SECTION_URL[r.classification!.section]).toBeDefined()
     }
   })
+  it('PDR records use banded FAR (no scalar max)', () => {
+    for (const c of ['PDR-1-B', 'PDR-1-D', 'PDR-1-G', 'PDR-2']) {
+      expect(ZONING_RULES[c].verified).toBe(true)
+      expect(ZONING_RULES[c].far_non_residential?.max).toBeUndefined()
+      expect(ZONING_RULES[c].far_non_residential?.banded).toMatch(/to 1/)
+    }
+  })
   it('C-3 / C-2 FAR matches Table 124 (POC-corrected values)', () => {
     expect(ZONING_RULES['C-2'].far_non_residential?.max).toBe(3.6)
     expect(ZONING_RULES['C-3-O'].far_non_residential?.max).toBe(9.0)

@@ -1254,79 +1254,184 @@ export const ZONING_RULES: Record<string, ZoningRecord> = {
     },
   },
 
+  // PDR FAR is height-district-banded (no scalar): the Floor Area Ratio row of
+  // Table 210.3 spans all four PDR columns with one identical ramp, so each record
+  // stores it under far_non_residential.banded (not .max). Residential is Not
+  // Permitted (NP) in every PDR District (Dwelling Units row, §102). Verbatim from
+  // /api/render-section/san_francisco/latest/sf_planning/0-0-0-20123 (retrieved 2026-05-31).
+  // Parking, principal/conditional use mixes differ per column and are transcribed
+  // per record from the relevant Table 210.3 cell.
+
   'PDR-1-B': {
     code: 'PDR-1-B',
-    density: { note: 'Production, Distribution, and Repair district — residential not permitted (§210.3)' },
-    principal_uses: [
-      'Production, Distribution, and Repair (PDR)',
-      'Light industrial and arts',
-    ],
-    parking_min: {
-      commercial: 'Per §151.1',
+    name: 'PDR — Light Industrial Buffer',
+    classification: sourced('§210.3', 'PDR DISTRICTS'),
+    verified: true,
+    density: { model: 'unit-based', note: 'Residential not permitted (PDR)' },
+    far_non_residential: {
+      banded: '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.',
+      basis: 'per height district (§124)',
     },
-
+    principal_uses: [
+      'Manufacturing, Light',
+      'Storage Yard',
+      'Storage, Wholesale',
+      'Wholesale Sales',
+      'Trade Shop',
+      'Retail Sales and Service Uses',
+      'Non-Retail Sales and Service',
+    ],
+    conditional_uses: [
+      'Agriculture, Industrial',
+      'Parking Garage, Private / Public',
+      'Parking Lot, Private / Public',
+      'Service, Parcel Delivery',
+      'Gym',
+      'Planned Unit Development',
+    ],
+    parking_text: 'Parking required per § 151.1.',
+    controls_note: 'Height varies — see Height and Bulk District Maps; FAR is height-district-banded (§124, no scalar).',
     source: {
-      density: cite('Article 2', '§210.3'),
-      principal_uses: cite('Article 2', '§210.3'),
-      parking_min: cite('Article 1.5', '§151.1'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§210.3', 'Dwelling Units … § 102 … NP … NP … NP … NP'),
+      far_non_residential: sourced('§124', '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.'),
+      principal_uses: sourced('§210.3', 'Manufacturing, Light … P (5); Storage Yard … P (5); Storage, Wholesale (25) … P (5); Wholesale Sales (25) … P (5); Trade Shop (25) … P (11); Retail Sales and Service Uses* … P (1); Non-Retail Sales and Service* … P (2).'),
+      conditional_uses: sourced('§210.3', 'Agriculture, Industrial … C; Parking Garage, Private … C; Parking Garage, Public … C; Parking Lot, Private … C; Parking Lot, Public … C; Service, Parcel Delivery (25) … C; Gym … C; Planned Unit Development** … C.'),
+      parking: sourced('§151.1', 'Parking required per § 151.1.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code — Table 210.3 (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-20123',
     },
   },
 
   'PDR-1-D': {
     code: 'PDR-1-D',
-    density: { note: 'PDR district — residential not permitted (§210.3)' },
-    principal_uses: [
-      'Production, Distribution, and Repair (PDR)',
-      'Design professional and arts',
-    ],
-    parking_min: {
-      commercial: 'Per §151.1',
+    name: 'PDR — Design',
+    classification: sourced('§210.3', 'PDR DISTRICTS'),
+    verified: true,
+    density: { model: 'unit-based', note: 'Residential not permitted (PDR)' },
+    far_non_residential: {
+      banded: '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.',
+      basis: 'per height district (§124)',
     },
-
+    principal_uses: [
+      'Manufacturing, Light',
+      'Metal Workshop',
+      'Storage Yard',
+      'Trade Shop',
+      'Truck Terminal',
+      'Automotive Uses',
+      'Arts / Entertainment and Recreation Uses',
+      'Retail Sales and Service Uses',
+    ],
+    conditional_uses: [
+      'Manufacturing 1, Heavy',
+      'Automobile Assembly',
+      'Agricultural and Beverage Processing 2',
+      'Sports Stadium',
+      'Public Transportation Facility',
+      'Planned Unit Development',
+    ],
+    parking_text: 'None Required. Maximums set in Planning Code § 151.1.',
+    controls_note: 'Height varies — see Height and Bulk District Maps; FAR is height-district-banded (§124, no scalar).',
     source: {
-      density: cite('Article 2', '§210.3'),
-      principal_uses: cite('Article 2', '§210.3'),
-      parking_min: cite('Article 1.5', '§151.1'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§210.3', 'Dwelling Units … § 102 … NP … NP … NP … NP'),
+      far_non_residential: sourced('§124', '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.'),
+      principal_uses: sourced('§210.3', 'Manufacturing, Light … P; Metal Workshop … P; Storage Yard … P; Trade Shop (25) … P; Truck Terminal … P; Automotive Uses* … P; Entertainment and Recreation Uses* … P; Retail Sales and Service Uses* … P (10).'),
+      conditional_uses: sourced('§210.3', 'Manufacturing 1, Heavy … C; Automobile Assembly … C; Agricultural and Beverage Processing 2 … C; Sports Stadium … C; Public Transportation Facility … C; Planned Unit Development** … C.'),
+      parking: sourced('§151.1', 'None Required. Maximums set in Planning Code § 151.1.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code — Table 210.3 (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-20123',
     },
   },
 
   'PDR-1-G': {
     code: 'PDR-1-G',
-    density: { note: 'PDR district — residential not permitted (§210.3)' },
-    principal_uses: [
-      'Production, Distribution, and Repair (PDR)',
-      'General industrial',
-    ],
-    parking_min: {
-      commercial: 'Per §151.1',
+    name: 'PDR — General',
+    classification: sourced('§210.3', 'PDR DISTRICTS'),
+    verified: true,
+    density: { model: 'unit-based', note: 'Residential not permitted (PDR)' },
+    far_non_residential: {
+      banded: '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.',
+      basis: 'per height district (§124)',
     },
-
+    principal_uses: [
+      'Manufacturing, Light',
+      'Metal Workshop',
+      'Storage Yard',
+      'Trade Shop',
+      'Truck Terminal',
+      'Automotive Uses',
+      'Community Recycling Center',
+      'Retail Sales and Service Uses',
+    ],
+    conditional_uses: [
+      'Manufacturing 1, Heavy',
+      'Manufacturing 2, Heavy',
+      'Automobile Assembly',
+      'Agricultural and Beverage Processing 2',
+      'Power Plant',
+      'Sports Stadium',
+      'Planned Unit Development',
+    ],
+    parking_text: 'None Required. Maximums set in Planning Code § 151.1.',
+    controls_note: 'Height varies — see Height and Bulk District Maps; FAR is height-district-banded (§124, no scalar).',
     source: {
-      density: cite('Article 2', '§210.3'),
-      principal_uses: cite('Article 2', '§210.3'),
-      parking_min: cite('Article 1.5', '§151.1'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§210.3', 'Dwelling Units … § 102 … NP … NP … NP … NP'),
+      far_non_residential: sourced('§124', '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.'),
+      principal_uses: sourced('§210.3', 'Manufacturing, Light … P; Metal Workshop … P; Storage Yard … P; Trade Shop (25) … P; Truck Terminal … P; Automotive Uses* … P; Community Recycling Center … P; Retail Sales and Service Uses* … P (9).'),
+      conditional_uses: sourced('§210.3', 'Manufacturing 1, Heavy … C; Manufacturing 2, Heavy … C; Automobile Assembly … C; Agricultural and Beverage Processing 2 … C; Power Plant … C; Sports Stadium … C; Planned Unit Development** … C.'),
+      parking: sourced('§151.1', 'None Required. Maximums set in Planning Code § 151.1.'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code — Table 210.3 (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-20123',
     },
   },
 
   'PDR-2': {
     code: 'PDR-2',
-    density: { note: 'Core PDR district — residential not permitted (§210.3)' },
-    principal_uses: [
-      'Production, Distribution, and Repair (PDR)',
-      'Industrial and manufacturing',
-    ],
-    parking_min: {
-      commercial: 'Per §151.1',
+    name: 'Core Production, Distribution & Repair',
+    classification: sourced('§210.3', 'PDR DISTRICTS'),
+    verified: true,
+    density: { model: 'unit-based', note: 'Residential not permitted (PDR)' },
+    far_non_residential: {
+      banded: '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.',
+      basis: 'per height district (§124)',
     },
-
+    principal_uses: [
+      'Manufacturing, Light',
+      'Automobile Assembly',
+      'Grain Elevator',
+      'Junkyard',
+      'Metal Workshop',
+      'Storage Yard',
+      'Truck Terminal',
+      'Maritime Use',
+      'Retail Sales and Service Uses',
+      'Non-Retail Sales and Service',
+    ],
+    conditional_uses: [
+      'Auto Wrecking',
+      'Manufacturing 1, Heavy',
+      'Manufacturing 2, Heavy',
+      'Manufacturing 3, Heavy',
+      'Hazardous Waste Facility',
+      'Ship Yard',
+      'Storage, Volatile Materials',
+      'Power Plant',
+      'Planned Unit Development',
+    ],
+    parking_text: 'Parking required per § 151.1.',
+    controls_note: 'Height varies — see Height and Bulk District Maps; FAR is height-district-banded (§124, no scalar).',
     source: {
-      density: cite('Article 2', '§210.3'),
-      principal_uses: cite('Article 2', '§210.3'),
-      parking_min: cite('Article 1.5', '§151.1'),
-      retrieved_at: RETRIEVED,
+      density: sourced('§210.3', 'Dwelling Units … § 102 … NP … NP … NP … NP'),
+      far_non_residential: sourced('§124', '3.0 to 1 in a 40, 45, or 48-foot height district; 4.0 to 1 in a 50, 55, or 58-foot height district; 5.0 to 1 in a 65 or 68-foot height district; 6.0 in an 80 or 85-foot height district; or 7.5 to 1 in a height district over 85 feet.'),
+      principal_uses: sourced('§210.3', 'Manufacturing, Light … P; Automobile Assembly … P; Grain Elevator … P; Junkyard … P; Metal Workshop … P; Storage Yard … P; Truck Terminal … P; Maritime Use … P; Retail Sales and Service Uses* … P (1); Non-Retail Sales and Service* … P (2).'),
+      conditional_uses: sourced('§210.3', 'Auto Wrecking … C; Manufacturing 1, Heavy … C; Manufacturing 2, Heavy … C; Manufacturing 3, Heavy … C; Hazardous Waste Facility … C; Ship Yard … C; Storage, Volatile Materials … C; Power Plant … C; Planned Unit Development** … C.'),
+      parking: sourced('§151.1', 'Parking required per § 151.1 .'),
+      retrieved_at: '2026-05-31',
+      document: 'SF Planning Code — Table 210.3 (amlegal, latest)',
+      document_url: 'https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_planning/0-0-0-20123',
     },
   },
 
