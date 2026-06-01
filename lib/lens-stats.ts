@@ -18,6 +18,7 @@
 
 import type { Permit } from '@/lib/types'
 import type { TransitTier } from '@/lib/cross-stats'
+import type { UseCategory } from '@/lib/permit-style'
 
 export interface LensStatsInput {
   permits: Permit[]
@@ -42,6 +43,8 @@ export interface TierLensStats {
   permits: number
   homes: number
   dominant_zoning: string
+  /** Share (0..1) of the tier's permits by use category. */
+  use_mix: Partial<Record<UseCategory, number>>
 }
 
 export interface LensStats {
@@ -144,12 +147,15 @@ export function computeLensStats(input: LensStatsInput): LensStats {
 
   // ---- transit tiers ----
   const tierAgg: Record<TransitTier, TierLensStats> = {
-    'rail':      { permits: 0, homes: 0, dominant_zoning: '' },
-    'rapid-bus': { permits: 0, homes: 0, dominant_zoning: '' },
-    'local-bus': { permits: 0, homes: 0, dominant_zoning: '' },
-    'poor':      { permits: 0, homes: 0, dominant_zoning: '' },
+    'rail':      { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'rapid-bus': { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'local-bus': { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
+    'poor':      { permits: 0, homes: 0, dominant_zoning: '', use_mix: {} },
   }
   const tierZoningCounts: Record<TransitTier, Record<string, number>> = {
+    'rail': {}, 'rapid-bus': {}, 'local-bus': {}, 'poor': {},
+  }
+  const tierUseCounts: Record<TransitTier, Partial<Record<UseCategory, number>>> = {
     'rail': {}, 'rapid-bus': {}, 'local-bus': {}, 'poor': {},
   }
   if (classifyTier) {
@@ -166,11 +172,25 @@ export function computeLensStats(input: LensStatsInput): LensStats {
       if (cat) {
         tierZoningCounts[tier][cat] = (tierZoningCounts[tier][cat] ?? 0) + 1
       }
+      const use = (p as any).useCategory as UseCategory | undefined
+      if (use) {
+        tierUseCounts[tier][use] = (tierUseCounts[tier][use] ?? 0) + 1
+      }
     }
     for (const tier of Object.keys(tierAgg) as TransitTier[]) {
       const counts = tierZoningCounts[tier]
       const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]
       tierAgg[tier].dominant_zoning = top ? top[0] : ''
+      // Normalize the use counts into shares of the tier's permits.
+      const useCounts = tierUseCounts[tier]
+      const useTotal = Object.values(useCounts).reduce((a, b) => a + (b ?? 0), 0)
+      const mix: Partial<Record<UseCategory, number>> = {}
+      if (useTotal > 0) {
+        for (const [use, n] of Object.entries(useCounts) as [UseCategory, number][]) {
+          mix[use] = n / useTotal
+        }
+      }
+      tierAgg[tier].use_mix = mix
     }
   }
 

@@ -19,6 +19,8 @@ interface Props {
   hero?: { eyebrow: string; value: string; detail?: string }
   /** First cross-ref block (e.g. "Top neighborhoods"). */
   primary: { eyebrow: string; rows: CrossRefRow[] }
+  /** Message shown when primary.rows is empty. Defaults to "No data." */
+  primaryEmpty?: string
   /** Second cross-ref block (e.g. "Transit reach" or "Zoning mix"). */
   secondary?: { eyebrow: string; rows: CrossRefRow[] }
   /** Optional extra content rendered after secondary section. */
@@ -41,6 +43,7 @@ export function LensInfoPanel({
   subtitle,
   hero,
   primary,
+  primaryEmpty,
   secondary,
   children,
   shareUrl,
@@ -139,7 +142,7 @@ export function LensInfoPanel({
 
           <div>
             <div className="civic-eyebrow mb-3">{primary.eyebrow}</div>
-            <CrossRefList rows={primary.rows} />
+            <CrossRefList rows={primary.rows} empty={primaryEmpty} />
           </div>
 
           {secondary && (
@@ -155,9 +158,9 @@ export function LensInfoPanel({
   )
 }
 
-function CrossRefList({ rows }: { rows: CrossRefRow[] }) {
+function CrossRefList({ rows, empty }: { rows: CrossRefRow[]; empty?: string }) {
   if (rows.length === 0)
-    return <p className="text-sm text-ink-faint italic">No data.</p>
+    return <p className="text-sm text-ink-faint italic">{empty ?? 'No data.'}</p>
   return (
     <ul className="space-y-2">
       {rows.map((r) => (

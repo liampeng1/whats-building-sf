@@ -14,10 +14,10 @@ const GEO: TierStats[] = [
 ]
 
 const LENS: Record<string, TierLensStats> = {
-  rail: { permits: 1240, homes: 3100, dominant_zoning: 'Mixed Use' },
-  'rapid-bus': { permits: 800, homes: 1500, dominant_zoning: 'Residential' },
-  'local-bus': { permits: 400, homes: 700, dominant_zoning: 'Residential' },
-  poor: { permits: 200, homes: 300, dominant_zoning: 'Residential' },
+  rail: { permits: 1240, homes: 3100, dominant_zoning: 'Mixed Use', use_mix: {} },
+  'rapid-bus': { permits: 800, homes: 1500, dominant_zoning: 'Residential', use_mix: {} },
+  'local-bus': { permits: 400, homes: 700, dominant_zoning: 'Residential', use_mix: {} },
+  poor: { permits: 200, homes: 300, dominant_zoning: 'Residential', use_mix: {} },
 }
 
 describe('TransitDirectory', () => {

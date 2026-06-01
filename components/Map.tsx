@@ -834,6 +834,8 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         tier={selectedTier}
         stats={crossStats?.transit_tiers ?? []}
         lens={lensStats?.transit_tiers ?? null}
+        permits={filteredPermits}
+        onOpenPermit={openPermitPanel}
         onClose={() => setSelectedTier(null)}
       />
     </div>
