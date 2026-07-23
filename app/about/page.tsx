@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
+import { SuggestForm } from '@/components/SuggestForm'
 import {
   STAGE_LABELS,
   STAGE_COLORS,
@@ -386,6 +387,16 @@ export default function AboutPage() {
               </li>
             ))}
           </ul>
+        </section>
+
+        {/* Suggestion box */}
+        <section className="pt-8 border-t border-paper-edge">
+          <div className="civic-eyebrow mb-4">Have an idea?</div>
+          <p className="text-sm text-ink-soft leading-relaxed mb-4">
+            Spotted something off, or want a feature? Send a suggestion — it goes
+            straight to the project&apos;s issue tracker.
+          </p>
+          <SuggestForm />
         </section>
 
         <footer className="pt-8 border-t border-paper-edge text-sm text-ink-faint">
