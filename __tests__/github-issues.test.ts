@@ -45,4 +45,14 @@ describe('createIssue', () => {
       .mockResolvedValue({ ok: false, status: 403, json: async () => ({}) }) as unknown as typeof fetch
     await expect(createIssue(INPUT)).rejects.toThrow('403')
   })
+
+  it('throws when the response is 2xx but has no html_url', async () => {
+    process.env = { ...OLD_ENV, GITHUB_FEEDBACK_TOKEN: 'gho_test' }
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({ number: 7 }),
+    }) as unknown as typeof fetch
+    await expect(createIssue(INPUT)).rejects.toThrow()
+  })
 })

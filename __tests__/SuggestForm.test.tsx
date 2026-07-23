@@ -15,7 +15,8 @@ describe('SuggestForm', () => {
       }),
     }) as unknown as typeof fetch
 
-    render(<SuggestForm />)
+    const onDone = jest.fn()
+    render(<SuggestForm onDone={onDone} />)
     fireEvent.change(screen.getByLabelText(/your suggestion/i), {
       target: { value: 'add dark mode' },
     })
@@ -28,6 +29,9 @@ describe('SuggestForm', () => {
       'href',
       'https://github.com/liampeng1/whats-building-sf/issues/1',
     )
+
+    fireEvent.click(screen.getByRole('button', { name: /close/i }))
+    expect(onDone).toHaveBeenCalledTimes(1)
   })
 
   it('shows an error when the request fails', async () => {

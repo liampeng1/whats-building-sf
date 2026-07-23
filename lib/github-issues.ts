@@ -29,6 +29,7 @@ export async function createIssue(
   })
   if (!resp.ok) throw new Error(`GitHub responded ${resp.status}`)
 
-  const data = (await resp.json()) as { html_url: string; number: number }
+  const data = (await resp.json()) as { html_url?: string; number: number }
+  if (!data.html_url) throw new Error('GitHub response missing html_url')
   return { url: data.html_url, number: data.number }
 }

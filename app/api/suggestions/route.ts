@@ -10,8 +10,14 @@ const DAILY_LIMIT = 25
 const DAY_SECONDS = 86_400
 
 function clientIp(req: NextRequest): string {
+  const real = req.headers.get('x-real-ip')?.trim()
+  if (real) return real
   const fwd = req.headers.get('x-forwarded-for')
-  return fwd?.split(',')[0]?.trim() || 'unknown'
+  if (fwd) {
+    const hops = fwd.split(',').map((h) => h.trim()).filter(Boolean)
+    if (hops.length) return hops[hops.length - 1]
+  }
+  return 'unknown'
 }
 
 export async function POST(req: NextRequest) {

@@ -53,6 +53,16 @@ export function SuggestForm({ onDone }: { onDone?: () => void }) {
             View it on GitHub
           </a>
         )}
+        {onDone && (
+          <div className="flex justify-end pt-2">
+            <button
+              onClick={onDone}
+              className="text-sm text-ink-soft hover:text-ink px-3 py-1.5 rounded-md border border-paper-edge hover:bg-paper-deep transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     )
   }
