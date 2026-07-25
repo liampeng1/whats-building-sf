@@ -7,8 +7,9 @@
 
 Give people a reason to check the site and a way to see what changed. Surface
 an ambient, city-wide discovery feed of recent construction activity — permits
-just filed, just approved/issued, and buildings just completed — ranked so the
-interesting projects rise above the water-heater noise.
+just filed, just approved/issued, **construction just started**, and buildings
+just completed — ranked so the interesting projects rise above the water-heater
+noise.
 
 This is the on-site, visual twin of the Atom feed we already ship at
 `/feed.xml`, plus a compact homepage teaser.
@@ -44,9 +45,11 @@ lib/activity.ts
   - `filed` → `filed_date`
   - `approved` / `permitted` → `issued_date`
   - `complete` → `completed_date`
-  - `construction` → `pipeline_status_date` when
-    `pipeline_status === 'Construction'`, else `status_date`/`issued_date`
-    fallback.
+  - `construction` ("construction just started") → `pipeline_status_date` when
+    `pipeline_status === 'Construction'` (the date the project flipped to
+    Construction — the truest "just started" signal), else
+    `status_date`/`issued_date` fallback. Construction-start detection leans on
+    the pipeline join; raw permit fields alone can only approximate it.
   The chosen event date is the most recent such date; permits whose driving
   date is outside the window (default 30 days) are dropped.
 - Each event carries a **significance score**, computed from, in priority
