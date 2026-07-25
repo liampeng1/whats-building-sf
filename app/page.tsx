@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import MapClient from '@/components/MapClient'
+import { ActivityTeaser } from '@/components/ActivityTeaser'
 import { fetchBuildingPermit } from '@/lib/datasf'
 import { permitStage, netDelta, STAGE_LABELS } from '@/lib/permit-style'
 
@@ -84,8 +86,11 @@ export default async function MapPage({
   const lng = parseCoord(sp.lng, DEFAULT_LNG)
 
   return (
-    <main className="h-[100dvh] w-full">
+    <main className="relative h-[100dvh] w-full">
       <MapClient initialCenter={[lat, lng]} />
+      <Suspense fallback={null}>
+        <ActivityTeaser />
+      </Suspense>
     </main>
   )
 }

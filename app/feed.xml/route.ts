@@ -1,10 +1,14 @@
 import { fetchBuildingPermits } from '@/lib/datasf'
-import { permitStage, netDelta, STAGE_LABELS } from '@/lib/permit-style'
+import { computeActivity, MILESTONE_LABELS, type ActivityEvent } from '@/lib/activity'
 
 /**
- * Atom feed of recent permit activity. Surfaces the 50 most recently
- * status-stamped permits as feed entries — covers new filings, approvals,
- * issuances, breakings, and completions in one stream.
+ * Atom feed of recent permit activity — new filings, approvals, permit
+ * issuances, construction starts, and completions in one stream.
+ *
+ * Shares its "what counts as recent activity" logic with the on-site /activity
+ * feed and homepage teaser via `computeActivity`, so all three stay in sync.
+ * Entries are ordered newest-first (feed-reader convention) rather than by
+ * significance.
  *
  * Cached for 6h on the edge (matches the snapshot-refresh cadence).
  */
@@ -14,7 +18,9 @@ export const revalidate = 21600
 const SITE_URL = 'https://whatsbuildingsf.com'
 const FEED_TITLE = "What's Building SF · recent activity"
 const FEED_DESCRIPTION =
-  'Recent activity across San Francisco new-construction permits — filings, approvals, issuances, ground-breakings, completions.'
+  'Recent activity across San Francisco new-construction permits — filings, approvals, issuances, construction starts, completions.'
+const FEED_WINDOW_DAYS = 60
+const MAX_ENTRIES = 50
 
 function escapeXml(s: string): string {
   return s
@@ -25,15 +31,11 @@ function escapeXml(s: string): string {
     .replace(/'/g, '&apos;')
 }
 
-function permitToEntry(p: import('@/lib/types').Permit): string | null {
-  const date = p.status_date || p.issued_date || p.filed_date
-  if (!date) return null
+function eventToEntry(e: ActivityEvent): string {
+  const p = e.permit
   const id = `${SITE_URL}/permits/${encodeURIComponent(p.permit_number)}`
-  const stage = permitStage(p)
-  const stageLabel = STAGE_LABELS[stage].split(' / ')[0].split(' · ')[0]
-  const homes = netDelta(p.existing_units, p.proposed_units) ?? 0
-  const homesPart = homes > 0 ? ` · +${homes} net new homes` : ''
-  const title = `${p.address} · ${stageLabel}${homesPart}`
+  const homesPart = e.netHomes > 0 ? ` · +${e.netHomes} net new homes` : ''
+  const title = `${p.address} · ${MILESTONE_LABELS[e.stage]}${homesPart}`
   const summary = [
     p.permit_type_definition ?? 'Building permit',
     'in San Francisco.',
@@ -41,7 +43,7 @@ function permitToEntry(p: import('@/lib/types').Permit): string | null {
   ]
     .filter(Boolean)
     .join(' ')
-  const updated = new Date(date).toISOString()
+  const updated = new Date(e.eventDate).toISOString()
   const lat = p.location?.coordinates?.[1]
   const lng = p.location?.coordinates?.[0]
   const inMapUrl =
@@ -55,7 +57,7 @@ function permitToEntry(p: import('@/lib/types').Permit): string | null {
     `    <link rel="alternate" href="${escapeXml(inMapUrl)}"/>`,
     `    <link rel="related" href="${escapeXml(id)}"/>`,
     `    <updated>${updated}</updated>`,
-    `    <category term="${escapeXml(stage)}"/>`,
+    `    <category term="${escapeXml(e.stage)}"/>`,
     `    <summary>${escapeXml(summary)}</summary>`,
     '  </entry>',
   ].join('\n')
@@ -64,21 +66,16 @@ function permitToEntry(p: import('@/lib/types').Permit): string | null {
 export async function GET() {
   try {
     const permits = await fetchBuildingPermits(2, 0)
-    const recent = [...permits]
-      .filter((p) => !!(p.status_date || p.issued_date || p.filed_date))
-      .sort((a, b) => {
-        const ad = a.status_date || a.issued_date || a.filed_date || ''
-        const bd = b.status_date || b.issued_date || b.filed_date || ''
-        return ad < bd ? 1 : -1
-      })
-      .slice(0, 50)
-    const lastUpdated =
-      recent[0]?.status_date || recent[0]?.issued_date || new Date().toISOString()
+    // Shared derivation, then re-ordered newest-first for the feed reader.
+    const recent = computeActivity(permits, Date.now(), { windowDays: FEED_WINDOW_DAYS })
+      .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
+      .slice(0, MAX_ENTRIES)
 
-    const entries = recent
-      .map(permitToEntry)
-      .filter((s): s is string => s !== null)
-      .join('\n')
+    const lastUpdated = recent[0]?.eventDate
+      ? new Date(recent[0].eventDate).toISOString()
+      : new Date().toISOString()
+
+    const entries = recent.map(eventToEntry).join('\n')
 
     const xml = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -87,7 +84,7 @@ export async function GET() {
   <link rel="self" href="${SITE_URL}/feed.xml"/>
   <link rel="alternate" href="${SITE_URL}/"/>
   <id>${SITE_URL}/</id>
-  <updated>${new Date(lastUpdated).toISOString()}</updated>
+  <updated>${lastUpdated}</updated>
   <author>
     <name>What's Building SF</name>
     <uri>${SITE_URL}</uri>
