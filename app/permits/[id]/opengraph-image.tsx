@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 import type { Polygon, MultiPolygon } from 'geojson'
-import { fetchBuildingPermit } from '@/lib/datasf'
+import { fetchBuildingPermit, fetchParcelShape } from '@/lib/datasf'
 import {
   permitStage,
   netDelta,
@@ -15,35 +15,6 @@ export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 export const alt = "What's Building SF · permit detail"
-
-interface ParcelRow {
-  shape?: Polygon | MultiPolygon
-}
-
-async function fetchParcel(
-  block: string,
-  lot: string,
-): Promise<Polygon | MultiPolygon | null> {
-  if (!/^[0-9A-Z]+$/i.test(block) || !/^[0-9A-Z]+$/i.test(lot)) return null
-  const params = new URLSearchParams({
-    $select: 'shape',
-    $where: `block_num='${block.toUpperCase()}' AND lot_num='${lot.toUpperCase()}'`,
-    $limit: '1',
-  })
-  const headers: Record<string, string> = {}
-  if (process.env.DATASF_APP_TOKEN) headers['X-App-Token'] = process.env.DATASF_APP_TOKEN
-  try {
-    const res = await fetch(
-      `https://data.sfgov.org/resource/acdm-wktn.json?${params}`,
-      { headers, next: { revalidate: 86400 } },
-    )
-    if (!res.ok) return null
-    const rows: ParcelRow[] = await res.json()
-    return rows[0]?.shape ?? null
-  } catch {
-    return null
-  }
-}
 
 export default async function Image({
   params,
@@ -69,7 +40,7 @@ export default async function Image({
     stageColor = STAGE_COLORS[stage].fill
     homes = netDelta(permit.existing_units, permit.proposed_units) ?? 0
     if (permit.block && permit.lot) {
-      parcelShape = await fetchParcel(permit.block, permit.lot)
+      parcelShape = await fetchParcelShape(permit.block, permit.lot)
     }
   } catch {
     // Fall through to default card.

@@ -1,3 +1,4 @@
+import type { Polygon, MultiPolygon } from 'geojson'
 import type { MapBounds, Permit, PlanningCase } from './types'
 import { readPermitsSnapshot, filterPermits } from './permit-cache'
 
@@ -363,6 +364,34 @@ export async function fetchBuildingPermit(id: string): Promise<Permit> {
     )
   }
   return permit
+}
+
+/**
+ * Assessor parcel geometry for a block/lot, from DataSF's parcels dataset
+ * (acdm-wktn). Returns the GeoJSON shape, or null when the parcel isn't found
+ * or the ids are malformed. Cached 24h — parcel boundaries rarely change.
+ */
+export async function fetchParcelShape(
+  block: string,
+  lot: string,
+): Promise<Polygon | MultiPolygon | null> {
+  if (!/^[0-9A-Z]+$/i.test(block) || !/^[0-9A-Z]+$/i.test(lot)) return null
+  const params = new URLSearchParams({
+    $select: 'shape',
+    $where: `block_num='${block.toUpperCase()}' AND lot_num='${lot.toUpperCase()}'`,
+    $limit: '1',
+  })
+  try {
+    const res = await fetch(`${BASE_URL}/acdm-wktn.json?${params}`, {
+      headers: headers(),
+      next: { revalidate: 86400 },
+    })
+    if (!res.ok) return null
+    const rows: { shape?: Polygon | MultiPolygon }[] = await res.json()
+    return rows[0]?.shape ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function fetchPlanningCases(): Promise<PlanningCase[]> {

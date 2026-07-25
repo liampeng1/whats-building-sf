@@ -1,4 +1,5 @@
-import { computeActivity } from '@/lib/activity'
+import { computeActivity, formatCostShort, activityScope } from '@/lib/activity'
+import type { ActivityEvent } from '@/lib/activity'
 import type { Permit } from '@/lib/types'
 
 function permit(overrides: Partial<Permit> = {}): Permit {
@@ -188,5 +189,68 @@ describe('computeActivity — edge cases', () => {
       NOW,
     )
     expect(events[0].cost).toBe(2500000)
+  })
+})
+
+describe('formatCostShort', () => {
+  it('returns null for missing or non-positive costs', () => {
+    expect(formatCostShort(null)).toBeNull()
+    expect(formatCostShort(0)).toBeNull()
+  })
+
+  it('abbreviates thousands, millions, and billions', () => {
+    expect(formatCostShort(588600)).toBe('$589K')
+    expect(formatCostShort(1947000)).toBe('$1.9M')
+    expect(formatCostShort(1200000000)).toBe('$1.2B')
+  })
+
+  it('drops a trailing .0 for round millions', () => {
+    expect(formatCostShort(7000000)).toBe('$7M')
+    expect(formatCostShort(18000000)).toBe('$18M')
+  })
+})
+
+describe('activityScope', () => {
+  function evt(over: Partial<ActivityEvent> & { permit: Permit }): ActivityEvent {
+    return {
+      stage: 'filed',
+      eventDate: '2026-07-20',
+      netHomes: 0,
+      cost: null,
+      useCategory: 'other',
+      score: 0,
+      ...over,
+    }
+  }
+
+  it('builds scale chips from stories, homes, and use category', () => {
+    const { chips } = activityScope(
+      evt({
+        permit: permit({ proposed_stories: '8', proposed_use: 'apartments' }),
+        netHomes: 14,
+        useCategory: 'housing',
+      }),
+    )
+    expect(chips).toEqual(['8-story', '14 homes', 'Housing'])
+  })
+
+  it('singularizes a one-home chip and omits an "other" category', () => {
+    const { chips } = activityScope(
+      evt({ permit: permit({ proposed_stories: '2' }), netHomes: 1, useCategory: 'other' }),
+    )
+    expect(chips).toEqual(['2-story', '1 home'])
+  })
+
+  it('capitalizes and normalizes the description blurb', () => {
+    const { blurb } = activityScope(
+      evt({ permit: permit({ description: 'new 8-story   mixed use building' }) }),
+    )
+    expect(blurb).toBe('New 8-story mixed use building')
+  })
+
+  it('returns a null blurb and empty chips when nothing is known', () => {
+    const { chips, blurb } = activityScope(evt({ permit: permit() }))
+    expect(chips).toEqual([])
+    expect(blurb).toBeNull()
   })
 })

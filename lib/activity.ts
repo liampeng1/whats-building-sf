@@ -21,6 +21,7 @@ import {
   netDelta,
   useCategory,
   dedupeProjectPermits,
+  USE_CATEGORY_LABELS,
 } from './permit-style'
 
 export interface ActivityEvent {
@@ -149,4 +150,39 @@ export function computeActivity(
   })
 
   return opts.limit != null ? events.slice(0, opts.limit) : events
+}
+
+/**
+ * Compact money label for feed rows: $589K, $1.9M, $7M, $1.2B. Returns null
+ * for missing/non-positive costs so callers can omit the field entirely.
+ */
+export function formatCostShort(cost: number | null): string | null {
+  if (cost == null || !Number.isFinite(cost) || cost <= 0) return null
+  const abbr = (v: number, suffix: string) => `$${v.toFixed(1).replace(/\.0$/, '')}${suffix}`
+  if (cost >= 1e9) return abbr(cost / 1e9, 'B')
+  if (cost >= 1e6) return abbr(cost / 1e6, 'M')
+  if (cost >= 1e3) return `$${Math.round(cost / 1e3)}K`
+  return `$${Math.round(cost)}`
+}
+
+/**
+ * Human-readable scope for an activity item: a few scale chips derived from the
+ * structured fields (reliable), plus the permit's own free-text description
+ * blurb (the story), lightly normalized. Both are optional — callers render
+ * whatever is present.
+ */
+export function activityScope(event: ActivityEvent): { chips: string[]; blurb: string | null } {
+  const chips: string[] = []
+
+  const stories = Number(event.permit.proposed_stories)
+  if (Number.isFinite(stories) && stories > 0) chips.push(`${stories}-story`)
+
+  if (event.netHomes > 0) chips.push(`${event.netHomes} home${event.netHomes === 1 ? '' : 's'}`)
+
+  if (event.useCategory !== 'other') chips.push(USE_CATEGORY_LABELS[event.useCategory])
+
+  const raw = event.permit.description?.trim().replace(/\s+/g, ' ')
+  const blurb = raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : null
+
+  return { chips, blurb }
 }

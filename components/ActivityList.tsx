@@ -1,8 +1,12 @@
 'use client'
 import { useMemo, useState } from 'react'
+import type { Polygon, MultiPolygon } from 'geojson'
 import type { ActivityEvent } from '@/lib/activity'
 import type { PermitStage } from '@/lib/permit-style'
 import { ActivityRow } from './ActivityRow'
+import { ActivityLead } from './ActivityLead'
+
+export type ParcelMap = Record<string, Polygon | MultiPolygon>
 
 type SortMode = 'significance' | 'newest'
 
@@ -39,7 +43,15 @@ function Chip({
   )
 }
 
-export function ActivityList({ events, now }: { events: ActivityEvent[]; now: number }) {
+export function ActivityList({
+  events,
+  now,
+  parcels = {},
+}: {
+  events: ActivityEvent[]
+  now: number
+  parcels?: ParcelMap
+}) {
   const [sort, setSort] = useState<SortMode>('significance')
   const [stages, setStages] = useState<Set<PermitStage>>(new Set())
   const nowDate = useMemo(() => new Date(now), [now])
@@ -104,9 +116,21 @@ export function ActivityList({ events, now }: { events: ActivityEvent[]; now: nu
         </p>
       ) : (
         <div>
-          {visible.map((e) => (
-            <ActivityRow key={e.permit.permit_number} event={e} now={nowDate} />
-          ))}
+          <ActivityLead
+            event={visible[0]}
+            now={nowDate}
+            parcel={parcels[visible[0].permit.permit_number]}
+          />
+          <div className="mt-2">
+            {visible.slice(1).map((e) => (
+              <ActivityRow
+                key={e.permit.permit_number}
+                event={e}
+                now={nowDate}
+                parcel={parcels[e.permit.permit_number]}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>
