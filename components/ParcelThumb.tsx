@@ -49,12 +49,22 @@ export function ParcelThumb({
         style={{ position: 'absolute', inset: 0 }}
         viewBox={`0 0 ${width} ${height}`}
       >
+        {/* Light casing lifts the outline off a pale/sparse basemap so large,
+            zoomed-out parcels still read clearly; colored line on top. */}
+        <path
+          d={data.path}
+          fill="none"
+          stroke="#fbf6ec"
+          strokeOpacity={0.9}
+          strokeWidth={4}
+          strokeLinejoin="round"
+        />
         <path
           d={data.path}
           fill={color.fill}
-          fillOpacity={0.4}
+          fillOpacity={0.55}
           stroke={color.stroke}
-          strokeWidth={1.5}
+          strokeWidth={1.75}
           strokeLinejoin="round"
         />
       </svg>
