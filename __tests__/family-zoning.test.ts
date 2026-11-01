@@ -72,7 +72,7 @@ describe('permitLawHeuristic', () => {
   })
 
   it('flags AB-2011 likely for commercial + new residential units', () => {
-    const p = { ...base, proposed_use: 'mixed-use residential and retail', existing_units: 0, proposed_units: 12 } as Permit
+    const p = { ...base, proposed_use: 'mixed-use residential and retail', existing_units: '0', proposed_units: '12' } as Permit
     const out = permitLawHeuristic(p, 'C-3-O')
     expect(out.find((x) => x.law === 'AB-2011')?.confidence).toBe('likely')
   })

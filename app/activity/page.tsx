@@ -7,7 +7,8 @@ import { fetchBuildingPermits, fetchParcelShape } from '@/lib/datasf'
 import { computeActivity, type ActivityEvent } from '@/lib/activity'
 
 export const metadata: Metadata = {
-  title: "What's Building SF · Latest activity",
+  // The root layout appends " · What's Building SF" via its title template.
+  title: 'Latest activity',
   description:
     'What just changed across San Francisco construction — permits just filed, approved, construction just started, and buildings just completed. Refreshed daily from DataSF.',
 }

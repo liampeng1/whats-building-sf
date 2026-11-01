@@ -9,7 +9,8 @@ describe('SF_HEIGHT_REFERENCES', () => {
       expect(r.name).toBeTruthy()
       expect(r.height_ft).toBeGreaterThan(0)
       expect(['human', 'residential', 'civic', 'tower']).toContain(r.category)
-      expect(r.illustration).toMatch(/^<svg.*<\/svg>$/s)
+      // [\s\S] rather than the /s flag, which needs a target above ES2017.
+      expect(r.illustration).toMatch(/^<svg[\s\S]*<\/svg>$/)
       expect(r.width_px).toBeGreaterThan(0)
       expect(r.source).toBeTruthy()
     }
