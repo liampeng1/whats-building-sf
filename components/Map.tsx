@@ -631,13 +631,14 @@ export default function Map({ initialCenter = [37.7749, -122.4194] }: Props) {
         }}
       >
         <ZoomTracker onSettled={setMapZoom} wrapperRef={wrapperRef} />
-        {/* Carto Voyager: gives water (soft blue), parks (sage), and street
-            hierarchy out of the box. Labels-under variant keeps streets/place
-            names but de-emphasizes them so pins still dominate. */}
+        {/* OSM standard tiles. We used Carto Voyager until it started requiring
+            an API key and served a watermark in place of every tile. Two things
+            differ from a Carto URL: there is no retina variant (an @2x request
+            400s, so no {r}), and subdomains are deprecated — tile.openstreetmap.org
+            is served from a CDN and should be hit directly. */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"
-          subdomains="abcd"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
         <MapEventHandler onBoundsChange={handleViewportChange} />

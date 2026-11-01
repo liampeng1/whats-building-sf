@@ -2,7 +2,7 @@ import type { Polygon, MultiPolygon } from 'geojson'
 import { buildParcelThumb } from '@/lib/parcel-thumb'
 
 // Same basemap as the interactive map, so thumbnails read as "a piece of the map".
-const CARTO = 'https://a.basemaps.cartocdn.com/rastertiles/voyager_labels_under'
+const TILES = 'https://tile.openstreetmap.org'
 
 /**
  * A small map snippet with the parcel outline painted on top — enough street
@@ -35,7 +35,7 @@ export function ParcelThumb({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           key={i}
-          src={`${CARTO}/${t.z}/${t.x}/${t.y}.png`}
+          src={`${TILES}/${t.z}/${t.x}/${t.y}.png`}
           alt=""
           loading="lazy"
           width={256}
