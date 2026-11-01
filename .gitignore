@@ -50,3 +50,6 @@ next-env.d.ts
 scripts/_*.png
 .env*.local
 .playwright-mcp/
+
+# claude code local session state (settings, worktrees)
+.claude/
