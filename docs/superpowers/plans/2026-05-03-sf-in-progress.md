@@ -70,7 +70,7 @@ Expected: Node `v20.x.x` and npm `10.x.x` (or similar current LTS)
 - [ ] **Step 3: Scaffold Next.js in the existing project directory**
 
 ```bash
-cd /Users/liampeng/Projects/sf-in-progress
+cd <repo-root>
 npx create-next-app@latest . \
   --typescript \
   --tailwind \

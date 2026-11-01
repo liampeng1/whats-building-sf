@@ -60,8 +60,8 @@ Two placements, sharing one form component:
   - Added once, in `app/layout.tsx`, so it appears site-wide.
 
 - **`components/SuggestForm.tsx`** (client component)
-  - Mirrors the field model of the existing leoporady suggestion box
-    (`~/Projects/leoporady/components/FeedbackBox.tsx`): keep it minimal.
+  - Mirrors the field model of the existing sibling suggestion box
+    (a sibling project's feedback box): keep it minimal.
   - Fields:
     - **Message** — textarea, required, ≤ 2000 chars. The whole suggestion.
     - **Name** — single-line, optional, ≤ 100 chars ("Your name (optional)"). Lets the
@@ -100,7 +100,7 @@ Two placements, sharing one form component:
 
 ### Supporting libs
 
-- **`lib/suggestions.ts`** (pure — no I/O, mirrors leoporady's `lib/feedback.ts`)
+- **`lib/suggestions.ts`** (pure — no I/O, mirrors a sibling project's `lib/feedback.ts`)
   - `parseSuggestion(body: unknown): Suggestion | null` — validates/trims; returns
     `{ message, from? }` or `null`. Enforces `message` non-empty and ≤ 2000, `from` ≤ 100.
   - `toIssue(s: Suggestion): { title: string; body: string; labels: string[] }` — derives
@@ -110,8 +110,8 @@ Two placements, sharing one form component:
 
 - **`lib/github-issues.ts`**
   - `createIssue({ title, body, labels }): Promise<{ url: string; number: number }>`
-  - Reads `GITHUB_FEEDBACK_TOKEN` from env (the **existing** user-scoped `gho_` OAuth token
-    already used by the leoporady project — works across the owner's repos, so no new token
+  - Reads `GITHUB_FEEDBACK_TOKEN` from env (the **existing** GitHub token with issue-creation access
+    already in use, so no new token
     is created). Repo target is the constant `liampeng1/whats-building-sf`. Throws a clear
     error if the token is missing.
   - Calls `POST https://api.github.com/repos/{owner}/{repo}/issues` with
@@ -129,10 +129,10 @@ Two placements, sharing one form component:
 
 ### Environment variables (no new provisioning required)
 
-- `GITHUB_FEEDBACK_TOKEN` — the **existing** `gho_` OAuth token already used by leoporady.
+- `GITHUB_FEEDBACK_TOKEN` — a GitHub token already in use.
   User-scoped, so it can create issues on `whats-building-sf` with no new PAT.
   - **Local:** copied into this project's `.env.local` during implementation (from the
-    leoporady `.env.local`). Nothing for the owner to do.
+    the sibling project's `.env.local`). Nothing for the owner to do.
   - **Production:** the same var must exist in the Vercel project. Set once via
     `vercel env add GITHUB_FEEDBACK_TOKEN` (Production + Preview) — the only owner-facing
     step, and optional until the feature ships to prod.

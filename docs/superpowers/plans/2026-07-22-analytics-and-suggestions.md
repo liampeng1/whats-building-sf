@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - **Read the bundled Next.js docs before writing App Router code.** Per `AGENTS.md`, this is a modified Next.js; consult `node_modules/next/dist/docs/` and heed deprecations rather than relying on training data.
-- **Reuse the existing token.** GitHub auth is `process.env.GITHUB_FEEDBACK_TOKEN` — the existing user-scoped `gho_` OAuth token shared with the leoporady project. Do **not** invent a new PAT or a `GITHUB_TOKEN`/`GITHUB_REPO` pair.
+- **Reuse the existing token.** GitHub auth is `process.env.GITHUB_FEEDBACK_TOKEN` — the existing GitHub token with issue-creation access. Do **not** invent a new PAT or a `GITHUB_TOKEN`/`GITHUB_REPO` pair.
 - **Repo target is a constant:** `liampeng1/whats-building-sf`.
 - **Rate limit:** 25 submissions/day per IP. Fails **open** (allow) when Redis is unavailable.
 - **Tests** live in `__tests__/`, use Jest globals (no import of `describe`/`it`/`expect`), and add `/** @jest-environment jsdom */` as the first line for component tests. Run one file with `npx jest <path>`.
@@ -156,7 +156,7 @@ Create `lib/suggestions.ts`:
 ```ts
 // Validation and GitHub-issue formatting for the suggestion box.
 // Pure (no I/O) so the API route stays a thin transport layer and this is
-// trivially unit-testable. Mirrors leoporady's lib/feedback.ts.
+// trivially unit-testable. Mirrors a sibling project's lib/feedback.ts.
 
 export interface Suggestion {
   message: string
@@ -291,7 +291,7 @@ Expected: FAIL — cannot find module `@/lib/github-issues`.
 Create `lib/github-issues.ts`:
 ```ts
 // Thin wrapper over GitHub's "create an issue" REST endpoint. Uses the
-// existing user-scoped GITHUB_FEEDBACK_TOKEN (shared with leoporady); the repo
+// existing GITHUB_FEEDBACK_TOKEN; the repo
 // is a constant since this only ever files to one place.
 
 const REPO = 'liampeng1/whats-building-sf'
@@ -935,11 +935,11 @@ Expected: typecheck clean, all suites pass, build succeeds.
 
 This lets the endpoint file a real issue during local verification. `.env.local` is gitignored (confirmed). This appends without printing the secret:
 ```bash
-grep '^GITHUB_FEEDBACK_TOKEN=' ~/Projects/leoporady/.env.local >> /Users/liampeng/Projects/sf-in-progress/.env.local
+grep '^GITHUB_FEEDBACK_TOKEN=' <sibling-project>/.env.local >> <repo-root>/.env.local
 ```
 Expected: `.env.local` now contains a `GITHUB_FEEDBACK_TOKEN=` line. Verify presence (not value):
 ```bash
-grep -c '^GITHUB_FEEDBACK_TOKEN=' /Users/liampeng/Projects/sf-in-progress/.env.local
+grep -c '^GITHUB_FEEDBACK_TOKEN=' <repo-root>/.env.local
 ```
 Expected: `1`.
 
@@ -971,7 +971,7 @@ git commit -m "feat: floating suggestion button + about-page form"
   vercel env add GITHUB_FEEDBACK_TOKEN production
   vercel env add GITHUB_FEEDBACK_TOKEN preview
   ```
-  (paste the same `gho_…` value). Optional until the feature ships to prod.
+  (paste the same token value). Optional until the feature ships to prod.
 - Enable **Web Analytics** in the Vercel project dashboard (Task 1).
 
 ## Self-Review notes
